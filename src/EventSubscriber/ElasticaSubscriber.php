@@ -59,7 +59,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function prepareIngestPipeline(PostIndexResetEvent $event)
+    public function prepareIngestPipeline(PostIndexResetEvent $event): void
     {
         $index = $this->indexManager->getIndex($event->getIndex());
         $pipeline = new Pipeline($index->getClient());
@@ -107,7 +107,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
     /**
      * @throws InvalidArgumentException
      */
-    public function addCustomProperty(PostTransformEvent $event)
+    public function addCustomProperty(PostTransformEvent $event): void
     {
         $fields = $event->getFields();
 
@@ -160,7 +160,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function addRubric(PostTransformEvent $event)
+    private function addRubric(PostTransformEvent $event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -175,7 +175,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
     /**
      * @throws InvalidArgumentException
      */
-    private function addHashtags(PostTransformEvent $event)
+    private function addHashtags(PostTransformEvent $event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -200,7 +200,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
     /**
      * @throws InvalidArgumentException
      */
-    private function addTags(PostTransformEvent $event)
+    private function addTags(PostTransformEvent $event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -229,7 +229,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
     /**
      * @throws InvalidArgumentException
      */
-    private function addContext(PostTransformEvent $event)
+    private function addContext(PostTransformEvent $event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -247,7 +247,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
     /**
      * @throws InvalidArgumentException
      */
-    private function addAnnotations(PostTransformEvent $event)
+    private function addAnnotations(PostTransformEvent $event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -269,7 +269,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function addAttachments(PostTransformEvent $event)
+    private function addAttachments(PostTransformEvent $event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -334,7 +334,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         return $filesBase64;
     }
 
-    public function addDiscussionArticles($event)
+    public function addDiscussionArticles($event): void
     {
         $discussionManager = $this->legacyEnvironment->getDiscussionManager();
         $discussion = $discussionManager->getItem($event->getObject()->getItemId());
@@ -365,7 +365,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
     /**
      * @throws InvalidArgumentException
      */
-    public function addSteps($event)
+    public function addSteps($event): void
     {
         $todoManager = $this->legacyEnvironment->getTodosManager();
         $todo = $todoManager->getItem($event->getObject()->getItemId());
@@ -398,7 +398,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function addSections($event)
+    public function addSections($event): void
     {
         $materialManager = $this->legacyEnvironment->getMaterialManager();
         $material = $materialManager->getItem($event->getObject()->getItemId());
@@ -427,7 +427,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function addParentRoomIds($event)
+    public function addParentRoomIds($event): void
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $room = $roomManager->getItem($event->getObject()->getItemId());
@@ -449,7 +449,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function addCreator($event)
+    public function addCreator($event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
@@ -477,7 +477,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function addModifier($event)
+    public function addModifier($event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 

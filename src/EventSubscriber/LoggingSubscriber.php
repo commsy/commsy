@@ -31,7 +31,7 @@ readonly class LoggingSubscriber implements EventSubscriberInterface
     ) {
     }
 
-    public function onTerminateEvent(TerminateEvent $event)
+    public function onTerminateEvent(TerminateEvent $event): void
     {
         if (!$event->isMainRequest()) {
             return;
@@ -40,22 +40,15 @@ readonly class LoggingSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $serializer = new Serializer([], [new JsonEncoder()]);
 
-        $userAgent = $request->headers->get('User-Agent', 'No Info');
-        $postAsJson = $serializer->encode($request->request->all(), 'json');
-        $anonymousIp = IpUtils::anonymize($request->server->get('REMOTE_ADDR', ''));
-        $requestUri = $request->getRequestUri();
-        $method = $request->getMethod();
-        $username = $this->security->getUser() ? $this->security->getUser()->getUserIdentifier() : null;
-        $contextId = $this->requestContext->fetchContextId($request);
-
         $this->logRepository->addLog(
-            $anonymousIp,
-            $userAgent,
-            $requestUri,
-            $postAsJson,
-            $method,
-            $username,
-            $contextId
+            IpUtils::anonymize($request->server->get('REMOTE_ADDR', '')),
+            $request->headers->get('User-Agent', 'No Info'),
+            $request->getRequestUri(),
+            $serializer->encode($request->request->all(), 'json'),
+            $request->getMethod(),
+            $request->isXmlHttpRequest(),
+            $this->security->getUser() ? $this->security->getUser()->getUserIdentifier() : null,
+            $this->requestContext->fetchContextId($request)
         );
     }
 

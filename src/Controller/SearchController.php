@@ -629,8 +629,10 @@ class SearchController extends BaseController
     /**
      * Uses the given search manager to add search query conditions for relevant SearchData parameters.
      */
-    public function setupSearchQueryConditions(SearchManager $searchManager,
-                                               SearchData $searchData)
+    public function setupSearchQueryConditions(
+        SearchManager $searchManager,
+        SearchData $searchData
+    ): void
     {
         if (!isset($searchManager) || !isset($searchData)) {
             return;
@@ -670,7 +672,7 @@ class SearchController extends BaseController
                                                 SearchData $searchData,
                                                 int $roomId,
                                                 MultipleContextFilterCondition $multipleContextFilterCondition,
-                                                ReadStatusFilterCondition $readStatusFilterCondition)
+                                                ReadStatusFilterCondition $readStatusFilterCondition): void
     {
         if (!isset($searchManager) || !isset($searchData) || empty($roomId) || !isset($multipleContextFilterCondition) || !isset($readStatusFilterCondition)) {
             return;

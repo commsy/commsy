@@ -42,7 +42,7 @@ class ActivitySubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelTerminate(TerminateEvent $event)
+    public function onKernelTerminate(TerminateEvent $event): void
     {
         if ($event->isMainRequest()) {
             $request = $event->getRequest();
@@ -82,7 +82,7 @@ class ActivitySubscriber implements EventSubscriberInterface
         }
     }
 
-    private function updatePortalActivity(int $portalId)
+    private function updatePortalActivity(int $portalId): void
     {
         $portalRespository = $this->entityManager->getRepository(Portal::class);
         $portal = $portalRespository->find($portalId);

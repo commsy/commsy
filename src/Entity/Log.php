@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'log')]
-#[ORM\Index(columns: ['cid', 'timestamp'], name: 'cid_timestamp_idx')]
+#[ORM\Index(name: 'cid_timestamp_idx', columns: ['cid', 'timestamp'])]
 class Log
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
@@ -53,6 +53,9 @@ class Log
     #[ORM\Column(name: 'cid', type: Types::INTEGER, nullable: true)]
     private ?int $cid = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $ajax = null;
+
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
@@ -64,7 +67,7 @@ class Log
         return $this->id;
     }
 
-    public function setId(int $id): Log
+    public function setId(int $id): static
     {
         $this->id = $id;
         return $this;
@@ -75,7 +78,7 @@ class Log
         return $this->ip;
     }
 
-    public function setIp(string $ip): Log
+    public function setIp(string $ip): static
     {
         $this->ip = $ip;
         return $this;
@@ -86,7 +89,7 @@ class Log
         return $this->agent;
     }
 
-    public function setAgent(string $agent): Log
+    public function setAgent(string $agent): static
     {
         $this->agent = $agent;
         return $this;
@@ -97,7 +100,7 @@ class Log
         return $this->timestamp;
     }
 
-    public function setTimestamp(DateTimeInterface $timestamp): Log
+    public function setTimestamp(DateTimeInterface $timestamp): static
     {
         $this->timestamp = $timestamp;
         return $this;
@@ -108,7 +111,7 @@ class Log
         return $this->request;
     }
 
-    public function setRequest(string $request): Log
+    public function setRequest(string $request): static
     {
         $this->request = $request;
         return $this;
@@ -119,7 +122,7 @@ class Log
         return $this->postContent;
     }
 
-    public function setPostContent(?string $postContent): Log
+    public function setPostContent(?string $postContent): static
     {
         $this->postContent = $postContent;
         return $this;
@@ -130,7 +133,7 @@ class Log
         return $this->method;
     }
 
-    public function setMethod(string $method): Log
+    public function setMethod(string $method): static
     {
         $this->method = $method;
         return $this;
@@ -141,7 +144,7 @@ class Log
         return $this->ulogin;
     }
 
-    public function setUlogin(?string $ulogin): Log
+    public function setUlogin(?string $ulogin): static
     {
         $this->ulogin = $ulogin;
         return $this;
@@ -152,9 +155,21 @@ class Log
         return $this->cid;
     }
 
-    public function setCid(?int $cid): Log
+    public function setCid(?int $cid): static
     {
         $this->cid = $cid;
+        return $this;
+    }
+
+    public function isAjax(): ?bool
+    {
+        return $this->ajax;
+    }
+
+    public function setAjax(?bool $ajax): static
+    {
+        $this->ajax = $ajax;
+
         return $this;
     }
 }

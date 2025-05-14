@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Enum\AddAccountSetting;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -58,6 +59,10 @@ class AuthSourceOIDC extends AuthSource
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\Length(max: 100)]
     private ?string $lastnameMapping = null;
+
+    #[ApiProperty(openapiContext: ['type' => 'boolean'])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $useEmailAsIdentifier = false;
 
     protected string $type = 'oidc';
 
@@ -166,6 +171,17 @@ class AuthSourceOIDC extends AuthSource
     public function setLastnameMapping(?string $lastnameMapping): static
     {
         $this->lastnameMapping = $lastnameMapping;
+        return $this;
+    }
+
+    public function getUseEmailAsIdentifier(): ?bool
+    {
+        return $this->useEmailAsIdentifier;
+    }
+
+    public function setUseEmailAsIdentifier(?bool $useEmailAsIdentifier): static
+    {
+        $this->useEmailAsIdentifier = $useEmailAsIdentifier;
         return $this;
     }
 }

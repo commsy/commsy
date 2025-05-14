@@ -148,7 +148,7 @@ class Files
     }
 
     #[ORM\PreUpdate]
-    public function setModificationDateValue()
+    public function setModificationDateValue(): void
     {
         $this->modificationDate = new DateTime('now');
     }

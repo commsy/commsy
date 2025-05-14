@@ -53,7 +53,7 @@ class LegacySubscriber implements EventSubscriberInterface
     /**
      * @throws Exception
      */
-    public function onKernelController(ControllerEvent $event)
+    public function onKernelController(ControllerEvent $event): void
     {
         if (HttpKernelInterface::MAIN_REQUEST !== $event->getRequestType()) {
             return;

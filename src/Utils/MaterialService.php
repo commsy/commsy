@@ -91,7 +91,7 @@ class MaterialService
         return $countMaterialArray;
     }
 
-    public function setFilterConditions(FormInterface $filterForm)
+    public function setFilterConditions(FormInterface $filterForm): void
     {
         $formData = $filterForm->getData();
 
@@ -215,7 +215,7 @@ class MaterialService
         }
     }
 
-    public function hideDeactivatedEntries()
+    public function hideDeactivatedEntries(): void
     {
         $this->materialManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }

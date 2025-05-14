@@ -57,7 +57,7 @@ class PersonalDataCollector
     /**
      * Populates the given PersonalData object with the account data for the given user.
      */
-    private function populateAccountData(PersonalData $personalData, cs_user_item $user)
+    private function populateAccountData(PersonalData $personalData, cs_user_item $user): void
     {
         $accountData = $this->getAccountDataForUser($user);
 
@@ -69,7 +69,7 @@ class PersonalDataCollector
     /**
      * Populates the given PersonalData object with all room profile data for the given user.
      */
-    private function populateRoomProfileData(PersonalData $personalData, cs_user_item $user)
+    private function populateRoomProfileData(PersonalData $personalData, cs_user_item $user): void
     {
         /**
          * @var RoomProfileData[]

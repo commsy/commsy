@@ -229,18 +229,6 @@ class misc_text_converter
         return $html;
     }
 
-    private function _decode_backslashes_1_fck($text)
-    {
-        $retour = $text;
-        return str_replace("\(:", "\WIKIBEGIN", (string)$retour);
-    }
-
-    private function _decode_backslashes_2_fck($text)
-    {
-        $retour = $text;
-        return str_replace("\WIKIBEGIN", '(:', (string)$retour);
-    }
-
     /**
      * returns the html-code for opening a list.
      */
@@ -269,14 +257,6 @@ class misc_text_converter
         }
 
         return $html;
-    }
-
-    // private function _br_with_nl ($text) {
-    public function _br_with_nl($text)
-    {
-        $text = str_replace('<br />', '<br />' . LF, (string)$text);
-
-        return $text;
     }
 
     private function _parseText2Id($text)
@@ -399,59 +379,6 @@ class misc_text_converter
         }
 
         return $text;
-    }
-
-    private function _decode_backslashes_2($text)
-    {
-        $retour = $text;
-        $retour = str_replace("\STERN", '*', (string)$retour);
-        $retour = str_replace("\STRICH", '_', $retour);
-        $retour = str_replace("\AUSRUFEZEICHEN", '!', $retour);
-        $retour = str_replace("\MINUS", '-', $retour);
-        $retour = str_replace("\SCHWEINEGATTER", '#', $retour);
-        $retour = str_replace("\WIKIBEGIN", '(:', $retour);
-
-        return $retour;
-    }
-
-    public function _delete_unnecassary_br($text)
-    {
-        $text = preg_replace('~<br( /)?>(</h\d>)~u', '$2', (string)$text);
-        return preg_replace('~<br( /)?>(</li>)~u', '</li>', $text);
-    }
-
-    /** Wenn im Text Gruppierungen von zwei oder mehr Leerzeichen
-     *  vorkommen, werden diese durch entsprechende &nbsp; Tags
-     *  ersetzt, um die Ursprüngliche formatierung zu bewaren.
-     *
-     *  Wurde aufgrund folgenden Bugs erstellt:
-     *  http://sourceforge.net/tracker/index.php?func=detail&aid=1062265&group_id=49014&atid=516467
-     */
-    public function _preserve_whitespaces($text)
-    {
-        preg_match_all('~ {2,}~u', (string)$text, $matches);
-        $matches = array_unique($matches[0]);
-        rsort($matches);
-        foreach ($matches as $match) {
-            $replacement = ' ';
-            for ($x = 1; $x < mb_strlen((string)$match); ++$x) {
-                $replacement .= '&nbsp;';
-            }
-            $text = str_replace($match, $replacement, (string)$text);
-        }
-
-        return $text;
-    }
-
-    private function _decode_backslashes_1($text)
-    {
-        $retour = $text;
-        $retour = str_replace("\*", "\STERN", (string)$retour);
-        $retour = str_replace("\_", "\STRICH", $retour);
-        $retour = str_replace("\!", "\AUSRUFEZEICHEN", $retour);
-        $retour = str_replace("\-", "\MINUS", $retour);
-        $retour = str_replace("\#", "\SCHWEINEGATTER", $retour);
-        return str_replace("\(:", "\WIKIBEGIN", $retour);
     }
 
     public function _getArgs($data, $reg_exp)

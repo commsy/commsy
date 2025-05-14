@@ -29,7 +29,7 @@ use Exception;
 use LogicException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-final readonly class AccountManager
+readonly class AccountManager
 {
     private cs_environment $legacyEnvironment;
 
@@ -54,7 +54,7 @@ final readonly class AccountManager
         return $userManager->changeUserID($username, $user);
     }
 
-    public function propagateAccountDataToProfiles(Account $account): void
+    public function propagateAccountDataToProfiles(Account $account, bool $updateUsername = false, ?Account $lookupAccount = null): void
     {
         /*
          * This is a real gotcha. When the legacy code persists a new user, it will only create a private room
@@ -63,9 +63,9 @@ final readonly class AccountManager
          */
         $this->legacyEnvironment->setCurrentPortalID($account->getContextId());
 
-        $portalUser = $this->userService->getPortalUser($account);
+        $portalUser = $this->userService->getPortalUser($lookupAccount ?? $account);
         if ($portalUser) {
-            $relatedUsers = $portalUser->getRelatedUserList();
+            $relatedUsers = $portalUser->getRelatedUserList(true, true);
             $relatedUsers->add($portalUser);
 
             /*
@@ -82,6 +82,11 @@ final readonly class AccountManager
                     $relatedUser->setLastname($account->getLastname());
                     $relatedUser->setEmail($account->getEmail());
 
+                    $relatedUser->save();
+                }
+
+                if ($updateUsername && $relatedUser->getUserID() !== $account->getUsername()) {
+                    $relatedUser->setUserID($account->getUsername());
                     $relatedUser->save();
                 }
             }

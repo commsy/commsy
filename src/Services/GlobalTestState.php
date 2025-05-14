@@ -22,7 +22,7 @@ final readonly class GlobalTestState
     ) {
     }
 
-    public function __invoke()
+    public function __invoke(): void
     {
         $connection = $this->entityManager->getConnection();
         $connection->executeStatement('UPDATE accounts SET password_md5 = NULL, password = :password WHERE id = 1', [

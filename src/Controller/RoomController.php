@@ -109,32 +109,22 @@ class RoomController extends AbstractController
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();
 
-        $moderators = [];
-        $moderatorList = $roomItem->getModeratorList();
-        $moderatorUserItem = $moderatorList->getFirst();
-        while ($moderatorUserItem) {
-            $moderators[] = $moderatorUserItem;
-            $moderatorUserItem = $moderatorList->getNext();
-        }
+        $moderators = $roomItem->getModeratorList()->to_array();
 
         $announcementManager = $legacyEnvironment->getAnnouncementManager();
         $announcementManager->setContextLimit($roomId);
         $announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
         $countAnnouncements = $announcementManager->getCountAll();
 
-        $backgroundImage = null;
-        if ($roomItem->getBGImageFilename()) {
-            $backgroundImage = $this->generateUrl('getBackground', ['roomId' => $roomId, 'imageType' => 'custom']);
-        } else {
-            $backgroundImage = $this->generateUrl('getBackground', ['roomId' => $roomId, 'imageType' => 'theme']);
-        }
+        $backgroundImage = $this->generateUrl('getBackground', [
+            'roomId' => $roomId,
+            'imageType' => $roomItem->getBGImageFilename() ? 'custom' : 'theme',
+        ]);
 
         $logoImage = null;
         if ($roomItem->getLogoFilename()) {
             $logoImage = $this->generateUrl('getLogo', ['roomId' => $roomId]);
         }
-
-        // TODO: calculate parallax-scrolling range for home.html.twig depending on image dimensions!
 
         // support mail
         $serviceContact = [

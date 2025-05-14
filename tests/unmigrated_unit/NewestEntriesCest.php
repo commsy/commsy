@@ -27,7 +27,7 @@ class NewestEntriesCest
     }
 
     // tests
-    public function vanillaRoomTest(UnitTester $I)
+    public function vanillaRoomTest(UnitTester $I): void
     {
         /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
@@ -49,7 +49,7 @@ class NewestEntriesCest
         $I->assertEquals(1, sizeof($roomFeedEntries));
     }
 
-    public function reloadTest(UnitTester $I)
+    public function reloadTest(UnitTester $I): void
     {
         /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();

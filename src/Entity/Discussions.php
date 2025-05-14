@@ -259,7 +259,7 @@ class Discussions
         return $this;
     }
 
-    public function removeDiscussionarticle(Discussionarticles $discussionarticle)
+    public function removeDiscussionarticle(Discussionarticles $discussionarticle): void
     {
         $this->discussionarticles->removeElement($discussionarticle);
     }

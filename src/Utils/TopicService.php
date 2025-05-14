@@ -90,7 +90,7 @@ class TopicService
         return $userList->to_array();
     }
 
-    public function setFilterConditions(FormInterface $filterForm)
+    public function setFilterConditions(FormInterface $filterForm): void
     {
         $formData = $filterForm->getData();
 
@@ -111,7 +111,7 @@ class TopicService
         return $this->topicManager->getNewItem();
     }
 
-    public function hideDeactivatedEntries()
+    public function hideDeactivatedEntries(): void
     {
         $this->topicManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }

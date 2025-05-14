@@ -39,7 +39,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onUserJoinedRoom(UserJoinedRoomEvent $event)
+    public function onUserJoinedRoom(UserJoinedRoomEvent $event): void
     {
         $user = $event->getUser();
         $room = $event->getRoom();
@@ -59,7 +59,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $this->userroomService->createUserroom($room, $user);
     }
 
-    public function onUserLeftRoom(UserLeftRoomEvent $event)
+    public function onUserLeftRoom(UserLeftRoomEvent $event): void
     {
         $user = $event->getUser();
         $room = $event->getRoom();
@@ -73,7 +73,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $this->userroomService->removeUserFromUserroomsForRoom($room, $user);
     }
 
-    public function onUserStatusChanged(UserStatusChangedEvent $event)
+    public function onUserStatusChanged(UserStatusChangedEvent $event): void
     {
         $user = $event->getUser();
         $room = $user->getContextItem();
@@ -92,7 +92,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         $this->userroomService->changeUserStatusInUserroomsForRoom($room, $user);
     }
 
-    public function onAccountChanged(AccountChangedEvent $event)
+    public function onAccountChanged(AccountChangedEvent $event): void
     {
         $oldUser = $event->getOldAccount();
         $newUser = $event->getNewAccount();
@@ -142,7 +142,7 @@ class UserRoomSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onRoomSettingsChanged(RoomSettingsChangedEvent $event)
+    public function onRoomSettingsChanged(RoomSettingsChangedEvent $event): void
     {
         $oldRoom = $event->getOldRoom();
         $newRoom = $event->getNewRoom();

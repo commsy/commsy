@@ -163,7 +163,7 @@ class RoomFeedGenerator
     /**
      * Sets filter conditions to apply when fetching items.
      */
-    public function setFilterConditions(FormInterface $filterForm)
+    public function setFilterConditions(FormInterface $filterForm): void
     {
         $formData = $filterForm->getData();
 

@@ -153,9 +153,6 @@ class cs_discussionarticles_manager extends cs_manager
         $query .= ' WHERE 1';
 
         // fifth, insert limits into the select statement
-        if (isset($this->_room_limit) and 'clipboard_index' != $this->_environment->getCurrentFunction()) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
-        }
         if (true == $this->_delete_limit) {
             $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.deleter_id IS NULL';
         }

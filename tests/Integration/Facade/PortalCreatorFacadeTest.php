@@ -44,7 +44,7 @@ class PortalCreatorFacadeTest extends KernelTestCase
         $this->entityManager = null;
     }
 
-    public function testCreatePortal()
+    public function testCreatePortal(): void
     {
         $container = self::getContainer();
 

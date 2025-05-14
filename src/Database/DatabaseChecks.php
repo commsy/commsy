@@ -28,7 +28,7 @@ class DatabaseChecks
     {
     }
 
-    public function runChecks(InputInterface $input, OutputInterface $output)
+    public function runChecks(InputInterface $input, OutputInterface $output): void
     {
         $io = new SymfonyStyle($input, $output);
 

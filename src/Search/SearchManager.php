@@ -41,12 +41,12 @@ class SearchManager
     {
     }
 
-    public function addFilterCondition(FilterConditionInterface $filterCondition)
+    public function addFilterCondition(FilterConditionInterface $filterCondition): void
     {
         $this->filterConditions[] = $filterCondition;
     }
 
-    public function addQueryCondition(QueryConditionInterface $queryCondition)
+    public function addQueryCondition(QueryConditionInterface $queryCondition): void
     {
         $this->queryConditions[] = $queryCondition;
     }

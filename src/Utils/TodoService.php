@@ -99,7 +99,7 @@ class TodoService
         return $countTodoArray;
     }
 
-    public function setFilterConditions(FormInterface $filterForm)
+    public function setFilterConditions(FormInterface $filterForm): void
     {
         $formData = $filterForm->getData();
 
@@ -178,12 +178,12 @@ class TodoService
         return $this->stepManager->getNewItem();
     }
 
-    public function hideDeactivatedEntries()
+    public function hideDeactivatedEntries(): void
     {
         $this->todoManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
     }
 
-    public function hideCompletedEntries()
+    public function hideCompletedEntries(): void
     {
         $this->todoManager->setStatusLimit(4);
     }

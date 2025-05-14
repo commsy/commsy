@@ -42,7 +42,7 @@ class UserCest
      *
      * @param UnitTester $I
      */
-    public function guestUserEmailTest(UnitTester $I)
+    public function guestUserEmailTest(UnitTester $I): void
     {
         /** @var cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
@@ -71,7 +71,7 @@ class UserCest
         $I->assertEmpty($guestEmail);
     }
 
-    public function createAccount(UnitTester $I)
+    public function createAccount(UnitTester $I): void
     {
         $portal = new Portal();
         $portal->setStatus(1);
@@ -123,7 +123,7 @@ class UserCest
      * Check that changing the account email address will affect the auth table, the portal user and the private room,
      * but not normal workspace users.
      */
-    public function changeAccountEmailTest(UnitTester $I)
+    public function changeAccountEmailTest(UnitTester $I): void
     {
         /** @var cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
