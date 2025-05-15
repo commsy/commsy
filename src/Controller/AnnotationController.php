@@ -15,26 +15,49 @@ namespace App\Controller;
 
 use App\Form\DataTransformer\AnnotationTransformer;
 use App\Form\Type\AnnotationType;
-use App\Services\LegacyEnvironment;
 use App\Utils\AnnotationService;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * Class AnnotationController.
- */
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class AnnotationController extends AbstractController
 {
-    public function __construct(private readonly ReaderService $readerService)
-    {
+    #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}')]
+    public function feed(
+        AnnotationService $annotationService,
+        ItemService $itemService,
+        ReaderService $readerService,
+        int $roomId,
+        int $linkedItemId,
+        int $max = 10,
+        int $start = 0
+    ): Response {
+        // get annotation list from manager service
+        $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
+
+        $readerList = $readerService->getChangeStatusForItems(...$annotations);
+
+        /**
+         * For first show annotations no read and after mark read.
+         */
+        $itemAnnotation = $itemService->getItem($linkedItemId);
+        $annotationList = $itemAnnotation->getAnnotationList();
+        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+
+        return $this->render('annotation/feed.html.twig', [
+            'roomId' => $roomId,
+            'annotations' => $annotations,
+            'readerList' => $readerList,
+        ]);
     }
+
 
     #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}')]
     public function feedPrint(
@@ -48,7 +71,7 @@ class AnnotationController extends AbstractController
         // get annotation list from manager service
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
-        $readerList = $this->readerService->getChangeStatusForItems(...$annotations);
+        $readerList = $readerService->getChangeStatusForItems(...$annotations);
 
         return $this->render('annotation/feed_print.html.twig', [
             'roomId' => $roomId,
@@ -62,7 +85,7 @@ class AnnotationController extends AbstractController
     public function edit(
         ItemService $itemService,
         AnnotationTransformer $transformer,
-        LegacyEnvironment $environment,
+        ReaderService $readerService,
         int $roomId,
         int $itemId,
         Request $request
@@ -76,7 +99,7 @@ class AnnotationController extends AbstractController
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->save();
 
-                $this->readerService->markRead($itemId);
+                $readerService->markRead($itemId);
             }
 
             return $this->redirectToRoute('app_annotation_success', [
@@ -104,6 +127,41 @@ class AnnotationController extends AbstractController
         return $this->render('annotation/success.html.twig', [
             'annotation' => $item,
         ]);
+    }
+
+    #[Route(path: '/room/{roomId}/annotation/{itemId}/create', methods: ['POST'])]
+    #[IsGranted('ITEM_ANNOTATE', subject: 'itemId')]
+    public function create(
+        ItemService $itemService,
+        AnnotationService $annotationService,
+        Request $request,
+        int $roomId,
+        int $itemId,
+        int $firstTagId = null,
+        int $secondTagId = null
+    ): RedirectResponse {
+        $item = $itemService->getTypedItem($itemId);
+        $itemType = $item->getItemType();
+
+        $form = $this->createForm(AnnotationType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $data = $form->getData();
+
+                // create new annotation
+                $annotationId = $annotationService->addAnnotation($roomId, $itemId, $data['description']);
+
+                $routeArray = [];
+                $routeArray['roomId'] = $roomId;
+                $routeArray['itemId'] = $itemId;
+                $routeArray['_fragment'] = 'description'.$annotationId;
+
+                return $this->redirectToRoute('app_'.$itemType.'_detail', $routeArray);
+            }
+        }
+
+        return $this->redirectToRoute('app_'.$itemType.'_detail', ['roomId' => $roomId, 'itemId' => $itemId]);
     }
 
     #[Route(path: '/room/{roomId}/annotation/{itemId}/delete', methods: ['GET'])]
