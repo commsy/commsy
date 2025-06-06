@@ -12,7 +12,9 @@
         }) }}>
             <div id="modal_wopi_{{ file.fileId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
                 <div class="uk-modal-dialog uk-modal-dialog-blank">
-                    <a class="uk-modal-close uk-close uk-margin-right"></a>
+                    <div class="wopi-modal-top">
+                        <a {{ stimulus_action('wopi_modal', '_hide') }}>{{ 'Close'|trans }}</a>
+                    </div>
                     <div class="uk-height-viewport" {{ stimulus_target('wopi_modal', 'content') }}></div>
                 </div>
             </div>
