@@ -79,7 +79,7 @@
                 {% endif %}
             </div>
 
-            {% if showRating or showWorkflow %}
+            {% if showRating or showWorkflow or material.licenseTitle is not empty %}
                 <div class="uk-width-2-10 uk-text-right">
                     {% if showRating %}
                         {{ macros.ratingStatus(material, ratingList) }}
