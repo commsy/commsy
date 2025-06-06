@@ -381,21 +381,17 @@ class cs_translator
         return $retour;
     }
 
-    /** get a text of a message in a particular language
+    /**
+     * get a text of a message in a particular language
      * this method returns the translated MessageID.
      *
-     * @param string mode            mode of text encoding
-     * @param string language        The particular language
-     * @param string MsgID           The MessageID, which should be translated
-     * @param string param1          The string %1 in the translated text is replaced by param1
-     * @param string param2          see param1
-     * @param string param3          see param1
-     * @param string param4          see param1
-     * @param string param5          see param1
+     * @param string $language The particular language
+     * @param string $MsgID The MessageID, which should be translated
+     * @param string[] $params The string params %1...%5 in the translated text for replacement
      *
      * @return string the translation of MsgID
      */
-    public function getMessageInLang($language, $MsgID, $param1 = '', $param2 = '', $param3 = '', $param4 = '', $param5 = '')
+    public function getMessageInLang(string $language, string $MsgID, ...$params): string
     {
         if ($this->_issetSessionLanguage()) {
             $language = $this->_getSessionLanguage();
@@ -414,7 +410,7 @@ class cs_translator
 
             if (isset($this->messageArray[$MsgID][$language])) {
                 $text = $this->messageArray[$MsgID][$language];
-                $text = $this->text_replace($text, $param1, $param2, $param3, $param4, $param5);
+                $text = $this->text_replace($text, ...$params);
             } else {
                 $text = $MsgID;
             }
@@ -449,85 +445,85 @@ class cs_translator
         return $retour;
     }
 
-    public function getEmailMessageInLang($language, $MsgID, $param1 = '', $param2 = '', $param3 = '', $param4 = '', $param5 = '')
+    public function getEmailMessageInLang(string $language, string $MsgID, ...$params): string
     {
         if ($this->_issetSessionLanguage()) {
             $language = $this->_getSessionLanguage();
         }
-        if (!empty($this->_email_array[$MsgID][mb_strtoupper((string) $language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtoupper((string) $language, 'UTF-8')], $param1, $param2, $param3, $param4, $param5);
-        } elseif (!empty($this->_email_array[$MsgID][mb_strtolower((string) $language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtolower((string) $language, 'UTF-8')], $param1, $param2, $param3, $param4, $param5);
+        if (!empty($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')])) {
+            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')], ...$params);
+        } elseif (!empty($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')])) {
+            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')], ...$params);
         } else {
             if ($this->_inProjectRoom()) {
                 $retour = match ($MsgID) {
-                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_PR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_PR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_PR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_PR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_PR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_PR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR', $param1, $param2, $param3, $param4, $param5),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5),
-                    default => $this->getMessageInLang($language, $MsgID, $param1, $param2, $param3, $param4, $param5),
+                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_PR', ...$params),
+                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_PR', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_PR', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_PR', ...$params),
+                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR', ...$params),
+                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_PR', ...$params),
+                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_PR', ...$params),
+                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR', ...$params),
+                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', ...$params),
+                    default => $this->getMessageInLang($language, $MsgID, ...$params),
                 };
             } elseif ($this->_inCommunityRoom()) {
                 $retour = match ($MsgID) {
-                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_MATERIAL_NOT_WORLDPUBLIC' => $this->getMessageInLang($language, 'MAIL_BODY_MATERIAL_NOT_WORLDPUBLIC_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_MATERIAL_WORLDPUBLIC' => $this->getMessageInLang($language, 'MAIL_BODY_MATERIAL_WORLDPUBLIC_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_ROOM_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_LOCK_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_ROOM_UNLINK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLINK_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_ROOM_UNLOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLOCK_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_MERGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_MERGE_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_PASSWORD' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_PASSWORD_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_GR', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR', $param1, $param2, $param3, $param4, $param5),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5),
-                    'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', $param1, $param2, $param3, $param4, $param5),
-                    default => $this->getMessageInLang($language, $MsgID, $param1, $param2, $param3, $param4, $param5),
+                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_GR', ...$params),
+                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_GR', ...$params),
+                    'MAIL_BODY_MATERIAL_NOT_WORLDPUBLIC' => $this->getMessageInLang($language, 'MAIL_BODY_MATERIAL_NOT_WORLDPUBLIC_GR', ...$params),
+                    'MAIL_BODY_MATERIAL_WORLDPUBLIC' => $this->getMessageInLang($language, 'MAIL_BODY_MATERIAL_WORLDPUBLIC_GR', ...$params),
+                    'MAIL_BODY_ROOM_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_LOCK_GR', ...$params),
+                    'MAIL_BODY_ROOM_UNLINK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLINK_GR', ...$params),
+                    'MAIL_BODY_ROOM_UNLOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLOCK_GR', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_GR', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_GR', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_MERGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_MERGE_GR', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_PASSWORD' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_PASSWORD_GR', ...$params),
+                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR', ...$params),
+                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_GR', ...$params),
+                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_GR', ...$params),
+                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR', ...$params),
+                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', ...$params),
+                    'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', ...$params),
+                    default => $this->getMessageInLang($language, $MsgID, ...$params),
                 };
             } elseif ($this->_inGroupRoom()) {
                 $retour = match ($MsgID) {
-                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_GP', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_GP', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_GP', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_GP', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_GP', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_GP', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP', $param1, $param2, $param3, $param4, $param5),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5),
-                    'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', $param1, $param2, $param3, $param4, $param5),
-                    default => $this->getMessageInLang($language, $MsgID, $param1, $param2, $param3, $param4, $param5),
+                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_GP', ...$params),
+                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_GP', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_GP', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_GP', ...$params),
+                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_GP', ...$params),
+                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_GP', ...$params),
+                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP', ...$params),
+                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP', ...$params),
+                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', ...$params),
+                    'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', ...$params),
+                    default => $this->getMessageInLang($language, $MsgID, ...$params),
                 };
             } else {
                 $retour = match ($MsgID) {
-                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_ROOM_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_DELETE_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_ROOM_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_LOCK_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_ROOM_OPEN' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_OPEN_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_ROOM_UNDELETE' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNDELETE_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_ROOM_UNLOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLOCK_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_MERGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_MERGE_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_ACCOUNT_PASSWORD' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_PASSWORD_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_PASSWORD_CHANGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_PASSWORD_CHANGE_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_PO', $param1, $param2, $param3, $param4, $param5),
-                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO', $param1, $param2, $param3, $param4, $param5),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_PASSWORD_EXPIRATION_SOON_BODY', $param1, $param2, $param3, $param4, $param5),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_PASSWORD_EXPIRATION_BODY', $param1, $param2, $param3, $param4, $param5),
-                    default => $this->getMessageInLang($language, $MsgID, $param1, $param2, $param3, $param4, $param5),
+                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_PO', ...$params),
+                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_PO', ...$params),
+                    'MAIL_BODY_ROOM_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_DELETE_PO', ...$params),
+                    'MAIL_BODY_ROOM_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_LOCK_PO', ...$params),
+                    'MAIL_BODY_ROOM_OPEN' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_OPEN_PO', ...$params),
+                    'MAIL_BODY_ROOM_UNDELETE' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNDELETE_PO', ...$params),
+                    'MAIL_BODY_ROOM_UNLOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLOCK_PO', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_PO', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_PO', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_MERGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_MERGE_PO', ...$params),
+                    'MAIL_BODY_USER_ACCOUNT_PASSWORD' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_PASSWORD_PO', ...$params),
+                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO', ...$params),
+                    'MAIL_BODY_USER_PASSWORD_CHANGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_PASSWORD_CHANGE_PO', ...$params),
+                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_PO', ...$params),
+                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_PO', ...$params),
+                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO', ...$params),
+                    'EMAIL_BODY_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_PASSWORD_EXPIRATION_SOON_BODY', ...$params),
+                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_PASSWORD_EXPIRATION_BODY', ...$params),
+                    default => $this->getMessageInLang($language, $MsgID, ...$params),
                 };
             }
         }
@@ -727,7 +723,7 @@ class cs_translator
      *
      * @param array email text
      */
-    public function setEmailTextArray($value)
+    public function setEmailTextArray($value): void
     {
         $this->_email_array = (array) $value;
     }
@@ -737,7 +733,7 @@ class cs_translator
      *
      * @param array time messages
      */
-    public function setTimeMessageArray($value)
+    public function setTimeMessageArray($value): void
     {
         $this->timeMessageArray = (array) $value;
     }
