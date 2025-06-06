@@ -67,13 +67,20 @@ class ItemService
                 return null;
             }
 
+            $typedItem = null;
             if (null === $versionId) {
-                return $manager->getItem($item->getItemID());
+                $typedItem =  $manager->getItem($item->getItemID());
             } else {
                 if (method_exists($manager, 'getItemByVersion')) {
-                    return $manager->getItemByVersion($itemId, $versionId);
+                    $typedItem = $manager->getItemByVersion($itemId, $versionId);
                 }
             }
+
+            if ($typedItem && $item->isPinned()) {
+                $typedItem->setPinned(true);
+            }
+
+            return $typedItem;
         }
 
         return null;
