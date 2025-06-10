@@ -18,7 +18,6 @@ use App\Action\MarkRead\MarkReadAction;
 use App\Action\Pin\PinAction;
 use App\Action\Pin\UnpinAction;
 use App\Entity\Portal;
-use App\Enum\ReaderStatus;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
@@ -56,7 +55,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -339,11 +338,14 @@ class UserController extends BaseController
             $this->userService->setFilterConditions($filterForm);
         }
 
-        $users = $this->userService->getListUsers($roomId);
-
         // get user list from manager service
         if ('none' === $sort || empty($sort)) {
             $sort = $request->getSession()->get('sortUsers', 'name');
+        }
+
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        if (!$currentUser->isModerator()) {
+            $this->userService->setUserLimit();
         }
         $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
 
@@ -649,6 +651,11 @@ class UserController extends BaseController
         $readerList[$user->getItemId()] = $this->readerService->getStatusForItem($user)->value;
         $modifierList[$user->getItemId()] = $this->itemService->getAdditionalEditorsForItem($user);
 
+        $this->userService->resetLimits();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        if (!$currentUser->isModerator()) {
+            $this->userService->setUserLimit();
+        }
         $users = $this->userService->getListUsers($roomId);
         $userList = [];
         $counterBefore = 0;
@@ -1053,8 +1060,6 @@ class UserController extends BaseController
             $userFilter = $request->query->all('user_filter');
         }
 
-        // $this->userManager->get()->to_array()
-
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -1087,7 +1092,10 @@ class UserController extends BaseController
         $request->getSession()->set('sortUsers', $sort);
 
         // get user list from manager service
-        $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
+        if (!$currentUser->isModerator()) {
+            $this->userService->setUserLimit();
+        }
+        $users = $this->userService->getListUsers($roomId, $max, $start, $sort);
 
         $readerList = $this->readerService->getChangeStatusForItems(...$users);
 
@@ -1396,6 +1404,7 @@ class UserController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
+        $this->userService->resetLimits();
         if ($selectAll) {
             if ($request->query->has('user_filter')) {
                 $currentFilter = $request->query->all('user_filter');
