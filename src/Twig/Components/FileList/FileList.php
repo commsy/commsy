@@ -51,6 +51,9 @@ final class FileList extends AbstractController
     use ComponentToolsTrait;
     use ComponentWithFormTrait;
 
+    public const int INITIAL_IMAGE_THRESHOLD = 5;
+    public const int INITIAL_FILE_THRESHOLD = 20;
+
     #[LiveProp]
     public int $itemId;
 
@@ -69,6 +72,18 @@ final class FileList extends AbstractController
 
     #[LiveProp(writable: true)]
     public string $filterFileName = '';
+
+    #[LiveProp(writable: true)]
+    public bool $imageLimit = true;
+
+    #[LiveProp(writable: true)]
+    public bool $fileLimit = true;
+
+    #[LiveProp]
+    public int $imageCount;
+
+    #[LiveProp]
+    public int $fileCount;
 
     public function __construct(
         private readonly DiscoveryService $discoveryService,
@@ -98,14 +113,18 @@ final class FileList extends AbstractController
             $file->extension === $this->filterFileExtensions
         );
 
-        return array_filter($this->files, function (FileDto $file) use ($includeImages, $includeNonImages) {
-            $imageExtension = in_array(strtolower($file->extension), ['jpg', 'jpeg', 'png', 'gif']);
+        // filter by type
+        $files = $this->filterByType($this->files, $includeImages, $includeNonImages);
 
-            if (!$includeImages && $imageExtension) return false;
-            if (!$includeNonImages && !$imageExtension) return false;
+        // order
+        usort($files, fn (FileDto $first, FileDto $second) =>
+            $first->fileId < $second->fileId ? -1 : 1
+        );
 
-            return true;
-        });
+        // limit
+        $length = $includeImages && $this->imageLimit ? self::INITIAL_IMAGE_THRESHOLD :
+            ($includeNonImages && $this->fileLimit ? self::INITIAL_FILE_THRESHOLD : null);
+        return array_slice($files, 0, $length);
     }
 
     protected function instantiateForm(): FormInterface
@@ -167,6 +186,9 @@ final class FileList extends AbstractController
 
             return $dto;
         })->toArray();
+
+        $this->imageCount = count($this->filterByType($this->files, true, false));
+        $this->fileCount = count($this->filterByType($this->files, false, true));
     }
 
     #[LiveAction]
@@ -229,5 +251,21 @@ final class FileList extends AbstractController
     {
         $item = $this->itemService->getItem($this->itemId);
         $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
+    }
+
+    /**
+     * @param FileDto[] $files
+     * @return FileDto[]
+     */
+    private function filterByType(array $files, bool $includeImages, bool $includeNonImages): array
+    {
+        return array_filter($this->files, function (FileDto $file) use ($includeImages, $includeNonImages) {
+            $imageExtension = in_array(strtolower($file->extension), ['jpg', 'jpeg', 'png', 'gif']);
+
+            if (!$includeImages && $imageExtension) return false;
+            if (!$includeNonImages && !$imageExtension) return false;
+
+            return true;
+        });
     }
 }

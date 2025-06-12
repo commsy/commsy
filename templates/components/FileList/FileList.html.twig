@@ -45,8 +45,7 @@
             {% set imageFiles = this.getFileList(true) %}
             {% if imageFiles is not empty %}
                 <div class="uk-margin-top uk-margin-bottom uk-grid uk-grid-small uk-grid-match uk-flex-bottom">
-                    {# show the first 5 images #}
-                    {% for file in imageFiles[:5] %}
+                    {% for file in imageFiles %}
                         <twig:FileList:FileListItem
                             :itemId="itemId"
                             :file="file"
@@ -54,17 +53,9 @@
                             :key="file.fileId" />
                     {% endfor %}
 
-                    {# show additonal images in a share more toggle #}
-                    {% if imageFiles|length > 5 %}
-                        <a class="toggle_more_images" data-uk-toggle="{target: '.toggle_more_images'}">{{ 'show all'|trans({}) }}</a>
-                        {% for file in imageFiles[5:] %}
-                            <twig:FileList:FileListItem
-                                :itemId="itemId"
-                                :file="file"
-                                :isImage="true"
-                                :key="file.fileId"
-                                class="toggle_more_images uk-hidden" />
-                        {% endfor %}
+                    {# show a show more toggle if there are more images #}
+                    {% if imageLimit and imageCount > constant('App\\Twig\\Components\\FileList\\FileList::INITIAL_IMAGE_THRESHOLD') %}
+                        <a data-model="imageLimit" data-value="false" data-action="live#update">{{ 'show all'|trans({}) }}</a>
                     {% endif %}
                 </div>
             {% endif %}
@@ -73,24 +64,16 @@
             {% set otherFiles = this.getFileList(false, true) %}
             {% if otherFiles is not empty %}
                 <div class="uk-margin-bottom uk-grid uk-grid-small">
-                    {# show the first 20 files #}
-                    {% for file in otherFiles[:20] %}
+                    {% for file in otherFiles %}
                         <twig:FileList:FileListItem
                             :itemId="itemId"
                             :file="file"
                             :key="file.fileId" />
                     {% endfor %}
 
-                    {# show additonal files in a share more toggle #}
-                    {% if otherFiles|length > 20 %}
-                        <a class="toggle_more_files" data-uk-toggle="{target: '.toggle_more_files'}">{{ 'show all'|trans({}) }}</a>
-                        {% for file in otherFiles[20:] %}
-                            <twig:FileList:FileListItem
-                                :itemId="itemId"
-                                :file="file"
-                                :key="file.fileId"
-                                class="toggle_more_files uk-hidden" />
-                        {% endfor %}
+                    {# show a show more toggle if there are more files #}
+                    {% if fileLimit and fileCount > constant('App\\Twig\\Components\\FileList\\FileList::INITIAL_FILE_THRESHOLD') %}
+                        <a data-model="fileLimit" data-value="false" data-action="live#update">{{ 'show all'|trans({}) }}</a>
                     {% endif %}
                 </div>
             {% endif %}
@@ -110,30 +93,21 @@
                         <div>
                             <button
                                 class="uk-button uk-button-default"
-                                data-action="live#action"
-                                data-live-action-param="createOfficeFile"
-                                data-live-type-param="word"
-                                data-live-item-id-param="{{ itemId }}"
+                                {{ live_action('createOfficeFile', {'type': 'word', 'itemId': itemId}) }}
                                 data-loading="action(createOfficeFile)|addAttribute(disabled)"
                             >
                                 <i class="uk-icon-file-word-o uk-icon-medium"></i>
                             </button>
                             <button
                                 class="uk-button uk-button-default"
-                                data-action="live#action"
-                                data-live-action-param="createOfficeFile"
-                                data-live-type-param="spreadsheet"
-                                data-live-item-id-param="{{ itemId }}"
+                                {{ live_action('createOfficeFile', {'type': 'spreadsheet', 'itemId': itemId}) }}
                                 data-loading="action(createOfficeFile)|addAttribute(disabled)"
                             >
                                 <i class="uk-icon-file-excel-o uk-icon-medium"></i>
                             </button>
                             <button
                                 class="uk-button uk-button-default"
-                                data-action="live#action"
-                                data-live-action-param="createOfficeFile"
-                                data-live-type-param="presentation"
-                                data-live-item-id-param="{{ itemId }}"
+                                {{ live_action('createOfficeFile', {'type': 'presentation', 'itemId': itemId}) }}
                                 data-loading="action(createOfficeFile)|addAttribute(disabled)"
                             >
                                 <i class="uk-icon-file-powerpoint-o uk-icon-medium"></i>

@@ -46,6 +46,11 @@ export class DeleteAction extends XHRAction {
                     Ok: this.confirmOk
                 }
             });
+
+            $('.uk-modal-dialog').addClass('uk-modal-dialog-alert');
+            $('.uk-modal-dialog button:last-child')
+              .removeClass('uk-button-primary')
+              .addClass('uk-button-danger');
         });
     }
 
