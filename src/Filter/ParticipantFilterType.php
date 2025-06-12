@@ -43,6 +43,7 @@ class ParticipantFilterType extends AbstractType
             if ($attributes->has('roomId')) {
                 $roomId = $attributes->getInt('roomId');
 
+                $this->userService->setUserLimit();
                 $users = $this->userService->getListUsers($roomId);
 
                 $usersForm = [];

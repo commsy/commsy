@@ -585,7 +585,8 @@ class RoomController extends AbstractController
                 $legacyRoom->setLanguage($context['language']);
                 $legacyRoom->save();
 
-                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
+                $userService->resetLimits();
+                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID());
                 foreach ($legacyRoomUsers as $user) {
                     $event = new UserJoinedRoomEvent($user, $legacyRoom);
                     $eventDispatcher->dispatch($event);

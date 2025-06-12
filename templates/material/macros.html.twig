@@ -24,7 +24,7 @@
                                 {% include 'material/biblio.html.twig' %}
                             {% endif %}
                         </div>
-                        {% if showRating or showWorkflow %}
+                        {% if showRating or showWorkflow or material.license %}
                             <div class="uk-width-2-10 uk-text-right uk-padding-remove">
                             {% if showRating %}
                                 {{ macros.ratingStatusDetail(material, ratingArray) }}
@@ -195,7 +195,7 @@
                                 {% include 'material/biblio.html.twig' %}
                             {% endif %}
                         </div>
-                        {% if showRating or showWorkflow %}
+                        {% if showRating or showWorkflow or material.license %}
                             <div class="uk-width-2-10  uk-text-right uk-padding-remove">
                              {% if showRating %}
                                 {{ macros.ratingStatus(material) }}

@@ -221,21 +221,11 @@ class UserService
         $roomId,
         $max = null,
         $start = null,
-        $moderation = false,
-        $sort = null,
-        $resetLimits = true
+        $sort = null
     ): array {
-        if ($resetLimits) {
-            $this->userManager->reset();
-            $this->userManager->resetLimits();
-        }
-
         $this->userManager->setContextLimit($roomId);
         if (null !== $max && null !== $start) {
             $this->userManager->setIntervalLimit($start, $max);
-        }
-        if (!$moderation) {
-            $this->userManager->setUserLimit();
         }
 
         if ($sort) {
@@ -246,9 +236,7 @@ class UserService
         $this->userManager->select();
         $userList = $this->userManager->get();
 
-        $user_array = $userList->to_array();
-
-        return $user_array;
+        return $userList->to_array();
     }
 
     /**
@@ -719,6 +707,11 @@ class UserService
     public function showUserStatus($status): void
     {
         $this->userManager->setStatusLimit($status);
+    }
+
+    public function setUserLimit(): void
+    {
+        $this->userManager->setUserLimit();
     }
 
     /**

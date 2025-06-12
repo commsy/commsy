@@ -714,8 +714,18 @@
 {% endmacro %}
 
 {% macro license(material) %}
-    {% if not material.getLicenseTitle == "" %}
-        <i class="uk-icon-copyright" data-uk-tooltip title="{{ material.getLicenseTitle }}"></i>
+    {% if material.license %}
+        <a href="#license-{{ material.license.id }}" data-uk-modal>
+            <i class="uk-icon-copyright" data-uk-tooltip title="{{ material.license.title }}"></i>
+        </a>
+
+        <div id="license-{{ material.license.id }}" class="uk-modal">
+            <div class="uk-modal-dialog uk-text-left">
+                <a class="uk-modal-close uk-close"></a>
+                <h2>{{ material.license.title }}</h2>
+                <p>{{ material.license.content|raw }}</p>
+            </div>
+        </div>
     {% endif %}
 {% endmacro %}
 
