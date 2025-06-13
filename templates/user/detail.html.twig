@@ -259,8 +259,8 @@
 
                     {# description #}
                     <div id="description{{ user.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                        editUrl: '{{ path('app_item_editdescription', { 'roomId': user.contextId, 'itemId': user.itemId }) }}',
-                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': user.contextId, 'itemId': user.itemId }) }}'
+                        editUrl: '{{ path('app_item_editdescription', { 'roomId': user.context.itemId, 'itemId': user.itemId }) }}',
+                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': user.context.itemId, 'itemId': user.itemId }) }}'
                     }">
                         {{ macrosItem.itemDescription('description', user, false, user.description) }}
                     </div>
@@ -367,20 +367,18 @@
                                 </div>
                             </div>
                             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-                                <table class="uk-table-condensed" style="margin-bottom:30px;">
-                                    <tbody>
-                                        <tr>
-                                            <td class="uk-text-bold">{{ 'account'|trans({})|capitalize }}</td>
-                                            <td>{{ user.userId }}</td>
-                                        </tr>
-                                        {% if user.status == 1 and user.userComment != "" %}
-                                            <tr>
-                                                <td class="uk-text-bold">{{ 'user comment'|trans({}, 'user')|capitalize }}</td>
-                                                <td>{{ user.userComment }}</td>
-                                            </tr>
-                                        {% endif %}
-                                    </tbody>
-                                </table>
+                                <dl class="uk-description-list-horizontal">
+                                    <dt>{{ 'Account'|trans({}, 'profile')|capitalize }}</dt>
+                                    <dd>{{ user.userId }}</dd>
+
+                                    <dt>{{ 'account.display_name'|trans({}, 'profile')|capitalize }}</dt>
+                                    <dd>{{ user.account.displayName }}</dd>
+
+                                    {% if user.status == 1 and user.userComment != "" %}
+                                        <dt>{{ 'user comment'|trans({}, 'user')|capitalize }}</dt>
+                                        <dd>{{ user.userComment }}</dd>
+                                    {% endif %}
+                                </dl>
                             </div>
                         </article>
                     </div>

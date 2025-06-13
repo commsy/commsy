@@ -50,6 +50,9 @@ readonly class CronHardDelete implements CronTaskInterface
         $itemTypes[] = CS_TAG2TAG_TYPE;
         $itemTypes[] = CS_TASK_TYPE;
         $itemTypes[] = CS_TODO_TYPE;
+
+        // Todo: When deleting user entries, they must be unlinked from related rooms and other entities
+        // if they are creator or modifier
         // $itemTypes[] = CS_USER_TYPE; // NO NO NO -> because of old entries of user
 
         $deleteDays = $this->parameterBag->get('commsy.settings.delete_days');
