@@ -114,11 +114,12 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                 $session->set('context', $context);
                 $session->set('authSourceId', $oidcAuthSource->getId());
 
-                if (!$oidcAuthSource->getUseEmailAsIdentifier()) {
-                    // find by username
-                    $account = $this->entityManager->getRepository(Account::class)
-                        ->findOneByCredentials($userInfo->getIdentifier(), $context, $oidcAuthSource);
-                } else {
+                // Always try to identify an account by username first
+                $identifedByUsername = true;
+                $account = $this->entityManager->getRepository(Account::class)
+                    ->findOneByCredentials($userInfo->getIdentifier(), $context, $oidcAuthSource);
+
+                if (!$account && $oidcAuthSource->getUseEmailAsIdentifier()) {
                     // find by email
                     /** @var AccountsRepository $accountRepository */
                     $accountRepository = $this->entityManager->getRepository(Account::class);
@@ -128,6 +129,7 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                         'email' => $userInfo->getEmail(),
                     ]);
                     $lookupAccount = clone $account;
+                    $identifedByUsername = false;
                 }
 
                 if (null === $account) {
@@ -144,10 +146,14 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                 }
 
                 // update user object with credentials extracted from request
-                $account->setUsername($userInfo->getIdentifier());
+                if ($identifedByUsername) {
+                    $account->setEmail($userInfo->getEmail());
+                } else {
+                    $account->setUsername($userInfo->getIdentifier());
+                }
+
                 $account->setFirstname($userInfo->getFirstName());
                 $account->setLastname($userInfo->getLastName());
-                $account->setEmail($userInfo->getEmail());
 
                 if ($displayName = $userInfo->getDisplayName()) {
                     $account->setDisplayName($displayName);
@@ -159,13 +165,13 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                 $this->accountManager->propagateAccountDataToProfiles(
                     $account,
                     // When identified by email, we also update the username
-                    $oidcAuthSource->getUseEmailAsIdentifier(),
+                    !$identifedByUsername,
                     $lookupAccount ?? null
                 );
 
                 return new SelfValidatingPassport(new UserBadge($userInfo->getIdentifier()));
             }
-        } catch (Exception|TransportExceptionInterface) {
+        } catch (Exception|TransportExceptionInterface $e) {
             throw new AuthenticationException();
         }
 
