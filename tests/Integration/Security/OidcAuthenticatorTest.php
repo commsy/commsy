@@ -25,7 +25,6 @@ class OidcAuthenticatorTest extends KernelTestCase
     public function testAccountIsUpdated(): void
     {
         self::bootKernel();
-        $container = self::getContainer();
 
         $oidcSource = AuthSourceOIDCFactory::createOne();
         $portal = PortalFactory::createOne([
@@ -36,6 +35,9 @@ class OidcAuthenticatorTest extends KernelTestCase
             'contextId' => $portal->getId(),
             'authSource' => $oidcSource,
         ]);
+
+        self::bootKernel();
+        $container = self::getContainer();
 
         // Mock AccountManager
         $accountManager = $this->createMock(AccountManager::class);
@@ -75,7 +77,6 @@ class OidcAuthenticatorTest extends KernelTestCase
     public function testAccountIsUpdatedIdentifiedByEmail(): void
     {
         self::bootKernel();
-        $container = self::getContainer();
 
         $oidcSource = AuthSourceOIDCFactory::createOne();
         $oidcSource->setUseEmailAsIdentifier(true);
@@ -88,6 +89,9 @@ class OidcAuthenticatorTest extends KernelTestCase
             'contextId' => $portal->getId(),
             'authSource' => $oidcSource,
         ]);
+
+        self::bootKernel();
+        $container = self::getContainer();
 
         // Mock AccountManager
         $accountManager = $this->createMock(AccountManager::class);

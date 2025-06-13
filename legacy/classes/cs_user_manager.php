@@ -11,6 +11,7 @@
  * file that was distributed with this source code.
  */
 
+use App\Account\AccountManager;
 use App\Event\AccountDeletedEvent;
 use App\Repository\HashRepository;
 use App\Room\RoomStatus;
@@ -868,36 +869,55 @@ class cs_user_manager extends cs_manager
      *
      * @param object cs_item user_item the user
      */
-    public function _newUser($item)
+    private function _newUser(cs_user_item $item): void
     {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $query = 'INSERT INTO ' . $this->addDatabasePrefix('user') . ' SET ' .
-            'item_id="' . encode(AS_DB, $item->getItemID()) . '", ';
-        $context_id = $item->getContextID();
-        $creator_id = $item->getCreatorID();
-        if (empty($creator_id)) {
-            $creator_id = $item->getItemID();
-        }
-        $query .= 'context_id="' . encode(AS_DB, $item->getContextID()) . '", ';
-        $query .= 'creator_id="' . encode(AS_DB, $creator_id) . '",' .
-            'creation_date="' . $current_datetime . '",' .
-            'modification_date="' . $current_datetime . '",' .
-            'user_id="' . encode(AS_DB, $item->getUserID()) . '",' .
-            'auth_source="' . encode(AS_DB, $item->getAuthSource()) . '",' .
-            'status="' . encode(AS_DB, $item->getStatus()) . '",' .
-            'firstname="' . encode(AS_DB, $item->getFirstName()) . '",' .
-            'lastname="' . encode(AS_DB, $item->getLastName()) . '",' .
-            'email="' . encode(AS_DB, $item->getEmail()) . '",' .
-            'city="' . encode(AS_DB, $item->getCity()) . '",' .
-            'visible="' . encode(AS_DB, $item->getVisible()) . '",' .
-            'description="' . encode(AS_DB, $item->getDescription()) . '",' .
-            'extras="' . encode(AS_DB, serialize($item->getExtraInformation())) . '"';
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problems insert new user item.', E_USER_ERROR);
-        } else {
-            unset($result);
+        $now = getCurrentDateTimeInMySQL();
+
+        /** @var AccountManager $accountManager */
+        $accountManager = $this->_environment->getSymfonyContainer()->get(AccountManager::class);
+        $account = $accountManager->getAccountForUser($item);
+
+        $queryBuilder
+            ->insert('user')
+            ->setValue('item_id', ':itemId')
+            ->setValue('context_id', ':contextId')
+            ->setValue('creator_id', ':creatorId')
+            ->setValue('creation_date', ':creationDate')
+            ->setValue('modification_date', ':modificationDate')
+            ->setValue('account_id', ':accountId')
+            ->setValue('user_id',  ':userId')
+            ->setValue('auth_source', ':authSource')
+            ->setValue('status', ':status')
+            ->setValue('firstname', ':firstname')
+            ->setValue('lastname', ':lastname')
+            ->setValue('email', ':email')
+            ->setValue('city', ':city')
+            ->setValue('visible', ':visible')
+            ->setValue('description', ':description')
+            ->setValue('extras', ':extras')
+            ->setParameter('itemId', $item->getItemID())
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('creatorId', !empty($item->getCreatorID()) ? $item->getCreatorID() : $item->getItemId())
+            ->setParameter('creationDate', $now)
+            ->setParameter('modificationDate', $now)
+            ->setParameter('accountId', $account->getID())
+            ->setParameter('userId', $item->getUserID())
+            ->setParameter('authSource', $item->getAuthSource())
+            ->setParameter('status', $item->getStatus())
+            ->setParameter('firstname', $item->getFirstname())
+            ->setParameter('lastname', $item->getLastname())
+            ->setParameter('email', $item->getEmail())
+            ->setParameter('city', $item->getCity())
+            ->setParameter('visible', $item->getVisible())
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('extras', serialize($item->getExtraInformation()));
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error('Problems insert new user item.', E_USER_WARNING);
         }
     }
 
@@ -996,20 +1016,27 @@ class cs_user_manager extends cs_manager
         $user_item->deleteAllEntriesOfUser();
 
         // delete the user item itself
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $currentDatetime = getCurrentDateTimeInMySQL();
         $currentUser = $this->_environment->getCurrentUserItem();
-
         $deleterId = (0 !== $currentUser->getItemID()) ? $currentUser->getItemID() : 0;
 
-        $query = 'UPDATE ' . $this->addDatabasePrefix('user') . ' SET ' .
-            'deletion_date="' . $current_datetime . '",' .
-            'deleter_id="' . encode(AS_DB, $deleterId) . '"' .
-            ' WHERE item_id="' . encode(AS_DB, $itemId) . '"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting user.', E_USER_WARNING);
-        } else {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->update($this->addDatabasePrefix('user'))
+            ->set('deletion_date', ':deletionDate')
+            ->set('deleter_id', ':deleterId')
+            ->set('account_id', null)
+            ->where('item_id', ':itemId')
+            ->setParameter('deletionDate', $currentDatetime)
+            ->setParameter('deleterId', $deleterId)
+            ->setParameter('itemId', $itemId);
+
+        try {
+            $queryBuilder->executeStatement();
             parent::delete($itemId);
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
         }
     }
 
