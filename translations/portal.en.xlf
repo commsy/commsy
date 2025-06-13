@@ -1546,7 +1546,7 @@
             </trans-unit>
             <trans-unit id="portal_auth_oidc_email_identifier_help">
                 <source>portal.auth.oidc.email_identifier.help</source>
-                <target>CommSy will use the email mapping to identify unique accounts instead of the username</target>
+                <target>CommSy will use the email address as a second criteria to identify accounts</target>
             </trans-unit>
         </body>
     </file>
