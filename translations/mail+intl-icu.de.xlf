@@ -260,35 +260,35 @@
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_open">
                 <source>mail.room_moderation.subject.open</source>
-                <target>{room_title} eröffnet</target>
+                <target>{portal_name}: {room_title} eröffnet</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_reopen">
                 <source>mail.room_moderation.subject.reopen</source>
-                <target>{room_title} wieder eröffnet</target>
+                <target>{portal_name}: {room_title} wieder eröffnet</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_deleted">
                 <source>mail.room_moderation.subject.deleted</source>
-                <target>{room_title} gelöscht</target>
+                <target>{portal_name}: {room_title} gelöscht</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_undeleted">
                 <source>mail.room_moderation.subject.undeleted</source>
-                <target>{room_title} wiederhergestellt</target>
+                <target>{portal_name}: {room_title} wiederhergestellt</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_archived">
                 <source>mail.room_moderation.subject.archived</source>
-                <target>{room_title} archiviert</target>
+                <target>{portal_name}: {room_title} archiviert</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_linked">
                 <source>mail.room_moderation.subject.linked</source>
-                <target>{room_title} verlinkt</target>
+                <target>{portal_name}: {room_title} verlinkt</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_locked">
                 <source>mail.room_moderation.subject.locked</source>
-                <target>{room_title} gesperrt</target>
+                <target>{portal_name}: {room_title} gesperrt</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_unlocked">
                 <source>mail.room_moderation.subject.unlocked</source>
-                <target>{room_title} entsperrt</target>
+                <target>{portal_name}: {room_title} entsperrt</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_body_opened">
                 <source>mail.room_moderation.body.opened</source>
