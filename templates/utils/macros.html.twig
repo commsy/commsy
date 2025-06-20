@@ -564,7 +564,11 @@
         {% if contextMemberStatus is same as('join') %}
             <a href="{{ path('app_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
         {% elseif 'locked' in contextMemberStatus %}
-            <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'This room is currently locked.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
+            {% if 'archived' in contextMemberStatus %}
+                <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'This archived room is currently locked.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
+            {% else %}
+                <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'This room is currently locked.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
+            {% endif %}
         {% elseif contextMemberStatus is same as('requested') %}
             <i class="uk-icon-spinner uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% elseif contextMemberStatus is same as('rejected') %}
