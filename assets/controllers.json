@@ -11,6 +11,16 @@
                 }
             }
         },
+        "@symfony/ux-cropperjs": {
+            "cropper": {
+                "enabled": true,
+                "fetch": "eager",
+                "autoimport": {
+                    "cropperjs/dist/cropper.min.css": true,
+                    "@symfony/ux-cropperjs/dist/style.min.css": true
+                }
+            }
+        },
         "@symfony/ux-live-component": {
             "live": {
                 "enabled": true,

@@ -16,3 +16,15 @@ vich_uploader:
             upload_destination: '%kernel.project_dir%/files/server'
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             inject_on_load: true
+        
+        temp_user:
+            upload_destination: '%kernel.project_dir%/files/temp/user'
+            directory_namer:
+                service: Vich\UploaderBundle\Naming\PropertyDirectoryNamer
+                options:
+                    property: 'id'
+                    transliterate: true
+            namer:
+                service: Vich\UploaderBundle\Naming\PropertyNamer
+                options:
+                    property: 'imageName'

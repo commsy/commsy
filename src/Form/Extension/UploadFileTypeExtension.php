@@ -17,6 +17,7 @@ use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UploadFileTypeExtension extends AbstractTypeExtension
 {
@@ -26,6 +27,12 @@ class UploadFileTypeExtension extends AbstractTypeExtension
     public static function getExtendedTypes(): iterable
     {
         return [FileType::class];
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        // makes it legal for FileType fields to have an upload_url option
+        $resolver->setDefined(['upload_url']);
     }
 
     /**
@@ -38,6 +45,10 @@ class UploadFileTypeExtension extends AbstractTypeExtension
         if (!empty($maxUploadFileSize)) {
             // set a "max_upload_size" variable that will be available when rendering this field
             $view->vars['max_upload_size'] = $maxUploadFileSize;
+        }
+
+        if (isset($options['upload_url'])) {
+            $view->vars['attr']['data-upload'] = json_encode(['path' => $options['upload_url']]);
         }
     }
 
