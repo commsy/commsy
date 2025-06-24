@@ -1,0 +1,55 @@
+{% form_theme form 'form/uikit_horizontal_layout.html.twig' %}
+
+<div{{ attributes }}>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="uk-panel uk-margin-large-bottom">
+            <h3>{{ 'profileimage'|trans({},'profile')|capitalize }}</h3>
+
+            <div class="uk-margin-small-bottom">
+                {{ 'profileImageDescription'|trans({}, "profile")|format(roomItem.title)|raw }}
+            </div>
+            <div>
+                <em>{{ 'tip'| trans({}, 'messages') }}:</em> {{ 'Profile image tip'|trans({}, 'profile') }}
+            </div>
+
+            <div>
+                {{ form_row(form.useProfileImage) }}
+            </div>
+
+            {% if formValues.useProfileImage %}
+                <!-- user profile image -->
+                <div id="profile_image_{{ random() }}" class="uk-flex uk-flex-space-between uk-flex-wrap">
+                    <div id="cropper-preview" class="uk-thumbnail uk-margin-bottom uk-border-circle"
+                         style="overflow: hidden; width: 200px; height: 200px; min-width: 200px; min-height: 200px;"
+                         data-uk-tooltip
+                         title="{{ userItem.fullname }}"
+                    >
+                        {% if form.crop is not defined %}
+                            <img src="{{ path('app_user_image', {
+                                'roomId': userItem.contextId,
+                                'itemId': userItem.itemId
+                            }) }}">
+                        {% endif %}
+                    </div>
+
+                    <div class="uk-margin-left" style="height: 100%; width: 300px;">
+                        {% if form.crop is defined %}{{ form_row(form.crop) }}{% endif %}
+                    </div>
+                    <div class="uk-margin-left uk-flex-item-1">
+                        {{ form_row(form.upload) }}
+                    </div>
+                </div>
+            {% else %}
+                <!-- user initials image -->
+                <div>
+                    <img class="uk-thumbnail uk-margin-bottom uk-border-circle" src="{{ path('app_user_initials', {'roomId': userItem.contextId, 'itemId': userItem.itemId}) }}" data-uk-tooltip title="{{ userItem.fullname }}">
+                </div>
+            {% endif %}
+
+            {{ form_row(form.imageChangeInAllContexts) }}
+
+            {{ form_widget(form.save) }}
+        </div>
+    {{ form_end(form) }}
+</div>

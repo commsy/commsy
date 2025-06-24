@@ -15,7 +15,7 @@
 
 {% block file_widget -%}
     {% if image_url is defined and image_url is not null %} {# image_url gets defined by ImageTypeExtension #}
-        <img src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/image"/>
+        <img src="{{ image_url }}"/>
     {% endif %}
 
     <div class="uk-placeholder uk-text-center">
