@@ -67,14 +67,8 @@ class misc_text_converter
         return $this->_cleanBadCode($text);
     }
 
-    public function _cs_htmlspecialchars2($text)
-    {
-        return $this->_cleanBadCode($text);
-    }
-
     public function text_as_html_short($text)
     {
-        // $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
         $text = $this->_emphasize_text($text);
         return $this->_decode_backslashes($text);
     }

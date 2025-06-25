@@ -74,79 +74,55 @@ class AccountMail
             'roomId' => $this->legacyEnvironment->getCurrentContextID(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        switch ($action) {
-            case 'user-delete':
-                $mailText = $legacyTranslator->getEmailMessageInLang($this->legacyEnvironment->getUserLanguage(), 'MAIL_BODY_USER_ACCOUNT_DELETE', $user->getUserID(), $room->getTitle());
-                $body .= $mailText;
-                break;
-
-            case 'user-block':
-                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK', $multipleRecipients ? ' ' : $user->getUserID(),
-                    $room->getTitle());
-                $message = str_replace("\n", '<br/>', $message);
-                $body .= $message;
-
-                break;
-
-            case 'user-confirm':
-                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $multipleRecipients ? ' ' : $user->getUserID(),
-                    $room->getTitle());
-                $message = str_replace("\n", '<br/>', $message);
-                $body .= $message;
-
-                break;
-
-            case 'user-status-user':
-                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $multipleRecipients ? ' ' : $user->getUserID(),
-                    $room->getTitle());
-                $message = str_replace("\n", '<br/>', $message);
-                $body .= $message;
-
-                break;
-
-            case 'user-status-moderator':
-                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR', $multipleRecipients ? ' ' : $user->getUserID(),
-                    $room->getTitle());
-                $message = str_replace("\n", '<br/>', $message);
-                $body .= $message;
-
-                break;
-
-            case 'user-status-reading-user':
-                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_READ_ONLY', $multipleRecipients ? ' ' : $user->getUserID(),
-                    $room->getTitle());
-                $message = str_replace("\n", '<br/>', $message);
-                $body .= $message;
-
-                break;
-
-            case 'user-contact':
-                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON', $multipleRecipients ? ' ' : $user->getUserID(),
-                    $room->getTitle());
-                $message = str_replace("\n", '<br/>', $message);
-                $body .= $message;
-
-                break;
-
-            case 'user-contact-remove':
-                $message = $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $multipleRecipients ? ' ' : $user->getUserID(),
-                    $room->getTitle());
-                $message = str_replace("\n", '<br/>', $message);
-                $body .= $message;
-
-                break;
-        }
+        $body .= match ($action) {
+            'user-delete' => $legacyTranslator->getEmailMessageInLang(
+                $this->legacyEnvironment->getUserLanguage(),
+                'MAIL_BODY_USER_ACCOUNT_DELETE',
+                $user->getUserID(),
+                $room->getTitle()
+            ),
+            'user-block' => $legacyTranslator->getEmailMessage(
+                'MAIL_BODY_USER_ACCOUNT_LOCK',
+                $multipleRecipients ? ' ' : $user->getUserID(),
+                $room->getTitle()
+            ),
+            'user-status-user',
+            'user-confirm' => $legacyTranslator->getEmailMessage(
+                'MAIL_BODY_USER_STATUS_USER',
+                $multipleRecipients ? ' ' : $user->getUserID(),
+                $room->getTitle()
+            ),
+            'user-status-moderator' => $legacyTranslator->getEmailMessage(
+                'MAIL_BODY_USER_STATUS_MODERATOR',
+                $multipleRecipients ? ' ' : $user->getUserID(),
+                $room->getTitle()
+            ),
+            'user-status-reading-user' => $legacyTranslator->getEmailMessage(
+                'MAIL_BODY_USER_STATUS_USER_READ_ONLY',
+                $multipleRecipients ? ' ' : $user->getUserID(),
+                $room->getTitle()
+            ),
+            'user-contact' => $legacyTranslator->getEmailMessage(
+                'MAIL_BODY_USER_MAKE_CONTACT_PERSON',
+                $multipleRecipients ? ' ' : $user->getUserID(),
+                $room->getTitle()
+            ),
+            'user-contact-remove' => $legacyTranslator->getEmailMessage(
+                'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON',
+                $multipleRecipients ? ' ' : $user->getUserID(),
+                $room->getTitle()
+            ),
+        };
 
         if (!in_array($action, ['user-delete', 'user-block'])) {
             $body .= '<br/><br/>';
-            $body .= $absoluteRoomUrl;
+            $body .= "<a href=\"$absoluteRoomUrl\">$absoluteRoomUrl</a>";
         }
 
         $body .= '<br/><br/>';
 
         $message = $legacyTranslator->getEmailMessage('MAIL_BODY_CIAO', $moderator->getFullname(),
             $room->getTitle());
-        $message = str_replace("\n", '<br/>', $message);
         $body .= $message;
 
         $legacyTranslator->setContext($oldContextType);
