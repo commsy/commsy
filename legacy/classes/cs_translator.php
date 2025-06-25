@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use function Symfony\Component\String\u;
+
 /** class for authentication items
  * this class implements authentication items.
  */
@@ -419,24 +421,32 @@ class cs_translator
         return $text;
     }
 
-    /** get the translation of the email message in the right language
-     * this method returns the translation of the email text in the right language
+    /**
+     * Get the translation of the email message in the right language.
+     * This method returns the translation of the email text in the right language
      * just from the current room or default.
      *
-     * @param string mode            mode of text encoding
-     * @param string MsgID           The MessageID, which should be translated
-     * @param string param1          The string %1 in the translated text is replaced by param1
-     * @param string param2          see param1
-     * @param string param3          see param1
-     * @param string param4          see param1
-     * @param string param5          see param1
+     * @param string $MsgID The MessageID, which should be translated
+     * @param string[] $params parameters
      *
      * @return string the translated text
      */
-    public function getEmailMessage($MsgID, $param1 = '', $param2 = '', $param3 = '', $param4 = '', $param5 = '')
+    public function getEmailMessage(string $MsgID, ...$params): string
     {
         if (!empty($this->_selected_language)) {
-            $retour = $this->getEmailMessageInLang($this->_selected_language, $MsgID, $param1, $param2, $param3, $param4, $param5);
+            $retour = $this->getEmailMessageInLang($this->_selected_language, $MsgID, ...$params);
+
+            /*
+             * This is quite hacky... Content from CKEditor can contain multiple paragraphs. In the end we are trying
+             * to trim all tags from start and end and preserve line breaks.
+             */
+            return u($retour)
+                ->replace("\n", '<br/>')
+                ->replace('<p>', '<br/><br/>')
+                ->replace('</p>', '')
+                ->trimPrefix('<br/><br/>')
+                ->trimSuffix('<br/><br/>')
+                ->toString();
         } else {
             trigger_error('no selected language is set', E_USER_WARNING);
             $retour = $MsgID;
@@ -678,34 +688,6 @@ class cs_translator
     public function _inGroupRoom()
     {
         return isset($this->_context) && $this->_context == CS_GROUPROOM_TYPE;
-    }
-
-    public function initFromContext($context_item)
-    {
-        if ($context_item->isCommunityRoom()) {
-            $this->setContext(CS_COMMUNITY_TYPE);
-            $portal_item = $context_item->getContextItem();
-            $this->setTimeMessageArray($portal_item->getTimeTextArray());
-        } elseif ($context_item->isProjectRoom()) {
-            $this->setContext(CS_PROJECT_TYPE);
-            $portal_item = $context_item->getContextItem();
-            $this->setTimeMessageArray($portal_item->getTimeTextArray());
-        } elseif ($context_item->isGroupRoom()) {
-            $this->setContext(CS_GROUPROOM_TYPE);
-            $portal_item = $context_item->getContextItem();
-            $this->setTimeMessageArray($portal_item->getTimeTextArray());
-        } elseif ($context_item->isPrivateRoom()) {
-            $this->setContext('private');
-            $portal_item = $context_item->getContextItem();
-            $this->setTimeMessageArray($portal_item->getTimeTextArray());
-        } elseif ($context_item->isPortal()) {
-         $this->setContext(CS_PORTAL_TYPE);
-            $this->setTimeMessageArray($context_item->getTimeTextArray());
-        } else {
-         $this->setContext(CS_SERVER_TYPE);
-        }
-        $this->setRubricTranslationArray($context_item->getRubricTranslationArray());
-        $this->setEmailTextArray($context_item->getEmailTextArray());
     }
 
     /** setRubricTranslationArray
@@ -1141,130 +1123,58 @@ class cs_translator
         return $Datetime;
     }
 
-public function getShortMonthName($month)
-{
-    $ret = match ($month) {
-        '01' => $this->getMessage('COMMON_DATE_JANUARY_SHORT'),
-        '02' => $this->getMessage('COMMON_DATE_FEBRUARY_SHORT'),
-        '03' => $this->getMessage('COMMON_DATE_MARCH_SHORT'),
-        '04' => $this->getMessage('COMMON_DATE_APRIL_SHORT'),
-        '05' => $this->getMessage('COMMON_DATE_MAY_SHORT'),
-        '06' => $this->getMessage('COMMON_DATE_JUNE_SHORT'),
-        '07' => $this->getMessage('COMMON_DATE_JULY_SHORT'),
-        '08' => $this->getMessage('COMMON_DATE_AUGUST_SHORT'),
-        '09' => $this->getMessage('COMMON_DATE_SEPTEMBER_SHORT'),
-        '10' => $this->getMessage('COMMON_DATE_OCTOBER_SHORT'),
-        '11' => $this->getMessage('COMMON_DATE_NOVEMBER_SHORT'),
-        '12' => $this->getMessage('COMMON_DATE_DECEMBER_SHORT'),
-        default => '',
-    };
-
-    return $ret;
-}
-
-public function getShortMonthNameToInt($month)
-{
-    $ret = match ($month) {
-        $this->getMessage('COMMON_DATE_JANUARY_SHORT') => '01',
-        $this->getMessage('COMMON_DATE_FEBRUARY_SHORT') => '02',
-        $this->getMessage('COMMON_DATE_MARCH_SHORT') => '03',
-        $this->getMessage('COMMON_DATE_APRIL_SHORT') => '04',
-        $this->getMessage('COMMON_DATE_MAY_SHORT') => '05',
-        $this->getMessage('COMMON_DATE_JUNE_SHORT') => '06',
-        $this->getMessage('COMMON_DATE_JULY_SHORT') => '07',
-        $this->getMessage('COMMON_DATE_AUGUST_SHORT') => '08',
-        $this->getMessage('COMMON_DATE_SEPTEMBER_SHORT') => '09',
-        $this->getMessage('COMMON_DATE_OCTOBER_SHORT') => '10',
-        $this->getMessage('COMMON_DATE_NOVEMBER_SHORT') => '11',
-        $this->getMessage('COMMON_DATE_DECEMBER_SHORT') => '12',
-        $this->getMessage('COMMON_DATE_JANUARY_LONG') => '01',
-        $this->getMessage('COMMON_DATE_FEBRUARY_LONG') => '02',
-        $this->getMessage('COMMON_DATE_MARCH_LONG') => '03',
-        $this->getMessage('COMMON_DATE_APRIL_LONG') => '04',
-        $this->getMessage('COMMON_DATE_MAY_LONG') => '05',
-        $this->getMessage('COMMON_DATE_JUNE_LONG') => '06',
-        $this->getMessage('COMMON_DATE_JULY_LONG') => '07',
-        $this->getMessage('COMMON_DATE_AUGUST_LONG') => '08',
-        $this->getMessage('COMMON_DATE_SEPTEMBER_LONG') => '09',
-        $this->getMessage('COMMON_DATE_OCTOBER_LONG') => '10',
-        $this->getMessage('COMMON_DATE_NOVEMBER_LONG') => '11',
-        $this->getMessage('COMMON_DATE_DECEMBER_LONG') => '12',
-        default => $month,
-    };
-
-    return $ret;
-}
-
-    public function getDateTimeInLangWithoutOClock($datetime, $oclock = true)
+    public function getShortMonthName($month)
     {
-        $date = $this->_getDateTimeInLangWithoutOClock($datetime, $oclock);
-        $date = mb_eregi_replace('/', ' ', (string) $date);
+        $ret = match ($month) {
+            '01' => $this->getMessage('COMMON_DATE_JANUARY_SHORT'),
+            '02' => $this->getMessage('COMMON_DATE_FEBRUARY_SHORT'),
+            '03' => $this->getMessage('COMMON_DATE_MARCH_SHORT'),
+            '04' => $this->getMessage('COMMON_DATE_APRIL_SHORT'),
+            '05' => $this->getMessage('COMMON_DATE_MAY_SHORT'),
+            '06' => $this->getMessage('COMMON_DATE_JUNE_SHORT'),
+            '07' => $this->getMessage('COMMON_DATE_JULY_SHORT'),
+            '08' => $this->getMessage('COMMON_DATE_AUGUST_SHORT'),
+            '09' => $this->getMessage('COMMON_DATE_SEPTEMBER_SHORT'),
+            '10' => $this->getMessage('COMMON_DATE_OCTOBER_SHORT'),
+            '11' => $this->getMessage('COMMON_DATE_NOVEMBER_SHORT'),
+            '12' => $this->getMessage('COMMON_DATE_DECEMBER_SHORT'),
+            default => '',
+        };
 
-        return $date;
+        return $ret;
     }
 
-    /** translate a Date and Time from a MYSQL-datetime depending on selectet language.
-     */
-    public function _getDateTimeInLangWithoutOClock($datetime, $oclock = true)
+    public function getShortMonthNameToInt($month)
     {
-        $Datetime = [];
-        $language = $this->_selected_language;
-        if ($this->_issetSessionLanguage()) {
-            $language = $this->_getSessionLanguage();
-        }
-        $length = mb_strlen((string) $datetime);
+        $ret = match ($month) {
+            $this->getMessage('COMMON_DATE_JANUARY_SHORT') => '01',
+            $this->getMessage('COMMON_DATE_FEBRUARY_SHORT') => '02',
+            $this->getMessage('COMMON_DATE_MARCH_SHORT') => '03',
+            $this->getMessage('COMMON_DATE_APRIL_SHORT') => '04',
+            $this->getMessage('COMMON_DATE_MAY_SHORT') => '05',
+            $this->getMessage('COMMON_DATE_JUNE_SHORT') => '06',
+            $this->getMessage('COMMON_DATE_JULY_SHORT') => '07',
+            $this->getMessage('COMMON_DATE_AUGUST_SHORT') => '08',
+            $this->getMessage('COMMON_DATE_SEPTEMBER_SHORT') => '09',
+            $this->getMessage('COMMON_DATE_OCTOBER_SHORT') => '10',
+            $this->getMessage('COMMON_DATE_NOVEMBER_SHORT') => '11',
+            $this->getMessage('COMMON_DATE_DECEMBER_SHORT') => '12',
+            $this->getMessage('COMMON_DATE_JANUARY_LONG') => '01',
+            $this->getMessage('COMMON_DATE_FEBRUARY_LONG') => '02',
+            $this->getMessage('COMMON_DATE_MARCH_LONG') => '03',
+            $this->getMessage('COMMON_DATE_APRIL_LONG') => '04',
+            $this->getMessage('COMMON_DATE_MAY_LONG') => '05',
+            $this->getMessage('COMMON_DATE_JUNE_LONG') => '06',
+            $this->getMessage('COMMON_DATE_JULY_LONG') => '07',
+            $this->getMessage('COMMON_DATE_AUGUST_LONG') => '08',
+            $this->getMessage('COMMON_DATE_SEPTEMBER_LONG') => '09',
+            $this->getMessage('COMMON_DATE_OCTOBER_LONG') => '10',
+            $this->getMessage('COMMON_DATE_NOVEMBER_LONG') => '11',
+            $this->getMessage('COMMON_DATE_DECEMBER_LONG') => '12',
+            default => $month,
+        };
 
-        if (2 == mb_substr_count((string) $datetime, '-')) {
-            $year = $datetime[0].$datetime[1].$datetime[2].$datetime[3];
-            $month = $datetime[5].$datetime[6];
-            $day = $datetime[8].$datetime[9];
-            if ($length > 12) {
-                $hour = $datetime[11].$datetime[12];
-            } else {
-                $hour = '00';
-            }
-            if ($length > 15) {
-                $min = $datetime[14].$datetime[15];
-            } else {
-                $min = '00';
-            }
-        // $sec   = $datetime[17].$datetime[18];
-        } elseif (!empty($datetime)) {
-            $year = $datetime[0].$datetime[1].$datetime[2].$datetime[3];
-            $month = $datetime[4].$datetime[5];
-            $day = $datetime[6].$datetime[7];
-            $hour = $datetime[8].$datetime[9];
-            $min = $datetime[10].$datetime[11];
-        } else {
-            $year = '';
-            $month = '';
-            $day = '';
-            $hour = '';
-            $min = '';
-        }
-
-        // create datetime depends on language
-        if ('en' == $language) {
-            $ampm = 'am';
-            if ($hour > 12) {
-                $hour = $hour - 12;
-                $ampm = 'pm';
-            } elseif (12 == $hour) {
-                $ampm = 'pm';
-            }
-            if (1 == mb_strlen((string) $hour)) {
-                $hour = '0'.$hour;
-            }
-            $Datetime = $day.'/'.$this->getShortMonthName($month).'/'.$year.' '.$hour.':'.$min.$ampm;
-        } elseif ('de' == $language) {
-            $Datetime = $day.'.'.$month.'.'.$year.' '.$hour.':'.$min; // .':'.$sec;
-        } elseif ('ru' == $language) {
-            $Datetime = $day.'.'.$month.'.'.$year.' '.$hour.':'.$min; // .':'.$sec;
-        }
-
-        $Datetime = mb_eregi_replace(' ', ', ', $Datetime);
-
-        return $Datetime;
+        return $ret;
     }
 
     /** translate a Time from a MYSQL-datetime depending on selectet language.
@@ -1282,15 +1192,6 @@ public function getShortMonthNameToInt($month)
     {
         $Date = explode(' ', (string) $this->_getDateTimeInLang($datetime));
         $Date[0] = mb_eregi_replace(',', '', $Date[0]);
-
-        return $Date[0];
-    }
-
-    public function getDateInLangWithoutOClock($datetime)
-    {
-        $Date = explode(' ', (string) $this->_getDateTimeInLangWithoutOClock($datetime));
-        $Date[0] = mb_eregi_replace(',', '', $Date[0]);
-        $Date[0] = mb_eregi_replace('/', ' ', $Date[0]);
 
         return $Date[0];
     }
@@ -1345,81 +1246,5 @@ public function getShortMonthNameToInt($month)
         reset($this->messageArray);
 
         return $this->messageArray;
-    }
-
-    /** getCompleteMessageArray
-     * this method gets the complete message array, needed for language edit.
-     *
-     * @return array message array
-     */
-    public function getCompleteMessageArray()
-    {
-        $this->_loadAllMessages();
-
-        return $this->getMessageArray();
-    }
-
-    public function getUnusedTags()
-    {
-        $used_tags = $this->_searchDirForUsed('./', []);
-        sort($used_tags);
-        $message = $this->getCompleteMessageArray();
-
-        $tags_not_used = [];
-        foreach ($message as $tag_name => $translation) {
-            if (!in_array($tag_name, $used_tags)) {
-                $tags_not_used[] = $tag_name;
-            }
-        }
-
-        return $tags_not_used;
-    }
-
-    private function _searchDirForUsed($directory, $used_tags)
-    {
-        $directory_handle = opendir($directory);
-
-        while (false !== ($entry = readdir($directory_handle))) {
-            if ('.' != $entry and '..' != $entry and is_dir($directory.'/'.$entry)) {
-                $used_tags = $this->_searchDirForUsed($directory.'/'.$entry, $used_tags);
-            } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~u', $entry)) {
-                $used_tags = $this->_searchFileForUsed($directory.'/'.$entry, $used_tags);
-            }
-        }
-
-        return $used_tags;
-    }
-
-    private function _searchFileForUsed($filename, $used_tags)
-    {
-        $file_content = file($filename);
-
-        for ($i = 0; $i < (is_countable($file_content) ? count($file_content) : 0); ++$i) {
-            if (preg_match_all('~getMessage\([\s\S]*\'([A-Z0-9_]+)\'~Uu', $file_content[$i], $matches)) {
-                if (count($matches) > 0) {
-                    for ($j = 0; $j < (is_countable($matches[1]) ? count($matches[1]) : 0); ++$j) {
-                        if (mb_strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j], $used_tags)) {
-                            $used_tags[] = $matches[1][$j];
-                        }
-                    }
-                }
-            }
-            if (preg_match_all('~getMessageInLang\([\s\S]*,\s*\'([A-Z0-9_]+)\'~Uu', $file_content[$i], $matches)) {
-                if (count($matches) > 0) {
-                    for ($j = 0; $j < (is_countable($matches[1]) ? count($matches[1]) : 0); ++$j) {
-                        if (mb_strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j], $used_tags)) {
-                            $used_tags[] = $matches[1][$j];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $used_tags;
-    }
-
-    public function addMessageDatFolder($value)
-    {
-        $this->_dat_folder_array[] = $value;
     }
 }
