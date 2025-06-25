@@ -34,7 +34,6 @@ class AccountMail
 
     public function generateSubject(string $action): string
     {
-        $subject = null;
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
 
@@ -61,9 +60,11 @@ class AccountMail
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->legacyEnvironment->getCurrentContextItem();
+        $portal = $this->legacyEnvironment->getCurrentPortalItem();
 
         $oldContextType = $legacyTranslator->getContext();
         $legacyTranslator->setContext($room->getType());
+        $legacyTranslator->setEmailTextArray($portal->getEmailTextArray());
 
         $body = $legacyTranslator->getEmailMessage('MAIL_BODY_HELLO', $multipleRecipients ? ' ' : $user->getFullname());
         $body .= '<br/><br/>';
