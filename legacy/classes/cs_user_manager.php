@@ -1026,10 +1026,11 @@ class cs_user_manager extends cs_manager
             ->update($this->addDatabasePrefix('user'))
             ->set('deletion_date', ':deletionDate')
             ->set('deleter_id', ':deleterId')
-            ->set('account_id', null)
-            ->where('item_id', ':itemId')
+            ->set('account_id', ':accountId')
+            ->where('item_id = :itemId')
             ->setParameter('deletionDate', $currentDatetime)
             ->setParameter('deleterId', $deleterId)
+            ->setParameter('accountId', null)
             ->setParameter('itemId', $itemId);
 
         try {
