@@ -128,7 +128,7 @@
             </trans-unit>
             <trans-unit id="mail_footer_ask_moderation">
                 <source>If you have any questions please contact the portal moderation.</source>
-                <target>Bei Fragen senden Sie sich bitte an die Portalmoderation.</target>
+                <target>Bei Fragen wenden Sie sich bitte an die Portalmoderation.</target>
             </trans-unit>
             <trans-unit id="mail_send_to">
                 <source>This email was send to: {recipients}</source>
