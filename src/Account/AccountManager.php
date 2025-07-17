@@ -131,6 +131,14 @@ readonly class AccountManager
         return $accountRepository->findOneByCredentials($user->getUserID(), $portalId, $authSource);
     }
 
+    public function getAccountForUser(cs_user_item $user): ?Account
+    {
+        $accountRepository = $this->entityManager->getRepository(Account::class);
+        $authSource = $this->entityManager->getRepository(AuthSource::class)->find($user->getAuthSource());
+
+        return $accountRepository->findOneByCredentials($user->getUserID(), $authSource->getPortal()->getId(), $authSource);
+    }
+
     public function getAccounts(int $portalId, cs_user_item ...$users): iterable
     {
         foreach ($users as $user) {

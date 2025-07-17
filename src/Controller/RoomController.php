@@ -217,8 +217,6 @@ class RoomController extends AbstractController
         int $roomId,
         int $max = 10
     ): Response {
-        $legacyEnvironment = $environment->getEnvironment();
-
         // get room item for information panel
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -585,7 +583,8 @@ class RoomController extends AbstractController
                 $legacyRoom->setLanguage($context['language']);
                 $legacyRoom->save();
 
-                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
+                $userService->resetLimits();
+                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID());
                 foreach ($legacyRoomUsers as $user) {
                     $event = new UserJoinedRoomEvent($user, $legacyRoom);
                     $eventDispatcher->dispatch($event);

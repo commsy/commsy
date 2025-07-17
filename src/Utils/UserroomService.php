@@ -20,6 +20,7 @@ use cs_project_item;
 use cs_room_item;
 use cs_user_item;
 use cs_userroom_item;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Implements services for user rooms.
@@ -120,7 +121,8 @@ class UserroomService
      */
     public function createUserroomsForRoomUsers(cs_room_item $room): void
     {
-        $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        $this->userService->resetLimits();
+        $roomUsers = $this->userService->getListUsers($room->getItemID());
         foreach ($roomUsers as $user) {
             // only create a user room if there isn't already a user room for this user
             $existingUserroom = $user->getLinkedUserroomItem();
@@ -156,7 +158,8 @@ class UserroomService
             // get the project room user who's associated with this user room
             $projectUserRelatedToUserroom = $userroom->getLinkedUserItem();
 
-            $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
+            $this->userService->resetLimits();
+            $userroomUsers = $this->userService->getListUsers($userroom->getItemID());
             foreach ($userroomUsers as $userroomUser) {
                 // get the project room user who corresponds to (i.e., represents) this user room user
                 $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
@@ -233,7 +236,8 @@ class UserroomService
      */
     public function renameUserroomsForRoom(cs_room_item $room): void
     {
-        $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        $this->userService->resetLimits();
+        $roomUsers = $this->userService->getListUsers($room->getItemID());
         foreach ($roomUsers as $user) {
             $existingUserroom = $user->getLinkedUserroomItem();
             if (!$existingUserroom) {
@@ -247,8 +251,8 @@ class UserroomService
 
     public function updateTemplateInUserroomsForRoom(cs_room_item $room): void
     {
-        $roomManager = $this->legacyEnvironment->getUserroomManager();
-        $roomUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        $this->userService->resetLimits();
+        $roomUsers = $this->userService->getListUsers($room->getItemID());
         foreach ($roomUsers as $user) {
             $existingUserroom = $user->getLinkedUserroomItem();
             if (!$existingUserroom) {
@@ -270,7 +274,8 @@ class UserroomService
         $changedUserStatus = $changedUser->getStatus();
 
         // for all project room users with user rooms, update their user room users
-        $projectUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        $this->userService->resetLimits();
+        $projectUsers = $this->userService->getListUsers($room->getItemID());
         foreach ($projectUsers as $projectUser) {
             // NOTE: a user room contains a single regular user (who "owns" this user room), plus one or more moderators
             $userroom = $projectUser->getLinkedUserroomItem();
@@ -286,7 +291,8 @@ class UserroomService
             // does this user room contain a user who corresponds to (i.e., represents) the $changedUser?
             $changedUserHasRelatedUserroomUser = false;
 
-            $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
+            $this->userService->resetLimits();
+            $userroomUsers = $this->userService->getListUsers($userroom->getItemID());
             foreach ($userroomUsers as $userroomUser) {
                 // get the project room user who corresponds to (i.e., represents) this user room user
                 $projectUserRelatedToUserroomUser = $userroomUser->getLinkedProjectUserItem();
@@ -333,14 +339,16 @@ class UserroomService
      */
     public function removeUserFromUserroomsForRoom(cs_room_item $room, cs_user_item $deletedUser): void
     {
-        $projectUsers = $this->userService->getListUsers($room->getItemID(), null, null, true);
+        $this->userService->resetLimits();
+        $projectUsers = $this->userService->getListUsers($room->getItemID());
         foreach ($projectUsers as $projectUser) {
             $userroom = $projectUser->getLinkedUserroomItem();
             if (!$userroom) {
                 continue;
             }
 
-            $userroomUsers = $this->userService->getListUsers($userroom->getItemID(), null, null, true);
+            $this->userService->resetLimits();
+            $userroomUsers = $this->userService->getListUsers($userroom->getItemID());
             foreach ($userroomUsers as $userroomUser) {
                 // get the ID of the project room user who corresponds to (i.e., represents) this user room user
                 // NOTE: we cannot use `cs_user_item->getLinkedProjectUserItem()` since that only returns non-deleted items
@@ -373,7 +381,7 @@ class UserroomService
             $roomItem->setShouldCreateUserRooms(false);
             $roomItem->save();
         } else {
-            throw $this->createNotFoundException('No project room found for id '.$projectRoomId);
+            throw new NotFoundHttpException("No project room found for id $projectRoomId");
         }
     }
 

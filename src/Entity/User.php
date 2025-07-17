@@ -43,19 +43,28 @@ class User
     #[ORM\JoinColumn(name: 'context_id', referencedColumnName: 'item_id', nullable: false)]
     private ?Room $context = null;
 
-    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\OneToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
     private ?User $creator = null;
 
-    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\OneToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
     private ?User $modifier = null;
 
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
 
-    #[ORM\Column(name: 'not_deleted', type: Types::BOOLEAN, insertable: false, updatable: false, generated: 'ALWAYS', columnDefinition: 'TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date')]
+    #[ORM\Column(name: 'not_deleted', type: Types::BOOLEAN, insertable: false, updatable: false, columnDefinition: 'TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date', generated: 'ALWAYS')]
     private ?bool $isNotDeleted = null;
+
+    /*
+     * Currently, the account is still allowed to be null. When deleting an account it is removed from the accounts table
+     * (no soft-deletion), but the user entries will still remain in the user table. Right now they are not removed at
+     * all.
+     */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Account $account = null;
 
     #[ORM\Column(name: 'user_id', type: Types::STRING, length: 100, nullable: false)]
     #[Groups(['api_read'])]
@@ -65,7 +74,7 @@ class User
     #[Groups(['api_read'])]
     private int $status = 0;
 
-    #[ORM\Column(name: 'is_contact', type: Types::BOOLEAN, nullable: false)]
+    #[ORM\Column(name: 'is_contact', type: Types::BOOLEAN, nullable: false, options: ['default' => false])]
     private bool $isContact = false;
 
     #[ORM\Column(name: 'firstname', type: Types::STRING, length: 50, nullable: false)]
@@ -97,7 +106,7 @@ class User
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 65535, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(name: 'use_portal_email', type: Types::BOOLEAN)]
+    #[ORM\Column(name: 'use_portal_email', type: Types::BOOLEAN, options: ['default' => false])]
     private bool $usePortalEmail = false;
 
     public function setContext(Room $context): static
@@ -112,12 +121,7 @@ class User
         return $this->context;
     }
 
-    /**
-     * Set creator.
-     *
-     * @param User|null $creator
-     */
-    public function setCreator(User $creator = null): static
+    public function setCreator(?User $creator = null): static
     {
         $this->creator = $creator;
 
@@ -141,12 +145,7 @@ class User
         return $this->modifier;
     }
 
-    /**
-     * Set deleterId.
-     *
-     * @param int $deleterId
-     */
-    public function setDeleterId($deleterId): static
+    public function setDeleterId(?int $deleterId): static
     {
         $this->deleterId = $deleterId;
 
@@ -163,12 +162,19 @@ class User
         return null !== $this->deleterId && null !== $this->deletionDate;
     }
 
-    /**
-     * Set userId.
-     *
-     * @param string $userId
-     */
-    public function setUserId($userId): static
+    public function getAccount(): ?Account
+    {
+        return $this->account;
+    }
+
+    public function setAccount(?Account $account): static
+    {
+        $this->account = $account;
+
+        return $this;
+    }
+
+    public function setUserId(string $userId): static
     {
         $this->userId = $userId;
 
@@ -192,12 +198,17 @@ class User
         return $this->status;
     }
 
-    /**
-     * Set isContact.
-     *
-     * @param bool $isContact
-     */
-    public function setIsContact($isContact): static
+    public function isRequested(): bool
+    {
+        return $this->status === 1;
+    }
+
+    public function isModerator(): bool
+    {
+        return $this->status === 3;
+    }
+
+    public function setIsContact(bool $isContact): static
     {
         $this->isContact = $isContact;
 
@@ -293,12 +304,93 @@ class User
         return $this->extras;
     }
 
-    /**
-     * Set authSource.
-     *
-     * @param int $authSource
-     */
-    public function setAuthSource($authSource): static
+    public function getUserComment(): string
+    {
+        return $this->extras['USERCOMMENT'] ?? '';
+    }
+
+    public function getTitle(): string
+    {
+        return $this->extras['USERTITLE'] ?? '';
+    }
+
+    public function getTelephone(): string
+    {
+        return $this->extras['USERTELEPHONE'] ?? '';
+    }
+
+    public function getCellularphone(): string
+    {
+        return $this->extras['USERCELLULARPHONE'] ?? '';
+    }
+
+    public function getBirthday(): string
+    {
+        return $this->extras['USERBIRTHDAY'] ?? '';
+    }
+
+    public function getStreet(): string
+    {
+        return $this->extras['USERSTREET'] ?? '';
+    }
+
+    public function getZipcode(): string
+    {
+        return $this->extras['USERZIPCODE'] ?? '';
+    }
+
+    public function getRoom(): string
+    {
+        return $this->extras['USERROOM'] ?? '';
+    }
+
+    public function getOrganisation(): string
+    {
+        return $this->extras['USERORGANISATION'] ?? '';
+    }
+
+    public function getPosition(): string
+    {
+        return $this->extras['USERPOSITION'] ?? '';
+    }
+
+    public function getHomepage(): string
+    {
+        return $this->extras['USERHOMEPAGE'] ?? '';
+    }
+
+    public function getMSN(): string
+    {
+        return $this->extras['MSN'] ?? '';
+    }
+
+    public function getSkype(): string
+    {
+        return $this->extras['SKYPE'] ?? '';
+    }
+
+    public function getICQ(): string
+    {
+        return $this->extras['ICQ'] ?? '';
+    }
+
+    public function getYahoo(): string
+    {
+        return $this->extras['YAHOO'] ?? '';
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->extras['LANGUAGE'] ?? 'de';
+    }
+
+    public function isEmailVisible(): bool
+    {
+        $visible = $this->extras['EMAIL_VISIBILITY'] ?? '';
+        return $visible != '-1';
+    }
+
+    public function setAuthSource(?int $authSource): static
     {
         $this->authSource = $authSource;
 

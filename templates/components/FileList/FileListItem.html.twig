@@ -12,7 +12,9 @@
         }) }}>
             <div id="modal_wopi_{{ file.fileId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
                 <div class="uk-modal-dialog uk-modal-dialog-blank">
-                    <a class="uk-modal-close uk-close uk-margin-right"></a>
+                    <div class="wopi-modal-top">
+                        <a {{ stimulus_action('wopi_modal', '_hide') }}>{{ 'Close'|trans }}</a>
+                    </div>
                     <div class="uk-height-viewport" {{ stimulus_target('wopi_modal', 'content') }}></div>
                 </div>
             </div>
@@ -46,9 +48,7 @@
                 <button
                     class="uk-button uk-button-success"
                     title="{{ 'save'|trans({},'form')|capitalize }}"
-                    data-action="live#action"
-                    data-live-action-param="renameFile"
-                    data-live-item-id-param="{{ itemId }}"
+                    {{ live_action('renameFile', {'itemId': itemId}) }}
                     data-loading="action(renameFile)|addAttribute(disabled)"
                 >
                     {# hide when the remove action is loading  #}
@@ -66,10 +66,7 @@
                 <button
                     class="uk-button uk-button-default"
                     title="{{ 'cancel'|trans({},'form')|capitalize }}"
-                    data-action="live#action"
-                    data-live-action-param="removeFile"
-                    data-live-confirmed-param="false"
-                    data-live-item-id-param="{{ itemId }}"
+                    {{ live_action('removeFile', {'confirmed': 'false', 'itemId': itemId}) }}
                     data-loading="action(removeFile)|addAttribute(disabled)"
                 >
                     <i class="uk-icon-times uk-icon-justify"></i>
@@ -77,10 +74,7 @@
                 <button
                     class="uk-button uk-button-danger"
                     title="{{ 'Delete'|trans({},'form')|capitalize }}"
-                    data-action="live#action"
-                    data-live-action-param="removeFile"
-                    data-live-confirmed-param="true"
-                    data-live-item-id-param="{{ itemId }}"
+                    {{ live_action('removeFile', {'confirmed': 'true', 'itemId': itemId}) }}
                     data-loading="action(removeFile)|addAttribute(disabled)"
                 >
                     {# hide when the remove action is loading  #}
@@ -119,20 +113,12 @@
                                 {% endif %}
                             </li>
                             <li>
-                                <a
-                                    data-action="live#action"
-                                    data-live-action-param="renameFile"
-                                    data-live-item-id-param="{{ itemId }}"
-                                >
+                                <a {{ live_action('renameFile', {'itemId': itemId}) }}>
                                     <i class="uk-icon-i-cursor uk-icon-justify"></i> {{ 'form.rename'|trans({}, 'form') }}
                                 </a>
                             </li>
                             <li>
-                                <a
-                                    data-action="live#action"
-                                    data-live-action-param="removeFile"
-                                    data-live-item-id-param="{{ itemId }}"
-                                >
+                                <a {{ live_action('removeFile', {'itemId': itemId}) }}>
                                     <i class="uk-icon-trash uk-text-danger uk-icon-justify"></i> {{ 'Delete'|trans({}, 'form') }}
                                 </a>
                             </li>

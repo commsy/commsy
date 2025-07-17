@@ -18,7 +18,7 @@ use App\Action\MarkRead\MarkReadAction;
 use App\Action\Pin\PinAction;
 use App\Action\Pin\UnpinAction;
 use App\Entity\Portal;
-use App\Enum\ReaderStatus;
+use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
 use App\Filter\UserFilterType;
@@ -48,6 +48,7 @@ use Exception;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Nette\Utils\Strings;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,7 +57,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -339,11 +340,14 @@ class UserController extends BaseController
             $this->userService->setFilterConditions($filterForm);
         }
 
-        $users = $this->userService->getListUsers($roomId);
-
         // get user list from manager service
         if ('none' === $sort || empty($sort)) {
             $sort = $request->getSession()->get('sortUsers', 'name');
+        }
+
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        if (!$currentUser->isModerator()) {
+            $this->userService->setUserLimit();
         }
         $users = $this->userService->getListUsers($roomId, $numAllUsers, 0, $sort);
 
@@ -555,13 +559,15 @@ class UserController extends BaseController
         TopicService $topicService,
         LegacyMarkup $legacyMarkup,
         TranslatorInterface $translator,
+        #[MapEntity(id: 'itemId')]
+        User $user,
         int $roomId,
-        int $itemId
+        int $itemId,
     ): Response {
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $user->getItemId());
 
         $alert = null;
-        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $itemId)) {
+        if (!$this->isGranted(ItemVoter::EDIT_LOCK, $user->getItemId())) {
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', [], 'item');
         }
@@ -571,9 +577,9 @@ class UserController extends BaseController
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
-        $isSelf = $this->legacyEnvironment->getCurrentUserItem()->getItemId() == $itemId;
+        $isSelf = $this->legacyEnvironment->getCurrentUserItem()->getItemId() == $user->getItemId();
 
-        $legacyMarkup->addFiles($this->itemService->getItemFileList($itemId));
+        $legacyMarkup->addFiles($this->itemService->getItemFileList($user->getItemId()));
 
         $roomItem = $this->roomService->getRoomItem($roomId);
         $moderatorListLength = $roomItem->getModeratorList()->getCount();
@@ -595,7 +601,7 @@ class UserController extends BaseController
 
         return $this->render('user/detail.html.twig', [
             'roomId' => $roomId,
-            'user' => $infoArray['user'],
+            'user' => $user,
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
             'userList' => $infoArray['userList'],
@@ -649,6 +655,11 @@ class UserController extends BaseController
         $readerList[$user->getItemId()] = $this->readerService->getStatusForItem($user)->value;
         $modifierList[$user->getItemId()] = $this->itemService->getAdditionalEditorsForItem($user);
 
+        $this->userService->resetLimits();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        if (!$currentUser->isModerator()) {
+            $this->userService->setUserLimit();
+        }
         $users = $this->userService->getListUsers($roomId);
         $userList = [];
         $counterBefore = 0;
@@ -1053,8 +1064,6 @@ class UserController extends BaseController
             $userFilter = $request->query->all('user_filter');
         }
 
-        // $this->userManager->get()->to_array()
-
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -1087,7 +1096,10 @@ class UserController extends BaseController
         $request->getSession()->set('sortUsers', $sort);
 
         // get user list from manager service
-        $users = $this->userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort, false);
+        if (!$currentUser->isModerator()) {
+            $this->userService->setUserLimit();
+        }
+        $users = $this->userService->getListUsers($roomId, $max, $start, $sort);
 
         $readerList = $this->readerService->getChangeStatusForItems(...$users);
 
@@ -1396,6 +1408,7 @@ class UserController extends BaseController
         $selectAll,
         $itemIds = []
     ) {
+        $this->userService->resetLimits();
         if ($selectAll) {
             if ($request->query->has('user_filter')) {
                 $currentFilter = $request->query->all('user_filter');

@@ -60,7 +60,7 @@ class AccountActivityLockedMessage extends Message
             ),
             'content' => $legacyTranslator->getEmailMessage(
                 'EMAIL_INACTIVITY_LOCK_NOW_BODY',
-                $this->account->getUsername(),
+                $this->account->getDisplayName(),
                 $this->account->getAuthSource()->getTitle(),
                 $this->urlGenerator->generate('app_helper_portalenter', [
                     'context' => $this->portal->getId(),

@@ -18,6 +18,7 @@ use App\Entity\License;
 use App\Entity\Materials;
 use App\Event\ItemDeletedEvent;
 use App\Repository\ItemLinkFileRepository;
+use App\Repository\LicenseRepository;
 use App\Utils\ReaderService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -1612,16 +1613,10 @@ public function _copySectionList($copy_id)
          return (int) $this->_getValue('license_id');
      }
 
-     public function getLicenseTitle(): string
+     public function getLicense(): ?License
      {
-         if ($this->getLicenseId() && $this->getLicenseId() > 0) {
-             global $symfonyContainer;
-             $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(License::class);
-             $license = $licensesRepository->findOneById($this->getLicenseId());
-
-             return $license->getTitle();
-         }
-
-         return '';
+         /** @var LicenseRepository $licensesRepository */
+         $licensesRepository = $this->_environment->getSymfonyContainer()->get(LicenseRepository::class);
+         return $licensesRepository->find($this->getLicenseId());
      }
 }

@@ -224,7 +224,7 @@ class cs_material_manager extends cs_manager
 
     /** Returns the material item of the given item ID in its newest version.
      *
-     * @param int|null itemId ID of the item
+     * @param int|null $itemId ID of the item
      */
     public function getItem(?int $itemId): ?cs_material_item
     {
@@ -302,15 +302,32 @@ class cs_material_manager extends cs_manager
         }
     }
 
-    public function getItemByVersion($item_id, $version_id)
+    /** Returns the material item of the given item ID and version number.
+     *
+     * @param int $itemId ID of the item
+     * @param int $versionId version number of the item
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getItemByVersion(int $itemId, int $versionId): ?cs_material_item
     {
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+        $queryBuilder
+            ->select('m.*', 'i.pinned')
+            ->from($this->addDatabasePrefix($this->_db_table), 'm')
+            ->innerJoin('m', 'items', 'i', 'i.item_id = m.item_id')
+            ->where('m.item_id = :itemId')
+            ->andWhere('m.version_id = :versionId')
+            ->setParameter('itemId', $itemId)
+            ->setParameter('versionId', $versionId);
+
+        try {
+            $result = $queryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error('Problems selecting materials item (' . $itemId . ' v.' . $versionId . '): ' . $e->getMessage(), E_USER_WARNING);
+        }
+
         $material = null;
-        $query = 'SELECT * FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').".item_id = '".encode(AS_DB, $item_id)."'";
-        $query .= ' AND '.$this->addDatabasePrefix('materials').".version_id = '".encode(AS_DB, $version_id)."'";
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or empty($result[0])) {
-            trigger_error('Problems selecting one materials item from query: "'.$query.'"', E_USER_WARNING);
-        } else {
+        if (!empty($result[0])) {
             $material = $this->_buildItem($result[0]);
         }
 
