@@ -60,7 +60,7 @@ class AccountActivityDeleteWarningMessage extends Message
             ),
             'content' => $legacyTranslator->getEmailMessage(
                 'EMAIL_INACTIVITY_DELETE_NEXT_BODY',
-                $this->account->getUsername(),
+                $this->account->getDisplayName(),
                 $this->account->getAuthSource()->getTitle(),
                 $this->portal->getClearInactiveAccountsDeleteDays(),
                 $this->urlGenerator->generate('app_helper_portalenter', [

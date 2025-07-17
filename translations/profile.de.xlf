@@ -226,6 +226,10 @@
                 <source>Account</source>
                 <target>Account</target>
             </trans-unit>
+            <trans-unit id="account_display_name">
+                <source>account.display_name</source>
+                <target>Anzeigename</target>
+            </trans-unit>
             <trans-unit id="roomProfile">
                 <source>Room profile</source>
                 <target>Raumprofil</target>

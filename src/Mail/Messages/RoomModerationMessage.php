@@ -85,6 +85,7 @@ class RoomModerationMessage extends Message
     {
         return [
             'room_title' => $this->room->getTitle(),
+            'portal_name' => $this->room->getPortal()->getTitle(),
         ];
     }
 }

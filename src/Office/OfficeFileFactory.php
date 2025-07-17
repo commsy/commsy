@@ -40,7 +40,7 @@ final readonly class OfficeFileFactory
         try {
             $this->logger->debug('create file');
             $writer = match ($type) {
-                'word' => WordIOFactory::createWriter(new PhpWord(), 'Word2007'),
+                'word' => WordIOFactory::createWriter($this->createWord(), 'Word2007'),
                 'spreadsheet' => SpreadsheetIOFactory::createWriter(new Spreadsheet(), SpreadsheetIOFactory::WRITER_XLSX),
                 'presentation' => PresentationIOFactory::createWriter(new PhpPresentation(), 'PowerPoint2007'),
             };
@@ -61,5 +61,12 @@ final readonly class OfficeFileFactory
             $this->logger->error('Could not create temporary file: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    private function createWord(): PhpWord {
+        $word = new PhpWord();
+        $word->addSection();
+
+        return $word;
     }
 }

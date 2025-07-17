@@ -60,7 +60,7 @@ class AccountActivityLockWarningMessage extends Message
             ),
             'content' => $legacyTranslator->getEmailMessage(
                 'EMAIL_INACTIVITY_LOCK_NEXT_BODY',
-                $this->account->getUsername(),
+                $this->account->getDisplayName(),
                 $this->account->getAuthSource()->getTitle(),
                 $this->portal->getClearInactiveAccountsLockDays(),
                 $this->urlGenerator->generate('app_helper_portalenter', [

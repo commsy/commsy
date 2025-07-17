@@ -368,7 +368,7 @@ final readonly class ReaderService
                 // The new user has already read this item, so just delete the old entry
                 $delete = $this->entityManager->createQuery('
                     DELETE FROM App\Entity\Reader r
-                    WHERE r.itemId. = :itemId AND r.versionId = :versionId AND r.userId = :userId
+                    WHERE r.itemId = :itemId AND r.versionId = :versionId AND r.userId = :userId
                 ');
                 $delete->setParameter('itemId', $oldEntry->getItemId());
                 $delete->setParameter('versionId', $oldEntry->getVersionId());

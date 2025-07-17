@@ -260,35 +260,35 @@
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_open">
                 <source>mail.room_moderation.subject.open</source>
-                <target>{room_title} opened</target>
+                <target>{portal_name}: {room_title} opened</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_reopen">
                 <source>mail.room_moderation.subject.reopen</source>
-                <target>{room_title} reopened</target>
+                <target>{portal_name}: {room_title} reopened</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_deleted">
                 <source>mail.room_moderation.subject.deleted</source>
-                <target>{room_title} deleted</target>
+                <target>{portal_name}: {room_title} deleted</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_undeleted">
                 <source>mail.room_moderation.subject.undeleted</source>
-                <target>{room_title} undeleted</target>
+                <target>{portal_name}: {room_title} undeleted</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_archived">
                 <source>mail.room_moderation.subject.archived</source>
-                <target>{room_title} archived</target>
+                <target>{portal_name}: {room_title} archived</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_linked">
                 <source>mail.room_moderation.subject.linked</source>
-                <target>{room_title} linked</target>
+                <target>{portal_name}: {room_title} linked</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_locked">
                 <source>mail.room_moderation.subject.locked</source>
-                <target>{room_title} locked</target>
+                <target>{portal_name}: {room_title} locked</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_subject_unlocked">
                 <source>mail.room_moderation.subject.unlocked</source>
-                <target>{room_title} unlocked</target>
+                <target>{portal_name}: {room_title} unlocked</target>
             </trans-unit>
             <trans-unit id="mail_room_moderation_body_opened">
                 <source>mail.room_moderation.body.opened</source>

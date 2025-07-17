@@ -15,6 +15,7 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Facade\MembershipManager;
+use App\Files\ProfileHelper;
 use App\Form\DataTransformer\PrivateRoomTransformer;
 use App\Form\DataTransformer\UserTransformer;
 use App\Form\Type\Profile\DeleteType;
@@ -27,16 +28,19 @@ use App\Utils\DiscService;
 use App\Utils\GroupService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
-use cs_environment;
 use cs_user_item;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\UX\Cropperjs\Factory\CropperInterface;
+use Symfony\UX\Cropperjs\Model\Crop;
 
 /**
  * Class ProfileController.
@@ -47,87 +51,101 @@ class ProfileController extends AbstractController
     #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function general(
-        Request $request,
-        DiscService $discService,
         RoomService $roomService,
         UserService $userService,
-        UserTransformer $userTransformer,
+        DiscService $discService,
+        CropperInterface $cropper,
         LegacyEnvironment $environment,
+        Request $request,
+        ProfileHelper $profileHelper,
+        #[Autowire('%files_directory%/')]
+        string $filesDir,
         int $roomId,
         int $itemId
     ): Response {
-        /** @var cs_environment $legacyEnvironment */
-        $legacyEnvironment = $environment->getEnvironment();
-        $discManager = $legacyEnvironment->getDiscManager();
+        /** @var cs_user_item $user */
+        $user = $userService->getUser($itemId);
 
-        /** @var cs_user_item $userItem */
-        $userItem = $userService->getUser($itemId);
-
-        if (!$userItem) {
+        if (!$user) {
             throw $this->createNotFoundException('No user found for id '.$itemId);
         }
 
-        $userData = $userTransformer->transform($userItem);
-        $userData['useProfileImage'] = '' != $userItem->getPicture();
+        $roomItem = $roomService->getRoomItem($roomId);
 
-        $form = $this->createForm(RoomProfileGeneralType::class, $userData, [
-            'itemId' => $itemId,
-            'uploadUrl' => $this->generateUrl('app_upload_upload', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
+        /** @var ?Account $account */
+        $account = $this->getUser();
+
+        $imagePath = $profileHelper->getTempProfileImagePath($account, $user->getcontextId());
+
+        if ($imagePath) {
+            $crop = $cropper->createCrop($imagePath);
+            $crop->setCroppedMaxSize(200, 200);
+        }
+        $formData = [
+            'useProfileImage' => !empty($user->getPicture()),
+            'crop' => $crop ?? null,
+        ];
+
+        $form = $this->createForm(RoomProfileGeneralType::class, $formData, [
+            'uploadUrl' => $this->generateUrl('app_upload_uploadtousertemp', [
+                'roomId' => $user->getContextID(),
+                'filename' => $profileHelper->getProfileImageBaseName($account, $user->getContextID()),
             ]),
+            'cropPublicUrl' => $this->generateUrl('app_file_getusertempprofileimage', [
+                'contextId' => $user->getContextID(),
+            ]),
+            'cropPath' => $imagePath,
         ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
+            $data = $form->getData();
 
-            // use custom profile picture if given
-            if ($formData['useProfileImage']) {
-                if ($formData['image_data']) {
-                    $saveDir = implode('/', [
-                        $this->getParameter('files_directory'),
-                        $roomService->getRoomFileDirectory($userItem->getContextID()),
-                    ]);
-                    if (!file_exists($saveDir)) {
-                        mkdir($saveDir, 0777, true);
+            $legacyEnvironment = $environment->getEnvironment();
+            $discManager = $legacyEnvironment->getDiscManager();
+            $fs = new Filesystem();
+
+            if ($data['useProfileImage']) {
+                /** @var Crop $crop */
+                $crop = $data['crop'];
+
+                if ($currentPicture = $user->getPicture()) {
+                    $currentFilePath = $filesDir . $roomService->getRoomFileDirectory($user->getContextID()) . '/' . $currentPicture;
+                    if ($fs->exists($currentFilePath)) {
+                        $fs->remove($currentFilePath);
                     }
-                    $data = $formData['image_data'];
-                    [$fileName, $type, $data] = explode(';', (string) $data);
-                    [, $data] = explode(',', $data);
-                    [, $extension] = explode('/', $type);
-                    $data = base64_decode($data);
-                    $fileName = implode('_', [
-                        'cid'.$userItem->getContextID(),
-                        $userItem->getUserID(),
-                        $fileName,
-                    ]);
-                    $absoluteFilepath = implode('/', [$saveDir, $fileName]);
-                    file_put_contents($absoluteFilepath, $data);
-                    $userItem->setPicture($fileName);
+                }
 
-                    $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-                    $userItem->save();
+                $image = $crop->getCroppedImage('png');
+                $saveDir = $filesDir . $roomService->getRoomFileDirectory($user->getContextID());
+                $filename = "cid{$user->getContextID()}_{$user->getUserID()}.png";
+
+                file_put_contents("$saveDir/$filename", $image);
+                $user->setPicture($filename);
+                $user->save();
+
+                if ($fs->exists($imagePath)) {
+                    $fs->remove($imagePath);
                 }
             } else {
                 // use user initials else
-                if ($discManager->existsFile($userItem->getPicture())) {
-                    $discManager->unlinkFile($userItem->getPicture());
+                if ($discManager->existsFile($user->getPicture())) {
+                    $discManager->unlinkFile($user->getPicture());
                 }
-                $userItem->setPicture('');
-                $userItem->save();
+                $user->setPicture('');
+                $user->save();
             }
 
-            if ($formData['imageChangeInAllContexts']) {
-                $userList = $userItem->getRelatedUserList(true);
+            if ($form->get('imageChangeInAllContexts')->getData()) {
+                $userList = $user->getRelatedUserList(true);
                 foreach ($userList as $tempUserItem) {
                     /** @var cs_user_item $tempUserItem */
-                    if ($tempUserItem->getItemId() == $userItem->getItemId()) {
+                    if ($tempUserItem->getItemId() == $user->getItemId()) {
                         continue;
                     }
 
-                    if ($formData['useProfileImage']) {
-                        $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(),
+                    if ($data['useProfileImage']) {
+                        $tempFilename = $discService->copyImageFromRoomToRoom($user->getPicture(),
                             $tempUserItem->getContextId());
                         if ($tempFilename) {
                             $tempUserItem->setPicture($tempFilename);
@@ -141,20 +159,12 @@ class ProfileController extends AbstractController
                     $tempUserItem->save();
                 }
             }
-
-            return $this->redirectToRoute('app_profile_general', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            ]);
         }
-
-        $roomItem = $roomService->getRoomItem($roomId);
 
         return $this->render('profile/general.html.twig', [
             'roomId' => $roomId,
             'roomTitle' => $roomItem->getTitle(),
-            'user' => $userItem,
-            'form' => $form,
+            'user' => $user,
         ]);
     }
 

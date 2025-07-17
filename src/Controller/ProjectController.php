@@ -272,7 +272,8 @@ class ProjectController extends AbstractController
                 $legacyRoom->setLanguage($room->getLanguage());
                 $legacyRoom->save();
 
-                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID(), null, null, true);
+                $userService->resetLimits();
+                $legacyRoomUsers = $userService->getListUsers($legacyRoom->getItemID());
                 foreach ($legacyRoomUsers as $user) {
                     $event = new UserJoinedRoomEvent($user, $legacyRoom);
                     $eventDispatcher->dispatch($event);

@@ -25,7 +25,6 @@ class OidcAuthenticatorTest extends KernelTestCase
     public function testAccountIsUpdated(): void
     {
         self::bootKernel();
-        $container = self::getContainer();
 
         $oidcSource = AuthSourceOIDCFactory::createOne();
         $portal = PortalFactory::createOne([
@@ -36,6 +35,9 @@ class OidcAuthenticatorTest extends KernelTestCase
             'contextId' => $portal->getId(),
             'authSource' => $oidcSource,
         ]);
+
+        self::bootKernel();
+        $container = self::getContainer();
 
         // Mock AccountManager
         $accountManager = $this->createMock(AccountManager::class);
@@ -72,10 +74,13 @@ class OidcAuthenticatorTest extends KernelTestCase
         $this->assertSame('display', $account->getDisplayName());
     }
 
+    /**
+     * This will test the identification by email if the corresponding setting is used in the portal.
+     * The username must be updated after logging in, if the mail address matches.
+     */
     public function testAccountIsUpdatedIdentifiedByEmail(): void
     {
         self::bootKernel();
-        $container = self::getContainer();
 
         $oidcSource = AuthSourceOIDCFactory::createOne();
         $oidcSource->setUseEmailAsIdentifier(true);
@@ -88,6 +93,9 @@ class OidcAuthenticatorTest extends KernelTestCase
             'contextId' => $portal->getId(),
             'authSource' => $oidcSource,
         ]);
+
+        self::bootKernel();
+        $container = self::getContainer();
 
         // Mock AccountManager
         $accountManager = $this->createMock(AccountManager::class);
@@ -119,6 +127,64 @@ class OidcAuthenticatorTest extends KernelTestCase
 
         $this->assertSame('newidentifier', $account->getUsername());
         $this->assertSame('e@mail.de', $account->getEmail());
+        $this->assertSame('firstname', $account->getFirstname());
+        $this->assertSame('lastname', $account->getLastname());
+        $this->assertSame('display', $account->getDisplayName());
+    }
+
+    /**
+     * If identification by email is used, make sure an account can still update its mail address. The username must
+     * remain the primary identification criteria. Identification my email must remain second.
+     */
+    public function testAccountEmailIsUpdatedIdentifiedByEmail(): void
+    {
+        self::bootKernel();
+
+        $oidcSource = AuthSourceOIDCFactory::createOne();
+        $oidcSource->setUseEmailAsIdentifier(true);
+        $portal = PortalFactory::createOne([
+            'authSources' => [$oidcSource],
+        ]);
+        $account = AccountFactory::createOne([
+            'username' => 'identifier',
+            'email' => 'old@mail.de',
+            'contextId' => $portal->getId(),
+            'authSource' => $oidcSource,
+        ]);
+
+        self::bootKernel();
+        $container = self::getContainer();
+
+        // Mock AccountManager
+        $accountManager = $this->createMock(AccountManager::class);
+        $accountManager->expects(self::once())
+            ->method('propagateAccountDataToProfiles')
+            ->with($this->isInstanceOf(Account::class), $this->isFalse(), $this->isNull());
+        $container->set(AccountManager::class, $accountManager);
+
+        // Mock AuthorizationCodeFlow
+        $codeFlow = $this->createMock(AuthorizationCodeFlow::class);
+        $codeFlow->expects(self::once())
+            ->method('authenticate')
+            ->willReturn(new UserInfo(
+                'identifier',
+                'new@mail.de',
+                'firstname',
+                'lastname',
+                'display'
+            ));
+        $container->set(AuthorizationCodeFlow::class, $codeFlow);
+
+        /** @var OidcAuthenticator $oidcAuthenticator */
+        $oidcAuthenticator = $container->get(OidcAuthenticator::class);
+
+        $request = new Request();
+        $request->setSession(new Session());
+        $request->attributes->add(['context' => $portal->getId()]);
+        $oidcAuthenticator->authenticate($request);
+
+        $this->assertSame('identifier', $account->getUsername());
+        $this->assertSame('new@mail.de', $account->getEmail());
         $this->assertSame('firstname', $account->getFirstname());
         $this->assertSame('lastname', $account->getLastname());
         $this->assertSame('display', $account->getDisplayName());
