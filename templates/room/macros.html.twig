@@ -49,7 +49,7 @@
                                         {% endif %}
                                     </div>
 
-                                    <div class="uk-width-2-5 uk-text-left">
+                                    <div class="uk-width-4-5 uk-text-left">
                                         <span class="uk-text-bold">{{'Room-Information'|trans({}, 'room') }}</span><br/>
                                         <p>
                                             {# display an appropriate label if contact persons have been defined for this room: #}
@@ -63,6 +63,17 @@
                                         <p>
                                             {{ macros.contextLink(roomId, project, memberStatus) }}
                                         </p>
+                                        {% if project.isLocked() %}
+                                            <p>
+                                            {% if (is_granted('ROOM_MODERATOR', project.itemId) and not project.isLockedByModerator()) or is_granted('PORTAL_MODERATOR', commsy.portal.id) %}
+                                                {{ 'This workspace can be unlocked using the "Unlock project workspace" action.'|trans({}, 'room') }}
+                                            {% elseif project.isLockedByModerator() %}
+                                                {{ 'This workspace can only be unlocked by portal moderation.'|trans({}, 'room') }}
+                                            {% else %}
+                                                {{ 'This workspace can be unlocked by moderation.'|trans({}, 'room') }}
+                                            {% endif %}
+                                            </p>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
