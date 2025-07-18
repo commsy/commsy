@@ -77,6 +77,7 @@
         "symfony/translation": "7.2.*",
         "symfony/twig-bundle": "7.2.*",
         "symfony/ux-autocomplete": "^2.7",
+        "symfony/ux-cropperjs": "^2.26",
         "symfony/ux-live-component": "^2.17",
         "symfony/ux-twig-component": "^2.17",
         "symfony/validator": "7.2.*",

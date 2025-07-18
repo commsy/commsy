@@ -78,7 +78,7 @@ class LegacySubscriber implements EventSubscriberInterface
 
         if ($request->attributes->has('fileId')) {
             $file = $this->fileService->getFile($request->attributes->get('fileId'));
-            $contextId = $file->getContextID();
+            $contextId = $file?->getContextID();
         }
 
         if ($contextId) {

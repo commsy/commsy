@@ -217,8 +217,6 @@ class RoomController extends AbstractController
         int $roomId,
         int $max = 10
     ): Response {
-        $legacyEnvironment = $environment->getEnvironment();
-
         // get room item for information panel
         $roomItem = $roomService->getRoomItem($roomId);
 

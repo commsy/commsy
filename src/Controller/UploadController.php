@@ -13,21 +13,22 @@
 
 namespace App\Controller;
 
-use App\Form\Type\UploadType;
+use App\Dto\TempUserFileDto;
+use App\Entity\Account;
 use App\Services\FileUploader;
 use App\Services\LegacyEnvironment;
-use App\Utils\DiscService;
 use App\Utils\FileService;
 use App\Utils\ItemService;
-use App\Utils\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
+use Vich\UploaderBundle\Handler\UploadHandler;
 
 /**
  * Class UploadController.
@@ -39,10 +40,8 @@ class UploadController extends AbstractController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function upload(
         Request $request,
-        DiscService $discService,
         FileService $fileService,
         ItemService $itemService,
-        UserService $userService,
         FileUploader $fileUploader,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
@@ -53,91 +52,45 @@ class UploadController extends AbstractController
         $response = new JsonResponse();
         $item = $itemService->getItem($itemId);
         $files = $request->files->all();
-        $fileIds = [];
+
+        $responseData = [];
         if ($item) {
             foreach ($files['files'] as $file) {
                 /** @var UploadedFile $file */
-                /*
-                    check type of item:
-                    user    ->  user image
-                    room    ->  room icon
-                    portal  ->  portal icon
-                    <other> ->  attachment to item
-                */
-                switch ($item->getItemType()) {
-                    case 'user':
-                        $srcfile = $file->getPathname();
-                        $targetfile = $srcfile.'_converted';
-
-                        // resize image to a maximum width of 150px and keep ratio
-                        $size = getimagesize($srcfile);
-                        $x_orig = $size[0];
-                        $y_orig = $size[1];
-                        $verhaeltnis = $y_orig / $x_orig;
-                        $max_width = 150;
-                        $ratio = 1;
-                        if ($verhaeltnis < $ratio) {
-                            // Breiter als 1:$ratio
-                            $source_width = ($size[1] * $max_width) / ($max_width * $ratio);
-                            $source_height = $size[1];
-                            $source_x = ($size[0] - $source_width) / 2;
-                            $source_y = 0;
-                        } else {
-                            // Höher als 1:$ratio
-                            $source_width = $size[0];
-                            $source_height = ($size[0] * ($max_width * $ratio)) / $max_width;
-                            $source_x = 0;
-                            $source_y = ($size[1] - $source_height) / 2;
-                        }
-                        switch ($size[2]) {
-                            case '1':
-                                $im = imagecreatefromgif($srcfile);
-                                break;
-                            case '2':
-                                $im = imagecreatefromjpeg($srcfile);
-                                break;
-                            case '3':
-                                $im = imagecreatefrompng($srcfile);
-                                break;
-                        }
-                        $newimg = imagecreatetruecolor($max_width, $max_width * $ratio);
-                        imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
-                        imagepng($newimg, $targetfile);
-                        imagedestroy($im);
-                        imagedestroy($newimg);
-
-                        // determ new file name
-                        $userItem = $userService->getUser($itemId);
-                        $filename = 'cid'.$environment->getCurrentContextID().'_'.$userItem->getUserID().'.png';
-
-                        // copy file and set picture
-                        $discService->copyFile($targetfile, $filename, true);
-                        $userItem->setPicture($filename);
-                        $userItem->save();
-
-                        $response->setData([
-                            'userImage' => $this->generateUrl('app_user_image', [
-                                'roomId' => $roomId,
-                                'itemId' => $itemId,
-                            ]),
-                        ]);
-                        break;
-
-                    default:
-                        $fileIds[] = $fileUploader->upload($file, $environment->getCurrentPortalID(), $roomId);
-                        break;
-                }
+                $fileId = $fileUploader->upload($file, $environment->getCurrentPortalID(), $roomId);
+                $tempFile = $fileService->getFile($fileId);
+                $responseData[$fileId] = htmlentities((string) $tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
             }
-        }
-
-        $responseData = [];
-        foreach ($fileIds as $fileId) {
-            $tempFile = $fileService->getFile($fileId);
-            $responseData[$fileId] = htmlentities((string) $tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
         }
 
         return $response->setData([
             'fileIds' => $responseData,
+        ]);
+    }
+
+    #[Route(path: '/room/{roomId}/tempupload/{filename}')]
+    public function uploadToUserTemp(
+        int $roomId,
+        string $filename,
+        Request $request,
+        #[CurrentUser]
+        ?Account $account,
+        UploadHandler $uploadHandler
+    ): JsonResponse {
+        $files = $request->files->all();
+
+        /** @var UploadedFile $file */
+        $file = $files['files'][0];
+
+        $fileDto = new TempUserFileDto();
+        $fileDto->id = $account?->getId();
+        $fileDto->imageName = $filename;
+        $fileDto->imageFile = new ReplacingFile($file->getRealPath());
+        $uploadHandler->upload($fileDto, 'imageFile');
+
+        return $this->json([
+            // dummy
+            'fileIds' => [0],
         ]);
     }
 
@@ -178,42 +131,6 @@ class UploadController extends AbstractController
         return $response->setData([
             'fileIds' => $responseData,
         ]);
-    }
-
-
-    /**
-     * @return JsonResponse
-     */
-    #[Route(path: '/room/{roomId}/base64upload/')]
-    public function base64Upload(
-        Request $request
-    ): Response {
-        $files = $request->files->all();
-        $base64Content = [];
-        $fileSystem = new Filesystem();
-
-        /** @var UploadedFile $file */
-        foreach ($files['files'] as $file) {
-            $tempUploadDir = $this->getParameter('kernel.project_dir').'/files/temp/';
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
-
-            $file->move($tempUploadDir, $fileName);
-            $fileAsBase64 = base64_encode(file_get_contents($tempUploadDir.$fileName));
-
-            $base64Content[] = [
-                'filename' => $file->getClientOriginalName(),
-                'content' => $fileAsBase64,
-            ];
-
-            $fileSystem->remove($tempUploadDir.$fileName);
-        }
-
-        $response = new JsonResponse();
-        $response->setData([
-            'base64' => $base64Content,
-        ]);
-
-        return $response;
     }
 
     #[Route(path: '/room/{roomId}/ckupload/{itemId}/')]
