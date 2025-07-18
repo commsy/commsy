@@ -30,27 +30,21 @@ class ImageTypeExtension extends AbstractTypeExtension
         return [FileType::class];
     }
 
-    /**
-     * Add the image_path option.
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefined(['image_path']);
+        // makes it legal for FileType fields to have an image_property option
+        $resolver->setDefined(['image_property']);
     }
 
-    /**
-     * Pass the image URL to the view.
-     */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        if (array_key_exists('image_path', $options)) {
+        if (array_key_exists('image_property', $options)) {
             $parentData = $form->getParent()->getData();
 
+            $imageUrl = null;
             if (null !== $parentData) {
                 $accessor = PropertyAccess::createPropertyAccessor();
-                $imageUrl = $accessor->getValue($parentData, $options['image_path']);
-            } else {
-                $imageUrl = null;
+                $imageUrl = $accessor->getValue($parentData, $options['image_property']);
             }
 
             // set an "image_url" variable that will be available when rendering this field

@@ -239,7 +239,7 @@ class cs_community_item extends cs_room_item
                    $eventDispatcher->dispatch(new WorkspaceArchivedEvent($this));
                } elseif (RoomStatus::OPEN->value == $new_status) {
                    $eventDispatcher->dispatch(new WorkspaceUnarchivedEvent($this));
-               } elseif (RoomStatus::LOCKED->value == $new_status) {
+               } elseif (RoomStatus::LOCKED->value == $new_status || RoomStatus::LOCKED_PORTAL_MOD->value == $new_status) {
                    $eventDispatcher->dispatch(new WorkspaceLockedEvent($this));
                }
            }

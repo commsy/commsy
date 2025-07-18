@@ -13,8 +13,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Account;
 use App\Entity\Portal;
 use App\Entity\Server;
+use App\Files\ProfileHelper;
 use App\Repository\FilesRepository;
 use App\Utils\FileService;
 use App\Utils\RoomService;
@@ -30,6 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
@@ -76,6 +79,22 @@ class FileController extends AbstractController
         $response->prepare($request);
 
         return $response;
+    }
+
+    #[Route(path: '/file_temp/user/{contextId}')]
+    #[IsGranted('ROLE_USER')]
+    public function getUserTempProfileImage(
+        int $contextId,
+        ProfileHelper $profileHelper,
+        #[CurrentUser]
+        ?Account $account
+    ): BinaryFileResponse {
+        $imagePath = $profileHelper->getTempProfileImagePath($account, $contextId);
+        if (!$imagePath) {
+            throw $this->createNotFoundException('The requested file does not exist');
+        }
+
+        return new BinaryFileResponse($imagePath);
     }
 
     #[Route(path: '/room/{roomId}/logo', name: 'getLogo')]
