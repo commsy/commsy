@@ -222,6 +222,28 @@
                 <source>This room is currently locked.</source>
                 <target>This workspace is currently locked.</target>
             </trans-unit>
+            <trans-unit id="room_status_description">
+                <source>room.status.description</source>
+                <target>{room_status, select,
+                    LOCKED_PORTAL_MOD {Locked by portal moderation}
+                    LOCKED            {Locked by room moderation}
+                    CLOSED            {Workspace closed}
+                    NO_ROOM           {No workspace available}
+                    other             {Enter workspace}
+                }</target>
+            </trans-unit>
+            <trans-unit id="room_locked_unlock_info">
+                <source>This workspace can be unlocked using the "Unlock project workspace" action.</source>
+                <target>This workspace can be unlocked using the "Unlock project workspace" action.</target>
+            </trans-unit>
+            <trans-unit id="room_locked_by_moderator_unlock_info">
+                <source>This workspace can be unlocked by moderation.</source>
+                <target>This workspace can be unlocked by moderation.</target>
+            </trans-unit>
+            <trans-unit id="room_locked_by_portal_moderator_unlock_info">
+                <source>This workspace can only be unlocked by portal moderation.</source>
+                <target>This workspace can only be unlocked by portal moderation.</target>
+            </trans-unit>
             <trans-unit id="room_rejected">
                 <source>Your request has been rejected.</source>
                 <target>Your request has been rejected.</target>
