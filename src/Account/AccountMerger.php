@@ -133,6 +133,11 @@ class AccountMerger
             $roomUser->setFirstname($nameSource->getFirstname());
             $roomUser->setLastname($nameSource->getLastname());
         }
+        if (isset($nameSource)) {
+            $roomUser->setEmail($nameSource->getRoomEmail());
+        } else {
+            $roomUser->setEmail($into->getEmail());
+        }
         $roomUser->save();
     }
 
