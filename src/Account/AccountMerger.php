@@ -126,6 +126,7 @@ class AccountMerger
     private function rewriteRoomUser(Account $from, Account $into, cs_room_item $room, cs_user_item $nameSource = null): void
     {
         $roomUser = $this->getUserInContext($from, $room->getItemID());
+        $roomUser->setAccountID($into->getId());
         $roomUser->setUserID($into->getUsername());
         $roomUser->setAuthSource($into->getAuthSource()->getId());
         if (isset($nameSource)) {
