@@ -15,6 +15,7 @@ namespace App\Files;
 
 use App\Entity\Account;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 class ProfileHelper
@@ -31,6 +32,10 @@ class ProfileHelper
         }
 
         $fileDirectory = $this->uploadDir . $account->getId();
+        $filesystem = new Filesystem();
+        if (!$filesystem->exists($fileDirectory)) {
+            return null;
+        }
 
         $finder = new Finder();
         $finder
