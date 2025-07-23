@@ -801,6 +801,7 @@ class cs_user_manager extends cs_manager
         $query .= 'context_id="' . encode(AS_DB, $item->getContextID()) . '",';
         $query .= 'status="' . encode(AS_DB, $item->getStatus()) . '",';
         $query .= 'is_contact="' . encode(AS_DB, $contact_status) . '",';
+        $query .= 'account_id="' . encode(AS_DB, $item->getAccountID()) . '",';
         $query .= 'user_id="' . encode(AS_DB, $item->getUserID()) . '",';
         $query .= 'auth_source="' . $item->getAuthSource() . '",';
         $query .= 'firstname="' . encode(AS_DB, $item->getFirstname()) . '",';

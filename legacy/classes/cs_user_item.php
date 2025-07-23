@@ -55,6 +55,27 @@ class cs_user_item extends cs_item
         }
     }
 
+    /**
+     * Returns this user item's account ID which represents the relationship to the corresponding account
+     * in the `accounts` table.
+     *
+     * @return int the ID of the account that's linked to this user item
+     */
+    public function getAccountID(): int
+    {
+        return $this->_getValue('account_id');
+    }
+
+    /**
+     * Sets the user item's account ID which relates it to a corresponding account in the `accounts` table.
+     *
+     * @param int $value the ID of the account that shall be linked to this user item
+     */
+    public function setAccountID(int $value): void
+    {
+        $this->_setValue('account_id', $value);
+    }
+
     /** get user id of the user
      * this method returns the user id (account or Benutzerkennung) of the user.
      *
