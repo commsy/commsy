@@ -176,10 +176,10 @@ readonly class AccountManager
             $users = iterator_to_array($userList);
             array_walk($users, fn(cs_user_item $user) => $user->delete());
 
+            $portalUser?->delete();
+
             $this->entityManager->remove($account);
             $this->entityManager->flush();
-
-            $portalUser?->delete();
         }
     }
 
