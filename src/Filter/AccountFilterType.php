@@ -5,6 +5,7 @@ namespace App\Filter;
 use App\Entity\AuthSource;
 use App\Entity\Room;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
@@ -20,6 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AccountFilterType extends AbstractType
 {
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -88,6 +93,15 @@ class AccountFilterType extends AbstractType
 
                     /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
+
+                    $userRepository = $this->entityManager->getRepository(User::class);
+                    $subquery = $userRepository->createQueryBuilder('ru2')
+                        ->select('COUNT(ru2.userId)')
+                        ->where('ru2.userId = ru.userId')
+                        ->andWhere('ru2.isNotDeleted = :notDeleted')
+                        ->setParameter('notDeleted', true)
+                        ->getQuery()
+                        ->getDQL();
 
                     match ($status) {
                         // Members
@@ -199,8 +213,7 @@ class AccountFilterType extends AbstractType
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
                             ->leftJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
-                            ->groupBy('ru.userId')
-                            ->having('COUNT(ru.userId) = 2')
+                            ->andWhere($qb->expr()->eq('(' . $subquery . ')', 2))
                             ->setParameter('notDeleted', true),
                         default => $qb,
                     };
