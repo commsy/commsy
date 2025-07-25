@@ -2,6 +2,7 @@
 
 namespace App\Filter;
 
+use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Room;
 use App\Entity\User;
@@ -94,9 +95,10 @@ class AccountFilterType extends AbstractType
                     /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
 
-                    $userRepository = $this->entityManager->getRepository(User::class);
-                    $subquery = $userRepository->createQueryBuilder('ru2')
+                    $accountRepository = $this->entityManager->getRepository(Account::class);
+                    $subquery = $accountRepository->createQueryBuilder('a2')
                         ->select('COUNT(ru2.userId)')
+                        ->leftJoin(User::class, 'ru2', Join::WITH, 'ru2.userId = a2.username AND ru2.authSource = a2.authSource')
                         ->where('ru2.userId = ru.userId')
                         ->andWhere('ru2.isNotDeleted = :notDeleted')
                         ->setParameter('notDeleted', true)
