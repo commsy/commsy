@@ -235,8 +235,6 @@ class cs_announcement_manager extends cs_manager
             }
         }
 
-        $test = $queryBuilder->getSQL();
-
         return $queryBuilder->fetchAllAssociative();
     }
 
@@ -493,6 +491,7 @@ class cs_announcement_manager extends cs_manager
             $this->setIntervalLimit(0, $size);
         }
 
+        $this->setDateLimit(getCurrentDateTimeInMySQL());
         $this->setOrder('date');
 
         $this->select();
