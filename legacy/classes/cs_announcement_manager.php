@@ -47,11 +47,6 @@ class cs_announcement_manager extends cs_manager
      */
     public $_date_limit = null;
 
-    /**
-     * @var bool|mixed
-     */
-    private $hideExpiredLimit = false;
-
     public $_with_material = false;
 
     public $_group_limit = null;
@@ -83,7 +78,6 @@ class cs_announcement_manager extends cs_manager
         $this->_topic_limit = null;
         $this->_sort_order = null;
         $this->_group_limit = null;
-        $this->hideExpiredLimit = false;
     }
 
     /** set date limit
@@ -94,11 +88,6 @@ class cs_announcement_manager extends cs_manager
     public function setDateLimit($datetime)
     {
         $this->_date_limit = (string)$datetime;
-    }
-
-    public function setHideExpiredLimit($hideExpired)
-    {
-        $this->hideExpiredLimit = $hideExpired;
     }
 
     /** set age limit
@@ -196,10 +185,6 @@ class cs_announcement_manager extends cs_manager
             $queryBuilder->andWhere('a.creation_date <= :dateLimit');
             $queryBuilder->andWhere('a.enddate >= :dateLimit');
             $queryBuilder->setParameter('dateLimit', $this->_date_limit);
-        }
-
-        if ($this->hideExpiredLimit) {
-            $queryBuilder->andWhere('a.enddate < NOW()');
         }
 
         if (isset($this->_sort_order)) {
