@@ -47,11 +47,6 @@ class cs_announcement_manager extends cs_manager
      */
     public $_date_limit = null;
 
-    /**
-     * @var bool|mixed
-     */
-    private $hideExpiredLimit = false;
-
     public $_with_material = false;
 
     public $_group_limit = null;
@@ -83,7 +78,6 @@ class cs_announcement_manager extends cs_manager
         $this->_topic_limit = null;
         $this->_sort_order = null;
         $this->_group_limit = null;
-        $this->hideExpiredLimit = false;
     }
 
     /** set date limit
@@ -94,11 +88,6 @@ class cs_announcement_manager extends cs_manager
     public function setDateLimit($datetime)
     {
         $this->_date_limit = (string)$datetime;
-    }
-
-    public function setHideExpiredLimit($hideExpired)
-    {
-        $this->hideExpiredLimit = $hideExpired;
     }
 
     /** set age limit
@@ -198,10 +187,6 @@ class cs_announcement_manager extends cs_manager
             $queryBuilder->setParameter('dateLimit', $this->_date_limit);
         }
 
-        if ($this->hideExpiredLimit) {
-            $queryBuilder->andWhere('a.enddate < NOW()');
-        }
-
         if (isset($this->_sort_order)) {
             if ('date' == $this->_sort_order) {
                 $queryBuilder->orderBy('a.modification_date', 'DESC');
@@ -234,8 +219,6 @@ class cs_announcement_manager extends cs_manager
                 $queryBuilder->setMaxResults($this->_interval_limit);
             }
         }
-
-        $test = $queryBuilder->getSQL();
 
         return $queryBuilder->fetchAllAssociative();
     }
@@ -493,6 +476,7 @@ class cs_announcement_manager extends cs_manager
             $this->setIntervalLimit(0, $size);
         }
 
+        $this->setDateLimit(getCurrentDateTimeInMySQL());
         $this->setOrder('date');
 
         $this->select();
