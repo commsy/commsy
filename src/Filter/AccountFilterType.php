@@ -2,9 +2,11 @@
 
 namespace App\Filter;
 
+use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Room;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
@@ -20,6 +22,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AccountFilterType extends AbstractType
 {
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -89,11 +95,21 @@ class AccountFilterType extends AbstractType
                     /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
 
+                    $accountRepository = $this->entityManager->getRepository(Account::class);
+                    $subquery = $accountRepository->createQueryBuilder('a2')
+                        ->select('COUNT(ru2.userId)')
+                        ->leftJoin(User::class, 'ru2', Join::WITH, 'ru2.userId = a2.username AND ru2.authSource = a2.authSource')
+                        ->where('ru2.userId = ru.userId')
+                        ->andWhere('ru2.isNotDeleted = :notDeleted')
+                        ->setParameter('notDeleted', true)
+                        ->getQuery()
+                        ->getDQL();
+
                     match ($status) {
                         // Members
                         1 => $qb
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('r.itemId IS NOT NULL')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('r.deleter IS NULL')
@@ -108,28 +124,28 @@ class AccountFilterType extends AbstractType
                             ->setParameter('locked', true),
                         // Requesting
                         3 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.context = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 1),
                         // User
                         4 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.context = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 2),
                         // Moderator
                         5 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.context = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 3),
                         // Contact
                         6 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.contextId = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.context = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
                             ->andWhere($expr->eq('pu.isContact', ':contact'))
                             ->setParameter('contact', true),
                         // Community workspace moderator
                         7 => $qb
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('ru.status = :status')
                             ->andWhere('r.deleter IS NULL')
@@ -141,7 +157,7 @@ class AccountFilterType extends AbstractType
                         // Community workspace contact
                         8 => $qb
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('ru.isContact = :contact')
                             ->andWhere('r.deleter IS NULL')
@@ -153,7 +169,7 @@ class AccountFilterType extends AbstractType
                         // Project workspace moderator
                         9 => $qb
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('ru.status = :status')
                             ->andWhere('r.deleter IS NULL')
@@ -165,7 +181,7 @@ class AccountFilterType extends AbstractType
                         // project workspace contact
                         10 => $qb
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('ru.isContact = :contact')
                             ->andWhere('r.deleter IS NULL')
@@ -177,7 +193,7 @@ class AccountFilterType extends AbstractType
                         // moderator of any workspace
                         11 => $qb
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.status = :status')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('r.deleter IS NULL')
@@ -187,7 +203,7 @@ class AccountFilterType extends AbstractType
                         // contact of any workspace
                         12 => $qb
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.isContact = :contact')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('r.deleter IS NULL')
@@ -197,10 +213,9 @@ class AccountFilterType extends AbstractType
                         // no workspace membership
                         13 => $qb
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->leftJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.contextId')
+                            ->leftJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
-                            ->groupBy('ru.userId')
-                            ->having('COUNT(ru.userId) = 2')
+                            ->andWhere($qb->expr()->eq('(' . $subquery . ')', 2))
                             ->setParameter('notDeleted', true),
                         default => $qb,
                     };

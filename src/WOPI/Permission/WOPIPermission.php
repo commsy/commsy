@@ -6,4 +6,5 @@ enum WOPIPermission: string
 {
     case VIEW = 'view';
     case EDIT = 'edit';
+    case EDITNEW = 'editnew';
 }
