@@ -182,6 +182,10 @@
                 <source>hide-archived-rooms</source>
                 <target>Hide archived workspaces</target>
             </trans-unit>
+            <trans-unit id="hide-locked">
+                <source>hide-locked-rooms</source>
+                <target>Hide locked workspaces</target>
+            </trans-unit>
             <trans-unit id="hide-template">
                 <source>hide-templates</source>
                 <target>Hide templates</target>

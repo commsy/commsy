@@ -182,6 +182,10 @@
                 <source>hide-archived-rooms</source>
                 <target>Archivierte Räume ausblenden</target>
             </trans-unit>
+            <trans-unit id="hide-locked">
+                <source>hide-locked-rooms</source>
+                <target>Gesperrte Räume ausblenden</target>
+            </trans-unit>
             <trans-unit id="hide-template">
                 <source>hide-templates</source>
                 <target>Vorlagen ausblenden</target>
