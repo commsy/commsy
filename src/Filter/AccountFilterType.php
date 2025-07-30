@@ -2,9 +2,11 @@
 
 namespace App\Filter;
 
+use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Room;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
@@ -20,6 +22,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AccountFilterType extends AbstractType
 {
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -88,6 +94,16 @@ class AccountFilterType extends AbstractType
 
                     /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
+
+                    $accountRepository = $this->entityManager->getRepository(Account::class);
+                    $subquery = $accountRepository->createQueryBuilder('a2')
+                        ->select('COUNT(ru2.userId)')
+                        ->leftJoin(User::class, 'ru2', Join::WITH, 'ru2.userId = a2.username AND ru2.authSource = a2.authSource')
+                        ->where('ru2.userId = ru.userId')
+                        ->andWhere('ru2.isNotDeleted = :notDeleted')
+                        ->setParameter('notDeleted', true)
+                        ->getQuery()
+                        ->getDQL();
 
                     match ($status) {
                         // Members
@@ -199,8 +215,7 @@ class AccountFilterType extends AbstractType
                             ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
                             ->leftJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.context')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
-                            ->groupBy('ru.userId')
-                            ->having('COUNT(ru.userId) = 2')
+                            ->andWhere($qb->expr()->eq('(' . $subquery . ')', 2))
                             ->setParameter('notDeleted', true),
                         default => $qb,
                     };
