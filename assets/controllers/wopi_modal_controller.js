@@ -33,6 +33,6 @@ export default class extends Controller {
   }
 
   _hide() {
-    window.location.reload(true);
+    window.location.reload();
   }
 }

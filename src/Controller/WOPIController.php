@@ -53,7 +53,15 @@ class WOPIController extends AbstractController
             }
         }
 
-        $action = $discoveryService->findAction($app, $extension, $permission->value);
+        if ($permission === WOPIPermission::EDIT) {
+            if ($file->getSize() === 0) {
+                // This is a zero-byte file, try to use "editnew" action
+                $action = $discoveryService->findAction($app, $extension, WOPIPermission::EDITNEW->value);
+            } else {
+                $action = $discoveryService->findAction($app, $extension, WOPIPermission::EDIT->value);
+            }
+        }
+
         if (!$action) {
             throw new Exception('No matching action found.');
         }
