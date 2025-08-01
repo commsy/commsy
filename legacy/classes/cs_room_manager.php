@@ -11,8 +11,10 @@
  * file that was distributed with this source code.
  */
 
+use App\Entity\Room;
 use App\Hash\HashManager;
 use App\Utils\ReaderService;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\EntityManagerInterface;
 
 /** class for database connection to the database table "community"
@@ -538,8 +540,24 @@ class cs_room_manager extends cs_context_manager
 
     public function deleteFromDb($context_id)
     {
-        $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.$context_id.'"';
-        $this->_db_connector->performQuery($query);
+        /** @var EntityManagerInterface $em */
+        $em = $this->_environment->getSymfonyContainer()->get('doctrine.orm.entity_manager');
+        $room = $em->getRepository(Room::class)->findOneBy(['itemId' => $context_id]);
+
+        if ($room) {
+            // ORM deletion will trigger the orphan removal on the room_slug collection
+            $em->remove($room);
+            $em->flush();
+        } else {
+            // Is this necessary for private or user rooms?
+            $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+            $queryBuilder
+                ->delete($this->_db_table)
+                ->where('item_id = :item_id')
+                ->setParameter('item_id', $context_id, ParameterType::INTEGER);
+            $queryBuilder->executeStatement();
+        }
     }
 
     public function deleteReallyOlderThan(int $days): void
@@ -615,8 +633,8 @@ class cs_room_manager extends cs_context_manager
             $tag2tag_manager->deleteFromDb($itemId);
             $task_manager->deleteFromDb($itemId);
             $todo_manager->deleteFromDb($itemId);
-            $room_manager->deleteFromDb($itemId);
             $user_manager->deleteFromDb($itemId);
+            $room_manager->deleteFromDb($itemId);
         }
     }
 

@@ -1354,8 +1354,17 @@ class cs_manager
 
     public function deleteFromDb($context_id)
     {
-        $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.context_id = "'.$context_id.'"';
-        $this->_db_connector->performQuery($query);
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+
+        $queryBuilder
+            ->delete($this->_db_table)
+            ->where('context_id = :contextId')
+            ->setParameter('contextId', $context_id, ParameterType::INTEGER);
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error($e->getMessage(), E_USER_WARNING);
+        }
     }
 
     /**

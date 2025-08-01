@@ -12,9 +12,14 @@
  */
 
 use App\Account\AccountManager;
+use App\Entity\Room;
+use App\Entity\RoomPrivat;
+use App\Entity\User;
 use App\Event\AccountDeletedEvent;
 use App\Repository\HashRepository;
 use App\Room\RoomStatus;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for database connection to the database table "user"
@@ -1040,6 +1045,31 @@ class cs_user_manager extends cs_manager
         } catch (\Doctrine\DBAL\Exception $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
         }
+    }
+
+    #[Override]
+    public function deleteFromDb($context_id)
+    {
+        /** @var EntityManagerInterface $em */
+        $em = $this->_environment->getSymfonyContainer()->get('doctrine.orm.entity_manager');
+
+        // grab all ids for the given context
+        $query = $em->createQuery('SELECT u.itemId FROM App\Entity\User u WHERE u.context = :contextId');
+        $query->setParameter('contextId', $context_id);
+        $userIds = $query->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
+
+        $schemasWithReference = [User::class, Room::class, RoomPrivat::class];
+        foreach ($schemasWithReference as $schema) {
+            // Remove all references to this user object
+            $updateCreatorQuery = $em->createQuery("UPDATE $schema t SET t.creator = NULL WHERE t.creator IN (:userIds)");
+            $updateCreatorQuery->setParameter('userIds', $userIds);
+            $updateCreatorQuery->execute();
+            $updateModifierQuery = $em->createQuery("UPDATE $schema t SET t.modifier = NULL WHERE t.modifier IN (:userIds)");
+            $updateModifierQuery->setParameter('userIds', $userIds);
+            $updateModifierQuery->execute();
+        }
+
+        parent::deleteFromDb($context_id);
     }
 
     /** save a commsy item
