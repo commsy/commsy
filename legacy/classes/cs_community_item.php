@@ -289,14 +289,14 @@ class cs_community_item extends cs_room_item
        $eventDispatcher->dispatch(new WorkspaceUndeletedEvent($this));
    }
 
-   public function getTimeSpread()
+   public function getTimeSpread(): int
    {
        $retour = '90';
        if ($this->_issetExtra('TIMESPREAD')) {
            $retour = $this->_getExtra('TIMESPREAD');
        }
 
-       return $retour;
+       return intval($retour);
    }
 
    /** set time spread for items on home

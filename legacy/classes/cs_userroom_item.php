@@ -90,18 +90,13 @@ class cs_userroom_item extends cs_room_item
         $this->deleteFromElastic();
     }
 
-    // time spread
-
-    /** Returns the time spread for items on home.
-     * @return int the time spread
-     */
-    public function getTimeSpread()
+    public function getTimeSpread(): int
     {
         if ($this->_issetExtra('TIMESPREAD')) {
-            return $this->_getExtra('TIMESPREAD');
+            return intval($this->_getExtra('TIMESPREAD'));
         }
 
-        return '7';
+        return 7;
     }
 
     /** Sets the time spread for items on home.

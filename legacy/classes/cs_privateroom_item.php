@@ -53,11 +53,9 @@ class cs_privateroom_item extends cs_room_item
     }
 
     /** get time spread for items on home
-     * this method returns the time spread for items on the home of the project project.
-     *
-     * @return int the time spread
+     * this method returns the time spread for items on the home of the project.
      */
-    public function getTimeSpread()
+    public function getTimeSpread(): int
     {
         $retour = '7';
         if ($this->_issetExtra('TIMESPREAD')) {
@@ -67,7 +65,7 @@ class cs_privateroom_item extends cs_room_item
             }
         }
 
-        return $retour;
+        return intval($retour);
     }
 
     /** set time spread for items on home

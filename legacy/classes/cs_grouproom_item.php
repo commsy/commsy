@@ -75,17 +75,15 @@ class cs_grouproom_item extends cs_room_item
 
     /** get time spread for items on home
      * this method returns the time spread for items on the home of the room.
-     *
-     * @return int the time spread
      */
-    public function getTimeSpread()
+    public function getTimeSpread(): int
     {
         $retour = '7';
         if ($this->_issetExtra('TIMESPREAD')) {
             $retour = $this->_getExtra('TIMESPREAD');
         }
 
-        return $retour;
+        return intval($retour);
     }
 
     /** set time spread for items on home
