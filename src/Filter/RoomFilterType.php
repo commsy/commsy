@@ -110,7 +110,7 @@ class RoomFilterType extends AbstractType
                     $qb = $filterQuery->getQueryBuilder();
                     $qb
                         ->andWhere('r.template = :template')
-                        ->setParameter('template', '-1');
+                        ->setParameter('template', '0');
 
                     return $qb;
                 },
