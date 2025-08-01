@@ -16,6 +16,7 @@ namespace App\Account;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
+use App\Repository\UserRepository;
 use App\Services\LegacyEnvironment;
 use App\User\UserListBuilder;
 use App\Utils\UserService;
@@ -35,6 +36,7 @@ readonly class AccountManager
 
     public function __construct(
         private EntityManagerInterface $entityManager,
+        private UserRepository $userRepository,
         LegacyEnvironment $legacyEnvironment,
         private UserService $userService,
         private RequestStack $requestStack,
@@ -178,8 +180,21 @@ readonly class AccountManager
 
             $portalUser?->delete();
 
-            $this->entityManager->remove($account);
-            $this->entityManager->flush();
+            try {
+                /*
+                 * With the introduction of the account_id column in the user table (@see migration Version20250514125210)
+                 * it is now possible that user entries are soft-deleted and still hold a reference to the account table.
+                 * Those must also be set to null before removing the account entry itself.
+                 */
+                $usersWithAccountRef = $this->userRepository->findBy(['account' => $account]);
+                foreach ($usersWithAccountRef as $userWithAccountRef) {
+                    $userWithAccountRef->setAccount(null);
+                }
+
+                $this->entityManager->remove($account);
+                $this->entityManager->flush();
+            } catch (Exception $e) {
+            }
         }
     }
 
