@@ -2491,19 +2491,15 @@ class cs_context_item extends cs_item
 
     /** get time spread for items on home
      * this method returns the time spread for items on the home of the context.
-     *
-     * @return int the time spread
-     *
-     * @author CommSy Development Group
      */
-    public function getTimeSpread()
+    public function getTimeSpread(): int
     {
         $retour = '30';
         if ($this->_issetExtra('TIMESPREAD')) {
             $retour = $this->_getExtra('TIMESPREAD');
         }
 
-        return $retour;
+        return intval($retour);
     }
 
     /** set page impression array.
