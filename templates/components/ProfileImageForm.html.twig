@@ -34,13 +34,15 @@
                     </div>
 
                     <div class="uk-margin-left" style="height: 100%; width: 300px;">
-                        {% if form.crop is defined %}{{ form_row(form.crop) }}{% endif %}
+                            {% if form.crop is defined %}{{ form_row(form.crop) }}{% endif %}
                     </div>
                     <div class="uk-margin-left uk-flex-item-1">
                         {{ form_row(form.upload) }}
                     </div>
                 </div>
             {% else %}
+                {# Workaround, see RoomProfileGeneralType and the dependant crop field #}
+                {% do form.crop.setRendered %}
                 <!-- user initials image -->
                 <div>
                     <img class="uk-thumbnail uk-margin-bottom uk-border-circle" src="{{ path('app_user_initials', {'roomId': userItem.contextId, 'itemId': userItem.itemId}) }}" data-uk-tooltip title="{{ userItem.fullname }}">
