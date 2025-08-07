@@ -5,7 +5,7 @@
 
             {% set item = element.linkedItem is defined ? element.linkedItem : element %}
             {% set subitemAnchor = element.linkedItem is defined ? '#' ~ element.itemType ~ element.itemId : '' %}
-            {% set title = element.title is defined and element.title is not empty
+            {% set title = element.itemType is not same as('user') and element.title is defined and element.title is not empty
                 ? element.title|decodeHtmlEntity|u.truncate(55, '...')
                 : element.fullName is defined and element.fullName is not empty
                     ? element.fullName|decodeHtmlEntity|u.truncate(55, '...')
