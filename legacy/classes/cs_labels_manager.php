@@ -950,7 +950,7 @@ class cs_labels_manager extends cs_manager
              trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
          } else {
              foreach ($result as $query_result) {
-                 $extra_array = xml2Array($query_result['extras']);
+                 $extra_array = unserialize($query_result['extras']);
                  if (isset($extra_array['LABELPICTURE']) and !empty($extra_array['LABELPICTURE'])) {
                      $disc_manager = $this->_environment->getDiscManager();
                      $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
