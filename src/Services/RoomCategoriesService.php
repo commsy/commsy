@@ -16,15 +16,12 @@ namespace App\Services;
 use App\Entity\RoomCategories;
 use App\Entity\RoomCategoriesLinks;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 
 class RoomCategoriesService
 {
-    private readonly EntityManagerInterface $em;
-
-    public function __construct(ManagerRegistry $doctrine)
-    {
-        $this->em = $doctrine->getManager();
+    public function __construct(
+        private readonly EntityManagerInterface $em
+    ) {
     }
 
     public function getListRoomCategories($contextId)
