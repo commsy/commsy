@@ -394,8 +394,6 @@ class cs_community_item extends cs_room_item
            $retour = $this->_getExtra('USAGE_INFO_TEXT');
            if (empty($retour)) {
                $retour = [];
-           } elseif (!is_array($retour)) {
-               $retour = XML2Array($retour);
            }
        } else {
            $retour = [];
@@ -415,8 +413,6 @@ class cs_community_item extends cs_room_item
            $value_array = $this->_getExtra('USAGE_INFO_TEXT');
            if (empty($value_array)) {
                $value_array = [];
-           } elseif (!is_array($value_array)) {
-               $value_array = XML2Array($value_array);
            }
        } else {
            $value_array = [];
@@ -438,10 +434,7 @@ class cs_community_item extends cs_room_item
            $retour = $this->_getExtra('USAGE_INFO_TEXT');
            if (empty($retour)) {
                $retour = [];
-           } elseif (!is_array($retour)) {
-               $retour = XML2Array($retour);
            }
-       } else {
            $retour = [];
        }
        if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
