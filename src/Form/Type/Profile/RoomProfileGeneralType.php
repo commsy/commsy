@@ -42,24 +42,26 @@ class RoomProfileGeneralType extends AbstractType
                     ]);
                 }
             })
-            ->addDependent('crop', 'useProfileImage', function (DependentField $field, bool $checked) use ($options) {
-                if ($checked && file_exists($options['cropPath'])) {
-                    $field->add(CropperType::class, [
-                        'public_url' => $options['cropPublicUrl'],
-                        'cropper_options' => [
-                            'aspectRatio' => 1,
-                            'preview' => '#cropper-preview',
-                        ],
-                    ]);
-                }
+            ->addDependent('crop', 'useProfileImage', function (DependentField $field, ?bool $checked) use ($options) {
+                /**
+                 * Workaround for https://github.com/symfony/ux/pull/2397
+                 * We always add the field for now and just control the visibility.
+                 */
+//                if (!$checked || !file_exists($options['cropPath'])) {
+//                    return;
+//                }
+
+                $field->add(CropperType::class, [
+                    'public_url' => $options['cropPublicUrl'],
+                    'cropper_options' => [
+                        'aspectRatio' => 1,
+                        'preview' => '#cropper-preview',
+                    ],
+                    'attr' => [
+                        'class' => !file_exists($options['cropPath']) || !$checked ? 'uk-hidden' : '',
+                    ]
+                ]);
             })
-            ->add('imageChangeInAllContexts', CheckboxType::class, [
-                'label' => 'changeInAllContexts',
-                'required' => false,
-                'label_attr' => ['class' => 'uk-form-label'],
-                'data' => true,
-                'mapped' => false,
-            ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',

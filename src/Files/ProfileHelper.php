@@ -25,6 +25,27 @@ class ProfileHelper
         private readonly string $uploadDir
     ) {}
 
+    public function getTempProfileImagePaths(?Account $account, int $contextId): array
+    {
+        if (!$account) {
+            return [];
+        }
+
+        $fileDirectory = $this->uploadDir . $account->getId();
+        $filesystem = new Filesystem();
+        if (!$filesystem->exists($fileDirectory)) {
+            return [];
+        }
+
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->in($fileDirectory)
+            ->name("{$this->getProfileImageBaseName($account, $contextId)}*")
+            ->sortByModifiedTime()->reverseSorting();
+        return iterator_to_array($finder);
+    }
+
     public function getTempProfileImagePath(?Account $account, int $contextId): ?string
     {
         if (!$account) {
@@ -32,23 +53,22 @@ class ProfileHelper
         }
 
         $fileDirectory = $this->uploadDir . $account->getId();
-        $filesystem = new Filesystem();
-        if (!$filesystem->exists($fileDirectory)) {
-            return null;
-        }
-
-        $finder = new Finder();
-        $finder
-            ->files()
-            ->in($fileDirectory)
-            ->name("{$this->getProfileImageBaseName($account, $contextId)}*");
-        $found = iterator_to_array($finder);
-        $firstFound = current($found);
+        $firstFound = current($this->getTempProfileImagePaths($account, $contextId));
         return !$firstFound ? null : "$fileDirectory/{$firstFound->getFilename()}";
     }
 
     public function getProfileImageBaseName(Account $account, int $contextId): string
     {
         return "cid{$contextId}_{$account->getUsername()}";
+    }
+
+    public function deleteAllTemporaryUserFiles(Account $account, int $contextId): void
+    {
+        $files = $this->getTempProfileImagePaths($account, $contextId);
+
+        $filesystem = new Filesystem();
+        foreach ($files as $file) {
+            $filesystem->remove($file->getPathname());
+        }
     }
 }

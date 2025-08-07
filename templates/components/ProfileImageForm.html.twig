@@ -25,7 +25,7 @@
                          data-uk-tooltip
                          title="{{ userItem.fullname }}"
                     >
-                        {% if form.crop is not defined %}
+                        {% if userItem.picture is not empty %}
                             <img src="{{ path('app_user_image', {
                                 'roomId': userItem.contextId,
                                 'itemId': userItem.itemId
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="uk-margin-left" style="height: 100%; width: 300px;">
-                        {% if form.crop is defined %}{{ form_row(form.crop) }}{% endif %}
+                        {{ form_row(form.crop) }}
                     </div>
                     <div class="uk-margin-left uk-flex-item-1">
                         {{ form_row(form.upload) }}
@@ -47,9 +47,9 @@
                 </div>
             {% endif %}
 
-            {{ form_row(form.imageChangeInAllContexts) }}
-
-            {{ form_widget(form.save) }}
+            <div class="uk-margin-top">
+                {{ form_widget(form.save) }}
+            </div>
         </div>
     {{ form_end(form) }}
 </div>
