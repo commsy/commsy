@@ -57,15 +57,11 @@ class RoomProfileGeneralType extends AbstractType
                         'aspectRatio' => 1,
                         'preview' => '#cropper-preview',
                     ],
+                    'attr' => [
+                        'class' => !file_exists($options['cropPath']) || !$checked ? 'uk-hidden' : '',
+                    ]
                 ]);
             })
-            ->add('imageChangeInAllContexts', CheckboxType::class, [
-                'label' => 'changeInAllContexts',
-                'required' => false,
-                'label_attr' => ['class' => 'uk-form-label'],
-                'data' => true,
-                'mapped' => false,
-            ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
