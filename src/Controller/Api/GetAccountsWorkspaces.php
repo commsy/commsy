@@ -15,8 +15,10 @@ namespace App\Controller\Api;
 
 use App\Entity\Account;
 use App\Repository\RoomRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 
-class GetAccountsWorkspaces
+class GetAccountsWorkspaces extends AbstractController
 {
     public function __construct(private readonly RoomRepository $roomRepository)
     {
