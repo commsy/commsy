@@ -33,6 +33,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -75,15 +76,12 @@ class ProfileController extends AbstractController
         /** @var ?Account $account */
         $account = $this->getUser();
 
-        $imagePath = $profileHelper->getTempProfileImagePath($account, $user->getcontextId());
-
-        if ($imagePath) {
-            $crop = $cropper->createCrop($imagePath);
-            $crop->setCroppedMaxSize(200, 200);
-        }
+        $imagePath = $profileHelper->getTempProfileImagePath($account, $user->getContextID());
+        $crop = $cropper->createCrop($imagePath ?? '');
+        $crop->setCroppedMaxSize(200, 200);
         $formData = [
             'useProfileImage' => !empty($user->getPicture()),
-            'crop' => $crop ?? null,
+            'crop' => $crop,
         ];
 
         $form = $this->createForm(RoomProfileGeneralType::class, $formData, [
@@ -106,26 +104,29 @@ class ProfileController extends AbstractController
             $fs = new Filesystem();
 
             if ($data['useProfileImage']) {
-                /** @var Crop $crop */
-                $crop = $data['crop'];
+                if ($imagePath === null) {
+                    $form->addError(new FormError('No image found'));
+                } else {
+                    /** @var Crop $crop */
+                    $crop = $data['crop'];
 
-                if ($currentPicture = $user->getPicture()) {
-                    $currentFilePath = $filesDir . $roomService->getRoomFileDirectory($user->getContextID()) . '/' . $currentPicture;
-                    if ($fs->exists($currentFilePath)) {
-                        $fs->remove($currentFilePath);
+                    if ($currentPicture = $user->getPicture()) {
+                        $currentFilePath = $filesDir . $roomService->getRoomFileDirectory($user->getContextID()) . '/' . $currentPicture;
+                        if ($fs->exists($currentFilePath)) {
+                            $fs->remove($currentFilePath);
+                        }
                     }
-                }
 
-                $image = $crop->getCroppedImage('png');
-                $saveDir = $filesDir . $roomService->getRoomFileDirectory($user->getContextID());
-                $filename = "cid{$user->getContextID()}_{$user->getUserID()}.png";
+                    $image = $crop->getCroppedImage('png');
+                    $saveDir = $filesDir . $roomService->getRoomFileDirectory($user->getContextID());
+                    if (!$fs->exists($saveDir)) {
+                        $fs->mkdir($saveDir, 0770);
+                    }
 
-                file_put_contents("$saveDir/$filename", $image);
-                $user->setPicture($filename);
-                $user->save();
-
-                if ($fs->exists($imagePath)) {
-                    $fs->remove($imagePath);
+                    $filename = "cid{$user->getContextID()}_{$user->getUserID()}.png";
+                    file_put_contents("$saveDir/$filename", $image);
+                    $user->setPicture($filename);
+                    $user->save();
                 }
             } else {
                 // use user initials else
@@ -136,28 +137,33 @@ class ProfileController extends AbstractController
                 $user->save();
             }
 
-            if ($form->get('imageChangeInAllContexts')->getData()) {
-                $userList = $user->getRelatedUserList(true);
-                foreach ($userList as $tempUserItem) {
-                    /** @var cs_user_item $tempUserItem */
-                    if ($tempUserItem->getItemId() == $user->getItemId()) {
-                        continue;
-                    }
-
-                    if ($data['useProfileImage']) {
-                        $tempFilename = $discService->copyImageFromRoomToRoom($user->getPicture(),
-                            $tempUserItem->getContextId());
-                        if ($tempFilename) {
-                            $tempUserItem->setPicture($tempFilename);
-                        }
-                    } else {
-                        if ($discManager->existsFile($tempUserItem->getPicture())) {
-                            $discManager->unlinkFile($tempUserItem->getPicture());
-                        }
-                        $tempUserItem->setPicture('');
-                    }
-                    $tempUserItem->save();
+            // Change in all contexts
+            $userList = $user->getRelatedUserList(true);
+            foreach ($userList as $tempUserItem) {
+                /** @var cs_user_item $tempUserItem */
+                if ($tempUserItem->getItemId() == $user->getItemId()) {
+                    continue;
                 }
+
+                if ($data['useProfileImage']) {
+                    $tempFilename = $discService->copyImageFromRoomToRoom($user->getPicture(),
+                        $tempUserItem->getContextId());
+                    if ($tempFilename) {
+                        $tempUserItem->setPicture($tempFilename);
+                    }
+                } else {
+                    if ($discManager->existsFile($tempUserItem->getPicture())) {
+                        $discManager->unlinkFile($tempUserItem->getPicture());
+                    }
+                    $tempUserItem->setPicture('');
+                }
+                $tempUserItem->save();
+            }
+
+            $profileHelper->deleteAllTemporaryUserFiles($account, $user->getContextID());
+
+            if ($imagePath && $fs->exists($imagePath)) {
+                $fs->remove($imagePath);
             }
         }
 
