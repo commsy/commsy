@@ -57,8 +57,12 @@ final class ProfileImageForm extends AbstractController
         $user = $this->userService->getUser($this->userId);
 
         if (!$this->formData) {
+            /** @var ?Account $account */
+            $account = $this->getUser();
+            $imagePath = $this->profileHelper->getTempProfileImagePath($account, $user->getContextID());
+
             $this->formData = [
-                'useProfileImage' => !empty($user->getPicture()),
+                'useProfileImage' => !empty($user->getPicture()) || file_exists($imagePath),
             ];
         }
     }
@@ -82,13 +86,10 @@ final class ProfileImageForm extends AbstractController
         $user = $this->userService->getUser($this->userId);
 
         $imagePath = $this->profileHelper->getTempProfileImagePath($account, $user->getContextID());
+        $crop = $this->cropper->createCrop($imagePath ?? '');
+        $crop->setCroppedMaxSize(200, 200);
 
-        if ($imagePath) {
-            $crop = $this->cropper->createCrop($imagePath);
-            $crop->setCroppedMaxSize(200, 200);
-        }
-
-        $formData = array_merge($this->formData, ['crop' => $crop ?? null]);
+        $formData = array_merge($this->formData, ['crop' => $crop]);
 
         return $this->createForm(RoomProfileGeneralType::class, $formData, [
             'uploadUrl' => $this->generateUrl('app_upload_uploadtousertemp', [
