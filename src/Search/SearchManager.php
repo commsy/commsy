@@ -148,7 +148,7 @@ class SearchManager
         $query->setQuery($boolQuery);
 
         // sort by activity
-        $sortArray = ['activity' => ['order' => 'desc', 'unmapped_type' => 'long']];
+        $sortArray = ['_score' => ['order' => 'desc'], 'activity' => ['order' => 'desc', 'unmapped_type' => 'long']];
 
         $query->setSort($sortArray);
 
