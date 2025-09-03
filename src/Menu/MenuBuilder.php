@@ -619,8 +619,8 @@ final readonly class MenuBuilder
             }
         }
 
-        if (!$inPrivateRoom) {
-            if (!$userIsRoot && !$currentUser->isGuest()) {
+        if (!$inPrivateRoom && !$currentUser->isGuest()) {
+            if (!$userIsRoot) {
                 $menu->addChild('', ['uri' => '#']);
                 $menu->addChild('room_profile', [
                     'label' => 'Room profile',
@@ -628,13 +628,13 @@ final readonly class MenuBuilder
                     'routeParameters' => ['roomId' => $roomId, 'itemId' => $currentUser->getItemID()],
                     'extras' => ['icon' => 'uk-icon-street-view uk-icon-small'],
                 ])
-                ->setExtra('translation_domain', 'menu');
-
-                if ($this->authorizationChecker->isGranted('MODERATOR')) {
-                    $menu->addChild(' ', ['uri' => '#']);
-                    $menu->addChild('room_configuration', ['label' => 'settings', 'route' => 'app_settings_general', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-wrench uk-icon-small']])
                     ->setExtra('translation_domain', 'menu');
-                }
+            }
+
+            if ($userIsRoot || $this->authorizationChecker->isGranted('MODERATOR')) {
+                $menu->addChild(' ', ['uri' => '#']);
+                $menu->addChild('room_configuration', ['label' => 'settings', 'route' => 'app_settings_general', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-wrench uk-icon-small']])
+                ->setExtra('translation_domain', 'menu');
             }
         }
 
