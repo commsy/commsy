@@ -48,8 +48,10 @@
                 {% for user in this.users %}
                     <dt>
                         <span class="uk-text-bold">
-                            {{ user.context.title|raw }}({{ user.context.itemId }})
-                            {% if user.context.archived %} ({{ 'Archived' | trans({}, 'room') }}){% endif %}
+                            {{ user.context.title|raw }}
+                            ({{ user.context.itemId }}
+                            {%- if user.context.archived %}, {{ 'Archived' | trans({}, 'room') }}{% endif %}
+                            {%- if user.context.locked %}, {{ 'Locked' | trans({}, 'room') }}{% endif %})
                         </span>
                     </dt>
                     <dd>{{ 'room.context_type'|trans({ 'type': user.context.type }, 'room') }} - {{ 'user.status'|trans({ 'status': user.status }, 'user') }}</dd>
