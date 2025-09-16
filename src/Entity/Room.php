@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\RoomRepository;
+use App\Room\RoomStatus;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
@@ -336,6 +337,19 @@ class Room
     {
         $this->archived = $archived;
         return $this;
+    }
+
+    public function isLocked(): bool
+    {
+        if (!empty($this->status) && in_array(intval($this->status), [
+                RoomStatus::LOCKED->value,
+                RoomStatus::LOCKED_PORTAL_MOD->value
+            ])
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     public function setOpenForGuests(bool $openForGuests): Room
