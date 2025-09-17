@@ -118,6 +118,10 @@
                 <source>Archived</source>
                 <target>Archived</target>
             </trans-unit>
+            <trans-unit id="room-filter-label-locked">
+                <source>Locked</source>
+                <target>Locked</target>
+            </trans-unit>
             <trans-unit id="room-filter-label-type">
                 <source>Type</source>
                 <target>Type</target>

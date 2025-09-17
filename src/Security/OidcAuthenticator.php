@@ -128,7 +128,7 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                         'contextId' => $context,
                         'email' => $userInfo->getEmail(),
                     ]);
-                    $lookupAccount = clone $account;
+                    $lookupAccount = $account ? clone $account : null;
                     $identifedByUsername = false;
                 }
 
