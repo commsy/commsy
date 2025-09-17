@@ -137,8 +137,8 @@ class AnnotationController extends AbstractController
         Request $request,
         int $roomId,
         int $itemId,
-        int $firstTagId = null,
-        int $secondTagId = null
+        ?int $firstTagId = null,
+        ?int $secondTagId = null
     ): RedirectResponse {
         $item = $itemService->getTypedItem($itemId);
         $itemType = $item->getItemType();

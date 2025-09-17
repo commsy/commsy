@@ -126,7 +126,7 @@ class CategoryController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         ManagerRegistry $doctrine,
         int $roomId,
-        int $categoryId = null
+        ?int $categoryId = null
     ): Response {
         $roomItem = $roomService->getRoomItem($roomId);
 

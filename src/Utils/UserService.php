@@ -100,7 +100,7 @@ class UserService
         cs_user_item $sourceUser,
         int $contextID,
         int $userStatus = 2,
-        cs_user_item $creator = null
+        ?cs_user_item $creator = null
     ): ?cs_user_item {
         // TODO: use a facade/factory to create a new room (also compare with UserCreatorFacade->addUserToRoomsWithIds())
 

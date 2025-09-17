@@ -47,7 +47,7 @@ class CalendarController extends AbstractController
         EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
-        int $calendarId = null
+        ?int $calendarId = null
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 

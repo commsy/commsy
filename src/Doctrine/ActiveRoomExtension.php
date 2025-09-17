@@ -26,7 +26,7 @@ class ActiveRoomExtension implements QueryCollectionExtensionInterface, QueryIte
         QueryBuilder $queryBuilder,
         QueryNameGeneratorInterface $queryNameGenerator,
         string $resourceClass,
-        Operation $operation = null,
+        ?Operation $operation = null,
         array $context = []
     ): void {
         $this->addWhere($queryBuilder, $resourceClass);
@@ -37,7 +37,7 @@ class ActiveRoomExtension implements QueryCollectionExtensionInterface, QueryIte
         QueryNameGeneratorInterface $queryNameGenerator,
         string $resourceClass,
         array $identifiers,
-        Operation $operation = null,
+        ?Operation $operation = null,
         array $context = []
     ): void {
         $this->addWhere($queryBuilder, $resourceClass);

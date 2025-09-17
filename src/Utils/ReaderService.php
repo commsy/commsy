@@ -60,7 +60,7 @@ final readonly class ReaderService
         return $readerList;
     }
 
-    public function getChangeStatus(cs_item $item, cs_user_item $user = null): string
+    public function getChangeStatus(cs_item $item, ?cs_user_item $user = null): string
     {
         $u = $user ?? $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
 
@@ -127,7 +127,7 @@ final readonly class ReaderService
      * @param cs_user_item|null $user the user whose read status shall be used (defaults to the current user if not given)
      * @throws InvalidArgumentException
      */
-    public function cachedReadStatusForItem(cs_item $item, cs_user_item $user = null): string
+    public function cachedReadStatusForItem(cs_item $item, ?cs_user_item $user = null): string
     {
         $user = $user ?? $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
 
@@ -225,7 +225,7 @@ final readonly class ReaderService
      *                              read for the current user
      * @return void
      */
-    public function markItemsWithIdsAsRead(array $itemIds, int $versionId, array $userIds = null): void
+    public function markItemsWithIdsAsRead(array $itemIds, int $versionId, ?array $userIds = null): void
     {
         if (empty($itemIds)) {
             return;
