@@ -98,9 +98,13 @@
                 <source>Membership</source>
                 <target>Mitgliedschaft</target>
             </trans-unit>
-             <trans-unit id="room-filter-label-archived">
+            <trans-unit id="room-filter-label-archived">
                 <source>Archived</source>
                 <target>Archiviert</target>
+            </trans-unit>
+            <trans-unit id="room-filter-label-locked">
+                <source>Locked</source>
+                <target>Gesperrt</target>
             </trans-unit>
             <trans-unit id="room-nav-title">
                 <source>All rooms</source>
