@@ -31,9 +31,9 @@ return RectorConfig::configure()
         symfony: true,
         doctrine: true
     )
-    ->withSets([
-        SymfonySetList::SYMFONY_64,
-        SymfonySetList::SYMFONY_CODE_QUALITY,
-        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
-        DoctrineSetList::DOCTRINE_CODE_QUALITY,
-    ]);
+    ->withComposerBased(
+        twig: true,
+        doctrine: true,
+        phpunit: true,
+        symfony: true,
+    );
