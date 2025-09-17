@@ -224,7 +224,7 @@ class Portal
         return $this->id;
     }
 
-    public function setDeleter(User $deleter = null): Portal
+    public function setDeleter(?User $deleter = null): Portal
     {
         $this->deleter = $deleter;
         return $this;

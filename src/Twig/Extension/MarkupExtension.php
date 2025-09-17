@@ -32,7 +32,7 @@ class MarkupExtension extends AbstractExtension
         return [new TwigFilter('commsyMarkup', $this->commsyMarkup(...))];
     }
 
-    public function commsyMarkup($text, cs_item $item = null)
+    public function commsyMarkup($text, ?cs_item $item = null)
     {
         $text = $this->commsyMarkupEscapes($text);
         $text = $this->commsyMarkupHeadings($text);

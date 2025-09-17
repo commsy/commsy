@@ -106,7 +106,7 @@ class UserroomService
         return $newRoom;
     }
 
-    public function updateRoomTemplate($roomId, cs_room_item $roomTemplate = null): void
+    public function updateRoomTemplate($roomId, ?cs_room_item $roomTemplate = null): void
     {
         $roomManager = $this->legacyEnvironment->getUserroomManager();
         $room = $roomManager->getItem($roomId);
@@ -142,7 +142,7 @@ class UserroomService
      * @param string        $newFirstname       (optional) the first name to be used for renaming; if not given, defaults to the $changedProjectUser's first name
      * @param string        $newLastname        (optional) the last name to be used for renaming; if not given, defaults to the $changedProjectUser's last name
      */
-    public function updateNameInUserroomsForUser(cs_user_item $changedProjectUser, string $newFirstname = null, string $newLastname = null): void
+    public function updateNameInUserroomsForUser(cs_user_item $changedProjectUser, ?string $newFirstname = null, ?string $newLastname = null): void
     {
         $room = $changedProjectUser->getContextItem();
         $newFirstname ??= $changedProjectUser->getFirstname();
@@ -195,7 +195,7 @@ class UserroomService
      * @param string        $newLanguage        (optional) the language identifier describing the system language to be used; if not given,
      *                                          defaults to the $changedProjectUser's language
      */
-    public function updateLanguageInUserroomOfUser(cs_user_item $changedProjectUser, string $newLanguage = null): void
+    public function updateLanguageInUserroomOfUser(cs_user_item $changedProjectUser, ?string $newLanguage = null): void
     {
         $newLanguage ??= $changedProjectUser->getLanguage();
 
@@ -395,7 +395,7 @@ class UserroomService
      * @param string            $newRoomTitle (optional) the name to be used for renaming; if not given, defaults to the name returned
      *                                        by defaultUserroomTitle()
      */
-    private function renameUserroom(cs_userroom_item $userroom, cs_user_item $roomOwner, string $newRoomTitle = null): void
+    private function renameUserroom(cs_userroom_item $userroom, cs_user_item $roomOwner, ?string $newRoomTitle = null): void
     {
         /**
          * @var cs_project_item $projectRoom

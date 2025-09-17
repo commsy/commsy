@@ -22,7 +22,7 @@ class RecipientFactory
 {
     public static function createModerationRecipients(
         cs_room_item|PortalProxy $context,
-        callable $callback = null
+        ?callable $callback = null
     ): array
     {
         $recipients = [];

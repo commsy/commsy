@@ -45,7 +45,7 @@ class UploadController extends AbstractController
         FileUploader $fileUploader,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
-        int $itemId = null
+        ?int $itemId = null
     ): JsonResponse {
         $environment = $legacyEnvironment->getEnvironment();
 

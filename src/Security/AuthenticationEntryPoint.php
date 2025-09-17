@@ -28,7 +28,7 @@ readonly class AuthenticationEntryPoint implements AuthenticationEntryPointInter
     ) {
     }
 
-    public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
+    public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
     {
         $portal = $this->requestContext->fetchPortal($request);
         $contextId = null !== $portal ? $portal->getId() : $this->requestContext->fetchContextId($request);

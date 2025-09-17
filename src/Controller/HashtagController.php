@@ -101,7 +101,7 @@ class HashtagController extends AbstractController
         LabelService $labelService,
         LabelRepository $labelRepository,
         int $roomId,
-        int $labelId = null
+        ?int $labelId = null
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
