@@ -14,7 +14,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php-versions: ['8.3']
+                php-versions: ['8.4']
         services:
             db:
                 image: mariadb:10.11
@@ -42,13 +42,13 @@ jobs:
 
             -   name: Install php deps
                 run: composer install --no-progress
-                
+
             -   name: Generate JWT keypair
                 run: bin/console lexik:jwt:generate-keypair
 
             -   name: Install yarn deps
                 run: yarn install
-                
+
             -   name: Build frontend package
                 run: yarn build
 
