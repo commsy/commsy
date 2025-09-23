@@ -32,7 +32,7 @@ class MarkupExtension extends AbstractExtension
         return [new TwigFilter('commsyMarkup', $this->commsyMarkup(...))];
     }
 
-    public function commsyMarkup($text, cs_item $item = null)
+    public function commsyMarkup($text, $item = null)
     {
         $text = $this->commsyMarkupEscapes($text);
         $text = $this->commsyMarkupHeadings($text);
@@ -274,10 +274,11 @@ class MarkupExtension extends AbstractExtension
      * that they will be shown in a lightbox with the given item's id as group.
      *
      * @param $text HTML string
+     * @param $item item (or respective entity) which represents the image
      *
      * @return string Replaced HTML string
      */
-    private function formatLightbox($text, cs_item $item): string
+    private function formatLightbox($text, $item): string
     {
         $html5 = new HTML5();
         $dom = $html5->loadHTML($text);
