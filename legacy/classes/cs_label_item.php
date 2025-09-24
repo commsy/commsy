@@ -222,9 +222,10 @@ class cs_label_item extends cs_item
         return $counter;
     }
 
-    /** checks the data of the item.
+    /**
+     * Checks the data of the item.
      */
-    public function isValid()
+    public function isValid(): bool
     {
         $name = $this->getName();
         $type = $this->getLabelType();

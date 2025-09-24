@@ -428,16 +428,13 @@ class cs_item
         $this->_setObject(CS_TAG_TYPE, $value, false);
     }
 
-    /** Checks the data of the item.
-     *
-     * @return bool TRUE if data is valid FALSE otherwise
-     *
-     * @author CommSy Development Group
+    /**
+     * Checks the data of the item.
      */
-    public function isValid()
+    public function isValid(): bool
     {
-        $creator = $this->getCreatorID();
-        return !empty($creator); // and !empty($creation_date);
+        // Prior, there was a check for a non-empty creator id, but there are group rooms not having one.
+        return true;
     }
 
     /** is the type of the item = $type ?
