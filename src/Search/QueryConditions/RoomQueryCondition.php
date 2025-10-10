@@ -36,18 +36,36 @@ class RoomQueryCondition implements QueryConditionInterface
         }
 
         // title
+        // - boost multi-term matches (i.e. if 2 or more terms from the query match)
+        $titleMatchMulti = new MatchQuery();
+        $titleMatchMulti->setFieldQuery('title', $this->query);
+        $titleMatchMulti->setFieldBoost('title', 20.0);
+        // - '2<-1': if there are 1 or 2 terms both are required, but for more (n) terms only n-1 terms are required
+        $titleMatchMulti->setFieldMinimumShouldMatch('title', '2<-1');
+
+        // - don't ignore but use the default boost (1.0) if just a single term matches
         $titleMatch = new MatchQuery();
         $titleMatch->setFieldQuery('title', $this->query);
 
         // description
+        $descriptionMatchMulti = new MatchQuery();
+        $descriptionMatchMulti->setFieldQuery('roomDescription', $this->query);
+        $descriptionMatchMulti->setFieldBoost('roomDescription', 5.0);
+        $descriptionMatchMulti->setFieldMinimumShouldMatch('roomDescription', '2<-1');
+
         $descriptionMatch = new MatchQuery();
         $descriptionMatch->setFieldQuery('roomDescription', $this->query);
 
         // contact persons
+        $contactPersonsMatchMulti = new MatchQuery();
+        $contactPersonsMatchMulti->setFieldQuery('contactPersons', $this->query);
+        $contactPersonsMatchMulti->setFieldBoost('contactPersons', 5.0);
+        $contactPersonsMatchMulti->setFieldMinimumShouldMatch('contactPersons', '2<-1');
+
         $contactPersonsMatch = new MatchQuery();
         $contactPersonsMatch->setFieldQuery('contactPersons', $this->query);
 
-        return [$titleMatch, $descriptionMatch, $contactPersonsMatch];
+        return [$titleMatchMulti, $titleMatch, $descriptionMatchMulti, $descriptionMatch, $contactPersonsMatchMulti, $contactPersonsMatch];
     }
 
     public function getOperator(): string
