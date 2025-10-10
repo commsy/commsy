@@ -151,7 +151,9 @@ class RoomFilterType extends AbstractType
                     $qb = $filterQuery->getQueryBuilder();
                     $qb
                         ->andWhere('r.status != :locked')
-                        ->setParameter('locked', RoomStatus::LOCKED->value);
+                        ->andWhere('r.status != :modLocked')
+                        ->setParameter('locked', RoomStatus::LOCKED->value)
+                        ->setParameter('modLocked', RoomStatus::LOCKED_PORTAL_MOD->value);
 
                     return $qb;
                 },
