@@ -275,7 +275,7 @@
 
                 {# preview #}
                 <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-full">
-                    <span class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">{{ content|commsyMarkup(item)|raw }}</span>
+                    <span class="{% if item.hasOverwrittenContent|default(false) %}uk-text-muted{% endif %}">{{ content|commsyMarkup(item)|raw }}</span>
                 </div>
 
             </div>
