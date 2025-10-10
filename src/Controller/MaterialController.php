@@ -313,7 +313,7 @@ class MaterialController extends BaseController
         LegacyMarkup $legacyMarkup,
         int $roomId,
         int $itemId,
-        int $versionId = null
+        ?int $versionId = null
     ): Response {
         $roomItem = $this->getRoom($roomId);
         $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
@@ -454,7 +454,7 @@ class MaterialController extends BaseController
     private function getDetailInfo(
         int $roomId,
         int $itemId,
-        int $versionId = null
+        ?int $versionId = null
     ) {
         $infoArray = [];
 

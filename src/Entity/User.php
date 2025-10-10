@@ -133,7 +133,7 @@ class User
         return $this->creator;
     }
 
-    public function setModifier(User $modifier = null): static
+    public function setModifier(?User $modifier = null): static
     {
         $this->modifier = $modifier;
 

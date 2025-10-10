@@ -840,6 +840,14 @@
                 <source>Non archived workspaces</source>
                 <target>Non archived workspaces</target>
             </trans-unit>
+            <trans-unit id="locked_workspaces">
+                <source>Locked workspaces</source>
+                <target>Locked workspaces</target>
+            </trans-unit>
+            <trans-unit id="unlocked_workspaces">
+                <source>Unlocked workspaces</source>
+                <target>Unlocked workspaces</target>
+            </trans-unit>
 
             <!-- assign workspace -->
             <trans-unit id="searchForWorkspace">

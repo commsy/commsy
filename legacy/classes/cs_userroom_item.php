@@ -252,8 +252,6 @@ class cs_userroom_item extends cs_room_item
             $usageInfo = $this->_getExtra($key);
             if (empty($usageInfo)) {
                 $usageInfo = [];
-            } elseif (!is_array($usageInfo)) {
-                $usageInfo = XML2Array($usageInfo);
             }
         } else {
             $usageInfo = [];
@@ -274,8 +272,6 @@ class cs_userroom_item extends cs_room_item
             $usageInfo = $this->_getExtra($key);
             if (empty($usageInfo)) {
                 $usageInfo = [];
-            } elseif (!is_array($usageInfo)) {
-                $usageInfo = XML2Array($usageInfo);
             }
         } else {
             $usageInfo = [];

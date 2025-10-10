@@ -13,8 +13,10 @@
 
 namespace App\Http;
 
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+#[Exclude]
 class JsonHTMLResponse extends JsonResponse
 {
     public function __construct($html, $status = 200, $headers = [])

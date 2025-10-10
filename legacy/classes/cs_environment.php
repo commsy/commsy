@@ -379,12 +379,6 @@ class cs_environment
         return $this->_getInstance('cs_announcement_manager');
     }
 
-    public function getPortfolioManager(): cs_portfolio_manager
-    {
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_getInstance('cs_portfolio_manager');
-    }
-
     /** get instance of cs_annotation_manager.
      *
      */
@@ -685,8 +679,6 @@ class cs_environment
             return $this->getDiscussionArticlesManager();
         } elseif ('announcements' == $type || CS_ANNOUNCEMENT_TYPE == $type) {
             return $this->getAnnouncementManager();
-        } elseif ('portfolio' == $type || CS_PORTFOLIO_TYPE == $type) {
-            return $this->getPortfolioManager();
         } elseif (CS_TOPIC_TYPE == $type) {
             return $this->getTopicManager();
         } elseif ('group' == $type || 'groups' == $type) {

@@ -179,7 +179,7 @@ class Announcement
         return $this->extras;
     }
 
-    public function setCreator(User $creator = null): Announcement
+    public function setCreator(?User $creator = null): Announcement
     {
         $this->creator = $creator;
 
@@ -191,7 +191,7 @@ class Announcement
         return $this->creator;
     }
 
-    public function setModifier(User $modifier = null): Announcement
+    public function setModifier(?User $modifier = null): Announcement
     {
         $this->modifier = $modifier;
 
@@ -203,7 +203,7 @@ class Announcement
         return $this->modifier;
     }
 
-    public function setDeleter(User $deleter = null): Announcement
+    public function setDeleter(?User $deleter = null): Announcement
     {
         $this->deleter = $deleter;
 

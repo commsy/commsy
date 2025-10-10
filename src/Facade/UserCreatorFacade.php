@@ -181,7 +181,7 @@ class UserCreatorFacade
     private function addUserToRoomsWithIds(
         cs_user_item $user,
         array $roomIds,
-        int $userStatus = null,
+        ?int $userStatus = null,
         bool $informUser = false
     ): void
     {

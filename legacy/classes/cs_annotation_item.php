@@ -225,22 +225,4 @@ class cs_annotation_item extends cs_item
 
         return $access;
     }
-
-    /** \brief    check via portfolio permission.
-     *
-     * This Method checks for item <=> activated portfolio - relationships
-     */
-    public function mayPortfolioSee(string $username): bool
-    {
-        $portfolioManager = $this->_environment->getPortfolioManager();
-
-        // get portfolio id for this annotation
-        $portfolioId = $portfolioManager->getPortfolioId($this->getItemId());
-
-        // get all ids from portfolios we are allow to see
-        $portfolioIds = $portfolioManager->getPortfolioForExternalViewer($username);
-
-        // if the portfolio this annotation belongs to is in the list, we are allowed to see
-        return in_array($portfolioId, $portfolioIds);
-    }
 }

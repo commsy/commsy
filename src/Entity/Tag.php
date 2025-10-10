@@ -94,7 +94,7 @@ class Tag
         return $this->modifierId;
     }
 
-    public function setDeleter(User $deleter = null): static
+    public function setDeleter(?User $deleter = null): static
     {
         $this->deleter = $deleter;
 

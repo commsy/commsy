@@ -27,14 +27,6 @@
                     </a>
                 </li>
 
-                {% if privateRoomItem.portfolioEnabled %}
-                    <li>
-                        <a href="{{ path('app_portfolio_index', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'Portfolios'|trans({}, "portfolio") }}">
-                            <i class="uk-icon-table"></i>
-                        </a>
-                    </li>
-                {% endif %}
-
                 <li>
                     <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}">
                         <i class="uk-icon-folder-open-o"></i>
@@ -75,12 +67,6 @@
                 </small>
             </a>
         </li>
-
-        {% if privateRoomItem.portfolioEnabled %}
-            <li>
-                <a href="{{ path('app_portfolio_index', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'Portfolios'|trans({}, "portfolio") }}" uk-icon="table"></a>
-            </li>
-        {% endif %}
 
         <li>
             <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}" uk-icon="folder"></a>

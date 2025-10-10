@@ -143,9 +143,10 @@ class cs_tag_item extends cs_item
         return $retour;
     }
 
-    /** checks the data of the item.
+    /**
+     * Checks the data of the item.
      */
-    public function isValid()
+    public function isValid(): bool
     {
         $title = $this->getTitle();
 
