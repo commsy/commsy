@@ -785,6 +785,7 @@ class SearchController extends BaseController
             $rooms[$room->getType()][] = $room;
         }
 
+        // combine subarrays of rooms into a single flat array
         $rooms = [...$rooms['community'], ...$rooms['project'], ...$rooms['grouproom'], ...$rooms['userroom']];
 
         $lastType = null;
