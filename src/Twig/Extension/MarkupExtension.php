@@ -13,6 +13,7 @@
 
 namespace App\Twig\Extension;
 
+use App\Entity\User;
 use App\Services\LegacyMarkup;
 use cs_item;
 use DOMNode;
@@ -32,7 +33,7 @@ class MarkupExtension extends AbstractExtension
         return [new TwigFilter('commsyMarkup', $this->commsyMarkup(...))];
     }
 
-    public function commsyMarkup($text, ?cs_item $item = null)
+    public function commsyMarkup(string $text, cs_item|User|null $item = null)
     {
         $text = $this->commsyMarkupEscapes($text);
         $text = $this->commsyMarkupHeadings($text);
@@ -270,14 +271,15 @@ class MarkupExtension extends AbstractExtension
     }
 
     /**
-     * Searches the given html text string for image tags and wraps them with an a tag in a way
+     * Searches the given html text string for image tags and wraps them with an `a` tag in a way
      * that they will be shown in a lightbox with the given item's id as group.
      *
-     * @param $text HTML string
+     * @param string $text HTML string
+     * @param cs_item|User $item The item to be used for grouping in the lightbox
      *
      * @return string Replaced HTML string
      */
-    private function formatLightbox($text, cs_item $item): string
+    private function formatLightbox(string $text, cs_item|User $item): string
     {
         $html5 = new HTML5();
         $dom = $html5->loadHTML($text);
