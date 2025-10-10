@@ -33,6 +33,9 @@ final class AccountWorkspacesComponent
     public string $filterArchived = 'all';
 
     #[LiveProp(writable: true)]
+    public string $filterLocked = 'all';
+
+    #[LiveProp(writable: true)]
     public string $filterType = 'all';
 
     #[LiveProp(writable: true)]
@@ -49,6 +52,7 @@ final class AccountWorkspacesComponent
         return $this->userRepository->findAllByRoomStatus(
             $this->account,
             $this->filterArchived,
+            $this->filterLocked,
             $this->filterType,
             $this->filterUserStatus
         );
