@@ -529,11 +529,10 @@ class cs_dates_item extends cs_item
         }
     }
 
-    /** Checks the data of the item.
-     *
-     * @return bool TRUE if data is valid FALSE otherwise
+    /**
+     * Checks the data of the item.
      */
-    public function isValid()
+    public function isValid(): bool
     {
         // mandatory fields set?
         $title = $this->getTitle();

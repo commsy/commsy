@@ -140,9 +140,9 @@ class RoomManager
         int $contextID,
         string $title,
         string $description = '',
-        cs_room_item $roomTemplate = null,
-        cs_user_item $creator = null,
-        cs_user_item $modifier = null
+        ?cs_room_item $roomTemplate = null,
+        ?cs_user_item $creator = null,
+        ?cs_user_item $modifier = null
     ): ?cs_room_item {
         // TODO: use a facade/factory to create a new room
 

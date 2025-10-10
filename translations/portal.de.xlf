@@ -772,6 +772,14 @@
                 <source>Non archived workspaces</source>
                 <target>Nicht archivierte Räume</target>
             </trans-unit>
+            <trans-unit id="locked_workspaces">
+                <source>Locked workspaces</source>
+                <target>Gesperrte Räume</target>
+            </trans-unit>
+            <trans-unit id="unlocked_workspaces">
+                <source>Unlocked workspaces</source>
+                <target>Nicht gesperrte Räume</target>
+            </trans-unit>
 
             <!-- assign workspace -->
             <trans-unit id="searchForWorkspace">

@@ -65,21 +65,21 @@ parameters:
 
     # Dates
     commsy.dates.timezone: '%env(TIMEZONE)%'
-    
+
     # Online Office
     commsy.online_office.base_url: '%env(ONLINE_OFFICE_BASE_URL)%'
     commsy.online_office.proofkey_validation: '%env(bool:ONLINE_OFFICE_PROOFKEY_VALIDATION)%'
-    
+
 when@test:
     parameters:
         commsy.online_office.proofkey_validation: false
-    
+
     services:
         _defaults:
             public: false
             autowire: true
             autoconfigure: true
-            
+
         Tests\Factory\:
             resource: '../tests/Factory'
 
@@ -93,9 +93,6 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         public: true
-        #public: false       # Allows optimizing the container by removing unused services; this also means
-                            # fetching services directly from the container via $container->get() won't work.
-                            # The best practice is to be explicit about your dependencies anyway.
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -114,12 +111,6 @@ services:
             - '../src/Proxy/'
             - '../src/Tests/'
             - '../src/WOPI/REST/Request'
-
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/Controller/'
-        tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -396,10 +387,6 @@ services:
     commsy.calendars_service:
         class: App\Services\CalendarsService
 
-    commsy.roomcategories_service:
-        class: App\Services\RoomCategoriesService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']
-
     commsy.room_feed_generator:
         class: App\RoomFeed\RoomFeedGenerator
         public: true
@@ -418,34 +405,21 @@ services:
 
     App\Action\MarkRead\MarkReadAction: '@commsy.action.mark_read.generic'
 
-    # Response
-    App\Http\JsonDataResponse:
-        autowire: false
-
-    App\Http\JsonErrorResponse:
-        autowire: false
-
-    App\Http\JsonHTMLResponse:
-        autowire: false
-
-    App\Http\JsonRedirectResponse:
-        autowire: false
-
     # SessionHandler
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - '%env(DATABASE_URL)%'
-    
+
     # Public alias for Security
     app.security:
         alias: Symfony\Bundle\SecurityBundle\Security
         public: true
-    
+
     # Public alias for Token storage
     app.token_storage:
         alias: Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface
         public: true
-    
+
     # Authentication
     App\Security\WOPIJWTAuthenticator:
         parent: lexik_jwt_authentication.security.jwt_authenticator

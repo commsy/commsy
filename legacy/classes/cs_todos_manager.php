@@ -560,7 +560,7 @@ class cs_todos_manager extends cs_manager
       *
       * @return \cs_list
       */
-     public function getNewestItems($contextIds, $limits, $size, DateTime $newerThen = null, $excludedIds = [])
+     public function getNewestItems($contextIds, $limits, $size, ?DateTime $newerThen = null, $excludedIds = [])
      {
          parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
 

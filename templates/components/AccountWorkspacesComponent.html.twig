@@ -2,12 +2,23 @@
     <form class="uk-form-stacked">
         <div class="uk-flex uk-flex-middle">
             <div>
-                <label class="uk-form-label">{{ 'Workspace status' | trans({}, 'portal') }}</label>
+                <label class="uk-form-label">{{ 'Workspace status' | trans({}, 'portal') }}: {{ 'Archived' | trans({}, 'room') }}</label>
                 <div class="uk-form-controls">
                     <select class="uk-select" data-model="filterArchived">
                         <option value="all">{{ 'All' | trans({}, 'portal') }}</option>
                         <option value="only">{{ 'Archived workspaces' | trans({}, 'portal') }}</option>
                         <option value="except">{{ 'Non archived workspaces' | trans({}, 'portal') }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="uk-margin-left">
+                <label class="uk-form-label">{{ 'Workspace status' | trans({}, 'portal') }}: {{ 'Locked' | trans({}, 'room') }}</label>
+                <div class="uk-form-controls">
+                    <select class="uk-select" data-model="filterLocked">
+                        <option value="all">{{ 'All' | trans({}, 'portal') }}</option>
+                        <option value="only">{{ 'Locked workspaces' | trans({}, 'portal') }}</option>
+                        <option value="except">{{ 'Unlocked workspaces' | trans({}, 'portal') }}</option>
                     </select>
                 </div>
             </div>

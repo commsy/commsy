@@ -1375,7 +1375,7 @@ class cs_manager
      *
      * @return \cs_list
      */
-    protected function setGenericNewestItemsLimits($contextIds, $limits, DateTime $newerThen = null, $excludedIds = [])
+    protected function setGenericNewestItemsLimits($contextIds, $limits, ?DateTime $newerThen = null, $excludedIds = [])
     {
         $this->reset();
 

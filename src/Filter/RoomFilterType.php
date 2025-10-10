@@ -13,6 +13,7 @@
 
 namespace App\Filter;
 
+use App\Room\RoomStatus;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use Doctrine\ORM\QueryBuilder;
@@ -126,10 +127,6 @@ class RoomFilterType extends AbstractType
                         return null;
                     }
 
-                    if (false === $values['value']) {
-                        return null;
-                    }
-
                     /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
                     $qb
@@ -142,7 +139,28 @@ class RoomFilterType extends AbstractType
                 'label_attr' => [
                     'class' => 'uk-form-label',
                 ],
-            ]);
+            ])
+            ->add('locked', Filters\CheckboxFilterType::class, [
+                'label' => 'hide-locked-rooms',
+                'apply_filter' => function (QueryInterface $filterQuery, $field, $values) {
+                    if (empty($values['value'])) {
+                        return null;
+                    }
+
+                    /** @var QueryBuilder $qb */
+                    $qb = $filterQuery->getQueryBuilder();
+                    $qb
+                        ->andWhere('r.status != :locked')
+                        ->setParameter('locked', RoomStatus::LOCKED->value);
+
+                    return $qb;
+                },
+                'translation_domain' => 'room',
+                'label_attr' => [
+                    'class' => 'uk-form-label',
+                ],
+            ])
+        ;
 
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $showRooms = $portalItem->getShowRoomsOnHome();

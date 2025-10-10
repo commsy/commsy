@@ -15,6 +15,7 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use App\Entity\User;
+use App\Room\RoomStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr\Join;
@@ -118,6 +119,7 @@ class UserRepository extends ServiceEntityRepository
     public function findAllByRoomStatus(
         Account $account,
         string $filterArchived = 'all',
+        string $filterLocked = 'all',
         string $filterType = 'all',
         string $filterUserStatus = 'all'
     ): array
@@ -136,6 +138,15 @@ class UserRepository extends ServiceEntityRepository
         if ($filterArchived !== 'all') {
             $qb->andWhere('r.archived = :archived');
             $qb->setParameter('archived', $filterArchived === 'only');
+        }
+
+        if ($filterLocked !== 'all') {
+            if ($filterLocked === 'only') {
+                $qb->andWhere($qb->expr()->in('r.status', ':statusValues'));
+            } else if ($filterLocked === 'except') {
+                $qb->andWhere($qb->expr()->notIn('r.status', ':statusValues'));
+            }
+            $qb->setParameter('statusValues', [RoomStatus::LOCKED->value, RoomStatus::LOCKED_PORTAL_MOD->value]);
         }
 
         if ($filterType !== 'all') {

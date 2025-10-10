@@ -322,8 +322,6 @@ class cs_privateroom_item extends cs_room_item
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($retour)) {
                 $retour = [];
-            } elseif (!is_array($retour)) {
-                $retour = XML2Array($retour);
             }
         } else {
             $retour = [];
@@ -343,8 +341,6 @@ class cs_privateroom_item extends cs_room_item
             $retour = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($retour)) {
                 $retour = [];
-            } elseif (!is_array($retour)) {
-                $retour = XML2Array($retour);
             }
         } else {
             $retour = [];
@@ -364,8 +360,6 @@ class cs_privateroom_item extends cs_room_item
             $value_array = $this->_getExtra('USAGE_INFO_TEXT');
             if (empty($value_array)) {
                 $value_array = [];
-            } elseif (!is_array($value_array)) {
-                $value_array = XML2Array($value_array);
             }
         } else {
             $value_array = [];
@@ -676,35 +670,6 @@ class cs_privateroom_item extends cs_room_item
     public function setCSBarShowStack($i)
     {
         $this->_addExtra('CS_BAR_SHOW_STACK', $i);
-    }
-
-    public function isPortfolioEnabled(): bool
-    {
-        return $this->_issetExtra('CS_BAR_SHOW_PORTFOLIO');
-    }
-
-    /**
-     * @return $this
-     */
-    public function setPortfolioEnabled(bool $enabled): self
-    {
-        if ($enabled) {
-            $this->_addExtra('CS_BAR_SHOW_PORTFOLIO', true);
-        } else {
-            $this->_unsetExtra('CS_BAR_SHOW_PORTFOLIO');
-        }
-
-        return $this;
-    }
-
-    public function getCSBarShowPortfolio(): string
-    {
-        return $this->isPortfolioEnabled() ? '1' : '-1';
-    }
-
-    public function setCSBarShowPortfolio($i)
-    {
-        $this->_addExtra('CS_BAR_SHOW_PORTFOLIO', $i);
     }
 
     public function getPortletShowActiveRoomList()

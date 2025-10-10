@@ -118,10 +118,6 @@
                 <source>marked</source>
                 <target>Marked entries</target>
             </trans-unit>
-            <trans-unit id="breadcrumb_portfolio">
-                <source>portfolio</source>
-                <target>Portfolios</target>
-            </trans-unit>
             <trans-unit id="breadcrumb_roomprofile">
                 <source>Room profile</source>
                 <target>Workspace profile</target>

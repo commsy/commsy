@@ -30,7 +30,7 @@ trait EntityUsersTrait
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
     private ?User $deleter = null;
 
-    public function setCreator(User $creator = null): self
+    public function setCreator(?User $creator = null): self
     {
         $this->creator = $creator;
         return $this;
@@ -41,7 +41,7 @@ trait EntityUsersTrait
         return $this->creator;
     }
 
-    public function setModifier(User $modifier = null): self
+    public function setModifier(?User $modifier = null): self
     {
         $this->modifier = $modifier;
         return $this;

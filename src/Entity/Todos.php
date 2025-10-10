@@ -293,7 +293,7 @@ class Todos
         return $this->extras;
     }
 
-    public function setCreator(User $creator = null): static
+    public function setCreator(?User $creator = null): static
     {
         $this->creator = $creator;
 
@@ -305,7 +305,7 @@ class Todos
         return $this->creator;
     }
 
-    public function setModifier(User $modifier = null): static
+    public function setModifier(?User $modifier = null): static
     {
         $this->modifier = $modifier;
 

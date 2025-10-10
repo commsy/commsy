@@ -1132,7 +1132,7 @@ class PortalSettingsController extends AbstractController
         Request $request,
         LegacyEnvironment $environment,
         ManagerRegistry $managerRegistry,
-        int $termId = null
+        ?int $termId = null
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
 
