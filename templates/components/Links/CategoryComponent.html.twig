@@ -1,0 +1,42 @@
+<div {{ attributes }}>
+    <hr class="cs-list-divider">
+    <h4 class="cs-list-section-header">
+        <span class="cs-detail-section-header-background">
+            {{ 'Categories'|trans({}, 'category') }}
+            {% if not embedded %}
+                <a {{ live_action('enableEditMode') }}><i class="uk-icon-edit"></i></a>
+            {% endif %}
+        </span>
+    </h4>
+
+    <div>
+        {% if editMode %}
+            {{ form_start(form) }}
+                {% if form.newCategory is defined %}
+                    {{ form_widget(form.newCategory) }}
+                {% endif %}
+                {{ form_row(form.categories) }}
+            {{ form_end(form) }}
+
+            {% if not embedded %}
+                <div class="uk-margin-top">
+                    <button
+                        class="uk-button uk-button-primary"
+                        {{ live_action('save') }}
+                    >{{ 'save'|trans({}, 'form') }}</button>
+
+                    <button
+                        class="uk-button uk-button-secondary"
+                        {{ live_action('cancel') }}
+                    >{{ 'cancel'|trans({}, 'form') }}</button>
+                </div>
+            {% endif %}
+        {% else %}
+            {% from 'item/macros.html.twig' import nestedTagList %}
+
+            <div class="cs-tree-plain">
+                {{ nestedTagList(this.item.tagsArray, this.roomCategories, 1) }}
+            </div>
+        {% endif %}
+    </div>
+</div>

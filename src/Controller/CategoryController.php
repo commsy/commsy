@@ -28,32 +28,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CategoryController extends AbstractController
 {
-    public function show(
-        CategoryService $categoryService,
-        int $roomId
-    ): Response {
-        // get categories from CategoryManager
-        $roomTags = $categoryService->getTags($roomId);
-
-        $defaultData = ['roomId' => $roomId];
-        $form = $this->createForm(Types\TagType::class, $defaultData, ['action' => $this->generateUrl('app_category_new', ['roomId' => $roomId])]);
-
-        return $this->render('category/show.html.twig', ['tags' => $roomTags, 'form' => $form]);
-    }
-
-    public function showDetail(
-        CategoryService $categoryService,
-        int $roomId
-    ): Response {
-        // get categories
-        $roomTags = $categoryService->getTags($roomId);
-
-        $defaultData = ['roomId' => $roomId];
-        $form = $this->createForm(Types\TagType::class, $defaultData, ['action' => $this->generateUrl('app_category_new', ['roomId' => $roomId])]);
-
-        return $this->render('category/show_detail.html.twig', ['tags' => $roomTags, 'form' => $form]);
-    }
-
     #[Route(path: '/room/{roomId}/category/add')]
     #[IsGranted('CATEGORY_EDIT')]
     public function add(
@@ -101,9 +75,9 @@ class CategoryController extends AbstractController
 
             // persist new category
             $categoryService->addTag($data['title'], $roomId);
-
-            return $this->redirectToRoute('app_room_home', ['roomId' => $roomId]);
         }
+
+        return $this->redirectToRoute('app_room_home', ['roomId' => $roomId]);
     }
 
     #[Route(path: '/room/{roomId}/category/delete/{categoryId}')]
@@ -210,8 +184,6 @@ class CategoryController extends AbstractController
             $tagIdTwo = $mergeData['second']->getItemId();
 
             $legacyEnvironment = $legacyEnvironment->getEnvironment();
-
-            $tagManager = $legacyEnvironment->getTagManager();
             $tag2TagManager = $legacyEnvironment->getTag2TagManager();
 
             if ($tag2TagManager->isASuccessorOfB($tagIdOne, $tagIdTwo)) {
@@ -219,10 +191,6 @@ class CategoryController extends AbstractController
                 $tagIdOne = $tagIdTwo;
                 $tagIdTwo = $tagIdOneTemp;
             }
-
-            // get both
-            $tagItemOne = $tagManager->getItem($tagIdOne);
-            $tagItemTwo = $tagManager->getItem($tagIdTwo);
 
             // we put the combined tag under the parent of the first one
             $putId = $tag2TagManager->getFatherItemId($tagIdOne);

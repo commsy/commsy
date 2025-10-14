@@ -459,95 +459,6 @@ class ItemController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/room/{roomId}/item/{itemId}/editCatsBuzz/{feedAmount}', defaults: ['feedAmount' => 20])]
-    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function editCatsBuzz(
-        CategoryService $categoryService,
-        LabelService $labelService,
-        RoomService $roomService,
-        ItemService $itemService,
-        TranslatorInterface $translator,
-        EventDispatcherInterface $eventDispatcher,
-        LegacyEnvironment $environment,
-        Request $request,
-        int $roomId,
-        int $itemId,
-        int $feedAmount
-    ): Response {
-        $legacyEnvironment = $environment->getEnvironment();
-
-        $item = $itemService->getTypedItem($itemId);
-        $roomItem = $roomService->getRoomItem($roomId);
-
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-
-        $formData = [];
-        $optionsData = [];
-
-        // get all categories -> tree
-        $optionsData['categories'] = $labelService->getCategories($roomId);
-        $formData['categories'] = $labelService->getLinkedCategoryIds($item);
-        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(['min' => 1])] : [];
-
-        // get all hashtags -> list
-        $optionsData['hashtags'] = $labelService->getHashtags($roomId);
-        $formData['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
-        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(['min' => 1])] : [];
-
-        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::EDIT);
-
-        $form = $this->createForm(ItemCatsBuzzType::class, $formData, [
-            'categories' => $optionsData['categories'],
-            'categoryConstraints' => $categoryConstraints,
-            'hashtags' => $optionsData['hashtags'],
-            'hashtagConstraints' => $hashtagConstraints,
-            'hashtagEditUrl' => $this->generateUrl('app_hashtag_add', ['roomId' => $roomId]),
-            'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-            'placeholderTextCategories' => $translator->trans('New category', [], 'category'),
-        ]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('save')->isClicked()) {
-                $data = $form->getData();
-
-                if ($data['newCategory'] && $this->isGranted(CategoryVoter::EDIT)) {
-                    $data['categories'][] = $categoryService->addTag($data['newCategory'], $roomId)->getItemID();
-                }
-
-                // update modifier
-                $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-
-                // save links
-                // $item->setLinkedItemsByIDArray($itemData);
-                $item->setTagListByID($data['categories']);
-                $item->setBuzzwordListByID($data['hashtags']);
-
-                if (CS_TOPIC_TYPE == $item->getItemType()) {
-                    if (empty($itemData)) {
-                        $item->deactivatePath();
-                    }
-                }
-
-                // persist
-                $item->save();
-            }
-
-            return $this->redirectToRoute('app_item_savelinks', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            ]);
-        }
-
-        return $this->render('item/edit_cats_buzz.html.twig', [
-            'itemId' => $itemId,
-            'roomId' => $roomId,
-            'form' => $form,
-            'showCategories' => $roomItem->withTags(),
-            'showHashtags' => $roomItem->withBuzzwords(),
-        ]);
-    }
-
     #[Route(path: '/room/{roomId}/item/{itemId}/savelinks')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveLinks(
@@ -883,39 +794,6 @@ class ItemController extends AbstractController
 
         return $this->render('item/single_article.html.twig', [
             'item' => $item,
-        ]);
-    }
-
-    #[Route(path: '/room/{roomId}/item/{itemId}/links')]
-    #[IsGranted('ITEM_SEE', subject: 'itemId')]
-    public function links(
-        RoomService $roomService,
-        ItemService $itemService,
-        CategoryService $categoryService,
-        LegacyEnvironment $environment,
-        LabelService $labelService,
-        int $roomId,
-        int $itemId
-    ): Response {
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-
-        $item = $itemService->getItem($itemId);
-
-        $categories = [];
-        if ($current_context->withTags()) {
-            $roomCategories = $categoryService->getTags($roomId);
-            $itemCategories = $item->getTagsArray();
-            $categories = $labelService->getTagDetailArray($roomCategories, $itemCategories);
-        }
-
-        $roomItem = $roomService->getRoomItem($roomId);
-
-        return $this->render('item/links.html.twig', [
-            'item' => $item,
-            'showHashtags' => $roomItem->withBuzzwords(),
-            'showCategories' => $roomItem->withTags(),
-            'roomCategories' => $categories,
         ]);
     }
 

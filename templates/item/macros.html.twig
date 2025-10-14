@@ -16,6 +16,28 @@
     </ul>
 {% endmacro %}
 
+{% macro structure(showCategories, showHashtags, itemId, versionId = 0) %}
+    {% if (showCategories or showHashtags) %}
+        <twig:v2:panel title="{{ 'categoriesAndBuzzwords'|trans }}">
+            <twig:block name="content">
+                {# Categories #}
+                {% if showCategories %}
+                    <div class="uk-margin-bottom">
+                        <twig:Links:CategoryComponent :itemId="itemId" :versionId="versionId" />
+                    </div>
+                {% endif %}
+
+                {# Buzzwords #}
+                {% if showHashtags %}
+                    <div class="uk-margin-bottom">
+                        <twig:Links:TagComponent :itemId="itemId" :versionId="versionId" />
+                    </div>
+                {% endif %}
+            </twig:block>
+        </twig:v2:panel>
+    {% endif %}
+{% endmacro %}
+
 {% macro links(item,withTags,withCategories,roomCategories, draft, buzzExpanded, catzExpanded) %}
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as itemMacros %}
@@ -26,87 +48,80 @@
     {% set countEntries = item.buzzwordArray|length + item.tagsArray|length %}
 
     {% set preview %}
-    <div class="uk-grid">
-        {% if withCategories %}
-            <div class="uk-width-1-3">
-                {% if (item.tagsArray|length) > 0 %}
-                    <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
-                {% endif %}
+        <div class="uk-grid">
+            {% if withCategories %}
+                <div class="uk-width-1-3">
+                    {% if (item.tagsArray|length) > 0 %}
+                        <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
+                    {% endif %}
 
-                {% set count = 1 %}
-                {% if (item.tagsArray|length) < 4 %}
-                    {% if (item.tagsArray|length) == 0 %}
-
+                    {% set count = 1 %}
+                    {% if (item.tagsArray|length) < 4 %}
+                        {% if (item.tagsArray|length) > 0 %}
+                            {% for tag in item.tagsArray %}
+                                {{tag.title|decodeHtmlEntity}}{% if count < item.tagsArray|length %}, {% endif %}
+                                {% set count = count +1 %}
+                            {% endfor %}
+                        {% endif %}
                     {% else %}
-                        {% for tag in item.tagsArray %}
-                            {{tag.title|decodeHtmlEntity}}{% if count < item.tagsArray|length %}, {% endif %}
-                            {% set count = count +1 %}
-                        {% endfor %}
+                            {{item.tagsArray|length}} {{ 'categories'|trans({}, "room") }}
                     {% endif %}
-                {% else %}
-                        {{item.tagsArray|length}} {{ 'categories'|trans({}, "room") }}
-                {% endif %}
-            </div>
-        {% endif %}
-        {% if withTags %}
-            <div class="uk-width-1-3">
-                {% set count = 1 %}
-                {% if (item.buzzwordArray|length) < 4 %}
-                    {% if (item.buzzwordArray|length) == 0 %}
-                    {%else%}
-                        <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
-                        {% for tag in item.buzzwordArray %}
-                            {{tag}}{% if count < item.buzzwordArray|length %}, {% endif %}
-                            {% set count = count +1 %}
-                        {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if withTags %}
+                <div class="uk-width-1-3">
+                    {% if (item.buzzwordArray|length) < 4 %}
+                        {% if (item.buzzwordArray|length) > 0 %}
+                            <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
+                            {{ item.buzzwordArray|join(', ') }}
+                        {% endif %}
+                    {% else %}
+                            {{item.buzzwordArray|length}} {{ 'hashtags'|trans({}, "room") }}
                     {% endif %}
-                {% else %}
-                        {{item.buzzwordArray|length}} {{ 'hashtags'|trans({}, "room") }}
-                {% endif %}
-            </div>
-        {% endif %}
-    </div>
+                </div>
+            {% endif %}
+        </div>
     {% endset %}
 
     {% set content %}
+        {% if catzExpanded %}
+            <div class="uk-grid" id="structureExpanded">
+        {% elseif buzzExpanded %}
+            <div class="uk-grid" id="structureExpanded">
+        {% else %}
+            <div class="uk-grid">
+        {% endif %}
+            {% if withCategories %}
 
-    {% if catzExpanded %}
-        <div class="uk-grid" id="structureExpanded">
-    {% elseif buzzExpanded %}
-        <div class="uk-grid" id="structureExpanded">
-    {% else %}
-        <div class="uk-grid">
-    {% endif %}
-        {% if withCategories %}
+                <div class="uk-width-1-3">
+                    {% if (item.tagsArray|length) > 0 %}
+                        <strong>{{ 'categories'|trans({}, "room") }}:</strong>
+                        <div class="cs-tree-plain">
+                            {{ itemMacros.nestedTagList(item.tagsArray, roomCategories, 1) }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if withTags %}
+                <div class="uk-width-1-3">
 
-            <div class="uk-width-1-3">
-                {% if (item.tagsArray|length) > 0 %}
-                    <strong>{{ 'categories'|trans({}, "room") }}:</strong>
-                    <div class="cs-tree-plain">
-                        {{ itemMacros.nestedTagList(item.tagsArray, roomCategories, 1) }}
-                    </div>
+                {% set tagArray = item.buzzwordList.to_array() %}
+                {% if (tagArray|length) > 0 %}
+                    <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
+                    {% for tag in tagArray %}
+                        <button class="uk-button uk-margin-small-bottom">{{tag.title|decodeHtmlEntity}}</button>
+                    {% endfor %}
                 {% endif %}
             </div>
-        {% endif %}
-        {% if withTags %}
-            <div class="uk-width-1-3">
-
-            {% set tagArray = item.buzzwordList.to_array() %}
-            {% if (tagArray|length) > 0 %}
-                <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
-                {% for tag in tagArray %}
-                    <button class="uk-button uk-margin-small-bottom">{{tag.title|decodeHtmlEntity}}</button>
-                {% endfor %}
             {% endif %}
         </div>
-        {% endif %}
-    </div>
     {% endset %}
 
     {{ macros.editContent('categoriesAndBuzzwords', item, true, content, preview, true, true, countEntries, draft) }}
 {% endmacro %}
 
-{% macro linksAssociations(item,withTags,withCategories,roomCategories, draft, showAssociations) %}
+{% macro linksAssociations(item, draft, showAssociations) %}
     {% import 'utils/macros.html.twig' as macros %}
     {% import _self as itemMacros %}
 

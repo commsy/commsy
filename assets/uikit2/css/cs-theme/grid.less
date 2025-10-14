@@ -3,3 +3,18 @@
         margin-top: @grid-gutter-vertical;
     }
 }
+
+@media (min-width: @breakpoint-medium) {
+    .detail-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 33%;
+        column-gap: 2rem;
+    }
+
+    .detail-sidebar {
+        grid-row-start: 1;
+        grid-column-start: 2;
+        grid-row-end: 50;
+        margin-top: 0 !important;
+    }
+}

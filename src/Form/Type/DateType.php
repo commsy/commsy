@@ -13,12 +13,10 @@
 
 namespace App\Form\Type;
 
-use App\Form\Type\Custom\CategoryMappingType;
+use App\Form\Trait\CategoryTagValidatorTrait;
 use App\Form\Type\Custom\DateTimeSelectType;
-use App\Form\Type\Custom\HashtagMappingType;
 use App\Form\Type\Event\AddRecurringFieldListener;
 use App\Security\Authorization\Voter\ItemVoter;
-use cs_context_item;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -29,10 +27,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DateType extends AbstractType
 {
+    use CategoryTagValidatorTrait;
+
     public function __construct(private readonly Security $security)
     {
     }
@@ -64,25 +65,6 @@ class DateType extends AbstractType
                     $form->add('external_viewer', TextType::class, [
                         'required' => false,
                     ]);
-                }
-
-                if ($date['draft']) {
-                    /** @var cs_context_item $room */
-                    $room = $formOptions['room'];
-
-                    if ($room->withBuzzwords()) {
-                        $hashtagOptions = array_merge($formOptions['hashtagMappingOptions'], [
-                            'assignment_is_mandatory' => $room->isBuzzwordMandatory(),
-                        ]);
-                        $form->add('hashtag_mapping', HashtagMappingType::class, $hashtagOptions);
-                    }
-
-                    if ($room->withTags()) {
-                        $categoryOptions = array_merge($formOptions['categoryMappingOptions'], [
-                            'assignment_is_mandatory' => $room->isTagMandatory(),
-                        ]);
-                        $form->add('category_mapping', CategoryMappingType::class, $categoryOptions);
-                    }
                 }
             })
         ;
@@ -125,6 +107,9 @@ class DateType extends AbstractType
             ->setDefaults([
                 'translation_domain' => 'date',
                 'lock_protection' => true,
+                'constraints' => [
+                    new Callback($this->validate(...)),
+                ],
             ])
             ->setAllowedTypes('room', 'cs_context_item');
     }

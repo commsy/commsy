@@ -415,27 +415,16 @@ class cs_tag_manager extends cs_manager
         return $retour;
     }
 
-    public function getRootTagItem()
-    {
-        $retour = null;
-        $this->setExactTitleLimit('CS_TAG_ROOT');
-        $this->select();
-        $list = $this->get();
-        if ($list->isNotEmpty() and 1 == $list->getCount()) {
-            $retour = $list->getFirst();
-        }
-
-        return $retour;
-    }
-
-    public function getRootTagItemFor($context_id)
+    public function getRootTagItemFor($context_id): ?cs_tag_item
     {
         $retour = null;
         $this->setExactTitleLimit('CS_TAG_ROOT');
         $this->setContextLimit($context_id);
         $this->select();
+
         $list = $this->get();
         if ($list->isNotEmpty() and 1 == $list->getCount()) {
+            /** @var ?cs_tag_item $retour */
             $retour = $list->getFirst();
         } elseif ($list->isNotEmpty() and $list->getCount() > 1) {
             trigger_error('ERROR: there are more than one root tag item in database table '.$this->_db_table.' for context id '.$context_id, E_USER_ERROR);
@@ -443,11 +432,6 @@ class cs_tag_manager extends cs_manager
 
         return $retour;
     }
-
-     public function createRootTagItem()
-     {
-         $this->createRootTagItemFor($this->_environment->getCurrentContextID());
-     }
 
      public function createRootTagItemFor($context_id)
      {

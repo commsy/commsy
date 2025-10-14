@@ -217,8 +217,7 @@ class cs_item
             $label_manager = $this->_environment->getLabelManager();
             $label_manager->setTypeLimit('buzzword');
             $buzzword_list = $this->_getLinkedItemsForCurrentVersion($label_manager, 'buzzword_for');
-            $buzzword = $buzzword_list->getFirst();
-            while ($buzzword) {
+            foreach ($buzzword_list as $buzzword) {
                 $name = $buzzword->getName();
                 if (!empty($name)) {
                     if (!is_array($this->_data['buzzword_array'])) {
@@ -226,7 +225,6 @@ class cs_item
                     }
                     $this->_data['buzzword_array'][] = $name;
                 }
-                $buzzword = $buzzword_list->getNext();
             }
         }
 
@@ -235,10 +233,8 @@ class cs_item
 
     /** get buzzwords of a material
      * this method returns a list of buzzwords which are linked to the material.
-     *
-     * @return object cs_list a list of buzzwords (cs_label_item)
      */
-    public function getBuzzwordList()
+    public function getBuzzwordList(): cs_list
     {
         $label_manager = $this->_environment->getLabelManager();
         $label_manager->setTypeLimit('buzzword');
@@ -306,16 +302,13 @@ class cs_item
     /** get list of linked items
      * this method returns a list of items which are linked to this item.
      *
-     * @return object cs_list a list of cs_items
-     *
      * @author CommSy Development Group
      */
-    public function _getLinkedItemsForCurrentVersion($item_manager, $link_type)
+    public function _getLinkedItemsForCurrentVersion($item_manager, $link_type): cs_list
     {
         if (!isset($this->_data[$link_type]) or !is_object($this->_data[$link_type])) {
             $link_manager = $this->_environment->getLinkManager();
             // preliminary version: there should be something like 'getIDArray() in the link_manager'
-            $id_array = [];
             $link_array = $link_manager->getLinks($link_type, $this, $this->getVersionID(), 'eq');
             $id_array = [];
             foreach ($link_array as $link) {
@@ -328,7 +321,7 @@ class cs_item
             $this->_data[$link_type] = $item_manager->getItemList($id_array, $this->getVersionID());
         }
 
-        return $this->_data[$link_type];
+        return $this->_data[$link_type] ?? new cs_list();
     }
 
     /** get tags of a material
@@ -384,24 +377,17 @@ class cs_item
 
     /** get tags of a material
      * this method returns a list of tags which are linked to the material.
-     *
-     * @return object cs_list a list of tags (cs_label_item)
      */
-    public function getTagList()
+    public function getTagList(): cs_list
     {
         $list = new cs_list();
         $tag_list = $this->getLinkItemList(CS_TAG_TYPE);
-        $tag = $tag_list->getFirst();
-        while ($tag) {
+        foreach ($tag_list as $tag) {
             $linked_item = $tag->getLinkedItem($this);  // Get the linked item
             if (isset($linked_item)) {
                 $list->add($linked_item);
-                unset($linked_item);
             }
-            $tag = $tag_list->getNext();
         }
-        unset($tag_list);
-        unset($tag);
 
         return $list;
     }

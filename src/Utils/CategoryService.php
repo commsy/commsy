@@ -36,10 +36,9 @@ class CategoryService
         $tagItem->save();
     }
 
-    public function getTags($roomId)
+    public function getTags($roomId): array
     {
         $tagManager = $this->legacyEnvironment->getEnvironment()->getTagManager();
-
         $rootItem = $tagManager->getRootTagItemFor($roomId);
 
         return $this->buildTagArray($rootItem);
@@ -116,21 +115,18 @@ class CategoryService
         }
     }
 
-    private function buildTagArray($item, $level = 0)
+    private function buildTagArray(cs_tag_item $item, int $level = 0): array
     {
         $return = [];
+        ++$level;
 
-        if (isset($item)) {
-            $childrenList = $item->getChildrenList();
-            ++$level;
-
-            $item = $childrenList->getFirst();
-            while ($item) {
-                // attach to return
-                $return[] = ['title' => $item->getTitle(), 'item_id' => $item->getItemID(), 'level' => $level, 'children' => $this->buildTagArray($item, $level)];
-
-                $item = $childrenList->getNext();
-            }
+        foreach ($item->getChildrenList() as $item) {
+            $return[] = [
+                'title' => $item->getTitle(),
+                'item_id' => $item->getItemID(),
+                'level' => $level,
+                'children' => $this->buildTagArray($item, $level),
+            ];
         }
 
         return $return;

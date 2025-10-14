@@ -21,6 +21,7 @@ use App\Form\Type\HashtagMergeType;
 use App\Repository\LabelRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\LabelService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,9 +59,30 @@ class HashtagController extends AbstractController
         ]);
     }
 
-    /**
-     * @return JsonResponse
-     */
+    #[Route(path: '/room/{roomId}/hashtag/all')]
+    public function all(
+        LabelRepository $labelRepository,
+        LegacyEnvironment $legacyEnvironment,
+        int $roomId
+    ): JsonResponse {
+        $legacyEnvironment = $legacyEnvironment->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem->withBuzzwords()) {
+            throw $this->createAccessDeniedException('The requested room does not have hashtags enabled.');
+        }
+
+        $hashtags = new ArrayCollection($labelRepository->findRoomHashtags($roomId));
+        $results = $hashtags->map(fn (Labels $label) => [
+            'value' => $label->getName(),
+            'text' => $label->getName(),
+        ]);
+
+        return $this->json(['results' => $results]);
+    }
+
     #[Route(path: '/room/{roomId}/hashtag/add')]
     #[IsGranted('HASHTAG_EDIT')]
     public function add(
@@ -68,7 +90,7 @@ class HashtagController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         LabelService $labelService,
         int $roomId
-    ): Response {
+    ): JsonResponse {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();

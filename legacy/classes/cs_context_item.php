@@ -1897,9 +1897,7 @@ class cs_context_item extends cs_item
     {
         if ($this->_issetExtra('TAGMANDATORY')) {
             $value = $this->_getExtra('TAGMANDATORY');
-            if (1 == $value) {
-                return true;
-            }
+            return ($value == 1);
         }
 
         return false;
@@ -1966,15 +1964,9 @@ class cs_context_item extends cs_item
     {
         if ($this->_issetExtra('WITHTAGS')) {
             $re = $this->_getExtra('WITHTAGS');
-            if (2 == $re) {
-                return true;
-            }
+            return $re == 2;
         } else {
-            if ($this->_environment->inPrivateRoom()) {
-                return true;
-            }
-
-            if ($this instanceof \cs_privateroom_item) {
+            if ($this->_environment->inPrivateRoom() || $this instanceof cs_privateroom_item) {
                 return true;
             }
         }
