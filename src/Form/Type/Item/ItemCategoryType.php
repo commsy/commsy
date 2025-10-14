@@ -1,0 +1,86 @@
+<?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace App\Form\Type\Item;
+
+use App\Form\Model\Categories;
+use App\Form\Type\TreeChoiceType;
+use App\Security\Authorization\Voter\CategoryVoter;
+use App\Utils\LabelService;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+use Symfony\Component\Validator\Constraints\Count;
+
+class ItemCategoryType extends AbstractType
+{
+    public function __construct(
+        private readonly Security $security,
+        private readonly LabelService $labelService,
+    ) {}
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $categories = $this->labelService->getCategories($options['roomId']);
+
+        $builder
+            ->add('categories', TreeChoiceType::class, [
+                'label' => false,
+                'choices' => $categories,
+                'choice_label' => function ($choice, $key, $value) {
+                    // remove the trailing category ID from $key (which was used in LabelService->transformTagArray() to uniquify the key)
+                    return implode('_', explode('_', $key, -1));
+                },
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true,
+                // TODO: use separate validator to take newCategory field into account
+                'constraints' => $options['mandatoryCategories'] ?
+                    [new Count(min: 1, minMessage: 'Please select at least one category')] :
+                    [],
+            ])
+        ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
+            // Only add the form for new categories if the user is allowed to create them
+            if ($this->security->isGranted(CategoryVoter::EDIT)) {
+                $form = $event->getForm();
+
+                $form->add('newCategory', TextType::class, [
+                    'attr' => [
+                        'placeholder' => new TranslatableMessage('New category', [], 'category'),
+                    ],
+                    'label' => 'newCategory',
+                    'required' => false,
+                ]);
+            }
+        });
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver
+            ->setDefaults([
+                'data_class' => Categories::class,
+            ])
+            ->setRequired(['roomId', 'mandatoryCategories'])
+            ->setAllowedTypes('roomId', 'int')
+            ->setAllowedTypes('mandatoryCategories', 'bool')
+        ;
+    }
+}

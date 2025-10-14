@@ -154,13 +154,6 @@
           return;
         }
 
-        // Skip, if the button adds a new hashtag or category
-        if (buttonNameAttr.indexOf('newHashtagAdd') > -1 || buttonNameAttr.indexOf('itemLinks[newHashtagAdd]') > -1) {
-          return;
-        } else if (buttonNameAttr.indexOf('newCategoryAdd') > -1 || buttonNameAttr.indexOf('itemLinks[newCategoryAdd]') > -1) {
-          return;
-        }
-
         const form = $(this).closest('form');
         $this.fixDateInput($('#date_start_date'));
         $this.fixDateInput($('#date_end_date'));
@@ -260,6 +253,47 @@
     registerDraftFormButtonEvents();
   }
 
+  function onDraftSave(itemType = null, undraftUrl = '') {
+    draftMode = true;
+    promises = [];
+
+    itemType = itemType || $(this).parents('#draft-buttons-wrapper').data("item-type");
+    const formElements = $('article.cs-edit-draft').find('form');
+
+    // Check for any invalid forms
+    // reportValidity() will also display the invalidity to the user
+    const invalidForms = formElements.filter(function() {
+      return this.reportValidity() === false;
+    });
+
+    if (invalidForms.length === 0) {
+      // Simulate a click on each individual form submit button
+      $(formElements).find('.uk-button-primary').click();
+
+      // Discussion articles will not use ajax at all to create a new answer???
+      if (itemType === "article") {
+        return;
+      }
+
+      // Resolve all collected promises
+      undraftUrl = undraftUrl || $(this).data('draft-save').undraftUrl;
+      handleFormsPromises(undraftUrl);
+    }
+  }
+
+  function onDraftCancel() {
+    let $itemType = $(this).parents('#draft-buttons-wrapper').data("item-type");
+    if ($itemType === "section" || $itemType === "step" || $itemType === "article") {
+      // return to detail view of the entry
+      window.location.reload(true);
+    } else {
+      // return to list view
+      let pathParts = window.location.pathname.split("/");
+      pathParts.pop();
+      window.location.href = pathParts.join("/");
+    }
+  }
+
   let registerDraftFormButtonEvents = function() {
     const $draftSave = $('[data-draft-save]');
     const $draftCancel = $('[data-draft-cancel]');
@@ -275,51 +309,20 @@
      * Use of .on() (instead of .one()) is needed to also report invalid form states
      * if the user submits the (combined) form for a second time or more often.
      */
-    $draftSave.on('click', function (event) {
+    $draftSave.on('click', (event) => {
       event.preventDefault();
-
-      draftMode = true;
-      promises = [];
-
-      const itemType = $(this).parents('#draft-buttons-wrapper').data("item-type");
-      const formElements = $(this).parents('article').find('form');
-
-      // Check for any invalid forms
-      // reportValidity() will also display the invalidity to the user
-      const invalidForms = formElements.filter(function() {
-        return this.reportValidity() === false;
-      });
-
-      if (invalidForms.length === 0) {
-        // Simulate a click on each individual form submit button
-        $(formElements).find('.uk-button-primary').click();
-
-        // Discussion articles will not use ajax at all to create a new answer???
-        if (itemType === "article") {
-          return;
-        }
-
-        // Resolve all collected promises
-        const undraftUrl = $(this).data('draft-save').undraftUrl;
-        handleFormsPromises(undraftUrl);
-      }
+      onDraftSave();
     });
 
-    $draftCancel.one('click', function (event) {
+    $draftCancel.one('click', (event) => {
       event.preventDefault();
-
-      let $itemType = $(this).parents('#draft-buttons-wrapper').data("item-type");
-      if ($itemType === "section" || $itemType === "step" || $itemType === "article") {
-        // return to detail view of the entry
-        window.location.reload(true);
-      } else {
-        // return to list view
-        let pathParts = window.location.pathname.split("/");
-        pathParts.pop();
-        window.location.href = pathParts.join("/");
-      }
+      onDraftCancel();
     });
   }
+
+  window.addEventListener('draft:saved', (event) => {
+    onDraftSave(event.detail.itemType, event.detail.undraftUrl);
+  });
 
   registerDraftFormButtonEvents();
 

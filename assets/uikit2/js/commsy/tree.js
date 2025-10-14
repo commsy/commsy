@@ -1,162 +1,174 @@
-;(function(UI) {
+;(function (UI) {
 
-    "use strict";
+  "use strict";
 
-    UI.component('tree', {
+  UI.component('tree', {
 
-        defaults: {
-            tree: {
-                core: {
-                    themes: {
-                        icons: false
-                    },
-                    multiple: true,
-                    dblclick_toggle: false,
-                    keyboard: {
-                        // overwrite the mapping of the enter key
-                        'enter': function (e) {
-                            // in CommSy, enter should submit the hosting form
-                            $(e.currentTarget).parents('form').submit();
+    defaults: {
+      tree: {
+        core: {
+          themes: {
+            icons: false
+          },
+          multiple: true,
+          dblclick_toggle: false,
+          keyboard: {
+            // overwrite the mapping of the enter key
+            'enter': function (e) {
+              // in CommSy, enter should submit the hosting form
+              $(e.currentTarget).parents('form').submit();
 
-                            // disable jstree's default behavior where enter triggers a click on the selected control
-                            return false;
-                        }
-                    }
-                },
-                checkbox: {
-                    keep_selected_style: false,
-                    three_state: false,
-                    // cascade: 'down',
-                },
-                plugins: [
-                    "wholerow",
-                    "checkbox"
-                ]
+              // disable jstree's default behavior where enter triggers a click on the selected control
+              return false;
             }
+          }
         },
+        checkbox: {
+          keep_selected_style: false,
+          three_state: false,
+          // cascade: 'down',
+        },
+        plugins: [
+          "wholerow",
+          "checkbox"
+        ]
+      }
+    },
 
-        boot: function() {
-            // init code
-            UI.ready(function(context) {
-                UI.$("[data-cs-tree]", context).each(function() {
-                    let element = UI.$(this);
+    boot: function () {
+      // init code
+      UI.ready(function (context) {
+        UI.$("[data-cs-tree]", context).each(function () {
+          let element = UI.$(this);
 
-                    if (!element.data("tree")) {
-                        let obj = UI.tree(element, UI.Utils.options(element.attr("data-cs-tree")));
-                    }
-                });
+          if (!element.data("tree")) {
+            let obj = UI.tree(element, UI.Utils.options(element.attr("data-cs-tree")));
+          }
+        });
+      });
+    },
+
+    init: function () {
+      let $this = this;
+
+      let element = $this.element[0];
+
+      // init jstree
+      $(element)
+        .on('ready.jstree', function (event, data) {
+          // sync checkbox with tree state
+          let selectNode = function () {
+            let $input = $(this);
+
+            if ($input.prop('checked')) {
+              let value = $input.attr('value');
+
+              $(element).jstree(true).select_node('tag_' + value);
+              $(element).jstree(true).open_node('tag_' + value);
+            }
+          };
+
+          $('input[id*="filter_category_category"]').each(selectNode);
+          $('input[id*="filter_participant_participant"]').each(selectNode);
+          $('input[id*="filter_calendar_calendar"]').each(selectNode);
+          $('input[id*="itemLinks_categories"]').each(selectNode);
+          $('input[id*="item_category_categories"]').each(selectNode);
+          $('input[id*="category_mapping_categories"]').each(selectNode);
+
+          $(element)
+            .on('select_node.jstree', function (event, data) {
+              let node = data.node;
+              let instance = data.instance;
+
+              instance.open_all(node);
             });
-        },
 
-        init: function() {
-            let $this = this;
-
-            let element = $this.element[0];
-
-            // init jstree
+          /**
+           * Register handler for select and deselect events, recursively selecting or deselecting
+           * all child nodes. We could use the "cascade" configuration for this, but it's "down" mode
+           * always selects all child nodes, even if the parent was the only selected one. In this case
+           * propergation is also done when syncing the checkbox states with the tree after submitting the
+           * filter form.
+           */
+          if ($this.options.custom && $this.options.custom.customCascade) {
             $(element)
-                .on('ready.jstree', function(event, data) {
-                    // sync checkbox with tree state
-                    let selectNode = function() {
-                        let $input = $(this);
+              .on('select_node.jstree', function (event, data) {
+                let node = data.node;
+                let instance = data.instance;
 
-                        if ($input.prop('checked')) {
-                            let value = $input.attr('value');
+                $.each(node.children, function () {
+                  instance.select_node(this, true);
+                });
+              });
 
-                            $(element).jstree(true).select_node('tag_' + value);
-                            $(element).jstree(true).open_node('tag_' + value);
-                        }
-                    };
+            $(element)
+              .on('deselect_node.jstree', function (event, data) {
+                let node = data.node;
+                let instance = data.instance;
 
-                    $('input[id*="filter_category_category"]').each(selectNode);
-                    $('input[id*="filter_participant_participant"]').each(selectNode);
-                    $('input[id*="filter_calendar_calendar"]').each(selectNode);
-                    $('input[id*="itemLinks_categories"]').each(selectNode);
-                    $('input[id*="category_mapping_categories"]').each(selectNode);
+                $.each(node.children, function () {
+                  instance.deselect_node(this, true);
+                });
+              });
+          }
 
-                    $(element)
-                        .on('select_node.jstree', function (event, data) {
-                            let node = data.node;
-                            let instance = data.instance;
+          /**
+           * the following event handler are registered, after checkbox sync
+           * to prevent triggering the form submit (select_node can supress events,
+           * but this would prevent the tree from highlighting selected nodes)
+           */
+          $(element)
+            .on('changed.jstree', function (event, data) {
+              if (data.node.a_attr.href.length > 1) {
+                window.location.hash = data.node.a_attr.href.substring(1);
+              } else {
+                // sync tree state with Checkboxes
+                const checkboxes = $('input[id*="filter_category_category"]')
+                  .add($('input[id*="filter_participant_participant"]'))
+                  .add($('input[id*="filter_calendar_calendar"]'))
+                  .add($('input[id*="itemLinks_categories"]'))
+                  .add($('input[id*="item_category_categories"]'))
+                  .add($('input[id*="category_mapping_categories"]'));
 
-                            instance.open_all(node);
-                        });
+                $.each(checkboxes, (index, checkbox) => {
+                  const $checkbox = $(checkbox);
 
-                    /**
-                     * Register handler for select and deselect events, recursively selecting or deselecting
-                     * all child nodes. We could use the "cascade" configuration for this, but it's "down" mode
-                     * always selects all child nodes, even if the parent was the only selected one. In this case
-                     * propergation is also done when syncing the checkbox states with the tree after submitting the
-                     * filter form.
-                     */
-                    if ($this.options.custom && $this.options.custom.customCascade) {
-                        $(element)
-                            .on('select_node.jstree', function(event, data) {
-                                let node = data.node;
-                                let instance = data.instance;
+                  const oldState = $checkbox.prop('checked');
+                  const newState = data.selected.find((element) =>
+                    element.substring(4) === $checkbox.attr('value')
+                  ) !== undefined;
 
-                                $.each(node.children, function() {
-                                    instance.select_node(this, true);
-                                });
-                            });
+                  if (oldState !== newState) {
+                    $checkbox.prop('checked', newState);
 
-                        $(element)
-                            .on('deselect_node.jstree', function(event, data) {
-                                let node = data.node;
-                                let instance = data.instance;
+                    // Trigger a change event on the hidden checkbox so that live components is notified of the change
+                    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                  }
+                });
 
-                                $.each(node.children, function() {
-                                    instance.deselect_node(this, true);
-                                });
-                            });
-                    }
+                // NOTE: this would submit the form after (de)selecting a checkbox; for now, the
+                // form uses a regular submit button to allow for multiple selections before submit
+                // $('div#room-category').parents('form').submit();
+              }
+            });
+        })
+        // create the instance
+        .jstree(this.options.tree);
 
-                    /**
-                     * the following event handler are registered, after checkbox sync
-                     * to prevent triggering the form submit (select_node can supress events,
-                     * but this would prevent the tree from highlighting selected nodes)
-                     */
-                    $(element)
-                        .on('changed.jstree', function(event, data) {
-                            if (data.node.a_attr.href.length > 1) {
-                                window.location.hash = data.node.a_attr.href.substring(1);
-                            } else {
-                                // sync tree state with Checkboxes
-                                $('input[id*="filter_category_category"]').prop('checked', false);
-                                $('input[id*="filter_participant_participant"]').prop('checked', false);
-                                $('input[id*="filter_calendar_calendar"]').prop('checked', false);
-                                $('input[id*="itemLinks_categories"]').prop('checked', false);
-                                $('input[id*="category_mapping_categories"]').prop('checked', false);
+      // expand / collapse all
+      if (this.options.custom && this.options.custom.toggle) {
+        let $toggle = $('#' + this.options.custom.toggle);
 
-                                $.each(data.selected, function() {
-                                    $('input[value="' + this.substring(4) + '"]')
-                                        .prop('checked', true);
+        $toggle.click(function (event) {
+          let $i = $(this).find('i');
 
-                                });
+          if ($i.hasClass('uk-icon-expand')) {
+            $(element).jstree(true).open_all();
+          } else {
+            $(element).jstree(true).close_all();
+          }
 
-                                // NOTE: this would submit the form after (de)selecting a checkbox; for now, the
-                                // form uses a regular submit button to allow for multiple selections before submit
-                                // $('div#room-category').parents('form').submit();
-                            }
-                        });
-                })
-                // create the instance
-                .jstree(this.options.tree);
-
-            // expand / collapse all
-            if (this.options.custom && this.options.custom.toggle) {
-                let $toggle = $('#' + this.options.custom.toggle);
-
-                $toggle.click(function(event) {
-                    let $i = $(this).find('i');
-
-                    if ($i.hasClass('uk-icon-expand')) {
-                        $(element).jstree(true).open_all();
-                    } else {
-                        $(element).jstree(true).close_all();
-                    }
-
-                    $i.toggleClass('uk-icon-expand uk-icon-compress');
+          $i.toggleClass('uk-icon-expand uk-icon-compress');
 
                     event.preventDefault();
                 });
@@ -168,20 +180,33 @@
         this.hover_node = $.noop;
     };
 
-    $('.cs-tree-plain').first('ul').jstree({
+  function initTrees() {
+    $('.cs-tree-plain').each(function () {
+      $(this).first('ul').jstree({
         core: {
-            themes: {
-                icons: false
-            },
-            multiple: true
+          themes: {
+            icons: false
+          },
+          multiple: true
         },
         checkbox: {
-            keep_selected_style: false,
-            three_state: false
+          keep_selected_style: false,
+          three_state: false
         },
         plugins: [
-            "wholerow", "nohover"
+          "wholerow", "nohover"
         ]
+      });
     });
+  }
+  initTrees();
+
+  window.addEventListener('category:init', () => {
+    initTrees();
+  });
+
+  window.addEventListener('category:edit', () => {
+    UIkit.tree($('#item-categories'));
+  });
 
 })(UIkit);

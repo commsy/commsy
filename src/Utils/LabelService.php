@@ -39,9 +39,7 @@ class LabelService
 
     public function getLabel($itemId)
     {
-        $label = $this->labelManager->getItem($itemId);
-
-        return $label;
+        return $this->labelManager->getItem($itemId);
     }
 
     /**
@@ -119,7 +117,6 @@ class LabelService
     public function getCategories(int $roomId, bool $flatten = false): array
     {
         $categories = $this->categoryService->getTags($roomId);
-
         return $this->transformTagArray($categories, $flatten);
     }
 
@@ -150,20 +147,26 @@ class LabelService
     {
         $hashtags = [];
 
-        /** @var cs_buzzword_manager $buzzwordManager */
         $buzzwordManager = $this->legacyEnvironment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
         $buzzwordManager->select();
         $buzzwordList = $buzzwordManager->get();
 
-        $buzzwordItem = $buzzwordList->getFirst();
-        while ($buzzwordItem) {
+        foreach ($buzzwordList as $buzzwordItem) {
             $hashtags[$buzzwordItem->getItemId()] = $buzzwordItem->getTitle();
-            $buzzwordItem = $buzzwordList->getNext();
         }
 
         return array_flip($hashtags);
+    }
+
+    public function getHashtagItems(int $roomId): \cs_list
+    {
+        $buzzwordManager = $this->legacyEnvironment->getBuzzwordManager();
+        $buzzwordManager->setContextLimit($roomId);
+        $buzzwordManager->setTypeLimit('buzzword');
+        $buzzwordManager->select();
+        return $buzzwordManager->get();
     }
 
     /**
@@ -175,7 +178,6 @@ class LabelService
     {
         $linkedHashtags = [];
 
-        /** @var cs_buzzword_manager $buzzwordManager */
         $buzzwordManager = $this->legacyEnvironment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
@@ -183,13 +185,11 @@ class LabelService
         $buzzwordList = $buzzwordManager->get();
 
         /** @var cs_buzzword_item $buzzwordItem */
-        $buzzwordItem = $buzzwordList->getFirst();
-        while ($buzzwordItem) {
+        foreach ($buzzwordList as $buzzwordItem) {
             $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
             if (in_array($itemId, $selected_ids)) {
                 $linkedHashtags[] = (int) $buzzwordItem->getItemId();
             }
-            $buzzwordItem = $buzzwordList->getNext();
         }
 
         return $linkedHashtags;

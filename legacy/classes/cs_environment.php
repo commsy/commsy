@@ -746,16 +746,9 @@ class cs_environment
         return $context_item->isCommunityRoom();
     }
 
-    /** get boolean, if you are in the private room or not.
-     *
-     * @return boolean, true  = you are in the private room
-     *                  false = you are not in the private room
-     */
-    public function inPrivateRoom()
+    public function inPrivateRoom(): bool
     {
-        $context_item = $this->getCurrentContextItem();
-
-        return $context_item->isPrivateroom();
+        return $this->getCurrentContextItem()->isPrivateRoom();
     }
 
     public function isContextOpenForGuests()

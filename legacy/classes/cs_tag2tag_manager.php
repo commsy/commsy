@@ -281,7 +281,7 @@ class cs_tag2tag_manager extends cs_manager
          $retour = '';
          if ((is_countable($this->cachedFatherIdArray) ? count($this->cachedFatherIdArray) : 0) == 0) {
              if (empty($this->cachedRows)) {
-                 $this->_cacheAllLinkRows();
+                 $this->cacheAllLinkRows();
              }
              foreach ($this->cachedRows as $db_row) {
                  $this->cachedFatherIdArray[$db_row['to_item_id']] = $db_row['from_item_id'];
@@ -335,7 +335,7 @@ class cs_tag2tag_manager extends cs_manager
      {
          if (!isset($this->cachedChildrenIdArray)) {
              if (empty($this->cachedRows)) {
-                 $this->_cacheAllLinkRows();
+                 $this->cacheAllLinkRows();
              }
              $this->cachedChildrenIdArray = [];
              foreach ($this->cachedRows as $db_row) {
@@ -571,8 +571,9 @@ class cs_tag2tag_manager extends cs_manager
          return false;
      }
 
-     private function _cacheAllLinkRows()
+     private function cacheAllLinkRows(): void
      {
+         $this->unsetContextLimit();
          $this->cachedRows = $this->_performQuery();
      }
 

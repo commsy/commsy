@@ -7,263 +7,260 @@
 {% set item = material %}
 
 {% block content %}
-    <div class="uk-grid">
+    <main id="main-content" class="detail-grid">
 
-        <div class="uk-width-medium-4-5">
-            <main id="main-content">
+        {# material content panel #}
+        <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
-            {# material content panel #}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+            {# panel teaser #}
+            <div class="uk-panel-teaser cs-panel-teaser-primary">
+                <div class="uk-flex">
 
-                {# panel teaser #}
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex">
+                    {# quick item navigation #}
+                    {{ render(controller(
+                        'App\\Controller\\ItemController::stepper',
+                        { 'roomId': roomId, 'itemId': item.itemId }
+                    ))}}
 
-                        {# quick item navigation #}
-                        {{ render(controller(
-                            'App\\Controller\\ItemController::stepper',
-                            { 'roomId': roomId, 'itemId': item.itemId }
-                        ))}}
+                    {# actions #}
+                    <div class="uk-flex-item-none">
 
-                        {# actions #}
-                        <div class="uk-flex-item-none">
+                        {# additional actions #}
+                        {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                            {% block dropdown %}
+                                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
-                            {# additional actions #}
-                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
-                                {% block dropdown %}
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-
-                                        {# new entry #}
-                                        <li>
-                                            {% if is_granted('ITEM_NEW') %}
-                                                <a href="{{ path('app_material_create', {'roomId': roomId}) }}" id="newEntry">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
+                                    {# new entry #}
+                                    <li>
+                                        {% if is_granted('ITEM_NEW') %}
+                                            <a href="{{ path('app_material_create', {'roomId': roomId}) }}" id="newEntry">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                            </a>
+                                        {% else %}
+                                            <span class="uk-text-muted">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                                 </span>
-                                            {% endif %}
-                                        </li>
-
-                                        {# print #}
-                                        <li>
-                                            <a href="{{ path('app_material_print', {'roomId': roomId, 'itemId': material.itemId}) }}" target="_blank" id="print">
-                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
-                                            </a>
-                                        </li>
-
-                                        {# save #}
-                                        <li>
-                                            <a href="#"  data-cs-action="{{ {
-                                                'url': path('app_material_download', {'roomId': roomId}),
-                                                'action': 'save',
-                                                'itemId': material.itemId,
-                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                'mode': 'click',
-                                            }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
-                                            </a>
-                                        </li>
-
-                                        {# pin/unpin #}
-                                        {% if not pinned %}
-                                            <li>
-                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_material_xhrpin', {'roomId': roomId}),
-                                                        'action': 'pin',
-                                                        'itemId': material.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
-                                                    </span>
-                                                {% endif %}
-                                            </li>
                                         {% endif %}
+                                    </li>
 
-                                        {% if pinned %}
-                                            <li>
-                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_material_xhrunpin', {'roomId': roomId}),
-                                                        'action': 'unpin',
-                                                        'itemId': material.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
-                                                    </span>
-                                                {% endif %}
-                                            </li>
-                                        {% endif %}
+                                    {# print #}
+                                    <li>
+                                        <a href="{{ path('app_material_print', {'roomId': roomId, 'itemId': material.itemId}) }}" target="_blank" id="print">
+                                            <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                        </a>
+                                    </li>
 
-                                        {# mark #}
+                                    {# save #}
+                                    <li>
+                                        <a href="#"  data-cs-action="{{ {
+                                            'url': path('app_material_download', {'roomId': roomId}),
+                                            'action': 'save',
+                                            'itemId': material.itemId,
+                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                            'mode': 'click',
+                                        }|json_encode|e('html_attr') }}">
+                                            <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                        </a>
+                                    </li>
+
+                                    {# pin/unpin #}
+                                    {% if not pinned %}
                                         <li>
-                                            {% if user.isUser %}
+                                            {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a href="#" data-cs-action="{{ {
-                                                    'url': path('app_material_xhrmark', {'roomId': roomId}),
-                                                    'action': 'mark',
+                                                    'url': path('app_material_xhrpin', {'roomId': roomId}),
+                                                    'action': 'pin',
                                                     'itemId': material.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                     'mode': 'click',
-                                                    'successMessage': '<i class="uk-icon-medium uk-icon-bookmark-o"></i>' ~ 'Entry marked|%count% entries marked'|trans({'%count%':1}, 'item')
+                                                    'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
                                                 }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                                                    <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                                 </a>
                                             {% else %}
                                                 <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
-                                                </span>
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                    </span>
                                             {% endif %}
                                         </li>
+                                    {% endif %}
 
-                                        {# send #}
+                                    {% if pinned %}
                                         <li>
-                                            {% if user.isUser %}
-                                                <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
-
-                                        {# delete #}
-                                        <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
-                                                <a  href="#" data-cs-action="{{ {
-                                                    'url': path('app_material_xhrdelete', {'roomId': roomId, 'itemId': material.itemId}),
-                                                    'action': 'delete',
+                                            {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                                <a href="#" data-cs-action="{{ {
+                                                    'url': path('app_material_xhrunpin', {'roomId': roomId}),
+                                                    'action': 'unpin',
                                                     'itemId': material.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                     'mode': 'click',
-                                                    'itemType': material.itemType,
-                                                    'title': 'list choice'|trans({},'rubric')|capitalize,
-                                                    'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                                    'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                                    'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
-                                                    'returnUrl': path('app_material_list', {'roomId': roomId})
+                                                    'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
                                                 }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                    <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
                                                 </a>
                                             {% else %}
                                                 <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                </span>
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                    </span>
                                             {% endif %}
                                         </li>
+                                    {% endif %}
 
-                                        {# workflow #}
-                                        {% if workflowRead or workflowUnread %}
-                                            {# separator #}
-                                            <li>&nbsp;</li>
-                                        {% endif %}
-
-                                        <li class="cs-workflow-action{% if not workflowRead %} uk-hidden{% endif %}">
+                                    {# mark #}
+                                    <li>
+                                        {% if user.isUser %}
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('app_material_workflow', {'roomId': roomId, 'itemId': material.itemId}),
-                                                'action': 'workflow',
+                                                'url': path('app_material_xhrmark', {'roomId': roomId}),
+                                                'action': 'mark',
                                                 'itemId': material.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                 'mode': 'click',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-eye-slash\'></i>' ~ 'marked as read'|trans({}, 'material'),
-                                                'read': true
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-bookmark-o"></i>' ~ 'Entry marked|%count% entries marked'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-eye uk-icon-justify uk-visible-large"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
+                                                <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                                             </a>
-                                        </li>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                                                </span>
+                                        {% endif %}
+                                    </li>
 
-                                        <li class="cs-workflow-action{% if not workflowUnread %} uk-hidden{% endif %}">
-                                            <a href="#" data-cs-action="{{ {
-                                                'url': path('app_material_workflow', {'roomId': roomId, 'itemId': material.itemId}),
-                                                'action': 'workflow',
+                                    {# send #}
+                                    <li>
+                                        {% if user.isUser %}
+                                            <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                            </a>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                </span>
+                                        {% endif %}
+                                    </li>
+
+                                    {# delete #}
+                                    <li>
+                                        {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
+                                            <a  href="#" data-cs-action="{{ {
+                                                'url': path('app_material_xhrdelete', {'roomId': roomId, 'itemId': material.itemId}),
+                                                'action': 'delete',
                                                 'itemId': material.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                 'mode': 'click',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-eye-slash\'></i>' ~ 'marked as not read'|trans({}, 'material'),
-                                                'read': false
+                                                'itemType': material.itemType,
+                                                'title': 'list choice'|trans({},'rubric')|capitalize,
+                                                'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                                                'returnUrl': path('app_material_list', {'roomId': roomId})
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify uk-visible-large"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                             </a>
-                                        </li>
-
-                                        {% if canExportToWordpress %}
-                                            {# separator #}
-                                            <li>&nbsp;</li>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                </span>
                                         {% endif %}
+                                    </li>
 
-                                        {% if canExportToWordpress %}
-                                            <li>
-                                                <a href="#">
-                                                    <i class="uk-icon-small uk-icon-wordpress uk-icon-justify uk-visible-large"></i> {{ 'Export to Wordpress'|trans({}, 'item') }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-
+                                    {# workflow #}
+                                    {% if workflowRead or workflowUnread %}
                                         {# separator #}
                                         <li>&nbsp;</li>
+                                    {% endif %}
 
-                                        {# new section #}
+                                    <li class="cs-workflow-action{% if not workflowRead %} uk-hidden{% endif %}">
+                                        <a href="#" data-cs-action="{{ {
+                                            'url': path('app_material_workflow', {'roomId': roomId, 'itemId': material.itemId}),
+                                            'action': 'workflow',
+                                            'itemId': material.itemId,
+                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                            'mode': 'click',
+                                            'successMessage': '<i class=\'uk-icon-medium uk-icon-eye-slash\'></i>' ~ 'marked as read'|trans({}, 'material'),
+                                            'read': true
+                                        }|json_encode|e('html_attr') }}">
+                                            <i class="uk-icon-small uk-icon-eye uk-icon-justify uk-visible-large"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
+                                        </a>
+                                    </li>
+
+                                    <li class="cs-workflow-action{% if not workflowUnread %} uk-hidden{% endif %}">
+                                        <a href="#" data-cs-action="{{ {
+                                            'url': path('app_material_workflow', {'roomId': roomId, 'itemId': material.itemId}),
+                                            'action': 'workflow',
+                                            'itemId': material.itemId,
+                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                            'mode': 'click',
+                                            'successMessage': '<i class=\'uk-icon-medium uk-icon-eye-slash\'></i>' ~ 'marked as not read'|trans({}, 'material'),
+                                            'read': false
+                                        }|json_encode|e('html_attr') }}">
+                                            <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify uk-visible-large"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
+                                        </a>
+                                    </li>
+
+                                    {% if canExportToWordpress %}
+                                        {# separator #}
+                                        <li>&nbsp;</li>
+                                    {% endif %}
+
+                                    {% if canExportToWordpress %}
+                                        <li>
+                                            <a href="#">
+                                                <i class="uk-icon-small uk-icon-wordpress uk-icon-justify uk-visible-large"></i> {{ 'Export to Wordpress'|trans({}, 'item') }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {# separator #}
+                                    <li>&nbsp;</li>
+
+                                    {# new section #}
+                                    <li>
+                                        {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                            <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                            </a>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                </span>
+                                        {% endif %}
+                                    </li>
+
+                                    {# new version #}
+                                    {% if material.isCurrentVersion %}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                <a class="newVersion" href="{{ path('app_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
                                                 </a>
                                             {% else %}
                                                 <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
-
-                                        {# new version #}
-                                        {% if material.isCurrentVersion %}
-                                            <li>
-                                                {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a class="newVersion" href="{{ path('app_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
-                                                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
                                                         <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
                                                     </span>
-                                                {% endif %}
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                {% endblock %}
-                            {% endcomponent %}
-                        </div>
+                                            {% endif %}
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            {% endblock %}
+                        {% endcomponent %}
                     </div>
                 </div>
+            </div>
 
-                {% if alert %}
-                    {{ macros.showAlert(alert) }}
-                {%  endif %}
+            {% if alert %}
+                {{ macros.showAlert(alert) }}
+            {%  endif %}
 
-                {% if pathTopicItem %}
-                    {{ macros.showPath(pathTopicItem, material) }}
-                {%  endif %}
+            {% if pathTopicItem %}
+                {{ macros.showPath(pathTopicItem, material) }}
+            {%  endif %}
 
-                {# content #}
-                <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
-                    {# versions #}
+            {# content #}
+            <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
+                {# versions #}
 
-                    {% if versions|length > 1 %}
+                {% if versions|length > 1 %}
                     <div class="">
                         <div style="padding:40px 20px 40px 20px;">
                             <div style="width:100%;">
@@ -301,257 +298,217 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
+                {% endif %}
 
-                    {# title, etc. #}
-                    <div class="cs-toggle" data-uk-observe>
-                        {{ macrosMaterial.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, withTrafficLight, ratingArray, workflowTitles) }}
-                    </div>
+                {# title, etc. #}
+                <div class="cs-toggle" data-uk-observe>
+                    {{ macrosMaterial.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, withTrafficLight, ratingArray, workflowTitles) }}
+                </div>
 
-                    {# description #}
-                    <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                {# description #}
+                <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
                         editUrl: '{{ path('app_item_editdescription', { 'roomId': material.contextId, 'itemId': material.itemId, 'draft': draft }) }}',
                         cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': material.contextId, 'itemId': material.itemId }) }}'
                     }">
-                        {{ macrosItem.itemDescription('description', material, true, material.description, draft) }}
+                    {{ macrosItem.itemDescription('description', material, true, material.description, draft) }}
+                </div>
+
+                {# files #}
+                <div id="files{{ material.itemId }}">
+                    {{ component('FileList:FileList', {
+                        itemId: material.itemId,
+                        versionId: material.versionId,
+                        draft: draft
+                    }) }}
+                </div>
+
+                {% if not draft %}
+                    {# links #}
+                    <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                        {{ macrosItem.linksAssociations(material, draft, showAssociations) }}
                     </div>
 
-                    {# files #}
-                    <div id="files{{ material.itemId }}">
-                        {{ component('FileList:FileList', {
-                            itemId: material.itemId,
-                            versionId: material.versionId,
-                            draft: draft
-                        }) }}
-                    </div>
-
-                    {% if not draft %}
-                        {# links #}
-                        <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                            {{ macrosItem.linksAssociations(material,showHashtags,showCategories,roomCategories, draft, showAssociations) }}
+                    {# workflow #}
+                    {% if showWorkflow and (withTrafficLight or withResubmission or withValidity or withReader) %}
+                        <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withValidity, withResubmission) }}
                         </div>
-                        {% if (showCategories or showHashtags) %}
-                            <div id="categoriesAndBuzzwords{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                                {{ macrosItem.links(material,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
-                            </div>
-                        {% endif %}
+                    {% endif %}
 
-                        {# workflow #}
-                        {% if showWorkflow and (withTrafficLight or withResubmission or withValidity or withReader) %}
-                            <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                                {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withValidity, withResubmission) }}
-                            </div>
-                        {% endif %}
-
-                        {# sections #}
-                        <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle"
+                    {# sections #}
+                    <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle"
                         {% if sectionList|length > 0 %}
                             data-uk-observe data-cs-edit="{editUrl: '{{ path('app_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }"
                         {% endif %}
-                        >
-                            {{ macrosMaterial.sections(material, sectionList) }}
-                        </div>
-                    {% endif %}
+                    >
+                        {{ macrosMaterial.sections(material, sectionList) }}
+                    </div>
+                {% endif %}
 
-                    {% if draft %}
-                        {{ macros.draftButtons(roomId, material.itemId, material.type) }}
-                    {% endif %}
-                </article>
+{#                {% if draft %}#}
+{#                    {{ macros.draftButtons(roomId, material.itemId, material.type) }}#}
+{#                {% endif %}#}
+            </article>
+        </div>
+
+        <aside class="detail-sidebar uk-margin-top">
+            {# Structure panel #}
+            {{ macrosItem.structure(showCategories, showHashtags, material.itemId, material.versionId) }}
+        </aside>
+
+        {% if draft %}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-top">
+                <twig:Items:DraftEdit :itemId="material.itemId"/>
             </div>
+        {% endif %}
 
-            <div data-uk-observe id="section-content">
-                {# material sections #}
-                {% for section in sectionList %}
-                    {% set count = loop.index0 %}
-                    <div id="section_{{count}}" class="uk-panel uk-panel-box uk-margin-top material-section">
-                        <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-section cs-toggle">
-                            <div class="uk-flex">
-                                <div class="uk-flex-inline uk-flex-item-1">
-                                    {# section navigation #}
-                                    {% if loop.last and loop.length > 1 %}
-                                        <div class="uk-margin-right">
-                                            <a class="uk-button-primary" href="#section_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
-                                            <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
-                                        </div>
-                                    {% elseif loop.first and loop.length > 1 %}
-                                        <div>
-                                            <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
-                                            <a class="uk-button-primary" href="#section_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
-                                        </div>
-                                    {% elseif loop.length == 1 %}
-                                        <div>
-                                            <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
-                                            <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
-                                        </div>
-                                    {% else %}
-                                        <div class="uk-margin-right">
-                                            <a class="uk-button-primary" href="#section_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
-                                            <a class="uk-button-primary" href="#section_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="uk-flex-item-none">
+        <div data-uk-observe id="section-content">
+            {# material sections #}
+            {% for section in sectionList %}
+                {% set count = loop.index0 %}
+                <div id="section_{{count}}" class="uk-panel uk-panel-box uk-margin-top material-section">
+                    <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-section cs-toggle">
+                        <div class="uk-flex">
+                            <div class="uk-flex-inline uk-flex-item-1">
+                                {# section navigation #}
+                                {% if loop.last and loop.length > 1 %}
+                                    <div class="uk-margin-right">
+                                        <a class="uk-button-primary" href="#section_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                        <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
+                                    </div>
+                                {% elseif loop.first and loop.length > 1 %}
+                                    <div>
+                                        <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
+                                        <a class="uk-button-primary" href="#section_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                    </div>
+                                {% elseif loop.length == 1 %}
+                                    <div>
+                                        <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
+                                        <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
+                                    </div>
+                                {% else %}
+                                    <div class="uk-margin-right">
+                                        <a class="uk-button-primary" href="#section_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                        <a class="uk-button-primary" href="#section_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="uk-flex-item-none">
 
-                                    {# section actions #}
-                                    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
-                                        {% block dropdown %}
-                                            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                {# section actions #}
+                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                                    {% block dropdown %}
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
-                                                {# new section #}
-                                                <li>
-                                                    {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                        <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                            <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
-                                                        </a>
-                                                    {% else %}
-                                                        <span class="uk-text-muted">
+                                            {# new section #}
+                                            <li>
+                                                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                    <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
                                                             <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                                         </span>
-                                                    {% endif %}
-                                                </li>
+                                                {% endif %}
+                                            </li>
 
-                                                {# delete #}
-                                                <li>
-                                                    {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
-                                                        <a  href="#" data-cs-action="{{ {
-                                                            'url': path('app_section_xhrdelete', {'roomId': roomId, 'itemId': section.itemId}),
-                                                            'action': 'delete',
-                                                            'itemId': section.itemId,
-                                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                            'mode': 'click',
-                                                            'itemType': section.itemType,
-                                                            'title': 'list choice'|trans({},'rubric')|capitalize,
-                                                            'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                                            'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                                            'confirmOk': 'confirm delete confirm'|trans({},'rubric')
-                                                        }|json_encode|e('html_attr') }}">
-                                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                        </a>
-                                                    {% else %}
-                                                        <span class="uk-text-muted">
+                                            {# delete #}
+                                            <li>
+                                                {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
+                                                    <a  href="#" data-cs-action="{{ {
+                                                        'url': path('app_section_xhrdelete', {'roomId': roomId, 'itemId': section.itemId}),
+                                                        'action': 'delete',
+                                                        'itemId': section.itemId,
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'click',
+                                                        'itemType': section.itemType,
+                                                        'title': 'list choice'|trans({},'rubric')|capitalize,
+                                                        'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                        'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                        'confirmOk': 'confirm delete confirm'|trans({},'rubric')
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
                                                             <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                         </span>
-                                                    {% endif %}
-                                                </li>
-                                            </ul>
-                                        {% endblock %}
-                                    {% endcomponent %}
-                                </div>
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                    {% endblock %}
+                                {% endcomponent %}
                             </div>
                         </div>
+                    </div>
 
-                        <article class="uk-article uk-position-relative">
-                            {# title #}
-                            <div class="cs-toggle" data-uk-observe>
-                                {{ macrosMaterial.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
-                            </div>
+                    <article class="uk-article uk-position-relative">
+                        {# title #}
+                        <div class="cs-toggle" data-uk-observe>
+                            {{ macrosMaterial.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
+                        </div>
 
-                            {# description #}
-                            <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                        {# description #}
+                        <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
                                 editUrl: '{{ path('app_item_editdescription', { 'roomId': section.contextId, 'itemId': section.itemId }) }}',
                                 cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': section.contextId, 'itemId': section.itemId }) }}'
                             }">
-                                {{ macrosItem.itemDescription('description', section, true, section.description) }}
-                            </div>
-
-                            {# files #}
-                            <div id="files{{ section.itemId }}">
-                                {{ component('FileList:FileList', {
-                                    itemId: section.itemId
-                                }) }}
-                            </div>
-                        </article>
-                    </div>
-                {% endfor %}
-            </div>
-
-            {# annotations #}
-            {% if not draft %}
-                <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    <div class="uk-grid">
-                        <div class="uk-width-3-5 uk-text-large ">
-                            {{ 'annotations'|trans({})|capitalize }}
+                            {{ macrosItem.itemDescription('description', section, true, section.description) }}
                         </div>
+
+                        {# files #}
+                        <div id="files{{ section.itemId }}">
+                            {{ component('FileList:FileList', {
+                                itemId: section.itemId
+                            }) }}
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# annotations #}
+        {% if not draft %}
+            <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
+                <div class="uk-grid">
+                    <div class="uk-width-3-5 uk-text-large ">
+                        {{ 'annotations'|trans({})|capitalize }}
                     </div>
                 </div>
-
-                <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
-
-                    {% if is_granted('ITEM_ANNOTATE', material.itemId) %}
-                        <article class="uk-comment">
-                            <header class="uk-comment-header uk-margin-remove uk-flex">
-                                <div class="uk-margin-right uk-flex-item-none">
-                                    {% if not user.isDeleted and user.isUser %}
-                                        {{ macros.userIconLink(user) }}
-                                    {% else %}
-                                        {{ macros.userIcon(user) }}
-                                    {% endif %}
-                                </div>
-                                <div class="uk-width-8-10">
-                                    {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId}), 'method': 'POST'}) }}
-                                        <p>
-                                            {{ form_label(annotationForm.description) }}
-                                        </p>
-                                        {{ form_widget(annotationForm.description) }}
-                                    {{ form_end(annotationForm) }}
-                                </div>
-                            </header>
-                        </article>
-                    {% endif %}
-
-                    {{ render(controller(
-                        'App\\Controller\\AnnotationController::feed',
-                        { 'roomId': roomId, 'linkedItemId': item.itemId }
-                    ))}}
-
-                </div>
-            {% endif %}
-            </main>
-        </div>
-
-        <div class="uk-width-medium-1-5 uk-hidden-small">
-
-            {# quick navigation #}
-            <nav aria-label="{{ 'Quick'|trans({}) }}">
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
-                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
-                    {{ 'quick navigation'|trans({})|capitalize }}
-                </div>
-                <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ material.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
-                        <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
-                        <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        {% if (showCategories or showHashtags) %}
-                            <li><a href="#categoriesAndBuzzwords{{ material.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
-                        {% endif %}
-                        {%if showWorkflow %}
-                            <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
-                        {% endif %}
-                        {% if not sectionList is empty %}
-                            <li class="uk-parent">
-                                <a href="#sections{{ material.itemId }}">{{ 'sections'|trans({})|capitalize }}</a>
-                                <ul class="uk-nav-sub">
-                                    {% for section in sectionList %}
-                                        <li>
-                                            <a href="#section{{ section.itemId }}">{{ loop.index }}. {{ section.title|decodeHtmlEntity|u.truncate(20) }}</a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% endif %}
-
-                        {% if not draft %}
-                            <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
             </div>
-            </nav>
 
-        </div>
+            <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
-    </div>
+                {% if is_granted('ITEM_ANNOTATE', material.itemId) %}
+                    <article class="uk-comment">
+                        <header class="uk-comment-header uk-margin-remove uk-flex">
+                            <div class="uk-margin-right uk-flex-item-none">
+                                {% if not user.isDeleted and user.isUser %}
+                                    {{ macros.userIconLink(user) }}
+                                {% else %}
+                                    {{ macros.userIcon(user) }}
+                                {% endif %}
+                            </div>
+                            <div class="uk-width-8-10">
+                                {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId}), 'method': 'POST'}) }}
+                                <p>
+                                    {{ form_label(annotationForm.description) }}
+                                </p>
+                                {{ form_widget(annotationForm.description) }}
+                                {{ form_end(annotationForm) }}
+                            </div>
+                        </header>
+                    </article>
+                {% endif %}
+
+                {{ render(controller(
+                    'App\\Controller\\AnnotationController::feed',
+                    { 'roomId': roomId, 'linkedItemId': item.itemId }
+                )) }}
+            </div>
+        {% endif %}
+    </main>
 {% endblock %}
 
 {# end #}

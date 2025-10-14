@@ -183,7 +183,7 @@ class cs_tag_item extends cs_item
         $this->_setValue('title', $value);
     }
 
-    public function getChildrenList()
+    public function getChildrenList(): ?cs_list
     {
         $retour = null;
         if (!isset($this->_children_list)) {
@@ -198,9 +198,7 @@ class cs_tag_item extends cs_item
                 $this->_children_list = new cs_list();
             }
         }
-        $retour = $this->_children_list;
-
-        return $retour;
+        return $this->_children_list;
     }
 
     public function save(): void

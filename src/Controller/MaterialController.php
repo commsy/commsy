@@ -767,7 +767,6 @@ class MaterialController extends BaseController
             if (!empty($tempResult)) {
                 $addCategory = true;
             }
-            $tempArray = [];
             $foundCategory = false;
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
@@ -849,17 +848,15 @@ class MaterialController extends BaseController
 
         if ('material' == $item->getItemType()) {
             $isMaterial = true;
-            if ($item->isDraft()) {
-                $isDraft = true;
-            }
+            $isDraft = $item->isDraft();
 
-            // get material from MaterialService
             $materialItem = $this->materialService->getMaterial($itemId);
-            $typedItem = $materialItem;
-            $materialItem->setDraftStatus($item->isDraft());
             if (!$materialItem) {
                 throw $this->createNotFoundException('No material found for id '.$roomId);
             }
+
+            $typedItem = $materialItem;
+            $materialItem->setDraftStatus($item->isDraft());
 
             $formData = $this->materialTransformer->transform($materialItem);
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
@@ -888,7 +885,7 @@ class MaterialController extends BaseController
                 ],
                 'licenses' => $licenses,
                 'room' => $current_context,
-                'itemId' => $itemId
+                'itemId' => $itemId,
             ]);
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($materialItem), CommsyEditEvent::EDIT);
