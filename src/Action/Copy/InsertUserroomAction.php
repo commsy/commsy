@@ -14,7 +14,6 @@
 namespace App\Action\Copy;
 
 use App\Entity\Account;
-use App\Enum\ReaderStatus;
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
 use App\Services\LegacyEnvironment;
@@ -37,8 +36,7 @@ class InsertUserroomAction
         LegacyEnvironment $legacyEnvironment,
         private readonly MarkedService $markService,
         private readonly ReaderService $readerService,
-        private readonly Security $security,
-        private readonly ReaderStatus $readerStatus
+        private readonly Security $security
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
