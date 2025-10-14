@@ -1597,14 +1597,12 @@ class PortalSettingsController extends AbstractController
             $recipientArray[] = $currentUser;
         }
 
-        $multipleRecipients = sizeof($recipientArray) > 1;
-
         $sendMail = new AccountIndexSendMail();
         $sendMail->setRecipients($recipientArray);
 
         $chosenAction = $action ?? 'user-account_send_mail';
         $accountMail = new AccountMail($legacyEnvironment, $router);
-        $body = $accountMail->generateBody($recipientArray[0], $chosenAction, $multipleRecipients);
+        $body = '';
         $subject = $accountMail->generateSubject($chosenAction);
         $sendMail->setSubject($subject);
         $sendMail->setMessage($body);

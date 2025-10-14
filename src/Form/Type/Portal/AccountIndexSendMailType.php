@@ -45,7 +45,6 @@ class AccountIndexSendMailType extends AbstractType
                 'expanded' => true,
                 'translation_domain' => 'mail',
                 'choice_translation_domain' => 'mail',
-                'required' => true,
                 'data' => false,
             ])
             ->add('subject', TextType::class, [
@@ -54,10 +53,6 @@ class AccountIndexSendMailType extends AbstractType
                 ],
                 'label' => 'Subject',
                 'translation_domain' => 'mail',
-                'required' => true,
-                'attr' => [
-                    'placeholder' => 'Subject',
-                ],
             ])
             ->add('names', TextType::class, [
                 'label' => 'Names',
@@ -65,6 +60,9 @@ class AccountIndexSendMailType extends AbstractType
                 'required' => false,
             ])
             ->add('message', CKEditorType::class, [
+                'constraints' => [
+                    new NotBlank(),
+                ],
                 'label' => 'message',
                 'translation_domain' => 'form',
                 'required' => true,
