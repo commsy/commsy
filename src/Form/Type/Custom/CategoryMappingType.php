@@ -96,7 +96,7 @@ class CategoryMappingType extends AbstractType
         $form = $context->getObject();
         $assignmentIsMandatory = $form->getConfig()->getOption('assignment_is_mandatory');
 
-        if ($assignmentIsMandatory && !$data['categories'] && !$data['newCategory']) {
+        if ($assignmentIsMandatory && !$data['categories'] && (!isset($data['newCategory']) || !$data['newCategory'])) {
             $context->buildViolation('Please select at least one category')
                 ->atPath('categories')
                 ->addViolation();
