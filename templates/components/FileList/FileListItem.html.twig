@@ -2,15 +2,15 @@
 
 <div {{ attributes.defaults({class: "uk-grid-margin"}) }}>
     {# office modal dialog #}
-    {% if this.supportsOnlineOffice(file) and is_granted('ITEM_EDIT_LOCK', itemId) %}
+    {% if this.supportsOnlineOffice(fileDto) and is_granted('ITEM_EDIT_LOCK', itemId) %}
         <div {{ stimulus_controller('wopi_modal', {
             'url': path('app_wopi_host', {
-                'roomId': file.contextId,
+                'roomId': fileDto.contextId,
                 'itemId': itemId,
-                'fileId': file.fileId
+                'fileId': fileDto.fileId
             })
         }) }}>
-            <div id="modal_wopi_{{ file.fileId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
+            <div id="modal_wopi_{{ fileDto.fileId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
                 <div class="uk-modal-dialog uk-modal-dialog-blank">
                     <div class="wopi-modal-top">
                         <a {{ stimulus_action('wopi_modal', '_hide') }}>{{ 'Close'|trans }}</a>
@@ -23,7 +23,7 @@
 
     {# visible list item #}
     {% set disposition = 'attachment' %}
-    {% if file.extension|lower == 'pdf' %}
+    {% if fileDto.extension|lower == 'pdf' %}
         {% set disposition = 'inline' %}
     {% endif %}
 
@@ -32,19 +32,19 @@
         {% if isImage %}
             <div>
                 <img class=""
-                     href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}"
+                     href="{{ path('app_file_getfile', {'fileId': fileDto.fileId, 'disposition': 'inline'}) }}"
                      data-uk-lightbox="{group:{{ itemId }}}"
                      data-lightbox-type="image"
                      data-uk-tooltip="{pos:'top-left'}"
-                     title="{{ file.filename }} ({{ file.fileSize }} kb)"
-                     src="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}"
+                     title="{{ fileDto.filename }} ({{ fileDto.fileSize }} kb)"
+                     src="{{ path('app_file_getfile', {'fileId': fileDto.fileId, 'disposition': 'inline'}) }}"
                      style="width: 160px; height: 75px; object-fit: cover" />
             </div>
         {% endif %}
 
         {% if renameMode %}
             <div class="uk-form uk-flex uk-flex-space-between" style="width: 160px">
-                <input class="uk-width-1-1" type="text" data-model="norender|file.filenameNoExt">
+                <input class="uk-width-1-1" type="text" data-model="norender|fileDto.filenameNoExt">
                 <button
                     class="uk-button uk-button-success"
                     title="{{ 'save'|trans({},'form')|capitalize }}"
@@ -62,7 +62,7 @@
 
         {% if deleteMode %}
             <div class="uk-form uk-flex uk-flex-space-between" style="width: 160px">
-                <input class="uk-width-1-1" type="text" data-model="norender|file.filenameNoExt" disabled>
+                <input class="uk-width-1-1" type="text" data-model="norender|fileDto.filenameNoExt" disabled>
                 <button
                     class="uk-button uk-button-default"
                     title="{{ 'cancel'|trans({},'form')|capitalize }}"
@@ -90,14 +90,14 @@
             <div class="uk-button-group" data-uk-check-display>
                 {# Left button #}
                 <a class="uk-button uk-text-left"
-                   href="{{ path('app_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}"
+                   href="{{ path('app_file_getfile', {'fileId': fileDto.fileId, 'disposition': disposition }) }}"
                    target="_blank"
                    style="width: 133px"
                    data-uk-tooltip="{pos:'top-left'}"
-                   title="{{ file.filename }} ({{ file.fileSize }} kb)"
+                   title="{{ fileDto.filename }} ({{ fileDto.fileSize }} kb)"
                 >
-                    <i class="uk-icon-small {{ macrosUtils.iconClassForFileType(file.extension) }}"></i>
-                    {{ file.filename|u.truncate(20, '...') }}
+                    <i class="uk-icon-small {{ macrosUtils.iconClassForFileType(fileDto.extension) }}"></i>
+                    {{ fileDto.filename|u.truncate(20, '...') }}
                 </a>
 
                 {# Dropdown #}
@@ -106,8 +106,8 @@
                     <div class="uk-dropdown uk-dropdown-small">
                         <ul class="uk-nav uk-nav-dropdown">
                             <li>
-                                {% if this.supportsOnlineOffice(file) and is_granted('ITEM_EDIT_LOCK', itemId) %}
-                                    <a href="#modal_wopi_{{ file.fileId }}" data-uk-modal>
+                                {% if this.supportsOnlineOffice(fileDto) and is_granted('ITEM_EDIT_LOCK', itemId) %}
+                                    <a href="#modal_wopi_{{ fileDto.fileId }}" data-uk-modal>
                                         <i class="uk-icon-edit uk-icon-justify"></i> {{ 'item.file.live_edit'|trans({}, 'item') }}
                                     </a>
                                 {% endif %}
