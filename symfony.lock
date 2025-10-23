@@ -631,12 +631,12 @@
         "version": "v4.4.9"
     },
     "symfony/routing": {
-        "version": "7.1",
+        "version": "7.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "7.0",
-            "ref": "21b72649d5622d8f7da329ffb5afb232a023619d"
+            "ref": "ab1e60e2afd5c6f4a6795908f646e235f2564eb2"
         },
         "files": [
             "config/packages/routing.yaml",
@@ -684,12 +684,12 @@
         "version": "v1.1.6"
     },
     "symfony/stimulus-bundle": {
-        "version": "2.28",
+        "version": "2.30",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.20",
-            "ref": "e058471c5502e549c1404ebdd510099107bb5549"
+            "ref": "c30f782a8910ae9f12e7a1399db607d172d23da6"
         },
         "files": [
             "assets/bootstrap.js",
@@ -901,15 +901,16 @@
         "version": "2.13.0"
     },
     "zenstruck/foundry": {
-        "version": "2.3",
+        "version": "2.6",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "2.0",
-            "ref": "56bc588a1b6d5d218319f70c64c2f0fbebe30ec7"
+            "version": "2.6",
+            "ref": "50321333fa5e12324ac1d5a2aeb65fb276a6f9c8"
         },
         "files": [
-            "config/packages/zenstruck_foundry.yaml"
+            "config/packages/zenstruck_foundry.yaml",
+            "src/Story/AppStory.php"
         ]
     }
 }
