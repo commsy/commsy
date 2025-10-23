@@ -13,8 +13,6 @@
 
 namespace App\Form\Type\Account;
 
-use App\Services\LegacyEnvironment;
-use cs_environment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -29,13 +27,6 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class ChangePasswordType extends AbstractType
 {
-    private readonly cs_environment $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-    }
-
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -70,22 +61,22 @@ class ChangePasswordType extends AbstractType
                             'min' => 8,
                             'minMessage' => 'Your password must be at least {{ limit }} characters long.',
                             ]),
-                        new Regex([
-                            'pattern' => '/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/', // any lowercase/modifier/other Unicode letters
-                            'message' => 'Your password must contain at least one lowercase character.',
-                            ]),
-                        new Regex([
-                            'pattern' => '/(*UTF8)[\p{Lu}\p{Lt}]/', // any upper/title case Unicode letters
-                            'message' => 'Your password must contain at least one uppercase character.',
-                            ]),
-                        new Regex([
-                            'pattern' => '/[[:punct:]]/', // any printing characters excluding letters, digits & space
-                            'message' => 'Your password must contain at least one special character.',
-                        ]),
-                        new Regex([
-                            'pattern' => '/\p{Nd}/', // any decimal numbers
-                            'message' => 'Your password must contain at least one numeric character.',
-                        ]),
+                        new Regex(
+                            pattern: '/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/', // any lowercase/modifier/other Unicode letters
+                            message: 'Your password must contain at least one lowercase character.',
+                        ),
+                        new Regex(
+                            pattern: '/(*UTF8)[\p{Lu}\p{Lt}]/', // any upper/title case Unicode letters
+                            message: 'Your password must contain at least one uppercase character.',
+                        ),
+                        new Regex(
+                            pattern: '/[[:punct:]]/', // any printing characters excluding letters, digits & space
+                            message: 'Your password must contain at least one special character.',
+                        ),
+                        new Regex(
+                            pattern: '/\p{Nd}/', // any decimal numbers
+                            message: 'Your password must contain at least one numeric character.',
+                        ),
                     ],
                 ],
                 'second_options' => [
