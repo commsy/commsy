@@ -93,10 +93,10 @@ class PersonalInformationType extends AbstractType
                 'label' => 'initials',
                 'required' => false,
                 'constraints' => [
-                    new Length([
-                        'max' => $initialsMaxLength,
-                        'maxMessage' => 'Your initials may only consist of up to {{ limit }} letters.',
-                    ]),
+                    new Length(
+                        max: $initialsMaxLength,
+                        maxMessage: 'Your initials may only consist of up to {{ limit }} letters.',
+                    ),
                     new Regex(
                         pattern: $initialsRegex,
                         message: 'Your initials may only contain lowercase or uppercase letters.',

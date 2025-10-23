@@ -57,10 +57,10 @@ class ChangePasswordType extends AbstractType
                     'constraints' => [
                         new NotBlank(),
                         new NotCompromisedPassword(),
-                        new Length([
-                            'min' => 8,
-                            'minMessage' => 'Your password must be at least {{ limit }} characters long.',
-                            ]),
+                        new Length(
+                            min: 8,
+                            minMessage: 'Your password must be at least {{ limit }} characters long.',
+                        ),
                         new Regex(
                             pattern: '/(*UTF8)[\p{Ll}\p{Lm}\p{Lo}]/', // any lowercase/modifier/other Unicode letters
                             message: 'Your password must contain at least one lowercase character.',
