@@ -33,7 +33,7 @@ final class FileListItem
     use ComponentToolsTrait;
 
     #[LiveProp(writable: ['filenameNoExt'])]
-    public FileDto $file;
+    public FileDto $fileDto;
 
     #[LiveProp]
     public int $itemId;
@@ -65,15 +65,15 @@ final class FileListItem
             $fileRepository = $entityManager->getRepository(Files::class);
 
             /** @var Files $file */
-            $file = $fileRepository->findOneBy(['filesId' => $this->file->fileId]);
-            $file->setFilename("{$this->file->filenameNoExt}.{$this->file->extension}");
-            $this->file->filename = "{$this->file->filenameNoExt}.{$this->file->extension}";
+            $file = $fileRepository->findOneBy(['filesId' => $this->fileDto->fileId]);
+            $file->setFilename("{$this->fileDto->filenameNoExt}.{$this->fileDto->extension}");
+            $this->fileDto->filename = "{$this->fileDto->filenameNoExt}.{$this->fileDto->extension}";
 
             $entityManager->persist($file);
             $entityManager->flush();
 
             $this->emitUp('FileListItem:fileRenamed', [
-                'file' => $this->file,
+                'file' => $this->fileDto,
             ]);
         }
 
@@ -91,7 +91,7 @@ final class FileListItem
     {
         if ($confirmed) {
             $this->emitUp('FileListItem:fileRemoved', [
-                'fileId' => $this->file->fileId,
+                'fileId' => $this->fileDto->fileId,
             ]);
         }
 

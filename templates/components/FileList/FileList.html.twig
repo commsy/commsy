@@ -48,7 +48,7 @@
                     {% for file in imageFiles %}
                         <twig:FileList:FileListItem
                             :itemId="itemId"
-                            :file="file"
+                            :fileDto="file"
                             :isImage="true"
                             :key="file.fileId" />
                     {% endfor %}
@@ -67,7 +67,7 @@
                     {% for file in otherFiles %}
                         <twig:FileList:FileListItem
                             :itemId="itemId"
-                            :file="file"
+                            :fileDto="file"
                             :key="file.fileId" />
                     {% endfor %}
 
