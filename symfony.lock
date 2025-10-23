@@ -327,13 +327,14 @@
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "10.0",
-            "ref": "bb22cf8d8c554a623b427d5f3416b538f5525233"
+            "version": "11.1",
+            "ref": "c6658a60fc9d594805370eacdf542c3d6b5c0869"
         },
         "files": [
             ".env.test",
-            "phpunit.dist.xml",
-            "tests/bootstrap.php"
+            "phpunit.xml.dist",
+            "tests/bootstrap.php",
+            "bin/phpunit"
         ]
     },
     "promphp/prometheus_client_php": {
@@ -586,19 +587,14 @@
         "version": "v4.4.5"
     },
     "symfony/phpunit-bridge": {
-        "version": "7.2",
+        "version": "7.3",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "6.3",
-            "ref": "a411a0480041243d97382cac7984f7dce7813c08"
+            "version": "7.3",
+            "ref": "dc13fec96bd527bd399c3c01f0aab915c67fd544"
         },
-        "files": [
-            ".env.test",
-            "bin/phpunit",
-            "phpunit.xml.dist",
-            "tests/bootstrap.php"
-        ]
+        "files": []
     },
     "symfony/polyfill-apcu": {
         "version": "v1.14.0"
