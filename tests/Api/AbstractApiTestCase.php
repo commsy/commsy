@@ -25,6 +25,7 @@ abstract class AbstractApiTestCase extends ApiTestCase
 
     public function setUp(): void
     {
+        ApiTestCase::$alwaysBootKernel = false;
         self::bootKernel();
 
         /**
