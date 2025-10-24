@@ -22,13 +22,13 @@
                 <div class="uk-margin-top">
                     <button
                         class="uk-button uk-button-primary"
-                        data-action="live#action"
-                        data-live-action-param="save">{{ 'save'|trans({}, 'form') }}</button>
+                        {{ live_action('save', { 'fromButton': true }) }}
+                    >{{ 'save'|trans({}, 'form') }}</button>
 
                     <button
                         class="uk-button uk-button-secondary"
-                        data-action="live#action"
-                        data-live-action-param="cancel">{{ 'cancel'|trans({}, 'form') }}</button>
+                        {{ live_action('cancel') }}
+                    >{{ 'cancel'|trans({}, 'form') }}</button>
                 </div>
             {% endif %}
         {% else %}
