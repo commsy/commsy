@@ -13,9 +13,13 @@
 
 namespace App\Security\Authorization\Voter;
 
+use App\Entity\Account;
 use App\Services\LegacyEnvironment;
+use App\Utils\UserService;
 use cs_environment;
+use cs_user_item;
 use LogicException;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -25,8 +29,11 @@ class CategoryVoter extends Voter
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private Security $security,
+        private UserService $userService,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -38,15 +45,23 @@ class CategoryVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        $account = $this->security->getUser();
+        if (!$account instanceof Account) {
+            return false;
+        }
+
+        $userInContext = $this->userService->getUserInContext($account, $currentRoom->getItemId());
+        if (!$userInContext) {
+            return false;
+        }
 
         return match ($attribute) {
-            self::EDIT => $this->canEdit($currentRoom, $currentUser),
+            self::EDIT => $this->canEdit($currentRoom, $userInContext),
             default => throw new LogicException('This code should not be reached!'),
         };
     }
 
-    private function canEdit($currentRoom, $currentUser)
+    private function canEdit($currentRoom, cs_user_item $currentUser): bool
     {
         // categories are not editable by guests
         if ($currentUser->isReallyGuest()) {
