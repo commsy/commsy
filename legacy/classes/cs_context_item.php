@@ -516,29 +516,12 @@ class cs_context_item extends cs_item
 
     public function withBuzzwords(): bool
     {
-        if ($this->_issetExtra('WITHBUZZWORDS')) {
-            $re = $this->_getExtra('WITHBUZZWORDS');
-            if (2 == $re) {
-                return true;
-            }
-        } else {
-            return true;
-        }
-
-        return false;
+        return intval($this->_getExtra('WITHBUZZWORDS')) === 2;
     }
 
     public function isBuzzwordMandatory(): bool
     {
-        $retour = false;
-        if ($this->_issetExtra('BUZZWORDMANDATORY')) {
-            $value = $this->_getExtra('BUZZWORDMANDATORY');
-            if (1 == $value) {
-                $retour = true;
-            }
-        }
-
-        return $retour;
+        return intval($this->_getExtra('BUZZWORDMANDATORY')) === 1;
     }
 
     public function setBuzzwordMandatory(): void
@@ -1895,12 +1878,7 @@ class cs_context_item extends cs_item
 
     public function isTagMandatory(): bool
     {
-        if ($this->_issetExtra('TAGMANDATORY')) {
-            $value = $this->_getExtra('TAGMANDATORY');
-            return ($value == 1);
-        }
-
-        return false;
+        return intval($this->_getExtra('TAGMANDATORY')) === 1;
     }
 
     public function setTagMandatory(): void
@@ -1962,16 +1940,11 @@ class cs_context_item extends cs_item
 
     public function withTags(): bool
     {
-        if ($this->_issetExtra('WITHTAGS')) {
-            $re = $this->_getExtra('WITHTAGS');
-            return $re == 2;
-        } else {
-            if ($this->_environment->inPrivateRoom() || $this instanceof cs_privateroom_item) {
-                return true;
-            }
+        if ($this->_environment->inPrivateRoom() || $this instanceof cs_privateroom_item) {
+            return true;
         }
 
-        return false;
+        return intval($this->_getExtra('WITHTAGS')) === 2;
     }
 
     public function setTagsShowExpanded(): void

@@ -74,7 +74,7 @@ final class DraftEdit extends AbstractController
     #[LiveListener('Links:TagComponent:saved')]
     public function onTagsSaved(): void
     {
-        $this->waitForEvents = array_filter($this->waitForEvents, fn (string $event) => $event === 'Tag:saved');
+        $this->waitForEvents = array_filter($this->waitForEvents, fn (string $event) => $event !== 'Tag:saved');
         $item = $this->itemService->getItem($this->itemId);
         $this->dispatchIfResolved($item);
     }
@@ -82,7 +82,7 @@ final class DraftEdit extends AbstractController
     #[LiveListener('Links:CategoryComponent:saved')]
     public function onCategoriesSaved(): void
     {
-        $this->waitForEvents = array_filter($this->waitForEvents, fn (string $event) => $event === 'Category:saved');
+        $this->waitForEvents = array_filter($this->waitForEvents, fn (string $event) => $event !== 'Category:saved');
         $item = $this->itemService->getItem($this->itemId);
         $this->dispatchIfResolved($item);
     }
