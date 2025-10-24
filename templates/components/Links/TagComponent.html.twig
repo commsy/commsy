@@ -3,7 +3,7 @@
     <h4 class="cs-list-section-header">
         <span class="cs-detail-section-header-background">
             {{ 'hashtags'|trans({}, 'room') }}
-            {% if not embedded %}
+            {% if not embedded and not editMode %}
                 <a data-model="editMode"
                    data-value="true"
                    data-action="live#update"
