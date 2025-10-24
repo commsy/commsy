@@ -766,15 +766,14 @@ class cs_item
      * @return bool true, if value exists
      *              false, if not
      */
-    public function _issetExtra($key)
+    public function _issetExtra($key): bool
     {
-        $result = false;
         $extras = $this->_getValue('extras');
         if (isset($extras) and is_array($extras) and array_key_exists($key, $extras) and isset($extras[$key])) {
-            $result = true;
+            return true;
         }
 
-        return $result;
+        return false;
     }
 
     /** get an extra value
