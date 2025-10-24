@@ -26,6 +26,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
+use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveListener;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\ComponentToolsTrait;
@@ -110,6 +111,8 @@ final class TagComponent extends AbstractController
     public function save(
         EventDispatcherInterface $eventDispatcher,
         LabelService $labelService,
+        #[LiveArg]
+        bool $fromButton = false
     ): void
     {
         $this->submitForm();
@@ -153,8 +156,12 @@ final class TagComponent extends AbstractController
 
         $this->editMode = false;
 
-        $eventDispatcher->dispatch(new CommsyEditEvent($legacyItem), CommsyEditEvent::EDIT);
-        $this->emit('Links:TagComponent:saved');
+        // If the save action was not triggered by the tag save button, but from the "DraftEdit:save" event
+        // send back a saved event
+        if (!$fromButton) {
+            $eventDispatcher->dispatch(new CommsyEditEvent($legacyItem), CommsyEditEvent::EDIT);
+            $this->emit('Links:TagComponent:saved', componentName: 'Items:DraftEdit');
+        }
     }
 
     #[LiveAction]
