@@ -3,7 +3,7 @@
     <h4 class="cs-list-section-header">
         <span class="cs-detail-section-header-background">
             {{ 'Categories'|trans({}, 'category') }}
-            {% if not embedded %}
+            {% if not embedded and not editMode %}
                 <a {{ live_action('enableEditMode') }}><i class="uk-icon-edit"></i></a>
             {% endif %}
         </span>
