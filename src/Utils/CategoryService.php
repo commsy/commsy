@@ -41,7 +41,7 @@ class CategoryService
         $tagManager = $this->legacyEnvironment->getEnvironment()->getTagManager();
         $rootItem = $tagManager->getRootTagItemFor($roomId);
 
-        return $this->buildTagArray($rootItem);
+        return $rootItem ? $this->buildTagArray($rootItem) : [];
     }
 
     /**
