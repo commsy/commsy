@@ -121,6 +121,11 @@ class User
         return $this->context;
     }
 
+    public function getContextId(): ?int
+    {
+        return $this->getContext()?->getItemId();
+    }
+
     public function setCreator(?User $creator = null): static
     {
         $this->creator = $creator;
