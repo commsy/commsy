@@ -433,8 +433,6 @@ class TodoController extends BaseController
         $current_context = $this->legacyEnvironment->getCurrentContextItem();
         $roomItem = $this->roomService->getRoomItem($roomId);
 
-        $todoItem = null;
-
         $isDraft = $item->isDraft();
 
         $statusChoices = [$this->translator->trans('pending', [], 'todo') => '1', $this->translator->trans('in progress', [], 'todo') => '2', $this->translator->trans('done', [], 'todo') => '3'];

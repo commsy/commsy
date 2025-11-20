@@ -702,10 +702,12 @@ class DiscussionController extends BaseController
             // get discussion from DiscussionService
             /** @var \cs_discussion_item $discussionItem */
             $discussionItem = $this->discussionService->getDiscussion($itemId);
-            $discussionItem->setDraftStatus($isDraft);
             if (!$discussionItem) {
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
+
+            $discussionItem->setDraftStatus($isDraft);
+
             $formData = $discussionTransformer->transform($discussionItem);
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
