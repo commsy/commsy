@@ -489,10 +489,12 @@ class AnnouncementController extends BaseController
             // get announcement from announcementService
             /** @var cs_announcement_item $announcementItem */
             $announcementItem = $this->announcementService->getannouncement($itemId);
-            $announcementItem->setDraftStatus($item->isDraft());
             if (!$announcementItem) {
                 throw $this->createNotFoundException('No announcement found for id '.$roomId);
             }
+
+            $announcementItem->setDraftStatus($item->isDraft());
+
             $formData = $transformer->transform($announcementItem);
             $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
             $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
