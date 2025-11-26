@@ -311,12 +311,12 @@
      */
     $draftSave.on('click', (event) => {
       event.preventDefault();
-      onDraftSave();
+      onDraftSave.call(event.currentTarget);
     });
 
     $draftCancel.one('click', (event) => {
       event.preventDefault();
-      onDraftCancel();
+      onDraftCancel.call(event.currentTarget);
     });
   }
 
