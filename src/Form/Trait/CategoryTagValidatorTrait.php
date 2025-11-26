@@ -39,7 +39,7 @@ trait CategoryTagValidatorTrait
         $itemId = $form->getConfig()->getOption('itemId');
         $item = $this->itemService->getItem($itemId);
 
-        if (!$item->isDraft()) {
+        if (!$item?->isDraft()) {
             return;
         }
 
