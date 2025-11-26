@@ -7,278 +7,249 @@
 {% set item = group %}
 
 {% block content %}
-    <div class="uk-grid">
+    <main id="main-content" class="detail-grid">
 
-        <div class="uk-width-medium-4-5">
-            <main id="main-content">
+    {# group content panel #}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
-            {# group content panel #}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        {# panel teaser #}
+        <div class="uk-panel-teaser cs-panel-teaser-primary">
+            <div class="uk-flex">
 
-                {# panel teaser #}
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex">
+                {# quick item navigation #}
+                {{ render(controller(
+                    'App\\Controller\\ItemController::stepper',
+                    { 'roomId': roomId, 'itemId': item.itemId }
+                ))}}
 
-                        {# quick item navigation #}
-                        {{ render(controller(
-                            'App\\Controller\\ItemController::stepper',
-                            { 'roomId': roomId, 'itemId': item.itemId }
-                        ))}}
+                {# actions #}
+                <div class="uk-flex-item-none">
 
-                        {# actions #}
-                        <div class="uk-flex-item-none">
+                    {# additional actions #}
+                    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                        {% block dropdown %}
+                            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
-                            {# additional actions #}
-                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
-                                {% block dropdown %}
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-
-                                        {% if not isArchived and not item.isSystemLabel %}
-                                            {# join and leave group (and group room) #}
-                                            {% if item.isGroupRoomActivated %}
-                                                <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
-                                                    <a href="{{ path('app_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                                                        <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-                                            {% if item.isGroupRoomActivated and memberStatus != 'join' %}
-                                                <li id="leave-group-link">
-                                                {% if not lastModeratorStanding %}
-                                                    <a id="leave-group-link"
-                                                       href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}" >
-                                                        <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <span data-uk-tooltip title="{{'To leave the group, please assign further moderators, or delete the group.'|trans({},'group') }}">
-                                                            <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
-                                                        </span>
-                                                    </span>
-                                                {% endif %}
-                                                </li>
-                                            {% endif %}
-
-                                        {% endif %}
-
-                                        {% if is_granted('ITEM_NEW') %}
-                                            {# new entry #}
-                                            <li>
-                                                <a class="" href="{{ path('app_group_create', {'roomId': roomId}) }}"
-                                                   id="newEntry">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-
-                                        {# print #}
-                                        <li>
-                                            <a href="{{ path('app_group_print', {'roomId': roomId, 'itemId': group.itemId}) }}"
-                                               target="_blank" id="print">
-                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                {% if not isArchived and not item.isSystemLabel %}
+                                    {# join and leave group (and group room) #}
+                                    {% if item.isGroupRoomActivated %}
+                                        <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
+                                            <a href="{{ path('app_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                                <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
                                             </a>
                                         </li>
+                                    {% endif %}
+                                    {% if item.isGroupRoomActivated and memberStatus != 'join' %}
+                                        <li id="leave-group-link">
+                                        {% if not lastModeratorStanding %}
+                                            <a id="leave-group-link"
+                                               href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}" >
+                                                <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
+                                            </a>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                <span data-uk-tooltip title="{{'To leave the group, please assign further moderators, or delete the group.'|trans({},'group') }}">
+                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
+                                                </span>
+                                            </span>
+                                        {% endif %}
+                                        </li>
+                                    {% endif %}
 
-                                        {# save #}
-                                        <li>
+                                {% endif %}
+
+                                {% if is_granted('ITEM_NEW') %}
+                                    {# new entry #}
+                                    <li>
+                                        <a class="" href="{{ path('app_group_create', {'roomId': roomId}) }}"
+                                           id="newEntry">
+                                            <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {# print #}
+                                <li>
+                                    <a href="{{ path('app_group_print', {'roomId': roomId, 'itemId': group.itemId}) }}"
+                                       target="_blank" id="print">
+                                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                    </a>
+                                </li>
+
+                                {# save #}
+                                <li>
+                                    <a href="#" data-cs-action="{{ {
+                                        'url': path('app_group_download', {'roomId': roomId}),
+                                        'action': 'save',
+                                        'itemId': group.itemId,
+                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                        'mode': 'click',
+                                    }|json_encode|e('html_attr') }}">
+                                        <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                    </a>
+                                </li>
+
+                                {# pin/unpin #}
+                                {% if not pinned %}
+                                    <li>
+                                        {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('app_group_download', {'roomId': roomId}),
-                                                'action': 'save',
+                                                'url': path('app_group_xhrpin', {'roomId': roomId}),
+                                                'action': 'pin',
                                                 'itemId': group.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                 'mode': 'click',
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                             </a>
-                                        </li>
-
-                                        {# pin/unpin #}
-                                        {% if not pinned %}
-                                            <li>
-                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_group_xhrpin', {'roomId': roomId}),
-                                                        'action': 'pin',
-                                                        'itemId': group.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
-                                                    </span>
-                                                {% endif %}
-                                            </li>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                            </span>
                                         {% endif %}
+                                    </li>
+                                {% endif %}
 
-                                        {% if pinned %}
-                                            <li>
-                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_group_xhrunpin', {'roomId': roomId}),
-                                                        'action': 'unpin',
-                                                        'itemId': group.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
-                                                    </span>
-                                                {% endif %}
-                                            </li>
+                                {% if pinned %}
+                                    <li>
+                                        {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('app_group_xhrunpin', {'roomId': roomId}),
+                                                'action': 'unpin',
+                                                'itemId': group.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                            </a>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                            </span>
                                         {% endif %}
+                                    </li>
+                                {% endif %}
 
-                                        {# send #}
+                                {# send #}
+                                <li>
+                                    <a href="{{ path('app_group_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                        <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                    </a>
+                                </li>
+
+                                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                    {% if group.groupRoomItem is null %}
+                                        {# group delete only (if there is no group room #}
                                         <li>
-                                            <a href="{{ path('app_group_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('app_group_xhrdelete', {'roomId': roomId, 'itemId': group.itemId}),
+                                                'action': 'delete',
+                                                'itemId': group.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'itemType': group.itemType,
+                                                'title': 'list choice'|trans({},'rubric')|capitalize,
+                                                'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                                                'returnUrl': path('app_group_list', {'roomId': roomId})
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        {# delete group  and group room #}
+                                        <li>
+                                            <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({}, 'rubric') }}
                                             </a>
                                         </li>
 
-                                        {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                            {% if group.groupRoomItem is null %}
-                                                {# group delete only (if there is no group room #}
-                                                <li>
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_group_xhrdelete', {'roomId': roomId, 'itemId': group.itemId}),
-                                                        'action': 'delete',
-                                                        'itemId': group.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'itemType': group.itemType,
-                                                        'title': 'list choice'|trans({},'rubric')|capitalize,
-                                                        'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                                        'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                                        'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
-                                                        'returnUrl': path('app_group_list', {'roomId': roomId})
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                    </a>
-                                                </li>
+                                        {# separator #}
+                                        <li>&nbsp;</li>
+
+                                        {# lock group room #}
+                                        <li>
+                                            {% if group.groupRoomItem.isLocked %}
+                                                <a href="{{ path('app_group_unlockgrouproom', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                                    <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock group workspace'|trans({}, 'group') }}
+                                                </a>
                                             {% else %}
-                                                {# delete group  and group room #}
-                                                <li>
-                                                    <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({}, 'rubric') }}
-                                                    </a>
-                                                </li>
-
-                                                {# separator #}
-                                                <li>&nbsp;</li>
-
-                                                {# lock group room #}
-                                                <li>
-                                                    {% if group.groupRoomItem.isLocked %}
-                                                        <a href="{{ path('app_group_unlockgrouproom', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                                                            <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock group workspace'|trans({}, 'group') }}
-                                                        </a>
-                                                    {% else %}
-                                                        <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
-                                                            <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock group workspace'|trans({}, 'group') }}
-                                                        </a>
-                                                    {% endif %}
-                                                </li>
+                                                <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock group workspace'|trans({}, 'group') }}
+                                                </a>
                                             {% endif %}
+                                        </li>
+                                    {% endif %}
 
-                                        {% endif %}
-                                    </ul>
-                                {% endblock %}
-                            {% endcomponent %}
-                        </div>
-
-                    </div>
+                                {% endif %}
+                            </ul>
+                        {% endblock %}
+                    {% endcomponent %}
                 </div>
 
-                {% if alert %}
-                    {{ macros.showAlert(alert) }}
-                {% endif %}
-
-                {% if pathTopicItem %}
-                    {{ macros.showPath(pathTopicItem, group) }}
-                {% endif %}
-
-                {# content #}
-                <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
-                    {# title, etc. #}
-                    <div class="cs-toggle" data-uk-observe>
-                        {{ macrosGroup.title(group, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
-                    </div>
-
-                    {# description #}
-                    <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                        editUrl: '{{ path('app_item_editdescription', { 'roomId': group.contextId, 'itemId': group.itemId, 'draft': draft }) }}',
-                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': group.contextId, 'itemId': group.itemId }) }}'
-                    }">
-                        {{ macrosItem.itemDescription('description', group, true, group.description, draft) }}
-                    </div>
-
-                    {# members #}
-                    {% if userRubricVisible and not draft %}
-                        <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
-                            {{ macrosGroup.members(group, members) }}
-                        </div>
-                    {% endif %}
-
-                    {% if not draft %}
-                        {# grouproom #}
-                        <div id="member{{ group.itemId }}" class="cs-toggle" data-uk-observe>
-                            <hr class="uk-width-9-10"/>
-                            {{ macrosGroup.grouproom(group, roomId, userIsMember, memberStatus, draft, user.isRoot) }}
-                        </div>
-
-                        {# links #}
-                        <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe
-                             data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
-                            {{ macrosItem.linksAssociations(group, draft, showAssociations) }}
-                        </div>
-                    {% endif %}
-
-                    {% if draft %}
-                        {{ macros.draftButtons(roomId, group.itemId, group.labelType) }}
-                    {% endif %}
-                </article>
             </div>
-            </main>
         </div>
 
-        <div class="uk-width-medium-1-5 uk-hidden-small">
+        {% if alert %}
+            {{ macros.showAlert(alert) }}
+        {% endif %}
 
-            {# quick navigation #}
-            <nav aria-label="{{ 'Quick'|trans({}) }}">
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
-                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
-                    {{ 'quick navigation'|trans({})|capitalize }}
-                </div>
-                <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon"
-                        data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ group.itemId }}\']'}"
-                        data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
-                        <li><a href="#description{{ group.itemId }}">{{ 'entry description'|trans({}) }}</a></li>
-                        {% if userRubricVisible %}
-                            <li><a href="#member{{ group.itemId }}">{{ 'members'|trans({}) }}</a></li>
-                        {% endif %}
-                        <li><a href="#grouproom{{ group.itemId }}">{{ 'grouproom'|trans({},'group') }}</a></li>
-                        <li><a href="#links{{ group.itemId }}">{{ 'links'|trans({}) }}</a></li>
-                        {% if (showCategories or showHashtags) %}
-                            <li>
-                                <a href="#categoriesAndBuzzwords{{ group.itemId }}">{{ 'categoriesAndBuzzwords'|trans({}) }}</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
+        {% if pathTopicItem %}
+            {{ macros.showPath(pathTopicItem, group) }}
+        {% endif %}
+
+        {# content #}
+        <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
+            {# title, etc. #}
+            <div class="cs-toggle" data-uk-observe>
+                {{ macrosGroup.title(group, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
             </div>
-            </nav>
 
-        </div>
+            {# description #}
+            <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                editUrl: '{{ path('app_item_editdescription', { 'roomId': group.contextId, 'itemId': group.itemId, 'draft': draft }) }}',
+                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': group.contextId, 'itemId': group.itemId }) }}'
+            }">
+                {{ macrosItem.itemDescription('description', group, true, group.description, draft) }}
+            </div>
 
+            {# members #}
+            {% if userRubricVisible and not draft %}
+                <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
+                    {{ macrosGroup.members(group, members) }}
+                </div>
+            {% endif %}
+
+            {% if not draft %}
+                {# grouproom #}
+                <div id="member{{ group.itemId }}" class="cs-toggle" data-uk-observe>
+                    <hr class="uk-width-9-10"/>
+                    {{ macrosGroup.grouproom(group, roomId, userIsMember, memberStatus, draft, user.isRoot) }}
+                </div>
+
+                {# links #}
+                <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe
+                     data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                    {{ macrosItem.linksAssociations(group, draft, showAssociations) }}
+                </div>
+            {% endif %}
+        </article>
     </div>
+
+    <aside aria-label="{{ 'Sidebar'|trans({}, "room") }}" class="detail-sidebar uk-margin-top">
+        {# Structure panel #}
+        {{ macrosItem.structure(showCategories, showHashtags, group.itemId) }}
+    </aside>
+
+    {% if draft %}
+        <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-top">
+            <twig:Items:DraftEdit :itemId="group.itemId"/>
+        </div>
+    {% endif %}
+    </main>
 {% endblock %}
 
 {# end #}
