@@ -99,7 +99,7 @@ class AnnotationController extends AbstractController
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->save();
 
-                $readerService->markRead($itemId);
+                $readerService->markItemWithVersionAsRead($item);
             }
 
             return $this->redirectToRoute('app_annotation_success', [

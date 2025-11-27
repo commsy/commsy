@@ -59,6 +59,7 @@ class InsertUserroomAction
 
         $userRoomIds = [];
         $versionIdsByCopyIds = [];
+        $copiesByCopyIds = [];
 
         // get the copied items from the clipboard to be "imported" into the given users' user rooms
         $imports = $this->markService->getListEntries(0);
@@ -88,8 +89,9 @@ class InsertUserroomAction
                     $copyId = $copy->getItemID();
                     $versionId = $copy->getVersionID();
                     $versionIdsByCopyIds[$copyId] = $versionId;
+                    $copiesByCopyIds[$copyId] = $copy;
 
-                    $this->readerService->markRead($copyId, $versionId);
+                    $this->readerService->markItemWithVersionAsRead($copy, $versionId);
                 }
             }
         }
@@ -108,10 +110,7 @@ class InsertUserroomAction
             if (!empty($relatedUsers)) {
                 $relatedUserIds = array_map(fn (cs_user_item $user) => $user->getItemID(), $relatedUsers);
 
-                foreach ($versionIdsByCopyIds as $copyId => $versionId) {
-                    // TODO: allowing markItemsAsRead() to accept a matching array of version IDs would avoid this foreach loop
-                    $this->readerService->markItemsWithIdsAsRead([$copyId], $versionId, $relatedUserIds);
-                }
+                $this->readerService->markItemsWithVersionsAsRead($copiesByCopyIds, $versionIdsByCopyIds, $relatedUserIds);
             }
         }
 
