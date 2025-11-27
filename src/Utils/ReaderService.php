@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Entity\Account;
 use App\Entity\Reader;
 use App\Enum\ReaderStatus;
 use App\Event\ReadStatusPreChangeEvent;
@@ -26,6 +27,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -36,7 +38,9 @@ final readonly class ReaderService
 
     public function __construct(
         private LegacyEnvironment        $legacyEnvironment,
+        private Security                 $security,
         private ItemService              $itemService,
+        private UserService              $userService,
         private ReaderRepository         $readerRepository,
         private EventDispatcherInterface $eventDispatcher,
         private EntityManagerInterface   $entityManager,
@@ -62,10 +66,10 @@ final readonly class ReaderService
 
     public function getChangeStatus(cs_item $item, ?cs_user_item $user = null): string
     {
-        $u = $user ?? $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $user = $user ?? $this->userService->getRelatedUserForItem($item);
 
-        if ($u && $u->isUser()) {
-            return $this->cachedReadStatusForItem($item, $u);
+        if ($user?->isUser()) {
+            return $this->cachedReadStatusForItem($item, $user);
         }
 
         return '';
@@ -129,7 +133,12 @@ final readonly class ReaderService
      */
     public function cachedReadStatusForItem(cs_item $item, ?cs_user_item $user = null): string
     {
-        $user = $user ?? $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        // TODO: shouldn't we better return null instead of '' (if that's possible) since '' currently equals 'seen'
+
+        $user = $user ?? $this->userService->getRelatedUserForItem($item);
+        if (!$user) {
+            return '';
+        }
 
         $itemId = $item->getItemId();
         $userId = $user->getItemID();
@@ -141,12 +150,13 @@ final readonly class ReaderService
             $cachedItem->tag(['user_'.$userId, 'item_'.$itemType.'_'.$itemId]);
             $cachedItem->expiresAfter(60 * 60 * 12);
 
+            // we use the user of the item's context, no matter what user was given
             $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
             if ($relatedUser) {
                 return $this->getChangeStatusForUserByID($itemId, $relatedUser->getItemId());
             }
 
-            return ''; // TODO: shouldn't we better return null here (if that's possible) since '' currently equals 'seen'
+            return '';
         });
 
         return $cachedReadStatus;
@@ -176,7 +186,7 @@ final readonly class ReaderService
     {
         $reader = $this->getLatestReader($item->getItemID());
         if (!$reader || $reader->getReadDate() <= new DateTime($item->getModificationDate())) {
-            $this->markRead($item->getItemID(), $item->getVersionID());
+            $this->markItemWithVersionAsRead($item, $item->getVersionID());
         }
     }
 
@@ -187,16 +197,16 @@ final readonly class ReaderService
      * @param bool $withAnnotations Should related annotations also get marked as read? Defaults to true
      * @return void
      */
-    public function markItemsAsRead(array $items, bool $withAnnotations = true): void
+    public function markItemsAndAnnotationsAsRead(array $items, bool $withAnnotations = true): void
     {
         foreach ($items as $item) {
-            $this->markRead($item->getItemID(), $item->getVersionID());
+            $this->markItemWithVersionAsRead($item, $item->getVersionID());
 
             // annotations
             if ($withAnnotations) {
                 foreach ($item->getAnnotationList() as $annotation) {
                     /** @var cs_annotation_item $annotation */
-                    $this->markRead($annotation->getItemId());
+                    $this->markItemWithVersionAsRead($annotation);
                 }
             }
         }
@@ -205,34 +215,43 @@ final readonly class ReaderService
     /**
      * Marks the item with the given item ID & version ID as read by the current user.
      *
-     * @param int $itemId ID of the item to be marked as read
+     * @param cs_item $item The item to be marked as read
      * @param int $versionId ID of the item version to be marked as read; defaults to 0 if not specified explicitly
      * @return void
      */
-    public function markRead(int $itemId, int $versionId = 0): void
+    public function markItemWithVersionAsRead(cs_item $item, int $versionId = 0): void
     {
-        $this->markItemsWithIdsAsRead([$itemId], $versionId);
+        $this->markItemsWithVersionsAsRead([$item], [$versionId]);
     }
 
     /**
-     * Marks the items with the given item IDs and of the given version ID as read by the users of the given user IDs
+     * Marks the given items at the given version IDs as read by the users of the given user IDs
      * (or the current user in case no user IDs were given).
      *
-     * @param int[]      $itemIds   Array of item IDs for items to be marked as read
-     * @param int        $versionId ID of the item version (applied to all given items) to be marked as read
-     * @param int[]|null $userIds   Optional array of user IDs specifying the users for whom the given items shall
-     *                              be marked as read; defaults to null in which case given items will be marked as
-     *                              read for the current user
+     * @param cs_item[]  $items      Array of items to be marked as read
+     * @param int[]      $versionIds Array of IDs of the respective item versions to be marked as read; note that
+     *                               the arrays `$items` and `$versionIds` must be of equal length.
+     * @param int[]|null $userIds    Optional array of user IDs specifying the users for whom the given items shall
+     *                               be marked as read; defaults to null in which case given items will be marked as
+     *                               read for the current user's related user in the item's context
      * @return void
      */
-    public function markItemsWithIdsAsRead(array $itemIds, int $versionId, ?array $userIds = null): void
+    public function markItemsWithVersionsAsRead(array $items, array $versionIds, ?array $userIds = null): void
     {
-        if (empty($itemIds)) {
+        if (empty($items)) {
             return;
         }
 
+        if (count($items) !== count($versionIds)) {
+            return;
+        }
+
+        $items = array_values($items);
+        $itemIds = array_values(array_map(fn (cs_item $item) => $item->getItemID(), $items));
+        $versionIds = array_values($versionIds);
+
         if (empty($userIds)) {
-            $userIds = [$this->legacyEnvironment->getEnvironment()->getCurrentUserID()];
+            $userIds = [$this->userService->getRelatedUserForItem($items[0])?->getItemID()];
             if (empty($userIds)) {
                 return;
             }
@@ -248,7 +267,9 @@ final readonly class ReaderService
         $query->execute();
 
         // Insert
-        foreach ($itemIds as $itemId) {
+        foreach ($items as $key => $item) {
+            $itemId = $itemIds[$key];
+            $versionId = $versionIds[$key];
             foreach ($userIds as $userId) {
                 $reader = new Reader();
                 $reader->setItemId($itemId);
@@ -389,7 +410,6 @@ final readonly class ReaderService
         }
 
         $reader = $this->readerRepository->findOneByItemIdAndUserId($item->getItemID(), $userID);
-
         if (!$reader) {
             $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
             $itemIsCurrentUser = ($item instanceof cs_user_item && $item->getUserID() === $currentUser->getUserID());

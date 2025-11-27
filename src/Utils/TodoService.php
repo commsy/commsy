@@ -202,14 +202,14 @@ class TodoService
         // todo item
         $item = $this->getTodo($itemId);
         $versionId = $item->getVersionID();
-        $this->readerService->markRead($itemId, $versionId);
+        $this->readerService->markItemWithVersionAsRead($item, $versionId);
 
         // steps
         if (true === $markSteps) {
             $steps = $item->getStepItemList();
             foreach ($steps as $step) {
                 /** @var cs_step_item $step */
-                $this->readerService->markRead($step->getItemId(), $versionId);
+                $this->readerService->markItemWithVersionAsRead($step, $versionId);
             }
         }
 
@@ -218,7 +218,7 @@ class TodoService
             $annotations = $item->getAnnotationList();
             foreach ($annotations as $annotation) {
                 /** @var cs_annotation_item $annotation */
-                $this->readerService->markRead($annotation->getItemId(), $versionId);
+                $this->readerService->markItemWithVersionAsRead($annotation, $versionId);
             }
         }
     }
