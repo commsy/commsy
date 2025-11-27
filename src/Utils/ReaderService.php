@@ -410,12 +410,6 @@ final readonly class ReaderService
         }
 
         $reader = $this->readerRepository->findOneByItemIdAndUserId($item->getItemID(), $userID);
-
-        // DEBUG
-        $readDate = $reader->getReadDate();
-        $itemModDate = new DateTime($item->getModificationDate());
-        $itemNotActivated = $item->isNotActivated();
-
         if (!$reader) {
             $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
             $itemIsCurrentUser = ($item instanceof cs_user_item && $item->getUserID() === $currentUser->getUserID());
