@@ -53,17 +53,17 @@ final class DraftEdit extends AbstractController
         $room = $item->getContextItem();
 
         /**
-         * If the item has mandatory tags or categories, we emit an event to the respective component
-         * to trigger a save operation. We wait for those to "answer" by an event themselves before
-         * dispatching a browser event triggering the usual form submission.
+         * We emit an event to the respective tags or categories component to trigger a save operation.
+         * We wait for those to "answer" by an event themselves before dispatching a browser event
+         * triggering the usual form submission.
          */
         $this->waitForEvents = [];
-        if ($room->withBuzzwords() && $room->isBuzzwordMandatory()) {
+        if ($room->withBuzzwords()) {
             $this->waitForEvents[] = 'Tag:saved';
             $this->emit('DraftEdit:save', componentName: 'Links:TagComponent');
         }
 
-        if ($room->withTags() && $room->isTagMandatory()) {
+        if ($room->withTags()) {
             $this->waitForEvents[] = 'Category:saved';
             $this->emit('DraftEdit:save', componentName: 'Links:CategoryComponent');
         }
