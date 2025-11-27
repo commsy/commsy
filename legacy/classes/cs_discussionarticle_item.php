@@ -194,7 +194,7 @@ class cs_discussionarticle_item extends cs_item
 
         /** @var ReaderService $readerService */
         $readerService = $this->_environment->getSymfonyContainer()->get(ReaderService::class);
-        $readerService->markRead($this->getItemID());
+        $readerService->markItemAsRead($this);
     }
 
     /**

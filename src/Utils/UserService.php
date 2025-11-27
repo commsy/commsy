@@ -21,6 +21,7 @@ use cs_context_item;
 use cs_environment;
 use cs_group_item;
 use cs_grouproom_item;
+use cs_item;
 use cs_label_item;
 use cs_list;
 use cs_manager;
@@ -33,6 +34,7 @@ use DateTimeImmutable;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use LogicException;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Mime\Address;
 
@@ -49,7 +51,8 @@ class UserService
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly RoomService $roomService
+        private readonly RoomService $roomService,
+        private readonly Security $security
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
@@ -358,6 +361,19 @@ class UserService
         }
 
         return null;
+    }
+
+    public function getRelatedUserForItem(cs_item $item): ?cs_user_item
+    {
+        /** @var Account $account */
+        $account = $this->security->getUser();
+        if ($account instanceof Account) {
+            $user = $this->getUserInContext($account, $item->getContextId());
+        } else {
+            $user = $this->getCurrentUserItem()->getRelatedUserItemInContext($item->getContextId());
+        }
+
+        return $user;
     }
 
     public function getRoomList($userId)

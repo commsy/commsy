@@ -1193,7 +1193,7 @@ public function copy()
 
     /** @var ReaderService $readerService */
     $readerService = $this->_environment->getSymfonyContainer()->get(ReaderService::class);
-    $readerService->markRead($copy_id, $copy->getVersionID());
+    $readerService->markItemWithVersionAsRead($copy, $copy->getVersionID());
 
     // Import all versions off the material
     $material_manager = $this->_environment->getMaterialManager();
@@ -1205,7 +1205,7 @@ public function copy()
         if ($version_id != $version) {
             $import_version->copyVersion($copy_id);
 
-            $readerService->markRead($copy_id, $version_id);
+            $readerService->markItemWithVersionAsRead($copy, $version_id);
         }
         $import_version = $version_list->getNext();
     }

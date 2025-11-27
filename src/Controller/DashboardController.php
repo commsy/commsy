@@ -153,7 +153,6 @@ class DashboardController extends AbstractController
         Request $request,
         ReaderService $readerService,
         RoomFeedGenerator $roomFeedGenerator,
-        LegacyEnvironment $legacyEnvironment,
         int $max = 10
     ): Response {
         $lastId = null;
@@ -161,20 +160,10 @@ class DashboardController extends AbstractController
             $lastId = $request->query->get('lastId');
         }
 
-        $environment = $legacyEnvironment->getEnvironment();
-
         $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
-        $user = $environment->getPortalUserItem();
+        $feedItems = array_filter($feedList); // filter out any null values
 
-        $readerList = [];
-        $feedItems = [];
-        foreach ($feedList as $item) {
-            if (null != $item) {
-                $feedItems[] = $item;
-                $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
-                $readerList[$item->getItemId()] = $readerService->getChangeStatus($item, $relatedUser);
-            }
-        }
+        $readerList = $readerService->getChangeStatusForItems(...$feedItems);
 
         return $this->render('dashboard/feed.html.twig', [
             'feedList' => $feedItems,
