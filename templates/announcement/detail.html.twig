@@ -7,295 +7,265 @@
 {% set item = announcement %}
 
 {% block content %}
-    <div class="uk-grid">
+    <main id="main-content" class="detail-grid">
 
-        <div class="uk-width-medium-4-5">
-            <main id="main-content">
+    {# announcement content panel #}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
-            {# announcement content panel #}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        {# panel teaser #}
+        <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
+            <div class="uk-flex">
 
-                {# panel teaser #}
-                <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
-                    <div class="uk-flex">
+                {# quick item navigation #}
+                {{ render(controller(
+                    'App\\Controller\\ItemController::stepper',
+                    { 'roomId': roomId, 'itemId': item.itemId }
+                ))}}
 
-                        {# quick item navigation #}
-                        {{ render(controller(
-                            'App\\Controller\\ItemController::stepper',
-                            { 'roomId': roomId, 'itemId': item.itemId }
-                        ))}}
+                {# actions #}
+                <div class="uk-flex-item-none">
 
-                        {# actions #}
-                        <div class="uk-flex-item-none">
+                    {# additional actions #}
+                    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                        {% block dropdown %}
+                            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
 
-                            {# additional actions #}
-                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
-                                {% block dropdown %}
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                {# new entry #}
+                                <li>
+                                    {% if is_granted('ITEM_NEW') %}
+                                        <a href="{{ path('app_announcement_create', {'roomId': roomId}) }}" id="newEntry">
+                                            <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                        </a>
+                                    {% else %}
+                                        <span class="uk-text-muted">
+                                            <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                        </span>
+                                    {% endif %}
+                                </li>
 
-                                        {# new entry #}
-                                        <li>
-                                            {% if is_granted('ITEM_NEW') %}
-                                                <a href="{{ path('app_announcement_create', {'roomId': roomId}) }}" id="newEntry">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
+                                {# print #}
+                                <li>
+                                    <a href="{{ path('app_announcement_print', {'roomId': roomId, 'itemId': announcement.itemId}) }}" target="_blank" id="print">
+                                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                    </a>
+                                </li>
 
-                                        {# print #}
-                                        <li>
-                                            <a href="{{ path('app_announcement_print', {'roomId': roomId, 'itemId': announcement.itemId}) }}" target="_blank" id="print">
-                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
-                                            </a>
-                                        </li>
+                                {# save #}
+                                <li>
+                                    <a href="#" data-cs-action="{{ {
+                                        'url': path('app_announcement_download', {'roomId': roomId}),
+                                        'action': 'save',
+                                        'itemId': announcement.itemId,
+                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                        'mode': 'click',
+                                    }|json_encode|e('html_attr') }}">
+                                        <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                    </a>
+                                </li>
 
-                                        {# save #}
-                                        <li>
+                                {# pin/unpin #}
+                                {% if not pinned %}
+                                    <li>
+                                        {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('app_announcement_download', {'roomId': roomId}),
-                                                'action': 'save',
+                                                'url': path('app_announcement_xhrpin', {'roomId': roomId}),
+                                                'action': 'pin',
                                                 'itemId': announcement.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                 'mode': 'click',
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                             </a>
-                                        </li>
-
-                                        {# pin/unpin #}
-                                        {% if not pinned %}
-                                            <li>
-                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_announcement_xhrpin', {'roomId': roomId}),
-                                                        'action': 'pin',
-                                                        'itemId': announcement.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
-                                                    </span>
-                                                {% endif %}
-                                            </li>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                            </span>
                                         {% endif %}
+                                    </li>
+                                {% endif %}
 
-                                        {% if pinned %}
-                                            <li>
-                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_announcement_xhrunpin', {'roomId': roomId}),
-                                                        'action': 'unpin',
-                                                        'itemId': announcement.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
-                                                    </span>
-                                                {% endif %}
-                                            </li>
+                                {% if pinned %}
+                                    <li>
+                                        {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('app_announcement_xhrunpin', {'roomId': roomId}),
+                                                'action': 'unpin',
+                                                'itemId': announcement.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                            </a>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                            </span>
                                         {% endif %}
+                                    </li>
+                                {% endif %}
 
-                                        {# mark #}
-                                        <li>
-                                            {% if user.isUser %}
-                                                <a href="#" data-cs-action="{{ {
-                                                    'url': path('app_announcement_xhrmark', {'roomId': roomId}),
-                                                    'action': 'mark',
-                                                    'itemId': announcement.itemId,
-                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                    'mode': 'click',
-                                                    'successMessage': '<i class="uk-icon-medium uk-icon-bookmark-o"></i>' ~ 'Entry marked|%count% entries marked'|trans({'%count%' : 1}, 'item')
-                                                }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
-
-                                        {# send #}
-                                        <li>
-                                            {% if user.isUser %}
-                                                <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': announcement.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
-
-                                        {# delete #}
-                                        <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
-                                                <a  href="#" data-cs-action="{{ {
-                                                    'url': path('app_announcement_xhrdelete', {'roomId': roomId}),
-                                                    'action': 'delete',
-                                                    'itemId': announcement.itemId,
-                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                    'mode': 'click',
-                                                    'itemType': announcement.itemType,
-                                                    'title': 'list choice'|trans({},'rubric')|capitalize,
-                                                    'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                                    'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                                    'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
-                                                    'returnUrl': path('app_announcement_list', {'roomId': roomId})
-                                                }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                </a>
-                                            {% else %}
-                                                <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                </span>
-                                            {% endif %}
-                                        </li>
-                                    </ul>
-                                {% endblock %}
-                            {% endcomponent %}
-                        </div>
-
-                    </div>
-                </div>
-
-                {% if alert %}
-                    {{ macros.showAlert(alert) }}
-                {%  endif %}
-
-                {% if pathTopicItem %}
-                    {{ macros.showPath(pathTopicItem, announcement) }}
-                {%  endif %}
-
-                {# content #}
-                <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
-                    {# title, etc. #}
-                    <div class="cs-toggle" data-uk-observe>
-                        {{ macrosAnnouncement.title(announcement, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
-                    </div>
-
-                    {# description #}
-                    <div id="description{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                        editUrl: '{{ path('app_item_editdescription', { 'roomId': announcement.contextId, 'itemId': announcement.itemId, 'draft': draft }) }}',
-                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': announcement.contextId, 'itemId': announcement.itemId }) }}'
-                    }">
-                        {{ macrosItem.itemDescription('description', announcement, true, announcement.description, draft) }}
-                    </div>
-
-                    {# files #}
-                    <div id="files{{ announcement.itemId }}">
-                        {{ component('FileList:FileList', {
-                            itemId: announcement.itemId,
-                            draft: draft
-                        }) }}
-                    </div>
-
-                    {% if not draft %}
-                        {# links #}
-                        <div id="links{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
-                            {{ macrosItem.linksAssociations(announcement, draft, showAssociations) }}
-                        </div>
-                        {% if (showCategories or showHashtags) %}
-                            <div id="categoriesAndBuzzwords{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editcatsbuzz', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
-                                {{ macrosItem.links(announcement,showHashtags,showCategories,roomCategories, draft, buzzExpanded, catzExpanded) }}
-                            </div>
-                        {% endif %}
-                    {% endif %}
-
-                    {% if draft %}
-                        {{ macros.draftButtons(roomId, announcement.itemId, announcement.type) }}
-                    {% endif %}
-                </article>
-            </div>
-
-            {# annotations #}
-            {% if not draft and item.itemType != 'discussion' %}
-                <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    {# actions #}
-                        <div class="uk-flex-item-none">
-                        <div class="uk-width-3-5 uk-text-large ">
-                            {{ 'annotations'|trans({})|capitalize }}
-                        </div>
-                    </div>
-                </div>
-
-                <div id="annotations{{ announcement.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
-
-                    {% if is_granted('ITEM_ANNOTATE', announcement.itemId) %}
-                        <article class="uk-comment">
-                            <header class="uk-comment-header uk-margin-remove uk-flex">
-                                <div class="uk-margin-right uk-flex-item-none">
-                                    {% if not user.isDeleted and user.isUser %}
-                                        {{ macros.userIconLink(user) }}
+                                {# mark #}
+                                <li>
+                                    {% if user.isUser %}
+                                        <a href="#" data-cs-action="{{ {
+                                            'url': path('app_announcement_xhrmark', {'roomId': roomId}),
+                                            'action': 'mark',
+                                            'itemId': announcement.itemId,
+                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                            'mode': 'click',
+                                            'successMessage': '<i class="uk-icon-medium uk-icon-bookmark-o"></i>' ~ 'Entry marked|%count% entries marked'|trans({'%count%' : 1}, 'item')
+                                        }|json_encode|e('html_attr') }}">
+                                            <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                                        </a>
                                     {% else %}
-                                        {{ macros.userIcon(user) }}
+                                        <span class="uk-text-muted">
+                                            <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                                        </span>
                                     {% endif %}
-                                </div>
-                                <div class="uk-width-8-10">
-                                    {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': announcement.itemId}), 'method': 'POST'}) }}
-                                        <p>
-                                            {{ form_label(annotationForm.description) }}
-                                        </p>
-                                        {{ form_widget(annotationForm.description) }}
-                                    {{ form_end(annotationForm) }}
-                                </div>
-                            </header>
-                        </article>
-                    {% endif %}
+                                </li>
 
-                    {{ render(controller(
-                        'App\\Controller\\AnnotationController::feed',
-                        { 'roomId': roomId, 'linkedItemId': item.itemId }
-                    ))}}
+                                {# send #}
+                                <li>
+                                    {% if user.isUser %}
+                                        <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': announcement.itemId}) }}">
+                                            <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                        </a>
+                                    {% else %}
+                                        <span class="uk-text-muted">
+                                            <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                        </span>
+                                    {% endif %}
+                                </li>
 
+                                {# delete #}
+                                <li>
+                                    {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
+                                        <a  href="#" data-cs-action="{{ {
+                                            'url': path('app_announcement_xhrdelete', {'roomId': roomId}),
+                                            'action': 'delete',
+                                            'itemId': announcement.itemId,
+                                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                            'mode': 'click',
+                                            'itemType': announcement.itemType,
+                                            'title': 'list choice'|trans({},'rubric')|capitalize,
+                                            'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                            'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                            'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                                            'returnUrl': path('app_announcement_list', {'roomId': roomId})
+                                        }|json_encode|e('html_attr') }}">
+                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                        </a>
+                                    {% else %}
+                                        <span class="uk-text-muted">
+                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                        </span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        {% endblock %}
+                    {% endcomponent %}
                 </div>
 
-            {% endif %}
-            </main>
+            </div>
         </div>
 
-        <div class="uk-width-medium-1-5 uk-hidden-small">
+        {% if alert %}
+            {{ macros.showAlert(alert) }}
+        {%  endif %}
 
-            {# quick navigation #}
-            <nav aria-label="{{ 'Quick'|trans({}) }}">
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
-                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
-                    {{ 'quick navigation'|trans({})|capitalize }}
+        {% if pathTopicItem %}
+            {{ macros.showPath(pathTopicItem, announcement) }}
+        {%  endif %}
+
+        {# content #}
+        <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
+            {# title, etc. #}
+            <div class="cs-toggle" data-uk-observe>
+                {{ macrosAnnouncement.title(announcement, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
+            </div>
+
+            {# description #}
+            <div id="description{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                editUrl: '{{ path('app_item_editdescription', { 'roomId': announcement.contextId, 'itemId': announcement.itemId, 'draft': draft }) }}',
+                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': announcement.contextId, 'itemId': announcement.itemId }) }}'
+            }">
+                {{ macrosItem.itemDescription('description', announcement, true, announcement.description, draft) }}
+            </div>
+
+            {# files #}
+            <div id="files{{ announcement.itemId }}">
+                {{ component('FileList:FileList', {
+                    itemId: announcement.itemId,
+                    draft: draft
+                }) }}
+            </div>
+
+            {% if not draft %}
+                {# links #}
+                <div id="links{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
+                    {{ macrosItem.linksAssociations(announcement, draft, showAssociations) }}
                 </div>
-                <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ announcement.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
-                        <li><a href="#description{{ announcement.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#files{{ announcement.itemId }}">{{ 'files'|trans({})}}</a></li>
-                        <li><a href="#links{{ announcement.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        {% if (showCategories or showHashtags) %}
-                            <li><a href="#categoriesAndBuzzwords{{ announcement.itemId }}">{{ 'categoriesAndBuzzwords'|trans({})}}</a></li>
-                        {% endif %}
-                        {% if not draft %}
-                            <li><a href="#annotations{{ announcement.itemId }}">{{ 'annotations'|trans({})|capitalize }} ({{ amountAnnotations }})</a></li>
-                        {% endif %}
-                    </ul>
+            {% endif %}
+        </article>
+    </div>
+
+    <aside aria-label="{{ 'Sidebar'|trans({}, "room") }}" class="detail-sidebar uk-margin-top">
+        {# Structure panel #}
+        {{ macrosItem.structure(showCategories, showHashtags, announcement.itemId) }}
+    </aside>
+
+    {% if draft %}
+        <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-top">
+            <twig:Items:DraftEdit :itemId="announcement.itemId"/>
+        </div>
+    {% endif %}
+
+    {# annotations #}
+    {% if not draft and item.itemType != 'discussion' %}
+        <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
+            {# actions #}
+                <div class="uk-flex-item-none">
+                <div class="uk-width-3-5 uk-text-large ">
+                    {{ 'annotations'|trans({})|capitalize }}
                 </div>
             </div>
-            </nav>
+        </div>
+
+        <div id="annotations{{ announcement.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
+
+            {% if is_granted('ITEM_ANNOTATE', announcement.itemId) %}
+                <article class="uk-comment">
+                    <header class="uk-comment-header uk-margin-remove uk-flex">
+                        <div class="uk-margin-right uk-flex-item-none">
+                            {% if not user.isDeleted and user.isUser %}
+                                {{ macros.userIconLink(user) }}
+                            {% else %}
+                                {{ macros.userIcon(user) }}
+                            {% endif %}
+                        </div>
+                        <div class="uk-width-8-10">
+                            {{ form_start(annotationForm, {'action': path('app_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': announcement.itemId}), 'method': 'POST'}) }}
+                                <p>
+                                    {{ form_label(annotationForm.description) }}
+                                </p>
+                                {{ form_widget(annotationForm.description) }}
+                            {{ form_end(annotationForm) }}
+                        </div>
+                    </header>
+                </article>
+            {% endif %}
+
+            {{ render(controller(
+                'App\\Controller\\AnnotationController::feed',
+                { 'roomId': roomId, 'linkedItemId': item.itemId }
+            ))}}
 
         </div>
 
-    </div>
+    {% endif %}
+    </main>
 {% endblock %}
 
 {# end #}

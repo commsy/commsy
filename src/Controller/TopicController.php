@@ -362,6 +362,7 @@ class TopicController extends BaseController
         if (!$topicItem) {
             throw $this->createNotFoundException('No topic found for id '.$itemId);
         }
+
         $formData = $transformer->transform($topicItem);
         $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
