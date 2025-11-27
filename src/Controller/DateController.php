@@ -1037,7 +1037,7 @@ class DateController extends BaseController
                             $tempDate->save();
 
                             // mark as read and noticed by creator
-                            $this->readerService->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+                            $this->readerService->markItemWithVersionAsRead($tempDate, $tempDate->getVersionID());
                         }
                     }
                 }
@@ -1333,7 +1333,7 @@ class DateController extends BaseController
                 $tempDate->save();
 
                 // mark as read and noticed by creator
-                $this->readerService->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+                $this->readerService->markItemWithVersionAsRead($tempDate, $tempDate->getVersionID());
             }
             $dateItem->setRecurrenceId($dateItem->getItemID());
             $dateItem->setRecurrencePattern($recurringPatternArray);
@@ -1369,7 +1369,7 @@ class DateController extends BaseController
                 }
 
                 // mark as read and noticed by creator
-                $this->readerService->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+                $this->readerService->markItemWithVersionAsRead($tempDate, $tempDate->getVersionID());
 
                 // $tempDate->save();
                 $tempDate = $datesList->getNext();

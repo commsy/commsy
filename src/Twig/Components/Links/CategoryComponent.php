@@ -21,6 +21,7 @@ use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\ItemService;
 use App\Utils\LabelService;
+use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use cs_environment;
 use cs_item;
@@ -129,6 +130,7 @@ final class CategoryComponent extends AbstractController
     public function save(
         EventDispatcherInterface $eventDispatcher,
         CategoryService $categoryService,
+        ReaderService $readerService,
         #[LiveArg]
         bool $fromButton = false
     ): void
@@ -166,6 +168,8 @@ final class CategoryComponent extends AbstractController
         if (!$fromButton) {
             $eventDispatcher->dispatch(new CommsyEditEvent($legacyItem), CommsyEditEvent::EDIT);
             $this->emit('Links:CategoryComponent:saved', componentName: 'Items:DraftEdit');
+        } else {
+            $readerService->markItemAsRead($legacyItem);
         }
     }
 

@@ -78,6 +78,6 @@ readonly class AnnotationService
 
     public function markAnnotationsReadedAndNoticed(cs_list $annotationList): void
     {
-        $this->readerService->markItemsAsRead($annotationList->to_array());
+        $this->readerService->markItemsAndAnnotationsAsRead($annotationList->to_array());
     }
 }

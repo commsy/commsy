@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use cs_annotation_item;
 use cs_environment;
 use cs_list;
 use cs_manager;
@@ -186,16 +187,16 @@ class MaterialService
         // material item
         $item = $this->getMaterial($itemId);
         $versionId = $item->getVersionID();
-        $this->readerService->markRead($itemId, $versionId);
+        $this->readerService->markItemWithVersionAsRead($item, $versionId);
 
         // sections
         if (true === $markSections) {
             $sectionList = $item->getSectionList();
             if (!empty($sectionList)) {
+                /** @var cs_section_item $sectionItem */
                 $sectionItem = $sectionList->getFirst();
                 while ($sectionItem) {
-                    $sectionItemID = $sectionItem->getItemID();
-                    $this->readerService->markRead($sectionItemID, $versionId);
+                    $this->readerService->markItemWithVersionAsRead($sectionItem, $versionId);
                     $sectionItem = $sectionList->getNext();
                 }
             }
@@ -205,10 +206,10 @@ class MaterialService
         if (true === $markAnnotations) {
             $annotationList = $item->getAnnotationList();
             if (!empty($annotationList)) {
+                /** @var cs_annotation_item $annotationItem */
                 $annotationItem = $annotationList->getFirst();
                 while ($annotationItem) {
-                    $annotationItemID = $annotationItem->getItemID();
-                    $this->readerService->markRead($annotationItemID, $versionId);
+                    $this->readerService->markItemWithVersionAsRead($annotationItem, $versionId);
                     $annotationItem = $annotationList->getNext();
                 }
             }

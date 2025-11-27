@@ -504,9 +504,8 @@ class UserController extends BaseController
                     }
 
                     foreach ($users as $user) {
-                        $itemId = $user->getItemID();
                         $versionId = $user->getVersionID();
-                        $this->readerService->markRead($itemId, $versionId);
+                        $this->readerService->markItemWithVersionAsRead($user, $versionId);
 
                         if ($user->isDeleted()) {
                             $event = new UserLeftRoomEvent($user, $room);

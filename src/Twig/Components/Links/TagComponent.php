@@ -18,6 +18,7 @@ use App\Form\Model\Tags;
 use App\Form\Type\Item\ItemTagsType;
 use App\Utils\ItemService;
 use App\Utils\LabelService;
+use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use cs_label_item;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -111,6 +112,7 @@ final class TagComponent extends AbstractController
     public function save(
         EventDispatcherInterface $eventDispatcher,
         LabelService $labelService,
+        ReaderService $readerService,
         #[LiveArg]
         bool $fromButton = false
     ): void
@@ -161,6 +163,8 @@ final class TagComponent extends AbstractController
         if (!$fromButton) {
             $eventDispatcher->dispatch(new CommsyEditEvent($legacyItem), CommsyEditEvent::EDIT);
             $this->emit('Links:TagComponent:saved', componentName: 'Items:DraftEdit');
+        } else {
+             $readerService->markItemAsRead($legacyItem);
         }
     }
 

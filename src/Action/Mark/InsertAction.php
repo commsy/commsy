@@ -67,7 +67,7 @@ class InsertAction
                     $this->legacyEnvironment->setCurrentContextID($oldContextId);
 
                     if (empty($copy->getErrorArray())) {
-                        $this->readerService->markRead($copy->getItemID(), $copy->getVersionID());
+                        $this->readerService->markItemWithVersionAsRead($copy, $copy->getVersionID());
                     }
                 }
             }
@@ -78,7 +78,7 @@ class InsertAction
                 $copy = $importItem->copy();
 
                 if (empty($copy->getErrorArray())) {
-                    $this->readerService->markRead($copy->getItemID(), $copy->getVersionID());
+                    $this->readerService->markItemWithVersionAsRead($copy, $copy->getVersionID());
                 }
             }
         }
