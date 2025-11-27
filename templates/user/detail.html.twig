@@ -7,415 +7,385 @@
 {% set item = user %}
 
 {% block content %}
-    <div class="uk-grid">
+    <main id="main-content">
 
-        <div class="uk-width-medium-4-5">
-            <main id="main-content">
+    {# user content panel #}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
-            {# user content panel #}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        {# panel teaser #}
+        <div class="uk-panel-teaser cs-panel-teaser-primary">
+            <div class="uk-flex">
 
-                {# panel teaser #}
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex">
+                {# quick item navigation #}
+                <div class="uk-flex-inline uk-flex-item-1">
 
-                        {# quick item navigation #}
-                        <div class="uk-flex-inline uk-flex-item-1">
+                    {# back navigation #}
+                    <div class="uk-margin-right">
+                        {% if firstItemId %}
+                            <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                        {% else %}
+                            <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
+                        {% endif %}
+                        {% if prevItemId %}
+                            <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                        {% else %}
+                            <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
+                        {% endif %}
+                    </div>
 
-                            {# back navigation #}
-                            <div class="uk-margin-right">
-                                {% if firstItemId %}
-                                    <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
-                                {% endif %}
-                                {% if prevItemId %}
-                                    <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
-                                {% endif %}
-                            </div>
-
-                            {# item dropdown #}
-                            <div class="uk-margin-right">
-                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'User'|trans({'%count%':0}, "rubric") ~ counterPosition ~ '/' ~ count } %}
-                                    {% block dropdown %}
-                                       <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-                                           {% for tempUser in userList %}
-                                                {% if tempUser.itemId != user.itemId %}
-                                                    <li><a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(25) }}</a></li>
-                                                {% else %}
-                                                    <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(20)  }}</a></li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    {% endblock %}
-                                {% endcomponent %}
-                            </div>
-
-                            {# forward navigation #}
-                            <div>
-                                {% if nextItemId %}
-                                    <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
-                                {% endif %}
-                                {% if lastItemId %}
-                                    <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        {# actions #}
-                        <div class="uk-flex-item-none">
-
-
-                            {# additional actions #}
-                            {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
-                                {% block dropdown %}
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-                                        {# print #}
-                                        <li>
-                                            <a href="{{ path('app_user_print', {'roomId': roomId, 'itemId': user.itemId}) }}" target="_blank" id="print">
-                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
-                                            </a>
-                                        </li>
-
-                                        {# pin/unpin #}
-                                        {% if not pinned %}
-                                            <li>
-                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_user_xhrpin', {'roomId': roomId}),
-                                                        'action': 'pin',
-                                                        'itemId': user.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
-                                                    </span>
-                                                {% endif %}
-                                            </li>
+                    {# item dropdown #}
+                    <div class="uk-margin-right">
+                        {% component 'v2:dropdown' with { icon: 'caret-down', title: 'User'|trans({'%count%':0}, "rubric") ~ counterPosition ~ '/' ~ count } %}
+                            {% block dropdown %}
+                               <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                   {% for tempUser in userList %}
+                                        {% if tempUser.itemId != user.itemId %}
+                                            <li><a href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity }}">{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(25) }}</a></li>
+                                        {% else %}
+                                            <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempUser.title|decodeHtmlEntity}} {{ tempUser.fullname|decodeHtmlEntity|u.truncate(20)  }}</a></li>
                                         {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            {% endblock %}
+                        {% endcomponent %}
+                    </div>
 
-                                        {% if pinned %}
-                                            <li>
-                                                {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a href="#" data-cs-action="{{ {
-                                                        'url': path('app_user_xhrunpin', {'roomId': roomId}),
-                                                        'action': 'unpin',
-                                                        'itemId': user.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
-                                                    </a>
-                                                {% else %}
-                                                    <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
-                                                    </span>
-                                                {% endif %}
-                                            </li>
-                                        {% endif %}
-
-                                        <li>
-                                            <a href="{{ path('app_user_send', {'roomId' : roomId, 'itemId': user.itemId}) }}" id="send">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
-                                            </a>
-                                        </li>
-                                    </ul>
-                                {% endblock %}
-                            {% endcomponent %}
-
-                            {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
-                                {% component 'v2:dropdown' with { icon: 'caret-down', title: 'Manage user'|trans({},'user')|capitalize } %}
-                                    {% block dropdown %}
-                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped">
-                                            {% if user.isRequested %}
-                                                {# confirm #}
-                                                <li>
-                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-sign-in uk-visible-large"></i> {{ 'confirm'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-
-                                            {% if not isSelf or moderatorListLength > 1 %}
-
-                                                {# delete #}
-                                                <li>
-                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-delete', 'userDetail': 1}) }}" id="status-delete">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                    </a>
-                                                </li>
-
-                                                {# block #}
-                                                <li>
-                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-
-                                                {# reading #}
-                                                <li>
-                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-reading-user', 'userDetail': 1}) }}" id="status-reading">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-
-                                                {# user #}
-                                                <li>
-                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-user', 'userDetail': 1}) }}" id="status-user">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-
-                                            {% else %}
-                                                {# reading #}
-                                                <li>
-                                                    <a href="#" id="status-reading" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-
-                                                {# user #}
-                                                <li>
-                                                    <a href="#" id="status-user" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-
-                                                {# delete #}
-                                                <li>
-                                                    <a href="#" id="" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
-                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                    </a>
-                                                </li>
-
-                                                {# block #}
-                                                <li>
-                                                    <a href="#" id="status-block" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-
-                                            {% endif %}
-
-                                            {% if not user.isModerator %}
-                                                {# moderator #}
-                                                <li>
-                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-moderator', 'userDetail': 1}) }}" id="status-moderator">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-wrench uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-
-                                            {% if user.isContact %}
-                                                {# remove contact#}
-                                                <li>
-                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact-remove', 'userDetail': 1}) }}" id="status-remove-contact">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-                                            {% else %}
-                                                {# contact #}
-                                                <li>
-                                                    <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact', 'userDetail': 1}) }}" id="status-contact">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-phone uk-visible-large"></i> {{ 'contact'|trans({},'user') }}
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-                                        </ul>
-                                    {% endblock %}
-                                {% endcomponent %}
-                            {% endif %}
-                        </div>
-
+                    {# forward navigation #}
+                    <div>
+                        {% if nextItemId %}
+                            <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                        {% else %}
+                            <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
+                        {% endif %}
+                        {% if lastItemId %}
+                            <a class="uk-button-primary" href="{{ path('app_user_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                        {% else %}
+                            <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
+                        {% endif %}
                     </div>
                 </div>
 
-                {% if alert %}
-                    {{ macros.showAlert(alert) }}
-                {%  endif %}
+                {# actions #}
+                <div class="uk-flex-item-none">
 
-                {% if pathTopicItem %}
-                    {{ macros.showPath(pathTopicItem, user) }}
-                {%  endif %}
 
-                {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
+                    {# additional actions #}
+                    {% component 'v2:dropdown' with { icon: 'caret-down', title: 'selected entries'|trans({},'rubric')|capitalize } %}
+                        {% block dropdown %}
+                            <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                {# print #}
+                                <li>
+                                    <a href="{{ path('app_user_print', {'roomId': roomId, 'itemId': user.itemId}) }}" target="_blank" id="print">
+                                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                    </a>
+                                </li>
 
-                    <div id="userdata{{ user.itemId }}" class="cs-toggle" data-uk-observe>
-                        {{ macrosUser.title(user, modifierList, userCount, readCount, readSinceModificationCount, draft, isSelf) }}
-                    </div>
+                                {# pin/unpin #}
+                                {% if not pinned %}
+                                    <li>
+                                        {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('app_user_xhrpin', {'roomId': roomId}),
+                                                'action': 'pin',
+                                                'itemId': user.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                            </a>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                            </span>
+                                        {% endif %}
+                                    </li>
+                                {% endif %}
 
-                    {# description #}
-                    <div id="description{{ user.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                        editUrl: '{{ path('app_item_editdescription', { 'roomId': user.context.itemId, 'itemId': user.itemId }) }}',
-                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': user.context.itemId, 'itemId': user.itemId }) }}'
-                    }">
-                        {{ macrosItem.itemDescription('description', user, false, user.description) }}
-                    </div>
+                                {% if pinned %}
+                                    <li>
+                                        {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('app_user_xhrunpin', {'roomId': roomId}),
+                                                'action': 'unpin',
+                                                'itemId': user.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                            </a>
+                                        {% else %}
+                                            <span class="uk-text-muted">
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                            </span>
+                                        {% endif %}
+                                    </li>
+                                {% endif %}
 
-                    {# groups #}
-                    {% if linkedGroups is not empty %}
-                        <div id="links{{ user.itemId }}">
-                            <hr class="uk-width-9-10"/>
-                            <article class="uk-article uk-margin-left uk-margin-right">
-                                <a name="linked-groups"></a>
-                                {# title row #}
-                                <div class="uk-grid uk-margin-small-bottom">
-                                    <div class="uk-width-9-10">
-                                        <h4 class="cs-detail-section-header">
-                                            {{'linked groups'|trans({}) }}
-                                           ({{linkedGroups|length}})
-                                        </h4>
+                                <li>
+                                    <a href="{{ path('app_user_send', {'roomId' : roomId, 'itemId': user.itemId}) }}" id="send">
+                                        <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        {% endblock %}
+                    {% endcomponent %}
+
+                    {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
+                        {% component 'v2:dropdown' with { icon: 'caret-down', title: 'Manage user'|trans({},'user')|capitalize } %}
+                            {% block dropdown %}
+                                <ul class="uk-nav uk-nav-dropdown uk-list-striped">
+                                    {% if user.isRequested %}
+                                        {# confirm #}
+                                        <li>
+                                            <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-sign-in uk-visible-large"></i> {{ 'confirm'|trans({},'user') }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if not isSelf or moderatorListLength > 1 %}
+
+                                        {# delete #}
+                                        <li>
+                                            <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-delete', 'userDetail': 1}) }}" id="status-delete">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# block #}
+                                        <li>
+                                            <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
+                                            </a>
+                                        </li>
+
+                                        {# reading #}
+                                        <li>
+                                            <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-reading-user', 'userDetail': 1}) }}" id="status-reading">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
+                                            </a>
+                                        </li>
+
+                                        {# user #}
+                                        <li>
+                                            <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-user', 'userDetail': 1}) }}" id="status-user">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
+                                            </a>
+                                        </li>
+
+                                    {% else %}
+                                        {# reading #}
+                                        <li>
+                                            <a href="#" id="status-reading" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
+                                            </a>
+                                        </li>
+
+                                        {# user #}
+                                        <li>
+                                            <a href="#" id="status-user" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
+                                            </a>
+                                        </li>
+
+                                        {# delete #}
+                                        <li>
+                                            <a href="#" id="" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# block #}
+                                        <li>
+                                            <a href="#" id="status-block" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
+                                            </a>
+                                        </li>
+
+                                    {% endif %}
+
+                                    {% if not user.isModerator %}
+                                        {# moderator #}
+                                        <li>
+                                            <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-moderator', 'userDetail': 1}) }}" id="status-moderator">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-wrench uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if user.isContact %}
+                                        {# remove contact#}
+                                        <li>
+                                            <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact-remove', 'userDetail': 1}) }}" id="status-remove-contact">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user') }}
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        {# contact #}
+                                        <li>
+                                            <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact', 'userDetail': 1}) }}" id="status-contact">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-phone uk-visible-large"></i> {{ 'contact'|trans({},'user') }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            {% endblock %}
+                        {% endcomponent %}
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        {% if alert %}
+            {{ macros.showAlert(alert) }}
+        {%  endif %}
+
+        {% if pathTopicItem %}
+            {{ macros.showPath(pathTopicItem, user) }}
+        {%  endif %}
+
+        {# content #}
+        <article class="uk-article uk-position-relative" data-uk-observe>
+
+            <div id="userdata{{ user.itemId }}" class="cs-toggle" data-uk-observe>
+                {{ macrosUser.title(user, modifierList, userCount, readCount, readSinceModificationCount, draft, isSelf) }}
+            </div>
+
+            {# description #}
+            <div id="description{{ user.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
+                editUrl: '{{ path('app_item_editdescription', { 'roomId': user.context.itemId, 'itemId': user.itemId }) }}',
+                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': user.context.itemId, 'itemId': user.itemId }) }}'
+            }">
+                {{ macrosItem.itemDescription('description', user, false, user.description) }}
+            </div>
+
+            {# groups #}
+            {% if linkedGroups is not empty %}
+                <div id="links{{ user.itemId }}">
+                    <hr class="uk-width-9-10"/>
+                    <article class="uk-article uk-margin-left uk-margin-right">
+                        <a name="linked-groups"></a>
+                        {# title row #}
+                        <div class="uk-grid uk-margin-small-bottom">
+                            <div class="uk-width-9-10">
+                                <h4 class="cs-detail-section-header">
+                                    {{'linked groups'|trans({}) }}
+                                   ({{linkedGroups|length}})
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                            <div class="uk-grid">
+                               {% for group in linkedGroups %}
+                                <div class="uk-width-medium-1-3">
+                                    <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+                                        <div class="uk-panel-teaser cs-panel-teaser-user">
+                                           <div class="uk-grid">
+                                                <div class="uk-width-2-3">
+                                                   <span class="uk-text-large uk-text-middle">
+                                                       <a href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title|decodeHtmlEntity }} </a>
+                                                   </span>
+                                                </div>
+                                                {% if group.isGroupRoomActivated and group.groupRoomItemID is not empty %}
+                                                    <div class="uk-width-1-3 uk-text-right">
+                                                        <a href="{{ path('app_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <span>
+                                        <a href="{{ path('app_group_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                            {{'send mail to group'|trans({}) }}
+                                        </a>
+                                        </span><br/>
+                                        <div class="uk-flex uk-flex-space-between">
+                                            <div>
+                                                {{'members'|trans({}) }}: {{group.getCountMemberItemList}}
+                                            </div>
+                                            <div>
+                                                {{'links'|trans({}) }}: {{group.getCountAllLinkItemList}}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-                                    <div class="uk-grid">
-                                       {% for group in linkedGroups %}
-                                        <div class="uk-width-medium-1-3">
-                                            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
-                                                <div class="uk-panel-teaser cs-panel-teaser-user">
-                                                   <div class="uk-grid">
-                                                        <div class="uk-width-2-3">
-                                                           <span class="uk-text-large uk-text-middle">
-                                                               <a href="{{ path('app_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title|decodeHtmlEntity }} </a>
-                                                           </span>
+                                {% endfor %}
+                                {% if userRoomItem is not null %}
+                                    <div class="uk-width-medium-1-3">
+                                        <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+                                            <div class="uk-panel-teaser cs-panel-teaser-user">
+                                                <div class="uk-grid">
+                                                    <div class="uk-width-2-3">
+                                                   <span class="uk-text-large uk-text-middle">
+                                                       <a href="{{ path('app_roomall_detail', { 'itemId': userRoomItem.itemId, 'portalId': commsy.portal.id }) }}">{{ userRoomItem.title }} </a>
+                                                   </span>
+                                                    </div>
+                                                        <div class="uk-width-1-3 uk-text-right">
+                                                            <a href="{{ path('app_room_home', {'roomId': userRoomItem.itemId}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'Enter user room'|trans({}, 'room') }}"></a>
                                                         </div>
-                                                        {% if group.isGroupRoomActivated and group.groupRoomItemID is not empty %}
-                                                            <div class="uk-width-1-3 uk-text-right">
-                                                                <a href="{{ path('app_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
-                                                            </div>
-                                                        {% endif %}
-                                                    </div>
                                                 </div>
-                                                <span>
-                                                <a href="{{ path('app_group_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                                                    {{'send mail to group'|trans({}) }}
-                                                </a>
-                                                </span><br/>
-                                                <div class="uk-flex uk-flex-space-between">
-                                                    <div>
-                                                        {{'members'|trans({}) }}: {{group.getCountMemberItemList}}
-                                                    </div>
-                                                    <div>
-                                                        {{'links'|trans({}) }}: {{group.getCountAllLinkItemList}}
-                                                    </div>
+                                            </div>
+                                            <span>
+                                        <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_detail', 'moderatorIds': moderatorIds }) }}">
+                                            {{'send mail to group'|trans({}) }}
+                                        </a>
+                                        </span><br/>
+                                            <div class="uk-flex uk-flex-space-between">
+                                                <div>
+                                                    {{'members'|trans({}) }}: {{ userRoomItemMemberCount }}
+                                                </div>
+                                                <div>
+                                                    {{'links'|trans({}) }}: {{ userRoomLinksCount }}
                                                 </div>
                                             </div>
                                         </div>
-                                        {% endfor %}
-                                        {% if userRoomItem is not null %}
-                                            <div class="uk-width-medium-1-3">
-                                                <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
-                                                    <div class="uk-panel-teaser cs-panel-teaser-user">
-                                                        <div class="uk-grid">
-                                                            <div class="uk-width-2-3">
-                                                           <span class="uk-text-large uk-text-middle">
-                                                               <a href="{{ path('app_roomall_detail', { 'itemId': userRoomItem.itemId, 'portalId': commsy.portal.id }) }}">{{ userRoomItem.title }} </a>
-                                                           </span>
-                                                            </div>
-                                                                <div class="uk-width-1-3 uk-text-right">
-                                                                    <a href="{{ path('app_room_home', {'roomId': userRoomItem.itemId}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'Enter user room'|trans({}, 'room') }}"></a>
-                                                                </div>
-                                                        </div>
-                                                    </div>
-                                                    <span>
-                                                <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': user.itemId, 'originPath': 'app_user_detail', 'moderatorIds': moderatorIds }) }}">
-                                                    {{'send mail to group'|trans({}) }}
-                                                </a>
-                                                </span><br/>
-                                                    <div class="uk-flex uk-flex-space-between">
-                                                        <div>
-                                                            {{'members'|trans({}) }}: {{ userRoomItemMemberCount }}
-                                                        </div>
-                                                        <div>
-                                                            {{'links'|trans({}) }}: {{ userRoomLinksCount }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endif %}
                                     </div>
-                                </div>
-                            </article>
+                                {% endif %}
+                            </div>
                         </div>
-                    {% endif %}
+                    </article>
+                </div>
+            {% endif %}
 
-                    {# account #}
-                    {% if user.itemId == currentUser.itemId or currentUser.isModerator %}
-                    <div id="account{{ user.itemId }}">
-                        <hr class="uk-width-9-10"/>
-                        <article class="uk-article uk-margin-left uk-margin-right">
-                            <a name="account"></a>
-                            {# title row #}
-                            <div class="uk-grid uk-margin-small-bottom">
-                                <div class="uk-width-9-10">
-                                    <h4 class="cs-detail-section-header">
-                                        {{'account information'|trans({}) }}
-                                    </h4>
-                                </div>
-                            </div>
-                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-                                <dl class="uk-description-list-horizontal">
-                                    <dt>{{ 'Account'|trans({}, 'profile')|capitalize }}</dt>
-                                    <dd>{{ user.userId }}</dd>
-
-                                    <dt>{{ 'account.display_name'|trans({}, 'profile')|capitalize }}</dt>
-                                    <dd>{{ user.account.displayName }}</dd>
-
-                                    {% if user.status == 1 and user.userComment != "" %}
-                                        <dt>{{ 'user comment'|trans({}, 'user')|capitalize }}</dt>
-                                        <dd>{{ user.userComment }}</dd>
-                                    {% endif %}
-                                </dl>
-                            </div>
-                        </article>
+            {# account #}
+            {% if user.itemId == currentUser.itemId or currentUser.isModerator %}
+            <div id="account{{ user.itemId }}">
+                <hr class="uk-width-9-10"/>
+                <article class="uk-article uk-margin-left uk-margin-right">
+                    <a name="account"></a>
+                    {# title row #}
+                    <div class="uk-grid uk-margin-small-bottom">
+                        <div class="uk-width-9-10">
+                            <h4 class="cs-detail-section-header">
+                                {{'account information'|trans({}) }}
+                            </h4>
+                        </div>
                     </div>
-                    {% endif %}
+                    <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                        <dl class="uk-description-list-horizontal">
+                            <dt>{{ 'Account'|trans({}, 'profile')|capitalize }}</dt>
+                            <dd>{{ user.userId }}</dd>
 
+                            <dt>{{ 'account.display_name'|trans({}, 'profile')|capitalize }}</dt>
+                            <dd>{{ user.account.displayName }}</dd>
 
+                            {% if user.status == 1 and user.userComment != "" %}
+                                <dt>{{ 'user comment'|trans({}, 'user')|capitalize }}</dt>
+                                <dd>{{ user.userComment }}</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
                 </article>
             </div>
+            {% endif %}
 
-            </main>
-        </div>
 
-        <div class="uk-width-medium-1-5 uk-hidden-small">
-
-            {# quick navigation #}
-            <nav aria-label="{{ 'Quick'|trans({}) }}">
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
-                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
-                    {{ 'quick navigation'|trans({})|capitalize }}
-                </div>
-                <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ user.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
-                        <li><a href="#userdata{{ user.itemId }}">{{ 'user data'|trans({})}}</a></li>
-                        <li><a href="#description{{ user.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#links{{ user.itemId }}">{{ 'linked groups'|trans({})}}</a></li>
-                        {% if user.itemId == currentUser.itemId or currentUser.isModerator %}
-                            <li><a href="#account{{ user.itemId }}">{{ 'account information'|trans({})}}</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-            </nav>
-
-        </div>
-
+        </article>
     </div>
-    </div>
+
+    </main>
 {% endblock %}
 
 {# end #}

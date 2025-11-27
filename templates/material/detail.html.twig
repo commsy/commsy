@@ -344,14 +344,10 @@
                         {{ macrosMaterial.sections(material, sectionList) }}
                     </div>
                 {% endif %}
-
-{#                {% if draft %}#}
-{#                    {{ macros.draftButtons(roomId, material.itemId, material.type) }}#}
-{#                {% endif %}#}
             </article>
         </div>
 
-        <aside class="detail-sidebar uk-margin-top">
+        <aside aria-label="{{ 'Sidebar'|trans({}, "room") }}" class="detail-sidebar uk-margin-top">
             {# Structure panel #}
             {{ macrosItem.structure(showCategories, showHashtags, material.itemId, material.versionId) }}
         </aside>
