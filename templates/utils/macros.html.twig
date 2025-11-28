@@ -717,15 +717,24 @@
     </li>
 {% endmacro %}
 
-{% macro license(material) %}
+{% macro license(material, variant = 'compact') %}
     {% if material.license %}
-        <a href="#license-{{ material.license.id }}" data-uk-modal>
-            <i class="uk-icon-copyright" data-uk-tooltip title="{{ material.license.title }}"></i>
+        {% set modalId = 'license-' ~ material.itemId %}
+        {% set licenseTitle = material.license.title|striptags %}
+
+        {% if variant == 'label' %}
+            <span aria-hidden="true">{{ 'License id'|trans({}, 'material') }}:</span>
+        {% endif %}
+
+        <a href="#{{ modalId }}" data-uk-modal class="uk-text-nowrap"
+           aria-label="{{ 'License id'|trans({}, 'material') }}: {{ licenseTitle }}">
+            <i class="uk-icon-copyright uk-icon-justify" aria-hidden="true"></i>
+            <span>{{ licenseTitle }}</span>
         </a>
 
-        <div id="license-{{ material.license.id }}" class="uk-modal">
+        <div id="{{ modalId }}" class="uk-modal" role="dialog" aria-modal="true" aria-label="{{ 'License id'|trans({}, 'material') }}: {{ licenseTitle }}">
             <div class="uk-modal-dialog uk-text-left">
-                <a class="uk-modal-close uk-close"></a>
+                <button class="uk-modal-close uk-close" aria-label="{{ 'Close'|trans }}"></button>
                 <h2>{{ material.license.title }}</h2>
                 <p>{{ material.license.content|raw }}</p>
             </div>
