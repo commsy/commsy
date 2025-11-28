@@ -32,7 +32,7 @@
                             {% if showWorkflow and withTrafficLight %}
                                 {{ macros.workflowTrafficLight(material, workflowTitles) }}
                             {% endif %}
-                            {{ macros.license(material) }}
+                            {{ macros.license(material, 'label') }}
                             </div>
                         {% endif %}
                     {% else %}
