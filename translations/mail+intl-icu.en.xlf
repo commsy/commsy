@@ -252,7 +252,7 @@
             </trans-unit>
             <trans-unit id="mail_account_registration_subject">
                 <source>mail.account_registration.subject</source>
-                <target>Account request "{username}"</target>
+                <target>{portal_name}: Account request "{username}"</target>
             </trans-unit>
             <trans-unit id="mail_account_registration_intro">
                 <source>mail.account_registration.intro</source>
