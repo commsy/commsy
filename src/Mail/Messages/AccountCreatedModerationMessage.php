@@ -3,12 +3,14 @@
 namespace App\Mail\Messages;
 
 use App\Entity\Account;
+use App\Entity\Portal;
 use App\Mail\Message;
 
 class AccountCreatedModerationMessage extends Message
 {
     public function __construct(
-        private readonly Account $account
+        private readonly Account $account,
+        private readonly Portal $portal,
     ) {}
 
     public function getSubject(): string
@@ -32,6 +34,7 @@ class AccountCreatedModerationMessage extends Message
     {
         return [
             'username' => $this->account->getDisplayName(),
+            'portal_name' => $this->portal->getTitle(),
         ];
     }
 }

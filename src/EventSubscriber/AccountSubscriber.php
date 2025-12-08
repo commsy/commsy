@@ -88,7 +88,7 @@ readonly class AccountSubscriber implements EventSubscriberInterface
 
         $recipients = iterator_to_array(RecipientFactory::createRecipients(...$filteredModerators));
 
-        $message = new AccountCreatedModerationMessage($account);
+        $message = new AccountCreatedModerationMessage($account, $portal);
         $this->mailer->sendMultiple($message, $recipients);
     }
 }

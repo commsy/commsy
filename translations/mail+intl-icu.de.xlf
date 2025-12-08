@@ -252,7 +252,7 @@
             </trans-unit>
             <trans-unit id="mail_account_registration_subject">
                 <source>mail.account_registration.subject</source>
-                <target>Neue Kennung beantragt "{username}"</target>
+                <target>{portal_name}: Neue Kennung beantragt "{username}"</target>
             </trans-unit>
             <trans-unit id="mail_account_registration_intro">
                 <source>mail.account_registration.intro</source>
