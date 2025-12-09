@@ -14,7 +14,8 @@
 namespace App\Controller;
 
 use App\Entity\Account;
-use App\Entity\RoomPrivat;
+use App\Entity\Room;
+use App\Repository\RoomRepository;
 use App\Security\Authorization\Voter\RootVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -51,8 +52,9 @@ class HelperController extends AbstractController
 
         // If $context is a number or string representing a number
         if (is_numeric($context)) {
-            $privateRoom = $entityManager->getRepository(RoomPrivat::class)
-                ->findOneByPortalIdAndAccount($context, $account);
+            /** @var RoomRepository $roomRepo */
+            $roomRepo = $entityManager->getRepository(Room::class);
+            $privateRoom = $roomRepo->findOnePrivateByPortalIdAndAccount((int) $context, $account);
 
             // The default redirect to the dashboard.
             if ($privateRoom) {

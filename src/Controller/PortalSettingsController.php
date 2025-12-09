@@ -1736,7 +1736,7 @@ class PortalSettingsController extends AbstractController
         $userEdit->setStreet($user->getStreet());
         $userEdit->setZip($user->getZipcode());
         $userEdit->setCity($user->getCity());
-        $userEdit->setWorkspace($user->getRoom());
+        $userEdit->setWorkspace($user->getOffice());
         $userEdit->setTelephone($user->getTelephone());
         $userEdit->setSecondTelephone($user->getCellularphone());
         $userEdit->setEmail($user->getEmail());
@@ -1761,7 +1761,7 @@ class PortalSettingsController extends AbstractController
             $user->setStreet($editAccountIndex->getStreet());
             $user->setZipcode($editAccountIndex->getZip());
             $user->setCity($editAccountIndex->getCity());
-            $user->setRoom($editAccountIndex->getWorkspace());
+            $user->setOffice($editAccountIndex->getWorkspace());
             $user->setTelephone($editAccountIndex->getTelephone());
             $user->setCellularphone($editAccountIndex->getSecondTelephone());
             $user->setEmail($editAccountIndex->getEmail());

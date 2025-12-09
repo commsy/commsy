@@ -256,8 +256,8 @@
 
             {# description #}
             <div id="description{{ user.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                editUrl: '{{ path('app_item_editdescription', { 'roomId': user.context.itemId, 'itemId': user.itemId }) }}',
-                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': user.context.itemId, 'itemId': user.itemId }) }}'
+                editUrl: '{{ path('app_item_editdescription', { 'roomId': user.room.itemId, 'itemId': user.itemId }) }}',
+                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': user.room.itemId, 'itemId': user.itemId }) }}'
             }">
                 {{ macrosItem.itemDescription('description', user, false, user.description) }}
             </div>

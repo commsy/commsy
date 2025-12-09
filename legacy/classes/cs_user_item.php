@@ -97,6 +97,16 @@ class cs_user_item extends cs_item
         $this->changedValues[] = 'user_id';
     }
 
+    public function getPortalId(): ?int
+    {
+        return (int) $this->_getValue('portal_id');
+    }
+
+    public function setPortalId(?int $value): void
+    {
+        ($value === null) ? $this->_unsetValue('portal_id') : $this->_setValue('portal_id', $value);
+    }
+
     public function getAuthSource()
     {
         return $this->_getValue('auth_source');
@@ -574,29 +584,20 @@ class cs_user_item extends cs_item
         return $this->_getValue('city');
     }
 
-    /** set room of the user
-     * this method sets the room of the user.
-     *
-     * @param string value room of the user
+    /**
+     * Set physical room of the user.
      */
-    public function setRoom($value): void
+    public function setOffice(string $value): void
     {
-        $this->_addExtra('USERROOM', (string) $value);
+        $this->_addExtra('OFFICE', $value);
     }
 
-    /** get room of the user
-     * this method returns the room of the user.
-     *
-     * @return string room of the user
+    /**
+     * Get physical room of the user.
      */
-    public function getRoom(): string
+    public function getOffice(): string
     {
-        $retour = '';
-        if ($this->_issetExtra('USERROOM')) {
-            $retour = $this->_getExtra('USERROOM');
-        }
-
-        return $retour;
+        return $this->_getExtra('OFFICE') ?? '';
     }
 
     /** set description of the user

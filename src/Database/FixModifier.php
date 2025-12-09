@@ -20,7 +20,7 @@ class FixModifier extends GeneralCheck
     public function resolve(SymfonyStyle $io): bool
     {
         $tablesWithModifier = ['annotations', 'announcement', 'dates', 'discussionarticles',
-            'discussions', 'labels', 'materials', 'room', 'room_privat', 'section',
+            'discussions', 'labels', 'materials', 'room', 'section',
             'server', 'step', 'tag', 'tag2tag', 'todos', 'user', ];
 
         foreach ($tablesWithModifier as $tableWithModifier) {

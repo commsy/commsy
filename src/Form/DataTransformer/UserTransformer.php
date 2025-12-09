@@ -79,7 +79,7 @@ class UserTransformer extends AbstractTransformer
             $userData['street'] = $userItem->getStreet();
             $userData['zipCode'] = $userItem->getZipcode();
             $userData['city'] = $userItem->getCity();
-            $userData['room'] = $userItem->getRoom();
+            $userData['room'] = $userItem->getOffice();
             $userData['organisation'] = $userItem->getOrganisation();
             $userData['position'] = $userItem->getPosition();
             $userData['icq'] = $userItem->getICQ();
@@ -207,7 +207,7 @@ class UserTransformer extends AbstractTransformer
             $userObject->setStreet($userData['street']);
             $userObject->setZipcode($userData['zipCode']);
             $userObject->setCity($userData['city']);
-            $userObject->setRoom($userData['room']);
+            $userObject->setOffice($userData['room']);
             $userObject->setOrganisation($userData['organisation']);
             $userObject->setPosition($userData['position']);
             $userObject->setICQ($userData['icq']);

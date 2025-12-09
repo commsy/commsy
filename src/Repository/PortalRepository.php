@@ -23,8 +23,7 @@ class PortalRepository extends ServiceEntityRepository
 {
     public function __construct(
         ManagerRegistry $registry,
-        private readonly RoomRepository $roomRepository,
-        private readonly RoomPrivateRepository $privateRoomRepository
+        private readonly RoomRepository $roomRepository
     ) {
         parent::__construct($registry, Portal::class);
     }
@@ -41,7 +40,7 @@ class PortalRepository extends ServiceEntityRepository
         $portal = $this->find($contextId);
         if (!$portal) {
             // NOTE: for user rooms, the context is its parent project room (whose context is the portal)
-            $parentRoom = $this->roomRepository->find($contextId) ?? $this->privateRoomRepository->find($contextId);
+            $parentRoom = $this->roomRepository->find($contextId);
             $portal = $this->find($parentRoom->getContextId());
         }
 
@@ -62,7 +61,7 @@ class PortalRepository extends ServiceEntityRepository
         /** @var Portal $portal */
         $portal = $this->find($id);
         if (!$portal) {
-            $room = $this->roomRepository->find($id) ?? $this->privateRoomRepository->find($id);
+            $room = $this->roomRepository->find($id);
             if ($room) {
                 $portal = $this->findPortalByRoomContext($room->getContextId());
             }

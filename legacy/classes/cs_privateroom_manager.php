@@ -53,7 +53,7 @@ class cs_privateroom_manager extends cs_room2_manager
     {
         parent::__construct($environment);
 
-        $this->_db_table = 'room_privat';
+        $this->_db_table = 'room';
         $this->_room_type = CS_PRIVATEROOM_TYPE;
     }
 
@@ -99,15 +99,9 @@ class cs_privateroom_manager extends cs_room2_manager
         $this->_order = (string) $limit;
     }
 
+    #[Deprecated('private rooms are now using the room table too, type is set implicitly and not meant overwritten.')]
     public function setTypeLimit($limit)
     {
-        $this->_room_type = (string) $limit;
-    }
-
-    public function getRelatedCommunityListForUser($user_item)
-    {
-        return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(),
-            $this->_environment->getCurrentPortalID());
     }
 
     /** set time limit
@@ -157,11 +151,15 @@ class cs_privateroom_manager extends cs_room2_manager
         }
 
         if ($this->_active_limit) {
-            $query .= ' INNER JOIN user ON user.context_id = room_privat.item_id AND user.deletion_date IS NULL';
-            $query .= ' INNER JOIN accounts ON user.user_id = accounts.username AND user.auth_source = accounts.auth_source_id';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id = '.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('accounts').' ON '.$this->addDatabasePrefix('user').'.user_id = '.$this->addDatabasePrefix('accounts').'.username AND '.$this->addDatabasePrefix('user').'.auth_source = '.$this->addDatabasePrefix('accounts').'.auth_source_id';
         }
 
         $query .= ' WHERE 1';
+
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,
+                $this->_room_type).'"';
+
         if (isset($this->_user_id_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,
                 $this->_user_id_limit).'"';
@@ -182,14 +180,10 @@ class cs_privateroom_manager extends cs_room2_manager
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,
                 $this->_room_limit).'"';
         }
-        if (isset($this->_room_type)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,
-                $this->_room_type).'"';
-        }
 
         if ($this->_active_limit) {
-            $query .= ' AND accounts.context_id = room_privat.context_id';
-            $query .= ' AND accounts.last_login >= "'.getCurrentDateTimeMinusDaysInMySQL(100).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('accounts').'.context_id = '.$this->addDatabasePrefix($this->_db_table).'.context_id';
+            $query .= ' AND '.$this->addDatabasePrefix('accounts').'.last_login >= "'.getCurrentDateTimeMinusDaysInMySQL(100).'"';
         }
 
         // archive
@@ -249,11 +243,6 @@ class cs_privateroom_manager extends cs_room2_manager
         if (empty($user)) {
             $user = $this->_environment->getCurrentUserItem();
         }
-        if ($item->getPublic()) {
-            $public = $item->getPublic();
-        } else {
-            $public = 0;
-        }
         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
             'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
             'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
@@ -263,7 +252,6 @@ class cs_privateroom_manager extends cs_room2_manager
             'modification_date="'.$current_datetime.'",'.
             'title="'.encode(AS_DB, $item->getTitle()).'",'.
             'extras="'.encode(AS_DB, serialize($item->getExtraInformation())).'",'.
-            'public="'.encode(AS_DB, $public).'",'.
             'type="'.encode(AS_DB, $item->getRoomType()).'",'.
             'continuous="1",'.
             'status="'.encode(AS_DB, $item->getStatus()).'"';
@@ -315,12 +303,6 @@ class cs_privateroom_manager extends cs_room2_manager
             $activity = '0';
         }
 
-        if ($item->getPublic()) {
-            $public = '1';
-        } else {
-            $public = '0';
-        }
-
         if ($item->isTemplate()) {
             $title = $item->getTitlePure();
         } else {
@@ -331,7 +313,6 @@ class cs_privateroom_manager extends cs_room2_manager
             "extras='".encode(AS_DB, serialize($item->getExtraInformation()))."',".
             "status='".encode(AS_DB, $item->getStatus())."',".
             "activity='".encode(AS_DB, $activity)."',".
-            "public='".encode(AS_DB, $public)."',".
             "continuous='".$continuous."',".
             "template='".$template."',".
             "is_open_for_guests='".$open_for_guests."'".

@@ -100,4 +100,48 @@ class DbConverter
             }
         }
     }
+
+    /**
+     * Rename a key inside the serialized 'extras' column for all rows matching the old key.
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    public static function renameExtra(
+        Connection $connection,
+        string $tableName,
+        string $idColumnIdentifier,
+        string $oldKey,
+        string $newKey
+    ): void {
+        $queryBuilder = $connection->createQueryBuilder();
+
+        $qb = $queryBuilder
+            ->select('t.' . $idColumnIdentifier, 't.extras')
+            ->from($tableName, 't')
+            ->where('t.extras LIKE "%' . $oldKey . '%"');
+
+        $entries = $qb->executeQuery()->fetchAllAssociative();
+
+        foreach ($entries as $entry) {
+            $extras = DbConverter::convertToPHPValue($entry['extras']);
+
+            if (!is_array($extras) || empty($extras)) {
+                continue;
+            }
+
+            // Only rename when the exact key exists
+            if (array_key_exists($oldKey, $extras)) {
+                $extras[$newKey] = $extras[$oldKey];
+                unset($extras[$oldKey]);
+
+                $connection->update($tableName, [
+                    'extras' => serialize($extras),
+                ], [
+                    $idColumnIdentifier => $entry[$idColumnIdentifier],
+                ]);
+            }
+        }
+    }
 }

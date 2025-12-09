@@ -95,7 +95,7 @@ class RoomRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
             ->select()
-            ->innerJoin(User::class, 'u', Join::WITH, 'u.context = r.itemId')
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.room = r')
             ->andWhere('r.deletionDate IS NULL')
             ->andWhere('r.deleter IS NULL')
             ->andWhere('r.contextId = :contextId')
@@ -108,6 +108,34 @@ class RoomRepository extends ServiceEntityRepository
             ->setParameter(':authSource', $account->getAuthSource()->getId())
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Returns the private room (type = 'privateroom') for a given portal and account, if any.
+     */
+    public function findOnePrivateByPortalIdAndAccount(int $portalId, Account $account): ?Room
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r')
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.room = r AND u.deleterId IS NULL AND u.deletionDate IS NULL')
+            ->innerJoin(Account::class, 'a', Join::WITH, 'a.username = u.userId AND a.authSource = u.authSource')
+            ->where('r.contextId = :portalId')
+            ->andWhere('r.deleter IS NULL')
+            ->andWhere('r.deletionDate IS NULL')
+            ->andWhere('r.type = :type')
+            ->andWhere('a.authSource = :authSource')
+            ->andWhere('a.contextId = :portalId')
+            ->andWhere('a.username = :username')
+            ->orderBy('r.creationDate', 'DESC')
+            ->setParameters(new ArrayCollection([
+                new Parameter('portalId', $portalId),
+                new Parameter('username', $account->getUsername()),
+                new Parameter('authSource', $account->getAuthSource()->getId()),
+                new Parameter('type', 'privateroom'),
+            ]))
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     public function getProjectAndUserRoomIds(): array

@@ -16,7 +16,6 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use App\Repository\UserRepository;
 use App\Utils\EntityDatesTrait;
-use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,9 +38,13 @@ class User
     #[Groups(['api_read'])]
     public int $itemId;
 
-    #[ORM\OneToOne(targetEntity: Room::class)]
-    #[ORM\JoinColumn(name: 'context_id', referencedColumnName: 'item_id', nullable: false)]
-    private ?Room $context = null;
+    #[ORM\ManyToOne(targetEntity: Room::class)]
+    #[ORM\JoinColumn(name: 'context_id', referencedColumnName: 'item_id', nullable: true)]
+    private ?Room $room = null;
+
+    #[ORM\ManyToOne(targetEntity: Portal::class)]
+    #[ORM\JoinColumn(name: 'portal_id', referencedColumnName: 'id', nullable: true)]
+    private ?Portal $portal = null;
 
     #[ORM\OneToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
@@ -109,21 +112,26 @@ class User
     #[ORM\Column(name: 'use_portal_email', type: Types::BOOLEAN, options: ['default' => false])]
     private bool $usePortalEmail = false;
 
-    public function setContext(Room $context): static
+    public function getRoom(): ?Room
     {
-        $this->context = $context;
+        return $this->room;
+    }
 
+    public function setRoom(?Room $room): static
+    {
+        $this->room = $room;
         return $this;
     }
 
-    public function getContext(): ?Room
+    public function setPortal(?Portal $portal = null): static
     {
-        return $this->context;
+        $this->portal = $portal;
+        return $this;
     }
 
-    public function getContextId(): ?int
+    public function getPortal(): ?Portal
     {
-        return $this->getContext()?->getItemId();
+        return $this->portal;
     }
 
     public function setCreator(?User $creator = null): static
@@ -344,9 +352,9 @@ class User
         return $this->extras['USERZIPCODE'] ?? '';
     }
 
-    public function getRoom(): string
+    public function getOffice(): string
     {
-        return $this->extras['USERROOM'] ?? '';
+        return $this->extras['OFFICE'] ?? '';
     }
 
     public function getOrganisation(): string
