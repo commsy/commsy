@@ -34,7 +34,7 @@ use Doctrine\ORM\Mapping as ORM;
     'label' => 'Labels',
     'link_item' => 'LinkItems',
     'material' => 'Materials',
-    'privateroom' => 'RoomPrivat',
+    'privateroom' => 'Room',
     'project' => 'Room',
     'section' => 'Section',
     'server' => 'Server',

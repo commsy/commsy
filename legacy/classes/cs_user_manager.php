@@ -13,7 +13,6 @@
 
 use App\Account\AccountManager;
 use App\Entity\Room;
-use App\Entity\RoomPrivat;
 use App\Entity\User;
 use App\Event\AccountDeletedEvent;
 use App\Repository\HashRepository;
@@ -803,7 +802,10 @@ class cs_user_manager extends cs_manager
             $usePortalEmail = 0;
         }
 
+        $portalId = ($item->isRoot()) ? null : $item->getPortalID();
+
         $query .= 'context_id="' . encode(AS_DB, $item->getContextID()) . '",';
+        $query .= 'portal_id="' . encode(AS_DB, $portalId) . '",';
         $query .= 'status="' . encode(AS_DB, $item->getStatus()) . '",';
         $query .= 'is_contact="' . encode(AS_DB, $contact_status) . '",';
         $query .= 'account_id="' . encode(AS_DB, $item->getAccountID()) . '",';
@@ -885,10 +887,16 @@ class cs_user_manager extends cs_manager
         $accountManager = $this->_environment->getSymfonyContainer()->get(AccountManager::class);
         $account = $accountManager->getAccountForUser($item);
 
+        $portalId = $item->getPortalID();
+        if (!$item->isRoot() && $portalId == null) {
+            $portalId = $account->getAuthSource()->getPortal()->getID();
+        }
+
         $queryBuilder
             ->insert('user')
             ->setValue('item_id', ':itemId')
             ->setValue('context_id', ':contextId')
+            ->setValue('portal_id', ':portalId')
             ->setValue('creator_id', ':creatorId')
             ->setValue('creation_date', ':creationDate')
             ->setValue('modification_date', ':modificationDate')
@@ -905,6 +913,7 @@ class cs_user_manager extends cs_manager
             ->setValue('extras', ':extras')
             ->setParameter('itemId', $item->getItemID())
             ->setParameter('contextId', $item->getContextID())
+            ->setParameter('portalId', $portalId ?: null)
             ->setParameter('creatorId', !empty($item->getCreatorID()) ? $item->getCreatorID() : $item->getItemId())
             ->setParameter('creationDate', $now)
             ->setParameter('modificationDate', $now)
@@ -1058,7 +1067,7 @@ class cs_user_manager extends cs_manager
         $query->setParameter('contextId', $context_id);
         $userIds = $query->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
 
-        $schemasWithReference = [User::class, Room::class, RoomPrivat::class];
+        $schemasWithReference = [User::class, Room::class];
         foreach ($schemasWithReference as $schema) {
             // Remove all references to this user object
             $updateCreatorQuery = $em->createQuery("UPDATE $schema t SET t.creator = NULL WHERE t.creator IN (:userIds)");

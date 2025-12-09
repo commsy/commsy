@@ -502,7 +502,7 @@ fos_elastica:
                     type: text
                 contextId:
                     type: integer
-                    property_path: context.itemId
+                    property_path: room.itemId
                 firstName:
                     type: text
                     copy_to: fullName

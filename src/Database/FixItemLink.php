@@ -23,7 +23,7 @@ class FixItemLink extends GeneralCheck
     public function resolve(SymfonyStyle $io): bool
     {
         $tablesWithItemLinks = ['annotations', 'announcement', 'dates', 'discussionarticles', 'discussions', 'labels',
-            'link_items', 'materials', 'room', 'room_privat', 'section', 'server', 'step', 'tag', 'tasks',
+            'link_items', 'materials', 'room', 'section', 'server', 'step', 'tag', 'tasks',
             'todos', 'user', ];
 
         foreach ($tablesWithItemLinks as $tablesWithItemLink) {
@@ -57,7 +57,7 @@ class FixItemLink extends GeneralCheck
             'label' => 'labels',
             'link_item' => 'link_items',
             'material' => 'materials',
-            'privateroom' => 'room_privat',
+            'privateroom' => 'room',
             'project' => 'room',
             'section' => 'section',
             'server' => 'server',

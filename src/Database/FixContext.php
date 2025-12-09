@@ -24,14 +24,13 @@ class FixContext extends GeneralCheck
     {
         $tablesWithContext = ['annotations', 'announcement', 'assessments', 'calendars', 'dates',
             'discussionarticles', 'discussions', 'invitations', 'labels', 'licenses', 'link_items',
-            'links', 'materials', 'room', 'room_privat', 'section', 'step', 'tag', 'tag2tag', 'tasks',
+            'links', 'materials', 'room', 'section', 'step', 'tag', 'tag2tag', 'tasks',
             'terms', 'todos', 'translation',  'user'];
 
         foreach ($tablesWithContext as $tableWithContext) {
             $sql = "
                 DELETE t FROM $tableWithContext AS t
                 LEFT JOIN room AS c1 ON t.context_id = c1.item_id
-                LEFT JOIN room_privat AS c3 ON t.context_id = c3.item_id
                 LEFT JOIN portal AS c4 ON t.context_id = c4.id
                 LEFT JOIN server AS c5 ON t.context_id = c5.item_id
                 WHERE t.context_id IS NOT NULL
@@ -45,7 +44,6 @@ class FixContext extends GeneralCheck
             DELETE ilf FROM files AS f
             LEFT JOIN item_link_file AS ilf ON f.files_id = ilf.file_id
             LEFT JOIN room AS c1 ON f.context_id = c1.item_id
-            LEFT JOIN room_privat AS c3 ON f.context_id = c3.item_id
             LEFT JOIN portal AS c4 ON f.context_id = c4.id
             LEFT JOIN server AS c5 ON f.context_id = c5.item_id
             WHERE f.context_id IS NOT NULL
@@ -58,7 +56,6 @@ class FixContext extends GeneralCheck
             DELETE f FROM files AS f
             LEFT JOIN item_link_file AS ilf ON f.files_id = ilf.file_id
             LEFT JOIN room AS c1 ON f.context_id = c1.item_id
-            LEFT JOIN room_privat AS c3 ON f.context_id = c3.item_id
             LEFT JOIN portal AS c4 ON f.context_id = c4.id
             LEFT JOIN server AS c5 ON f.context_id = c5.item_id
             WHERE f.context_id IS NOT NULL
@@ -69,7 +66,6 @@ class FixContext extends GeneralCheck
         $sql = "
             DELETE t FROM items AS t
             LEFT JOIN room AS c1 ON t.context_id = c1.item_id
-            LEFT JOIN room_privat AS c2 ON t.context_id = c2.item_id
             LEFT JOIN portal AS c3 ON t.context_id = c3.id
             LEFT JOIN server AS c4 ON t.context_id = c4.item_id
             WHERE t.context_id IS NOT NULL AND t.type != 'server'

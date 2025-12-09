@@ -32,8 +32,8 @@ final class FixAccounts extends GeneralCheck
         // Delete accounts not having a private room user
         $sql = '
             DELETE a FROM accounts a
-            LEFT JOIN (user u INNER JOIN room_privat rp)
-            ON (u.user_id = a.username AND u.auth_source = a.auth_source_id AND u.context_id = rp.item_id)
+            LEFT JOIN (user u INNER JOIN room r)
+            ON (u.user_id = a.username AND u.auth_source = a.auth_source_id AND u.context_id = r.item_id AND r.type = "privateroom")
             WHERE u.item_id IS NULL AND a.username != "root"
         ';
         $this->executeSQL($sql, $io);

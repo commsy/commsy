@@ -194,7 +194,7 @@ class PersonalDataCollector
         $roomProfileData->setZipcode($user->getZipcode());
         $roomProfileData->setCity($user->getCity());
 
-        $roomProfileData->setWorkspace($user->getRoom());
+        $roomProfileData->setWorkspace($user->getOffice());
         $roomProfileData->setOrganisation($user->getOrganisation());
         $roomProfileData->setPosition($user->getPosition());
 

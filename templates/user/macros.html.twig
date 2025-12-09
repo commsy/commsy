@@ -33,9 +33,9 @@
                             <tr>
                                 <td class="uk-text-bold">{{ 'email'|trans({}, 'user')}}:</td>
                                 {% if item.isEmailVisible %}
-                                    <td>{{ item.email }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': item.context.itemId, 'itemId': item.itemId, 'originPath': 'app_user_detail'}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
+                                    <td>{{ item.email }} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': item.room.itemId, 'itemId': item.itemId, 'originPath': 'app_user_detail'}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
                                 {% else %}
-                                    <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': item.context.itemId, 'itemId': item.itemId, 'originPath': 'app_user_detail'}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
+                                    <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="{{ path('app_user_sendmailviacontactform', {'roomId': item.room.itemId, 'itemId': item.itemId, 'originPath': 'app_user_detail'}) }}">{{ 'send email'|trans({}, 'user') }}</a>)</td>
                                 {% endif %}
                             </tr>
                             {% endif %}
@@ -85,10 +85,10 @@
                             {% endif %}
 
 
-                            {% if not item.room is empty %}
+                            {% if not item.office is empty %}
                             <tr>
                                 <td class="uk-text-bold">{{ 'room'|trans({}, 'user')}}:</td>
-                                <td>{{ item.room }}</td>
+                                <td>{{ item.office }}</td>
                             </tr>
                             {% endif %}
                             {% if not item.organisation is empty %}

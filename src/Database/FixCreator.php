@@ -20,7 +20,7 @@ final class FixCreator extends GeneralCheck
     public function resolve(SymfonyStyle $io): bool
     {
         $tablesWithCreator = ['annotations', 'announcement', 'assessments', 'dates', 'discussionarticles',
-            'discussions', 'files', 'labels', 'link_items', 'materials', 'room', 'room_privat', 'section',
+            'discussions', 'files', 'labels', 'link_items', 'materials', 'room', 'section',
             'server', 'step', 'tag', 'tag2tag', 'tasks', 'todos', /*'user',*/ ];
 
         foreach ($tablesWithCreator as $tableWithCreator) {

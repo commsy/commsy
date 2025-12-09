@@ -17,7 +17,7 @@ use App\Account\AccountLanguage;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
-use App\Entity\RoomPrivat;
+use App\Entity\Room;
 use App\Entity\User;
 use App\Facade\AccountCreatorFacade;
 use App\Facade\PortalCreatorFacade;
@@ -114,7 +114,7 @@ class UserCest
         // 1. A new account entry
         $I->seeInRepository(Account::class, ['username' => 'username']);
         // 2. A private room created for the new user
-        $I->assertEquals(1, sizeof($I->grabEntitiesFromRepository(RoomPrivat::class, [])));
+        $I->assertEquals(1, sizeof($I->grabEntitiesFromRepository(Room::class, ['type' => 'privateroom'])));
         // 3. Two entries in the user table (private room user + portal user)
         $I->assertEquals(2, sizeof($I->grabEntitiesFromRepository(User::class, ['userId' => 'username'])));
     }
