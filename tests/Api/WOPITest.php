@@ -14,6 +14,7 @@
 namespace Tests\Api;
 
 use App\Entity\Account;
+use App\Repository\FilesRepository;
 use App\WOPI\Auth\AccessTokenGenerator;
 use App\WOPI\Permission\WOPIPermission;
 use DateTimeImmutable;
@@ -379,7 +380,7 @@ class WOPITest extends AbstractApiTestCase
      * When a host receives a PutFile request on a file that's not locked, the host checks the current size of the file.
      * If it's 0 bytes, the PutFile request should be considered valid and should proceed.
      */
-    public function putFileContentUnlockedEmptyFile(): void
+    public function testPutFileContentUnlockedEmptyFile(): void
     {
         file_put_contents(self::FILES_FOLDER . '/test.txt', '');
 
@@ -392,12 +393,16 @@ class WOPITest extends AbstractApiTestCase
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
                 'X-WOPI-Override' => 'PUT',
+                'X-WOPI-Lock' => 'lock',
             ],
             'body' => 'some content',
         ]);
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseNotHasHeader('X-WOPI-Lock');
+
+        $reloadedFile = FilesFactory::find($file->getFilesId());
+        $this->assertSame('lock', $reloadedFile->getLockingId());
     }
 
     /**
