@@ -123,6 +123,11 @@ class User
         return $this;
     }
 
+    public function getContextId(): ?int
+    {
+        return $this->getRoom()?->getItemId();
+    }
+
     public function setPortal(?Portal $portal = null): static
     {
         $this->portal = $portal;
