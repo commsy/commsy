@@ -10,6 +10,10 @@
                 <source>upload error</source>
                 <target>Upload failed, please upload a smaller file.</target>
             </trans-unit>
+            <trans-unit id="error-upload-file-limit">
+                <source>upload error file limit</source>
+                <target>Upload failed, you can upload up to %max_limit% files at once.</target>
+            </trans-unit>
             <trans-unit id="error-deprecated-markup">
                 <source>deprecated markup</source>
                 <target>The markup %markup% is no longer supported, please embed media content directly in the editor.</target>
