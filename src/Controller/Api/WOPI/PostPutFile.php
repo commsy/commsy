@@ -73,6 +73,10 @@ final class PostPutFile extends AbstractController
             }
         }
 
+        if (!$this->lockManager->isLocked($file) && filesize($absPath) === 0 && $request->headers->has('X-WOPI-Lock')) {
+            $this->lockManager->lock($file, $request->headers->get('X-WOPI-Lock'));
+        }
+
         $filesystem->dumpFile($absPath, $request->getContent());
 
         $file->setSize(filesize($absPath));
