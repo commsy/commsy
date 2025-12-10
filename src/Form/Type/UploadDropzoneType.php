@@ -31,8 +31,12 @@ class UploadDropzoneType extends AbstractType
     {
         $jsOptions = [
             'path' => $options['uploadUrl'],
+            'maxFileUploads' => (int) (ini_get('max_file_uploads') ?: 20),
             'errorMessage' => $this->translator->trans('upload error', [], 'error'),
             'noFileIdsMessage' => $this->translator->trans('upload error', [], 'error'),
+            'fileLimitMessage' => $this->translator->trans('upload error file limit', [
+                '%max_limit%' => (int) (ini_get('max_file_uploads') ?: 20),
+            ], 'error'),
         ];
 
         $view->vars['attr']['data-uk-csupload'] = json_encode($jsOptions);
@@ -48,6 +52,9 @@ class UploadDropzoneType extends AbstractType
                 'multiple' => true,
                 'errorMessage' => $this->translator->trans('upload error', [], 'error'),
                 'noFileIdsMessage' => $this->translator->trans('upload error', [], 'error'),
+                'fileLimitMessage' => $this->translator->trans('upload error file limit', [
+                    '%max_limit%' => (int) (ini_get('max_file_uploads') ?: 20),
+                ], 'error'),
             ])
             ->setRequired([
                 'uploadUrl'
