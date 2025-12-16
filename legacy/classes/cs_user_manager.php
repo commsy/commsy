@@ -1063,7 +1063,7 @@ class cs_user_manager extends cs_manager
         $em = $this->_environment->getSymfonyContainer()->get('doctrine.orm.entity_manager');
 
         // grab all ids for the given context
-        $query = $em->createQuery('SELECT u.itemId FROM App\Entity\User u WHERE u.context = :contextId');
+        $query = $em->createQuery('SELECT u.itemId FROM App\Entity\User u WHERE u.room = :contextId');
         $query->setParameter('contextId', $context_id);
         $userIds = $query->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
 
