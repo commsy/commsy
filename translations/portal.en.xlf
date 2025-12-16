@@ -415,8 +415,8 @@
                 <target>User id(s): change mails on next login</target>
             </trans-unit>
             <trans-unit id="status_user">
-                <source>Satus user</source>
-                <target>Satus: user</target>
+                <source>Status user</source>
+                <target>Status: user</target>
             </trans-unit>
             <trans-unit id="status_moderator">
                 <source>Status moderator</source>

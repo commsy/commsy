@@ -423,7 +423,7 @@
                 <target>Kennung(en): E-Mail ändern bei nächstem Login</target>
             </trans-unit>
             <trans-unit id="status_user">
-                <source>Satus user</source>
+                <source>Status user</source>
                 <target>Status: BenutzerIn</target>
             </trans-unit>
             <trans-unit id="status_moderator">
