@@ -214,6 +214,9 @@ class Portal
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
     private bool $communityShowDeactivatedEntriesTitle = true;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
+    private bool $notifyCommunityModForAllProjectRooms = true;
+
     public function __construct()
     {
         $this->authSources = new ArrayCollection();
@@ -651,6 +654,17 @@ class Portal
     public function setCommunityShowDeactivatedEntriesTitle(bool $communityShowDeactivatedEntriesTitle): Portal
     {
         $this->communityShowDeactivatedEntriesTitle = $communityShowDeactivatedEntriesTitle;
+        return $this;
+    }
+
+    public function isNotifyCommunityModForAllProjectRooms(): bool
+    {
+        return $this->notifyCommunityModForAllProjectRooms;
+    }
+
+    public function setNotifyCommunityModForAllProjectRooms(bool $notifyCommunityModForAllProjectRooms): Portal
+    {
+        $this->notifyCommunityModForAllProjectRooms = $notifyCommunityModForAllProjectRooms;
         return $this;
     }
 

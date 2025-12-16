@@ -1207,6 +1207,12 @@
                 <target>Appearance</target>
             </trans-unit>
 
+            <!-- notifications form -->
+            <trans-unit id="portal_notifications_form_notify_for_all_rooms">
+                <source>Notify community moderation for all project rooms</source>
+                <target>Notifications for project workspaces without membership</target>
+            </trans-unit>
+
             <!-- Mailtexts -->
             <trans-unit id="mail_texts">
                 <source>Mailtexts</source>

@@ -1208,6 +1208,12 @@
                 <target>Darstellung</target>
             </trans-unit>
 
+            <!-- notifications form -->
+            <trans-unit id="portal_notifications_form_notify_for_all_rooms">
+                <source>Notify community moderation for all project rooms</source>
+                <target>Benachrichtigungen auch für Projekträume ohne Mitgliedschaft</target>
+            </trans-unit>
+
             <!-- Mailtexts -->
             <trans-unit id="mail_texts">
                 <source>Mailtexts</source>
