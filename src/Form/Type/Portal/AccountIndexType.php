@@ -43,7 +43,7 @@ class AccountIndexType extends AbstractType
                     'Activate user id(s)' => 3,
                     'Email change login' => 4,
                     '------------------' => 17,
-                    'Satus user' => 5,
+                    'Status user' => 5,
                     'Status moderator' => 6,
                     '-------------------' => 18,
                     'Make contact' => 7,
