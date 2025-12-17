@@ -14,18 +14,19 @@
 namespace Tests\Factory;
 
 use App\Entity\AuthSourceOIDC;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<AuthSourceOIDC>
+ * @extends PersistentObjectFactory<AuthSourceOIDC>
  */
-final class AuthSourceOIDCFactory extends PersistentProxyObjectFactory
+final class AuthSourceOIDCFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
     public function __construct()
     {
+        parent::__construct();
     }
 
     public static function class(): string

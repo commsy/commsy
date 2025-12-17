@@ -14,18 +14,19 @@
 namespace Tests\Factory;
 
 use App\Entity\Room;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Room>
+ * @extends PersistentObjectFactory<Room>
  */
-final class RoomFactory extends PersistentProxyObjectFactory
+final class RoomFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
     public function __construct()
     {
+        parent::__construct();
     }
 
     public static function class(): string

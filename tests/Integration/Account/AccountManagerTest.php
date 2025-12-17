@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Factory\AccountFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
+use function Zenstruck\Foundry\Persistence\assert_not_persisted;
+use function Zenstruck\Foundry\Persistence\assert_persisted;
 
 class AccountManagerTest extends KernelTestCase
 {
@@ -23,9 +25,9 @@ class AccountManagerTest extends KernelTestCase
 
         // Fresh account from factory
         $account = AccountFactory::createOne();
-        $account->_assertPersisted();
-        $this->getAccountManager()->delete($account->_real());
-        $account->_assertNotPersisted();
+        assert_persisted($account);
+        $this->getAccountManager()->delete($account);
+        assert_not_persisted($account);
     }
 
     public function testDeleteAccountWithSettings(): void
@@ -34,27 +36,26 @@ class AccountManagerTest extends KernelTestCase
 
         // Fresh account from factory
         $account = AccountFactory::createOne();
-        $account->_assertPersisted();
+        assert_persisted($account);
 
         // Settings are not persisted by the manager
         $settingsManager = $this->getAccountSettingsManager();
-        $realAccount = $account->_real();
         $settingsManager->storeSetting(
-            $realAccount,
+            $account,
             \App\Account\AccountSetting::NOTIFY_PORTAL_MOD_ON_SELF_REGISTRATION,
             ['enabled' => true]
         );
 
         $entityManager = $this->getEntityManager();
-        $entityManager->persist($realAccount);
+        $entityManager->persist($account);
         $entityManager->flush();
 
         $accountSettingsRepository = $entityManager->getRepository(AccountSetting::class);
-        $accountSettings = $accountSettingsRepository->findOneBy(['account' => $realAccount]);
+        $accountSettings = $accountSettingsRepository->findOneBy(['account' => $account]);
         $this->assertNotNull($accountSettings);
 
-        $this->getAccountManager()->delete($realAccount);
-        $account->_assertNotPersisted();
+        $this->getAccountManager()->delete($account);
+        assert_not_persisted($account);
     }
 
     private function getAccountManager(): AccountManager
