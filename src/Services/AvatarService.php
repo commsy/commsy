@@ -17,10 +17,13 @@ use App\Account\AccountManager;
 use App\Account\AccountSetting;
 use App\Account\AccountSettingsManager;
 use App\Entity\Account;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Utils\UserService;
 use cs_user_item;
 use OzdemirBurak\Iris\Color\Hex;
 use OzdemirBurak\Iris\Exceptions\InvalidColorException;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class AvatarService
 {
@@ -28,7 +31,7 @@ class AvatarService
 
     private int $colorScheme;
 
-    private ?cs_user_item $user = null;
+    private ?User $user = null;
 
     private ?Account $account = null;
 
@@ -36,15 +39,14 @@ class AvatarService
 
     private int $imageHeight = 100;
 
-    /**
-     * @param string $kernelProjectDir
-     */
+    private string $kernelProjectDir;
+
     public function __construct(
-        private readonly UserService $userService,
         private readonly AccountSettingsManager $settingsManager,
-        private readonly AccountManager $accountManager,
-        private $kernelProjectDir)
-    {
+        private readonly UserRepository $userRepository,
+        ParameterBagInterface $parameterBag
+    ) {
+        $this->kernelProjectDir = $parameterBag->get('kernel.project_dir');
     }
 
     /**
@@ -52,13 +54,12 @@ class AvatarService
      */
     public function getAvatar($itemId, int $type = 0, int $colorScheme = 0): bool|string
     {
-        $this->user = $this->userService->getUser($itemId);
+        $this->user = $this->userRepository->find($itemId);
         if (!$this->user) {
             return false;
         }
 
-        $portal = $this->user->getPortal();
-        $account = $this->accountManager->getAccount($this->user, $portal->getId());
+        $account = $this->user->getAccount();
         if (!$account) {
             return false;
         }
