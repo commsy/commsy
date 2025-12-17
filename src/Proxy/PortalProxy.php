@@ -195,6 +195,11 @@ class PortalProxy
         $this->portal->getExtras()['SHOWROOMSONHOME'] = $text;
     }
 
+    public function isNotifyCommunityModForAllProjectRooms(): bool
+    {
+        return $this->portal->isNotifyCommunityModForAllProjectRooms();
+    }
+
     public function getLanguage(): string
     {
         return $this->portal->getExtras()['LANGUAGE'] ?? 'de';

@@ -14,16 +14,8 @@
 namespace App\Event\Workspace;
 
 use cs_room_item;
-use Symfony\Contracts\EventDispatcher\Event;
 
-final class WorkspaceDeletedEvent extends Event implements WorkspaceEventInterface
+interface WorkspaceEventInterface
 {
-    public function __construct(
-        private readonly cs_room_item $room
-    ) {}
-
-    public function getWorkspace(): cs_room_item
-    {
-        return $this->room;
-    }
+    public function getWorkspace(): cs_room_item;
 }
