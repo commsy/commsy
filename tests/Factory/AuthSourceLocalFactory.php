@@ -14,18 +14,19 @@
 namespace Tests\Factory;
 
 use App\Entity\AuthSourceLocal;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<AuthSourceLocal>
+ * @extends PersistentObjectFactory<AuthSourceLocal>
  */
-final class AuthSourceLocalFactory extends PersistentProxyObjectFactory
+final class AuthSourceLocalFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
     public function __construct()
     {
+        parent::__construct();
     }
 
     public static function class(): string

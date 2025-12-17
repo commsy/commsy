@@ -14,18 +14,19 @@
 namespace Tests\Factory;
 
 use App\Entity\Files;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Files>
+ * @extends PersistentObjectFactory<Files>
  */
-final class FilesFactory extends PersistentProxyObjectFactory
+final class FilesFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
     public function __construct()
     {
+        parent::__construct();
     }
 
     public static function class(): string

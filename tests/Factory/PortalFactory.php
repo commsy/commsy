@@ -14,18 +14,19 @@
 namespace Tests\Factory;
 
 use App\Entity\Portal;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Portal>
+ * @extends PersistentObjectFactory<Portal>
  */
-final class PortalFactory extends PersistentProxyObjectFactory
+final class PortalFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
     public function __construct()
     {
+        parent::__construct();
     }
 
     public static function class(): string

@@ -16,14 +16,15 @@ namespace Tests\Factory;
 use App\Account\AccountLanguage;
 use App\Entity\Account;
 use App\Facade\AccountCreatorFacade;
+use Override;
 use ReflectionProperty;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Account>
+ * @extends PersistentObjectFactory<Account>
  */
-final class AccountFactory extends PersistentProxyObjectFactory
+final class AccountFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
