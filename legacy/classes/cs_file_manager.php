@@ -351,12 +351,13 @@ class cs_file_manager extends cs_manager
 
     public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '')
     {
+        $new_id = (int)$new_id;
+
         $retour = [];
         $current_date = getCurrentDateTimeInMySQL();
         $current_data_array = [];
 
-        $query = '';
-        $query .= 'SELECT * FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' . encode(AS_DB, $old_id) . '" AND deleter_id IS NULL AND deletion_date IS NULL';
+        $query = 'SELECT * FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' . encode(AS_DB, $old_id) . '" AND deleter_id IS NULL AND deletion_date IS NULL';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems getting data "' . $this->_db_table . '" from query: "' . $query . '"', E_USER_WARNING);
@@ -373,8 +374,6 @@ class cs_file_manager extends cs_manager
                 foreach ($sql_result as $sql_row) {
                     $extra_array = unserialize($sql_row['extras']);
                     $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
-                    // $current_copy_date_array[$extra_array['COPY']['ITEM_ID']] = $extra_array['COPY']['DATETIME'];
-                    // $current_mod_date_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$modification_date];
                 }
             }
             foreach ($result as $query_result) {
@@ -386,8 +385,7 @@ class cs_file_manager extends cs_manager
                 }
 
                 if ($do_it) {
-                    $insert_query = '';
-                    $insert_query .= 'INSERT INTO ' . $this->addDatabasePrefix($this->_db_table) . ' SET';
+                    $insert_query = 'INSERT INTO ' . $this->addDatabasePrefix($this->_db_table) . ' SET';
                     $first = true;
                     $old_item_id = '';
                     foreach ($query_result as $key => $value) {
@@ -439,7 +437,7 @@ class cs_file_manager extends cs_manager
                     if (!isset($result_insert)) {
                         trigger_error('Problem creating item from query: "' . $insert_query . '"', E_USER_ERROR);
                     } else {
-                        $new_item_id = $result_insert;
+                        $new_item_id = (int)$result_insert;
                         if (!empty($old_item_id)) {
                             $retour[CS_FILE_TYPE . $old_item_id] = $new_item_id;
 
@@ -449,6 +447,42 @@ class cs_file_manager extends cs_manager
                             $file_item = $this->getItem($old_item_id);
                             if (!empty($file_item)) {
                                 $result = $disc_manager->copyFileFromRoomToRoom($old_id, $old_item_id, $file_item->getFileName(), $new_id, $new_item_id);
+
+                                // After physically copying the file, ensure the DB entry points to the new relative filepath and correct size
+                                if ($result) {
+                                    $fileExt = $file_item->getExtension();
+                                    if (!empty($fileExt)) {
+                                        $relativePath = $disc_manager->getRelativeFilePath(
+                                            $this->_environment->getCurrentPortalID(),
+                                            $new_id,
+                                            $disc_manager->getCurrentFileName($new_item_id, (string)$fileExt)
+                                        );
+
+                                        $absolutePath = $disc_manager->getAbsoluteFilePath(
+                                            $this->_environment->getCurrentPortalID(),
+                                            $new_id,
+                                            $disc_manager->getCurrentFileName($new_item_id, (string)$fileExt)
+                                        );
+
+                                        $fileSize = file_exists($absolutePath) ? filesize($absolutePath) : null;
+
+                                        $qb = $this->_db_connector->getConnection()->createQueryBuilder();
+                                        $qb
+                                            ->update($this->addDatabasePrefix($this->_db_table))
+                                            ->set('filepath', ':filepath')
+                                            ->where('files_id = :filesId')
+                                            ->setParameter('filepath', $relativePath)
+                                            ->setParameter('filesId', $new_item_id);
+
+                                        if (!is_null($fileSize)) {
+                                            $qb
+                                                ->set('size', ':size')
+                                                ->setParameter('size', (int)$fileSize);
+                                        }
+
+                                        $qb->executeStatement();
+                                    }
+                                }
                             } else {
                                 trigger_error('can not get old file item', E_USER_ERROR);
                             }

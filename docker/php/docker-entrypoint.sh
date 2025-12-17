@@ -41,10 +41,8 @@ if [ "$1" = 'supervisord' ] || [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1
 			exit 1
 		else
 			echo 'The database is now ready and reachable'
-		fi
 
-		if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
-			php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
+            php -d memory_limit=-1 bin/console commsy:update --no-interaction
 		fi
 	fi
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace DoctrineMigrations;
+namespace App\Migrations;
 
 use App\Utils\DbConverter;
 use Doctrine\Migrations\AbstractMigration;

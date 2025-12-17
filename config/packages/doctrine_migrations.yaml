@@ -1,8 +1,7 @@
 doctrine_migrations:
+    enable_service_migrations: true
     migrations_paths:
-        # namespace is arbitrary but should be different from App\Migrations
-        # as migrations classes should NOT be autoloaded
-        'DoctrineMigrations': '%kernel.project_dir%/migrations'
+        'App\Migrations': '%kernel.project_dir%/src/Migrations'
     enable_profiler: false
 
     storage:
@@ -15,7 +14,4 @@ doctrine_migrations:
             execution_time_column_name: 'execution_time'
 
     # Possible values: "BY_YEAR", "BY_YEAR_AND_MONTH", false
-    organize_migrations: BY_YEAR
-    
-    services:
-        'Doctrine\Migrations\Version\MigrationFactory': 'App\Migrations\Factory\MigrationFactoryDecorator'
+    organize_migrations: false
