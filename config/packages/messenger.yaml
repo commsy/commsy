@@ -4,7 +4,7 @@ framework:
             messenger.bus.default:
                 middleware:
                     - 'App\Middleware\AccountMiddleware'
-            
+
         failure_transport: failed
 
         # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
@@ -19,9 +19,9 @@ framework:
         routing:
             # Route your messages to the transports
             'FOS\ElasticaBundle\Message\AsyncPersistPage': async
-            
+
             'App\Message\*': async
-            
+
 when@test:
     framework:
         messenger:
