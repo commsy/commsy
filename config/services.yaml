@@ -367,13 +367,6 @@ services:
         arguments: ['@doctrine.orm.entity_manager']
 
     # Services
-    commsy.avatar_service:
-        alias: App\Services\AvatarService
-
-    App\Services\AvatarService:
-        arguments:
-            $kernelProjectDir: '%kernel.project_dir%'
-
     App\Services\PrintService:
         arguments:
             $pdf: '@knp_snappy.pdf'
