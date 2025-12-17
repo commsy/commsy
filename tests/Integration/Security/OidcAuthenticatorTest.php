@@ -59,6 +59,8 @@ class OidcAuthenticatorTest extends KernelTestCase
             ));
         $container->set(AuthorizationCodeFlow::class, $codeFlow);
 
+        $account = AccountFactory::find($account->getId());
+
         /** @var OidcAuthenticator $oidcAuthenticator */
         $oidcAuthenticator = $container->get(OidcAuthenticator::class);
 
@@ -117,6 +119,8 @@ class OidcAuthenticatorTest extends KernelTestCase
             ));
         $container->set(AuthorizationCodeFlow::class, $codeFlow);
 
+        $account = AccountFactory::find($account->getId());
+
         /** @var OidcAuthenticator $oidcAuthenticator */
         $oidcAuthenticator = $container->get(OidcAuthenticator::class);
 
@@ -174,6 +178,8 @@ class OidcAuthenticatorTest extends KernelTestCase
                 'display'
             ));
         $container->set(AuthorizationCodeFlow::class, $codeFlow);
+
+        $account = AccountFactory::find($account->getId());
 
         /** @var OidcAuthenticator $oidcAuthenticator */
         $oidcAuthenticator = $container->get(OidcAuthenticator::class);

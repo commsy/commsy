@@ -66,7 +66,7 @@ class Files
     private ?Portal $portal = null;
 
     #[ORM\OneToOne(targetEntity: ItemLinkFile::class, mappedBy: 'file', cascade: ['persist', 'remove'])]
-    private ItemLinkFile $itemLink;
+    private ?ItemLinkFile $itemLink = null;
 
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $lockingId = null;
@@ -237,12 +237,12 @@ class Files
         return $this;
     }
 
-    public function getItemLink(): ItemLinkFile
+    public function getItemLink(): ?ItemLinkFile
     {
         return $this->itemLink;
     }
 
-    public function setItemLink(ItemLinkFile $itemLink): self
+    public function setItemLink(?ItemLinkFile $itemLink): self
     {
         $this->itemLink = $itemLink;
 
