@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace DoctrineMigrations;
+namespace App\Migrations;
 
 use App\Contract\ParameterBagAwareInterface;
 use App\Utils\DbConverter;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -16,13 +18,14 @@ use Symfony\Component\Finder\SplFileInfo;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230301172618 extends AbstractMigration implements ParameterBagAwareInterface
+final class Version20230301172618 extends AbstractMigration
 {
-    private ParameterBagInterface $parameterBag;
-
-    public function setParameterBag(ParameterBagInterface $parameterBag): void
-    {
-        $this->parameterBag = $parameterBag;
+    public function __construct(
+        Connection $connection,
+        LoggerInterface $logger,
+        private readonly ParameterBagInterface $parameterBag
+    ) {
+        parent::__construct($connection, $logger);
     }
 
     public function getDescription(): string

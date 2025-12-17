@@ -119,7 +119,9 @@
         "psr-4": {
             "App\\": "src/"
         },
-        "classmap": ["legacy/classes"],
+        "classmap": [
+            "legacy/classes"
+        ],
         "files": [
             "legacy/etc/cs_constants.php",
             "legacy/functions/curl_functions.php",
