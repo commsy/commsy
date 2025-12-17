@@ -1211,7 +1211,11 @@
             <!-- notifications form -->
             <trans-unit id="portal_notifications_form_notify_for_all_rooms">
                 <source>Notify community moderation for all project rooms</source>
-                <target>Benachrichtigungen auch für Projekträume ohne Mitgliedschaft</target>
+                <target>Benachrichtigungen an die Gemeinschaftsraummoderation für Projekträume</target>
+            </trans-unit>
+            <trans-unit id="portal_notifications_form_notify_for_all_rooms_help">
+                <source>Should community moderation get notifications about a community room's project room events?</source>
+                <target>Soll die Gemeinschaftsraummoderation Benachrichtigungen zu den Projekträumen eines Gemeinschaftsraumes erhalten?</target>
             </trans-unit>
 
             <!-- Mailtexts -->

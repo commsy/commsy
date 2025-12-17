@@ -38,6 +38,7 @@ class NotificationType extends AbstractType
                     'No' => false,
                 ],
                 'choice_translation_domain' => 'form',
+                'help' => 'Should community moderation get notifications about a community room\'s project room events?',
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
