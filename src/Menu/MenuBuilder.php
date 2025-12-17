@@ -516,6 +516,15 @@ final readonly class MenuBuilder
                 'extras' => ['icon' => 'mail'],
             ])
             ->setExtra('translation_domain', 'portal');
+
+            // notifications
+            $menu->addChild('Notifications', [
+                'label' => 'notifications',
+                'route' => 'app_portalsettings_notifications',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'comments'],
+            ])
+            ->setExtra('translation_domain', 'menu');
         }
 
         return $menu;
