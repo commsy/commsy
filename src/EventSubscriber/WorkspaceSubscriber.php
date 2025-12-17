@@ -13,8 +13,10 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Portal;
 use App\Event\Workspace\WorkspaceArchivedEvent;
 use App\Event\Workspace\WorkspaceDeletedEvent;
+use App\Event\Workspace\WorkspaceEventInterface;
 use App\Event\Workspace\WorkspaceLinkUpdatedEvent;
 use App\Event\Workspace\WorkspaceLockedEvent;
 use App\Event\Workspace\WorkspaceOpenedEvent;
@@ -48,7 +50,7 @@ class WorkspaceSubscriber implements EventSubscriberInterface
 
         if ($workspace instanceof cs_project_item) {
             $workspace->_sendMailRoomDeleteToProjectModeration();
-            $workspace->_sendMailRoomDeleteToCommunityModeration();
+            $this->executeIfValid($workspace->_sendMailRoomDeleteToCommunityModeration(...), $event);
             $workspace->_sendMailRoomDeleteToPortalModeration();
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomDeleteToCommunityModeration();
@@ -62,7 +64,7 @@ class WorkspaceSubscriber implements EventSubscriberInterface
 
         if ($workspace instanceof cs_project_item) {
             $workspace->_sendMailRoomUnDeleteToProjectModeration();
-            $workspace->_sendMailRoomUnDeleteToCommunityModeration();
+            $this->executeIfValid($workspace->_sendMailRoomUnDeleteToCommunityModeration(...), $event);
             $workspace->_sendMailRoomUnDeleteToPortalModeration();
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomUnDeleteToCommunityModeration();
@@ -76,7 +78,7 @@ class WorkspaceSubscriber implements EventSubscriberInterface
 
         if ($workspace instanceof cs_project_item) {
             $workspace->_sendMailRoomOpenToProjectModeration();
-            $workspace->_sendMailRoomOpenToCommunityModeration();
+            $this->executeIfValid($workspace->_sendMailRoomOpenToCommunityModeration(...), $event);
             $workspace->_sendMailRoomOpenToPortalModeration();
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomOpenToCommunityModeration();
@@ -94,7 +96,7 @@ class WorkspaceSubscriber implements EventSubscriberInterface
 
         if ($workspace instanceof cs_project_item) {
             $workspace->_sendMailRoomLinkToProjectModeration();
-            $workspace->_sendMailRoomLinkToCommunityModeration();
+            $this->executeIfValid($workspace->_sendMailRoomLinkToCommunityModeration(...), $event);
             $workspace->_sendMailRoomLinkToPortalModeration();
         }
     }
@@ -105,7 +107,7 @@ class WorkspaceSubscriber implements EventSubscriberInterface
 
         if ($workspace instanceof cs_project_item) {
             $workspace->_sendMailRoomLockToProjectModeration();
-            $workspace->_sendMailRoomLockToCommunityModeration();
+            $this->executeIfValid($workspace->_sendMailRoomLockToCommunityModeration(...), $event);
             $workspace->_sendMailRoomLockToPortalModeration();
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomLockToCommunityModeration();
@@ -123,7 +125,7 @@ class WorkspaceSubscriber implements EventSubscriberInterface
 
         if ($workspace instanceof cs_project_item) {
             $workspace->_sendMailRoomUnlockToProjectModeration();
-            $workspace->_sendMailRoomUnlockToCommunityModeration();
+            $this->executeIfValid($workspace->_sendMailRoomUnlockToCommunityModeration(...), $event);
             $workspace->_sendMailRoomUnlockToPortalModeration();
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomUnlockToCommunityModeration();
@@ -141,7 +143,7 @@ class WorkspaceSubscriber implements EventSubscriberInterface
 
         if ($workspace instanceof cs_project_item) {
             $workspace->_sendMailRoomArchiveToProjectModeration();
-            $workspace->_sendMailRoomArchiveToCommunityModeration();
+            $this->executeIfValid($workspace->_sendMailRoomArchiveToCommunityModeration(...), $event);
             $workspace->_sendMailRoomArchiveToPortalModeration();
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomArchiveToCommunityModeration();
@@ -159,7 +161,7 @@ class WorkspaceSubscriber implements EventSubscriberInterface
 
         if ($workspace instanceof cs_project_item) {
             $workspace->_sendMailRoomReOpenToProjectModeration();
-            $workspace->_sendMailRoomReOpenToCommunityModeration();
+            $this->executeIfValid($workspace->_sendMailRoomReOpenToCommunityModeration(...), $event);
             $workspace->_sendMailRoomReOpenToPortalModeration();
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomReOpenToCommunityModeration();
@@ -170,4 +172,22 @@ class WorkspaceSubscriber implements EventSubscriberInterface
             $workspace->_sendMailRoomReOpenToPortalModeration();
         }
     }
+
+    function executeIfValid(callable $callback, WorkspaceEventInterface $event): void
+    {
+        $room = $event->getWorkspace();
+
+        // only deal with project rooms, otherwise execute as is
+        if (!($room instanceof cs_project_item)) {
+            $callback();
+        }
+
+        /* @var Portal $portal */
+        $portal = $room->getPortal();
+
+        if ($portal->isNotifyCommunityModForAllProjectRooms()) {
+            $callback();
+        }
+    }
 }
+
