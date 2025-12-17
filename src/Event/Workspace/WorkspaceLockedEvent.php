@@ -16,7 +16,7 @@ namespace App\Event\Workspace;
 use cs_room_item;
 use Symfony\Contracts\EventDispatcher\Event;
 
-final class WorkspaceLockedEvent extends Event
+final class WorkspaceLockedEvent extends Event implements WorkspaceEventInterface
 {
     public function __construct(
         private readonly cs_room_item $room

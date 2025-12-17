@@ -415,8 +415,8 @@
                 <target>User id(s): change mails on next login</target>
             </trans-unit>
             <trans-unit id="status_user">
-                <source>Satus user</source>
-                <target>Satus: user</target>
+                <source>Status user</source>
+                <target>Status: user</target>
             </trans-unit>
             <trans-unit id="status_moderator">
                 <source>Status moderator</source>
@@ -1205,6 +1205,16 @@
             <trans-unit id="portal_fappearance_orm_title">
                 <source>Appearance</source>
                 <target>Appearance</target>
+            </trans-unit>
+
+            <!-- notifications form -->
+            <trans-unit id="portal_notifications_form_notify_for_all_rooms">
+                <source>Notify community moderation for all project rooms</source>
+                <target>Community moderation notifications for project workspaces</target>
+            </trans-unit>
+            <trans-unit id="portal_notifications_form_notify_for_all_rooms_help">
+                <source>Should community moderation get notifications about a community room's project room events?</source>
+                <target>Should community moderation get notifications about a community room's project room events?</target>
             </trans-unit>
 
             <!-- Mailtexts -->
