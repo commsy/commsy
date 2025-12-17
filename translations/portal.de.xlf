@@ -423,7 +423,7 @@
                 <target>Kennung(en): E-Mail ändern bei nächstem Login</target>
             </trans-unit>
             <trans-unit id="status_user">
-                <source>Satus user</source>
+                <source>Status user</source>
                 <target>Status: BenutzerIn</target>
             </trans-unit>
             <trans-unit id="status_moderator">
@@ -1206,6 +1206,16 @@
             <trans-unit id="portal_fappearance_orm_title">
                 <source>Appearance</source>
                 <target>Darstellung</target>
+            </trans-unit>
+
+            <!-- notifications form -->
+            <trans-unit id="portal_notifications_form_notify_for_all_rooms">
+                <source>Notify community moderation for all project rooms</source>
+                <target>Benachrichtigungen an die Gemeinschaftsraummoderation für Projekträume</target>
+            </trans-unit>
+            <trans-unit id="portal_notifications_form_notify_for_all_rooms_help">
+                <source>Should community moderation get notifications about a community room's project room events?</source>
+                <target>Soll die Gemeinschaftsraummoderation Benachrichtigungen zu den Projekträumen eines Gemeinschaftsraumes erhalten?</target>
             </trans-unit>
 
             <!-- Mailtexts -->

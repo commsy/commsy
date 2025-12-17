@@ -60,6 +60,7 @@ use App\Form\Type\Portal\ImpressumType;
 use App\Form\Type\Portal\LicenseSortType;
 use App\Form\Type\Portal\LicenseType;
 use App\Form\Type\Portal\MandatoryAssignmentType;
+use App\Form\Type\Portal\NotificationType;
 use App\Form\Type\Portal\PortalAnnouncementsType;
 use App\Form\Type\Portal\PortalAppearanceType;
 use App\Form\Type\Portal\PortalGeneralType;
@@ -745,6 +746,30 @@ class PortalSettingsController extends AbstractController
         return $this->render('portal_settings/mailtexts.html.twig', [
             'mailText' => $mailText,
             'portal' => $portal,
+        ]);
+    }
+
+    #[Route(path: '/portal/{portalId}/settings/notifications')]
+    #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    public function notifications(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        $form = $this->createForm(NotificationType::class, $portal);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ('save' === $form->getClickedButton()->getName()) {
+                $entityManager->persist($portal);
+                $entityManager->flush();
+            }
+        }
+
+        return $this->render('portal_settings/notifications.html.twig', [
+            'form' => $form,
         ]);
     }
 
