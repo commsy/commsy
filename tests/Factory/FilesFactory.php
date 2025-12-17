@@ -44,7 +44,7 @@ final class FilesFactory extends PersistentObjectFactory
             'creationDate' => self::faker()->dateTime(),
             'filename' => self::faker()->word() . '.' . self::faker()->fileExtension(),
             'filepath' => self::faker()->filePath(),
-            'portal' => PortalFactory::createOne(),
+            'portal' => PortalFactory::randomOrCreate(),
         ];
     }
 
