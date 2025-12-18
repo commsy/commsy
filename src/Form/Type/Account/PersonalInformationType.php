@@ -71,9 +71,7 @@ class PersonalInformationType extends AbstractType
             ->add('userId', TextType::class, [
                 'constraints' => [
                     new NotBlank(),
-                    new UniqueUserId([
-                        'portalId' => $portalUser->getContextID(),
-                    ]),
+                    new UniqueUserId($portalUser->getContextID()),
                 ],
                 'label' => 'userId',
                 'required' => true,
