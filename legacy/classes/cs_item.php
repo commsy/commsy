@@ -37,7 +37,7 @@ class cs_item
      */
     public array $_changed = [];
 
-    private ?object $contextItem = null;
+    private PortalProxy|cs_context_item|null $contextItem = null;
 
     /** error array for detecting multiple errors.
      *
@@ -73,7 +73,7 @@ class cs_item
         $this->_type = 'item';
     }
 
-     public function getContextItem(): ?object
+     public function getContextItem(): null|cs_context_item|PortalProxy
      {
          if ($this->contextItem === null) {
              $contextId = $this->getContextID();
@@ -102,16 +102,23 @@ class cs_item
                          }
                      }
                  } catch (UnexpectedResultException) {
-                    return null;
-                 } finally {
-                     $item_manager = $this->_environment->getItemManager();
-                     $item = $item_manager->getItem($contextId);
+                     return null;
+                 }
 
-                     if (isset($item) && is_object($item)) {
-                         $manager = $this->_environment->getManager($item->getItemType());
-                         $this->contextItem = $manager->getItem($this->getContextId());
-                         return $this->contextItem;
+                 // This is our fallback
+                 // We grab the item from the item manager and use the typed manager to return the specific item
+                 $item_manager = $this->_environment->getItemManager();
+                 $item = $item_manager->getItem($contextId);
+
+                 if (isset($item) && is_object($item)) {
+                     $manager = $this->_environment->getManager($item->getItemType());
+                     $contextItem = $manager->getItem($this->getContextId());
+                     if (!$contextItem instanceof cs_context_item) {
+                         return null;
                      }
+
+                     $this->contextItem = $contextItem;
+                     return $this->contextItem;
                  }
              }
          }
