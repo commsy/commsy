@@ -41,16 +41,16 @@ class UpdateCommand extends Command
         try {
             $schemaManager = $conn->createSchemaManager();
             if ($schemaManager->tablesExist(['migration_versions'])) {
-                $needsUpdate = (int) $conn->fetchOne(
-                    "SELECT COUNT(*) FROM migration_versions WHERE version LIKE 'DoctrineMigrations\\\\%'"
-                );
+                $needsUpdate = (int) $conn->fetchOne(<<<'SQL'
+                    SELECT COUNT(*) FROM migration_versions WHERE version LIKE 'DoctrineMigrations\\\\%'
+                SQL);
 
                 if ($needsUpdate > 0) {
                     $io->section('Synchronizing migration metadata...');
                     $conn->executeStatement(<<<'SQL'
                         UPDATE migration_versions
                         SET version = REPLACE(version, 'DoctrineMigrations\\', 'App\\Migrations\\')
-                        WHERE version LIKE 'DoctrineMigrations\\%';
+                        WHERE version LIKE 'DoctrineMigrations\\\\%';
                     SQL);
                     $io->success('Namespaces in the database have been updated.');
                 } else {
