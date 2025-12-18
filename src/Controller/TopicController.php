@@ -127,9 +127,9 @@ class TopicController extends BaseController
         int $start = 0,
         string $sort = 'date'
     ): Response {
-        // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
-        $topicFilter = $request->get('topicFilter');
+        // extract current filter from attributes (embedded controller call)
+        // or from query parameters (AJAX)
+        $topicFilter = $request->attributes->get('topicFilter');
         if (!$topicFilter) {
             $topicFilter = $request->query->all('topic_filter');
         }

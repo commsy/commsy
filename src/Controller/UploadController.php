@@ -178,7 +178,7 @@ class UploadController extends AbstractController
                     'fileId' => $fileItem->getFileID(),
                 ]);
 
-                if (null != $request->get('CKEditor')) {
+                if (null != $request->query->get('CKEditor')) {
                     // This is for uploading through dialog / File Browser Plugin???
                     // @see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_dialog_add_file_browser.html
                     // @see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browser_api.html#example-4

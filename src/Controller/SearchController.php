@@ -137,7 +137,7 @@ class SearchController extends BaseController
         int $roomId,
         int $itemId
     ): JsonResponse {
-        $query = $request->get('search', '');
+        $query = $request->request->get('search', '');
 
         // query conditions
         if (!empty($query)) {
@@ -174,7 +174,7 @@ class SearchController extends BaseController
         CalendarsService $calendarsService,
         int $roomId
     ): JsonResponse {
-        $query = $request->get('search', '');
+        $query = $request->request->get('search', '');
 
         // query conditions
         if (!empty($query)) {
@@ -226,7 +226,7 @@ class SearchController extends BaseController
         // the `originalContext` query parameter exists if the user clicked the 'Search in this room' entry in the
         // instant results dropdown; the param contains the roomId of the original room that was active before the
         // search caused a redirect to the dashboard
-        $originalRoomId = $request->get('originalContext');
+        $originalRoomId = $request->query->get('originalContext');
         $originalRoomItem = ($originalRoomId) ? $roomService->getRoomItem($originalRoomId) : null;
         if ($originalRoomItem) {
             $searchData->setSelectedContext($originalRoomItem->getTitle());
@@ -765,7 +765,7 @@ class SearchController extends BaseController
     ): JsonResponse {
         $results = [];
 
-        $query = $request->get('search', '');
+        $query = $request->request->get('search', '');
 
         if (!empty($query)) {
             $roomQueryCondition = new RoomQueryCondition();

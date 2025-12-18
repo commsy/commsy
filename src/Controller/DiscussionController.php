@@ -72,9 +72,9 @@ class DiscussionController extends BaseController
         int $start = 0,
         string $sort = ''
     ): Response {
-        // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
-        $discussionFilter = $request->get('discussionFilter');
+        // extract current filter from attributes (embedded controller call)
+        // or from query parameters (AJAX)
+        $discussionFilter = $request->attributes->get('discussionFilter');
         if (!$discussionFilter) {
             $discussionFilter = $request->query->all('discussion_filter');
         }

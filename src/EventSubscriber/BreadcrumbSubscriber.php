@@ -62,7 +62,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         }
         $request = $event->getRequest();
 
-        $route = explode('_', (string) $request->get('_route'));
+        $route = explode('_', (string) $request->attributes->get('_route'));
 
         if (count($route) < 3) {
             return;
@@ -70,7 +70,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
 
         [, $controller, $action] = $route;
 
-        $routeParameters = $request->get('_route_params');
+        $routeParameters = $request->attributes->get('_route_params');
 
         $roomItem = $this->roomService->getCurrentRoomItem();
 
@@ -80,7 +80,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         $this->addPortalCrumb();
 
         $portal = $this->legacyEnvironment->getCurrentPortalItem();
-        if ($portal && $request->get('_route') === 'app_room_listall') {
+        if ($portal && $request->attributes->get('_route') === 'app_room_listall') {
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser(
                 $this->legacyEnvironment->getCurrentUser(),
@@ -265,8 +265,8 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
     ): void
     {
         // rubric & entry
-        $route = explode('_', (string) $request->get('_route'));
-        $routeParameters = $request->get('_route_params');
+        $route = explode('_', (string) $request->attributes->get('_route'));
+        $routeParameters = $request->attributes->get('_route_params');
         if (array_key_exists('itemId', $routeParameters)) {
             // link to rubric
             $route[2] = 'list';
@@ -292,7 +292,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
             }
 
             // entry title
-            $item = $this->itemService->getTypedItem($request->get('itemId'));
+            $item = $this->itemService->getTypedItem($request->attributes->get('itemId'));
             if ($item) {
                 /** @noinspection PhpPossiblePolymorphicInvocationInspection */
                 $this->breadcrumbs->addItem('user' == $item->getItemType() ? $item->getFullName() : $item->getTitle());

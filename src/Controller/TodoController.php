@@ -152,9 +152,9 @@ class TodoController extends BaseController
         int $start = 0,
         string $sort = ''
     ): Response {
-        // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
-        $todoFilter = $request->get('todoFilter');
+        // extract current filter from attributes (embedded controller call)
+        // or from query parameters (AJAX)
+        $todoFilter = $request->attributes->get('todoFilter');
         if (!$todoFilter) {
             $todoFilter = $request->query->all('todo_filter');
         }

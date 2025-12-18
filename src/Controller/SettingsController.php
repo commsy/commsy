@@ -189,7 +189,7 @@ class SettingsController extends AbstractController
 
         $roomData = $transformer->transform($roomItem);
 
-        if ($selectedTerms = $request->get('terms')) {
+        if ($selectedTerms = $request->request->get('terms')) {
             $currentTerms = $termsRepository->findOneById($selectedTerms);
 
             $roomData['terms']['agb_text_de'] = $currentTerms->getContentDe();
