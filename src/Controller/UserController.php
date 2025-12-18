@@ -1056,9 +1056,9 @@ class UserController extends BaseController
         $start = 0,
         $sort = ''
     ) {
-        // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
-        $userFilter = $request->get('userFilter');
+        // extract current filter from attributes (embedded controller call)
+        // or from query parameters (AJAX)
+        $userFilter = $request->attributes->get('userFilter');
         if (!$userFilter) {
             $userFilter = $request->query->all('user_filter');
         }

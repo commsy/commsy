@@ -104,9 +104,9 @@ class AnnouncementController extends BaseController
         int $start = 0,
         string $sort = ''
     ): Response {
-        // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
-        $announcementFilter = $request->get('announcementFilter');
+        // extract current filter from attributes (embedded controller call)
+        // or from query parameters (AJAX)
+        $announcementFilter = $request->attributes->get('announcementFilter');
         if (!$announcementFilter) {
             $announcementFilter = $request->query->all('announcement_filter');
         }

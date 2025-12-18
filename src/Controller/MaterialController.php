@@ -120,9 +120,9 @@ class MaterialController extends BaseController
         int $start = 0,
         string $sort = ''
     ): Response {
-        // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
-        $materialFilter = $request->get('materialFilter');
+        // extract current filter from attributes (embedded controller call)
+        // or from query parameters (AJAX)
+        $materialFilter = $request->attributes->get('materialFilter');
         if (!$materialFilter) {
             $materialFilter = $request->query->all('material_filter');
         }

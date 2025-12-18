@@ -51,9 +51,9 @@ class MarkedController extends BaseController
         int $start = 0,
         string $sort = 'date'
     ): Response {
-        // extract current filter from parameter bag (embedded controller call)
+        // extract current filter from attributes (embedded controller call)
         // or from query parameters (AJAX)
-        $markedFilter = $request->get('markFilter');
+        $markedFilter = $request->attributes->get('markFilter');
         if (!$markedFilter) {
             $markedFilter = $request->query->all('marked_filter');
         }

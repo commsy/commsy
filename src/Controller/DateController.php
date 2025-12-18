@@ -91,9 +91,9 @@ class DateController extends BaseController
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
-        // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
-        $dateFilter = $request->get('dateFilter');
+        // extract current filter from attributes (embedded controller call)
+        // or from query parameters (AJAX)
+        $dateFilter = $request->attributes->get('dateFilter');
         if (!$dateFilter) {
             $dateFilter = $request->query->all('date_filter');
         }
@@ -463,15 +463,15 @@ class DateController extends BaseController
     ): Response {
         $roomItem = $this->getRoom($roomId);
 
-        // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
-        $dateFilter = $request->get('dateFilter');
+        // extract current filter from attributes (embedded controller call)
+        // or from query parameters (AJAX)
+        $dateFilter = $request->attributes->get('dateFilter');
         if (!$dateFilter) {
             $dateFilter = $request->query->all('date_filter');
         }
 
-        $startDate = $request->get('start');
-        $endDate = $request->get('end');
+        $startDate = $request->query->get('start');
+        $endDate = $request->query->get('end');
 
         if ($dateFilter) {
             $filterForm = $this->createFilterForm($roomItem);

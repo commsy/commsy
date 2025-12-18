@@ -64,7 +64,7 @@ class TouController extends AbstractController
                         $portalUser->setAGBAcceptanceDate(new DateTimeImmutable());
                         $portalUser->save();
 
-                        return $this->redirect($request->get('redirect'));
+                        return $this->redirect($request->query->get('redirect', $request->request->get('redirect')));
                     }
                 }
             }
@@ -108,7 +108,7 @@ class TouController extends AbstractController
                 $currentUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 $currentUser->save();
 
-                return $this->redirect($request->get('redirect'));
+                return $this->redirect($request->query->get('redirect', $request->request->get('redirect')));
             }
         }
 

@@ -216,7 +216,7 @@ class ProjectController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 // create a new room using the legacy code
                 $communityRoom = $roomService->getRoomItem($roomId);
-                $context = $request->get('project');
+                $context = $request->request->all('project');
                 $projectManager = $legacyEnvironment->getProjectManager();
 
                 $legacyRoom = $projectManager->getNewItem();

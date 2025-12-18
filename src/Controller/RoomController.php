@@ -441,7 +441,7 @@ class RoomController extends AbstractController
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $type = '';
-        $context = $request->get('context');
+        $context = $request->request->all('context');
         if ($context) {
             $type = $context['type_select'] ?? '';
         }

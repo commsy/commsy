@@ -1677,10 +1677,11 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         AuthSourceRepository $authSourceRepository,
         Security $security,
-        AccountManager $accountManager
+        AccountManager $accountManager,
+        int $userId
     ): Response {
         $userList = $userService->getListUsers($portal->getId());
-        $user = $userService->getUser(intval($request->get('userId')));
+        $user = $userService->getUser($userId);
         $accountOfUser = $accountManager->getAccount($user, $portal->getId());
 
         $key = 0;
@@ -1747,11 +1748,10 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        int $userId
     ): Response {
-        $environment = $legacyEnvironment->getEnvironment();
-
-        $user = $userService->getUser(intval($request->get('userId')));
+        $user = $userService->getUser($userId);
         $userEdit = new PortalUserEdit();
         $userEdit->setFirstName($user->getFirstname());
         $userEdit->setLastName($user->getLastName());
@@ -1869,9 +1869,10 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService,
         TranslatorInterface $translator,
-        AccountManager $accountManager
+        AccountManager $accountManager,
+        int $userId
     ): Response {
-        $user = $userService->getUser(intval($request->get('userId')));
+        $user = $userService->getUser($userId);
         $userChangeStatus = new PortalUserChangeStatus();
         $userChangeStatus->setName($user->getFullName());
         $userChangeStatus->setUserID($user->getUserID());
@@ -1899,7 +1900,7 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $userService->getUser(intval($request->get('userId')));
+            $user = $userService->getUser($userId);
 
             $account = $accountManager->getAccount($user, $portal->getId());
 
@@ -1937,8 +1938,8 @@ class PortalSettingsController extends AbstractController
             $this->addFlash('performedSuccessfully', $returnUrl);
 
             return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-                'portalId' => $request->get('portalId'),
-                'userId' => $request->get('userId'),
+                'portalId' => $portal->getId(),
+                'userId' => $userId,
             ]);
         }
 
@@ -1957,9 +1958,10 @@ class PortalSettingsController extends AbstractController
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
-        UserService $userService
+        UserService $userService,
+        int $userId
     ): RedirectResponse {
-        $user = $userService->getUser(intval($request->get('userId')));
+        $user = $userService->getUser($userId);
         $user->setEmailNotVisible();
         $user->save();
 
@@ -1976,8 +1978,8 @@ class PortalSettingsController extends AbstractController
         $this->addFlash('performedSuccessfully', $returnUrl);
 
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
+            'portalId' => $portal->getId(),
+            'userId' => $userId,
         ]);
     }
 
@@ -1987,9 +1989,10 @@ class PortalSettingsController extends AbstractController
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         Request $request,
-        UserService $userService
+        UserService $userService,
+        int $userId
     ): RedirectResponse {
-        $user = $userService->getUser(intval($request->get('userId')));
+        $user = $userService->getUser($userId);
         $user->setEmailVisible();
         $user->save();
 
@@ -2006,8 +2009,8 @@ class PortalSettingsController extends AbstractController
         $this->addFlash('performedSuccessfully', $returnUrl);
 
         return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-            'portalId' => $request->get('portalId'),
-            'userId' => $request->get('userId'),
+            'portalId' => $portal->getId(),
+            'userId' => $userId,
         ]);
     }
 
@@ -2041,9 +2044,10 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         AccountManager $accountManager,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
+        int $userId
     ): Response {
-        $user = $userService->getUser(intval($request->get('userId')));
+        $user = $userService->getUser($userId);
         $userAssignWorkspace = new PortalUserAssignWorkspace();
         $userAssignWorkspace->setUserID($user->getUserID());
         $userAssignWorkspace->setName($user->getFullName());
@@ -2056,7 +2060,7 @@ class PortalSettingsController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 $assignFlag = true;
                 $choiceWorkspaceId = $form->get('workspaceSelection')->getViewData();
-                $user = $userService->getUser(intval($request->get('userId')));
+                $user = $userService->getUser($userId);
                 $relatedUsers = $user->getRelatedUserList();
                 foreach ($relatedUsers as $relatedUser) {
                     if ($relatedUser->getContextID() == $choiceWorkspaceId) {
@@ -2087,14 +2091,14 @@ class PortalSettingsController extends AbstractController
                     $this->addFlash('performedSuccessfully', $returnUrl);
 
                     return $this->redirectToRoute('app_portalsettings_accountindexdetail', [
-                        'portalId' => $request->get('portalId'),
-                        'userId' => $request->get('userId'),
+                        'portalId' => $portal->getId(),
+                        'userId' => $userId,
                     ]);
                 }
 
                 $this->addFlash('unsuccessful', 'Already assigned');
             } elseif ($form->get('search')->isClicked()) {
-                $user = $userService->getUser(intval($request->get('userId')));
+                $user = $userService->getUser($userId);
                 $userAssignWorkspace = new PortalUserAssignWorkspace();
                 $userAssignWorkspace->setUserID($user->getUserID());
                 $userAssignWorkspace->setName($user->getFullName());
