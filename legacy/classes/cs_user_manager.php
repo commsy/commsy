@@ -12,6 +12,7 @@
  */
 
 use App\Account\AccountManager;
+use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Event\AccountDeletedEvent;
@@ -1182,46 +1183,26 @@ class cs_user_manager extends cs_manager
         }
     }
 
-    public function changeUserID(string $username, cs_user_item $userItem): bool
+    public function changeUserID(string $username, Account $account): void
     {
-        $room_manager = $this->_environment->getRoomManager();
-        $room_list = $room_manager->getAllRelatedRoomListForUser($userItem);
-        $room_item_ids = [];
-        $room_item_ids[] = $this->_environment->getCurrentPortalID();
-        if (!$room_list->isEmpty()) {
-            $room_item = $room_list->getFirst();
-            while ($room_item) {
-                $room_item_ids[] = $room_item->getItemID();
-                $room_item = $room_list->getNext();
-            }
-        }
+        $qb = $this->_db_connector->getConnection()->createQueryBuilder();
 
-        // private room
-        $own_room = $userItem->getOwnRoom();
-        if (isset($own_room)) {
-            $room_item_ids[] = $own_room->getItemID();
-        }
+        $qb
+            ->update($this->addDatabasePrefix('user'), 'u')
+            ->set('u.user_id', ':newUserId')
+            ->set('u.modifier_id', 'u.creator_id')
+            ->set('u.modification_date', ':modificationDate')
+            ->where('u.user_id = :oldUserId')
+            ->andWhere('u.portal_id = :portalId')
+            ->setParameter('newUserId', $username)
+            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('oldUserId', $account->getUsername())
+            ->setParameter('portalId', $account->getContextId());
 
-        // user rooms
-        $relatedUserrooms = $userItem->getRelatedUserroomsList();
-        foreach ($relatedUserrooms as $userroom) {
-            $room_item_ids[] = $userroom->getItemID();
-        }
-
-        $update = 'UPDATE ' . $this->addDatabasePrefix('user') . ' SET ';
-        $update .= " user_id = '" . encode(AS_DB, $username) . "',";
-
-        $update .= ' modifier_id=creator_id,';
-        $update .= " modification_date='" . getCurrentDateTimeInMySQL() . "'";
-        $update .= " WHERE user_id = '" . encode(AS_DB, $userItem->getUserID()) . "' AND context_id IN (" . implode(',',
-                encode(AS_DB, $room_item_ids)) . ") AND auth_source='" . encode(AS_DB,
-                $userItem->getAuthSource()) . "'";
-        $result = $this->_db_connector->performQuery($update);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems changing user id.', E_USER_WARNING);
-            return false;
-        } else {
-            return true;
+        try {
+            $qb->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            trigger_error('Problems updating user_id: ' . $e->getMessage(), E_USER_WARNING);
         }
     }
 
