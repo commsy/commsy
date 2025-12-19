@@ -238,7 +238,7 @@ class cs_material_manager extends cs_manager
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
         $queryBuilder
-            ->select('m.*', 'i.pinned')
+            ->select('m.*', 'i.pinned', 'i.draft')
             ->from($this->addDatabasePrefix($this->_db_table), 'm')
             ->innerJoin('m', 'items', 'i', 'i.item_id = m.item_id')
             ->where('m.item_id = :itemId');
@@ -312,7 +312,7 @@ class cs_material_manager extends cs_manager
     {
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
         $queryBuilder
-            ->select('m.*', 'i.pinned')
+            ->select('m.*', 'i.pinned', 'i.draft')
             ->from($this->addDatabasePrefix($this->_db_table), 'm')
             ->innerJoin('m', 'items', 'i', 'i.item_id = m.item_id')
             ->where('m.item_id = :itemId')
