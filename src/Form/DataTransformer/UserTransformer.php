@@ -120,11 +120,8 @@ class UserTransformer extends AbstractTransformer
                 // check if userid has changed
                 $newUserId = $userData['userId'];
                 if ($portalUser->getUserID() != $newUserId) {
-                    if ($this->accountManager->propagateUsernameChange($account, $portalUser, $userData['userId'])) {
-                        $portalUser->setUserId($newUserId); // Important, as this object is saved again later!
-                    } else {
-                        exit('ERROR: changing User ID not successful');
-                    }
+                    $this->accountManager->propagateUsernameChange($account, $userData['userId']);
+                    $portalUser->setUserId($newUserId); // Important, as this object is saved again later!
                 }
             }
 

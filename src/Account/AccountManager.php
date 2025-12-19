@@ -45,15 +45,14 @@ readonly class AccountManager
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function propagateUsernameChange(Account $account, cs_user_item $user, string $username): bool
+    public function propagateUsernameChange(Account $account, string $username): void
     {
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->changeUserID($username, $account);
+
         $account->setUsername($username);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
-
-        $userManager = $this->legacyEnvironment->getUserManager();
-
-        return $userManager->changeUserID($username, $user);
     }
 
     public function propagateAccountDataToProfiles(Account $account, bool $updateUsername = false, ?Account $lookupAccount = null): void
