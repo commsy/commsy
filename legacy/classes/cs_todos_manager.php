@@ -320,7 +320,7 @@ class cs_todos_manager extends cs_manager
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
         $queryBuilder
-            ->select('t.*', 'i.pinned')
+            ->select('t.*', 'i.pinned', 'i.draft')
             ->from($this->addDatabasePrefix($this->_db_table), 't')
             ->innerJoin('t', 'items', 'i', 'i.item_id = t.item_id')
             ->where('t.item_id = :itemId')

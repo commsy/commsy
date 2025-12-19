@@ -242,7 +242,7 @@ class cs_announcement_manager extends cs_manager
 
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
          $queryBuilder
-             ->select('a.*', 'i.pinned')
+             ->select('a.*', 'i.pinned', 'i.draft')
              ->from($this->addDatabasePrefix($this->_db_table), 'a')
              ->innerJoin('a', 'items', 'i', 'i.item_id = a.item_id')
              ->where('a.item_id = :itemId')
