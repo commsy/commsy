@@ -345,26 +345,23 @@ class cs_room_manager extends cs_context_manager
     // statistic functions
     // #########################################################
 
-    public function getActiveRooms($start, $end)
+    public function getActiveRooms($start, $end): cs_list
     {
         $list = $this->getUsedRooms($start, $end);
 
+
         // delete rooms that are not really active
         $retour_list = new cs_list();
-        if (!$list->isEmpty()) {
-            $item = $list->getFirst();
-            while ($item) {
-                if ($item->isActive($start, $end)) {
-                    $retour_list->add($item);
-                }
-                $item = $list->getNext();
+        foreach ($list as $item) {
+            if ($item->isActive($start, $end)) {
+                $retour_list->add($item);
             }
         }
 
         return $retour_list;
     }
 
-    public function getUsedRooms($start, $end)
+    public function getUsedRooms($start, $end): cs_list
     {
         $list = new cs_list();
 
@@ -387,32 +384,9 @@ class cs_room_manager extends cs_context_manager
         return $list;
     }
 
-    public function getRelatedRoomListForUser($user_item)
+    public function getRelatedRoomListForUser($user_item): cs_list
     {
         return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID());
-    }
-
-    public function getAllRelatedRoomListForUser($user_item)
-    {
-        $this->setRoomTypeLimit('');
-
-        return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID(), true);
-    }
-
-    public function getAllMaxActivityPoints()
-    {
-        $retour = 0;
-        $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date is NULL and (type = "project" or type = "community");';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problems selecting '.$this->_db_table.' max activity from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            if (!empty($result[0]['max'])) {
-                $retour = $result[0]['max'];
-            }
-        }
-
-        return $retour;
     }
 
     public function getMaxActivityPoints()
@@ -479,19 +453,15 @@ class cs_room_manager extends cs_context_manager
         }
     }
 
-    public function getActiveTypeRooms($type, $start, $end)
+    public function getActiveTypeRooms($type, $start, $end): cs_list
     {
         $list = $this->getUsedTypeRooms($type, $start, $end);
 
         // delete rooms that are not really active
         $retour_list = new cs_list();
-        if (!$list->isEmpty()) {
-            $item = $list->getFirst();
-            while ($item) {
-                if ($item->isActive($start, $end)) {
-                    $retour_list->add($item);
-                }
-                $item = $list->getNext();
+        foreach ($list as $item) {
+            if ($item->isActive($start, $end)) {
+                $retour_list->add($item);
             }
         }
 
@@ -533,10 +503,6 @@ class cs_room_manager extends cs_context_manager
 
         return $retour;
     }
-
-    // #########################################################
-    // statistic functions - END
-    // #########################################################
 
     public function deleteFromDb($context_id)
     {
@@ -640,7 +606,7 @@ class cs_room_manager extends cs_context_manager
 
     public function getUserRoomsUserIsMemberOf(cs_user_item $user, bool $withExtras = true): cs_list
     {
-        $list = new \cs_list();
+        $list = new cs_list();
 
         if ($user->isReallyGuest()) {
             return $list;
@@ -680,77 +646,5 @@ class cs_room_manager extends cs_context_manager
         }
 
         return $list;
-    }
-
-    public function deleteRoomOfUserAndUserItemsInactivity($uid)
-    {
-        $rs = [];
-        // create backup of item
-        global $symfonyContainer;
-        $current_datetime = getCurrentDateTimeInMySQL();
-
-        // list of rooms where user is member
-        $query = '
-            SELECT
-                *
-            FROM '
-            .$this->addDatabasePrefix('user').','
-            .$this->addDatabasePrefix('room').'
-            WHERE '
-            .$this->addDatabasePrefix('user').'.user_id = "'.$uid.'" AND '
-            .$this->addDatabasePrefix('user').'.context_id = '.$this->addDatabasePrefix('room').'.item_id AND '
-            .$this->addDatabasePrefix('room').'.type != "community" AND '
-            .$this->addDatabasePrefix('user').'.deletion_date IS NULL AND
-                1 >= (
-                    SELECT
-                        COUNT(*)
-                    FROM '
-            .$this->addDatabasePrefix('user').'
-                    WHERE '
-            .$this->addDatabasePrefix('user').'.context_id = '.$this->addDatabasePrefix('room').'.item_id AND '
-            .$this->addDatabasePrefix('user').'.deletion_date IS NULL
-                )';
-
-        $result = $this->_db_connector->performQuery($query);
-        if (isset($result)) {
-            foreach ($result as $rs) {
-                $insert_query = 'UPDATE '.$this->addDatabasePrefix('room').' SET';
-                $insert_query .= ' modification_date = "'.$current_datetime.'",';
-                $insert_query .= ' deletion_date = "'.$current_datetime.'"';
-                $insert_query .= ' WHERE item_id = "'.$rs['item_id'].'"';
-                $result2 = $this->_db_connector->performQuery($insert_query);
-                if (!isset($result2) or !$result2) {
-                    trigger_error('Problems automatic deleting materials from query: "'.$insert_query.'"', E_USER_WARNING);
-                }
-            }
-            $user_query = 'UPDATE '.$this->addDatabasePrefix('user').' SET';
-            $user_query .= ' modification_date = "'.$current_datetime.'",';
-            $user_query .= ' deletion_date = "'.$current_datetime.'"';
-            $user_query .= ' WHERE user_id = "'.$rs['user_id'].'"';
-            $result3 = $this->_db_connector->performQuery($user_query);
-            if (!isset($result3) or !$result3) {
-                trigger_error('Problems automatic deleting materials from query: "'.$user_query.'"', E_USER_WARNING);
-            }
-        }
-    }
-
-    public function getNumberOfModerators($roomId)
-    {
-        $query = '
-            SELECT COUNT(user.item_id) AS numMods FROM user
-            WHERE
-                user.deleter_id IS NULL AND
-                user.deletion_date IS NULL AND
-                user.status = 3 AND
-                user.context_id = '.encode(AS_DB, $roomId).'
-        ';
-
-        $result = $this->_db_connector->performQuery($query);
-
-        if ($result && isset($result[0]['numMods'])) {
-            return (int) $result[0]['numMods'];
-        }
-
-        return 0;
     }
 }
