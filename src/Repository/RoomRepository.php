@@ -91,9 +91,15 @@ class RoomRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getActiveRoomsByAccount(Account $account)
+    /**
+     * This will not return user rooms, because they to not exist in the portal context.
+     * @return Room[]
+     */
+    public function getActiveRoomsByAccount(Account $account, array $roomTypes = ['project', 'community', 'grouproom']): array
     {
-        return $this->createQueryBuilder('r')
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb
             ->select()
             ->innerJoin(User::class, 'u', Join::WITH, 'u.room = r')
             ->andWhere('r.deletionDate IS NULL')
@@ -103,6 +109,7 @@ class RoomRepository extends ServiceEntityRepository
             ->andWhere('u.deleterId IS NULL')
             ->andWhere('u.userId = :userId')
             ->andWhere('u.authSource = :authSource')
+            ->andWhere($qb->expr()->in('r.type', $roomTypes))
             ->setParameter(':contextId', $account->getContextId())
             ->setParameter(':userId', $account->getUsername())
             ->setParameter(':authSource', $account->getAuthSource()->getId())
