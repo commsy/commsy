@@ -86,7 +86,9 @@ class RoomRepository extends ServiceEntityRepository
             ->where('r.contextId = :portalId')
             ->andWhere('r.deletionDate IS NULL')
             ->andWhere('r.deleter IS NULL')
+            ->andWhere('r.type != :privateRoomType')
             ->setParameter('portalId', $portalId)
+            ->setParameter('privateRoomType', 'privateroom')
             ->getQuery()
             ->getSingleScalarResult();
     }

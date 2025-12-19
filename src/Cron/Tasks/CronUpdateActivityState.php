@@ -50,7 +50,7 @@ class CronUpdateActivityState implements CronTaskInterface
         $this->messageBus->dispatch(new AccountActivityStateTransitions($ids));
 
         // Workspaces
-        $roomActivityObjectIds = $this->roomRepository->findAllIds(['grouproom', 'userroom']);
+        $roomActivityObjectIds = $this->roomRepository->findAllIds(['grouproom', 'userroom', 'privateroom']);
 
         $ids = [];
         foreach ($roomActivityObjectIds as $roomActivityObjectId) {
