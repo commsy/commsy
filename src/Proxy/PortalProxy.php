@@ -302,6 +302,18 @@ class PortalProxy
         $this->portal->getExtras()['HIDE_MAIL_BY_DEFAULT'] = (true === $enabled) ? 1 : 0;
     }
 
+    public function getContactModeratorList(): cs_list
+    {
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->resetLimits();
+        $userManager->setContextLimit($this->getItemID());
+        $userManager->setContactModeratorLimit();
+        $userManager->select();
+
+        /* @var cs_list $moderators */
+        return $userManager->get();
+    }
+
     public function getModeratorList(): cs_list
     {
         $userManager = $this->legacyEnvironment->getUserManager();

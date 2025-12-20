@@ -325,10 +325,7 @@ class cs_privateroom_manager extends cs_room2_manager
         }
     }
 
-    /**
-     * @return array|cs_community_item|cs_grouproom_item|cs_portal_item|cs_privateroom_item|cs_project_item|cs_server_item|cs_userroom_item|mixed|object|null
-     */
-    public function getRelatedOwnRoomForUser(cs_user_item $user_item, int $context_id)
+    public function getRelatedOwnRoomForUser(cs_user_item $user_item, int $context_id): cs_privateroom_item|null
     {
         if (!empty($user_item)) {
             if (isset($this->roomArrayCache[$user_item->getItemID()])
