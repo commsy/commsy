@@ -814,7 +814,6 @@ class misc_text_converter
 
     public function encode($mode, $value)
     {
-        $retour = '';
         if (!empty($value)) {
             if (is_array($value)) {    // nicht in eine if-Anweisung, sonst
                 if (count($value) > 0) {  // werden leere Arrays an die _text_encode weitergegeben
@@ -830,10 +829,6 @@ class misc_text_converter
 
     private function _array_encode($array, $mode)
     {
-        if (FROM_FORM == $mode) {
-            // security KFC
-            $array = $this->_array_encode_fck_security($array);
-        }
         $retour_array = [];
         foreach ($array as $key => $value) {
             if (is_array($value)) {    // nicht in eine if-Anweisung, sonst
@@ -846,58 +841,6 @@ class misc_text_converter
         }
 
         return $retour_array;
-    }
-
-    // security KFC
-    private function _array_encode_fck_security($array)
-    {
-        $retour = [];
-        $fck_array = [];
-        foreach ($array as $key => $value) {
-            if (is_string($value)
-                and strstr($value, '<!-- KFC TEXT')
-                and !stristr((string)$key, '_fck_hidden')
-            ) {
-                $fck_array[$key] = $value;
-            } else {
-                $retour[$key] = $value;
-            }
-        }
-        if (!empty($fck_array)) {
-            foreach ($fck_array as $key => $value) {
-                if (isset($retour[$key . '_fck_hidden'])) {
-                    $values = [];
-                    preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u', $value, $values);
-                    if (!empty($values[1])) {
-                        $hash = $values[1];
-                        $temp_text = str_replace('<!-- KFC TEXT ' . $hash . ' -->', '', $value);
-
-                        // html bug of fckeditor
-                        $temp_text = str_replace('<br type="_moz" />', '<br />', $temp_text);
-                        // ist dies das unmotivierte br ??? cs_view.php Zeile 283
-
-                        $hidden_value = str_replace('COMMSY_AMPERSEND', '&', (string)$retour[$key . '_fck_hidden']);
-                        $hidden_value = str_replace('COMMSY_QUOT', '"', $hidden_value);
-
-                        $hidden_values = [];
-                        preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u', $hidden_value, $hidden_values);
-                        if (!empty($hidden_values[1])) {
-                            $hidden_hash = $hidden_values[1];
-                            $hidden_value = str_replace('<!-- KFC TEXT ' . $hidden_hash . ' -->', '', $hidden_value);
-                        }
-
-                        $new_hash = getSecurityHash($temp_text);
-                        $retour[$key] = '<!-- KFC TEXT ' . $new_hash . ' -->' . $temp_text . '<!-- KFC TEXT ' . $new_hash . ' -->';
-                    } else {
-                        $retour[$key] = $value;
-                    }
-                } else {
-                    $retour[$key] = $value;
-                }
-            }
-        }
-
-        return $retour;
     }
 
     private function _text_encode($text, $mode)
@@ -918,8 +861,6 @@ class misc_text_converter
                 return $this->_text_php2db($text);
             case AS_FILE:
                 return $this->_text_php2file($text);
-            case FROM_FORM:
-                return $this->_text_form2php($text);
             case FROM_FILE:
                 return $this->_text_file2php($text);
             case FROM_GET:
@@ -980,68 +921,6 @@ class misc_text_converter
         $text = str_replace('&gt;', '>', $text);
 
         return $text;
-    }
-
-    private function _text_form2php($text)
-    {
-        // Fix up line feed characters from different clients (Windows, Mac => Unix)
-        $text = mb_ereg_replace('~\r\n?~u', "\n", (string)$text);
-        $text = trim($text);
-
-        // clean text from word
-        $text = $this->cleanTextFromWord($text);
-
-        return $text;
-    }
-
-    public function cleanTextFromWord($value, $force = false)
-    {
-        $retour = $value;
-        if ($force
-            or stristr((string)$value, '<w:WordDocument>')
-            or stristr((string)$value, 'class="Mso')
-        ) {
-            $retour = str_replace('<o:p></o:p>', '', (string)$retour);
-            $retour = mb_eregi_replace(' class="[A-Za-z0-9-]*"', '', $retour);
-            $retour = mb_eregi_replace(' lang="[A-Za-z0-9-]*"', '', $retour);
-            $retour = mb_eregi_replace('<[/]{0,1}u[0-9]{1}:[^>]*>', '', $retour);
-            $retour = mb_eregi_replace('<[/]{0,1}st1:[^>]*>', '', $retour);
-            $retour = mb_eregi_replace('<[/]{0,1}o:[^>]*>', '', $retour);
-            $retour = mb_eregi_replace('<[/]{0,1}v:[^>]*>', '', $retour);
-            $retour = mb_eregi_replace('<[/]{0,1}meta[^>]*>', '', $retour);
-            $retour = mb_eregi_replace('<[/]{0,1}link[^>]*>', '', $retour);
-            $retour = mb_eregi_replace('<!--[{}A-Za-z0-9 \[\]\!&]*-->', '', $retour);
-
-            // ms word if - statements
-            while (stristr($retour, '<![endif]-->')) {
-                $pos1 = strpos($retour, '<!--[');
-                $pos2 = strpos($retour, '<![endif]-->');
-                $len = (int)($pos2 - $pos1) + strlen('<![endif]-->');
-                $sub = substr($retour, $pos1, $len);
-                $retour = str_replace($sub, '', $retour);
-            }
-
-            // ms word style definitions
-            $retour = str_replace(' style=""', '', $retour);
-            $retour = mb_eregi_replace(' style="[^"]*"', '', $retour);
-            while (stristr($retour, '</style>') and stristr($retour, '<style')) {
-                $pos1 = strpos($retour, '<style');
-                $pos2 = strpos($retour, '</style>');
-                $len = (int)($pos2 - $pos1) + strlen('</style>');
-                $sub = substr($retour, $pos1, $len);
-                $retour = str_replace($sub, '', $retour);
-            }
-
-            // HTML-tags
-            $retour = mb_eregi_replace('<[/]{0,1}font[^>]*>', '', $retour);
-            $retour = mb_eregi_replace('<[/]{0,1}span>', '', $retour);
-            $retour = str_replace('<p></p>', '', $retour);
-            $retour = str_replace('<blink></blink>', '', $retour);
-
-            $retour = trim($retour);
-        }
-
-        return $retour;
     }
 
     public function convertPercent($text, $empty = true, $urlencode = false)
@@ -1230,22 +1109,6 @@ class misc_text_converter
     public function sanitizeFullHTML($text)
     {
         return $this->_FullHTMLPurifier->purify($text);
-    }
-
-    public function emphasizeFilename($text)
-    {
-        // search (with yellow background)
-        $text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', (string)$text);
-
-        // search (with green background)
-        $text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
-
-        // search
-        // maybe with yellow or orange background ???
-        $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~uU', '<span style="font-style:italic;">$1</span>', $text);
-        // $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span class="searched_text">$1</span>', $text);
-
-        return $text;
     }
 
     /*

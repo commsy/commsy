@@ -92,7 +92,6 @@ define('AS_FILE', 6);
 define('AS_MAIL', 7);
 define('AS_RSS', 8);
 define('NONE', 10);
-define('FROM_FORM', 11);
 define('FROM_DB', 12);
 define('FROM_FILE', 13);
 define('FROM_GET', 14);
