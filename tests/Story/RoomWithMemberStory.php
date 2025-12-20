@@ -13,19 +13,21 @@
 
 namespace Tests\Story;
 
-use Tests\Factory\RoomFactory;
+use Tests\Factory\RoomUserFactory;
 use Zenstruck\Foundry\Story;
 
-final class RoomStory extends Story
+final class RoomWithMemberStory extends Story
 {
     public function build(): void
     {
-        AccountStory::load();
+        RoomStory::load();
 
-        $account = AccountStory::get('account');
+        $this->addState('room', RoomStory::get('room'));
+        $this->addState('account', AccountStory::get('account'));
 
-        $this->addState('room', RoomFactory::createOne([
-            'contextId' => $account->getContextId(),
+        $this->addState('roomUser', RoomUserFactory::createOne([
+            'account' => $this->getState('account'),
+            'room' => $this->getState('room'),
         ]));
     }
 }
