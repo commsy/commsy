@@ -636,7 +636,7 @@ class cs_user_manager extends cs_manager
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
         $queryBuilder
-            ->select('u.*', 'i.pinned')
+            ->select('u.*', 'i.pinned', 'i.draft')
             ->from($this->addDatabasePrefix($this->_db_table), 'u')
             ->innerJoin('u', 'items', 'i', 'i.item_id = u.item_id')
             ->where('u.item_id = :itemId')
