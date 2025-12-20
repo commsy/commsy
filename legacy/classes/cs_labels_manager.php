@@ -549,7 +549,7 @@ class cs_labels_manager extends cs_manager
         if ($this->_isAvailable()) {
             $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
             $queryBuilder
-                ->select('l.*', 'i.pinned')
+                ->select('l.*', 'i.pinned', 'i.draft')
                 ->from($this->addDatabasePrefix($this->_db_table), 'l')
                 ->innerJoin('l', 'items', 'i', 'i.item_id = l.item_id')
                 ->where('l.type = :type')
@@ -583,7 +583,7 @@ class cs_labels_manager extends cs_manager
 
       $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
       $queryBuilder
-          ->select('l.*', 'i.pinned')
+          ->select('l.*', 'i.pinned', 'i.draft')
           ->from($this->addDatabasePrefix($this->_db_table), 'l')
           ->innerJoin('l', 'items', 'i', 'i.item_id = l.item_id')
           ->where('l.item_id = :itemId')

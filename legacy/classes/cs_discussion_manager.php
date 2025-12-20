@@ -259,7 +259,7 @@ class cs_discussion_manager extends cs_manager
 
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
          $queryBuilder
-             ->select('d.*', 'i.pinned')
+             ->select('d.*', 'i.pinned', 'i.draft')
              ->from($this->addDatabasePrefix($this->_db_table), 'd')
              ->innerJoin('d', 'items', 'i', 'i.item_id = d.item_id')
              ->where('d.item_id = :itemId')
