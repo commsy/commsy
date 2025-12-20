@@ -17,7 +17,6 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use cs_environment;
-use cs_portal_item;
 use cs_user_item;
 use DateTimeImmutable;
 use Symfony\Component\Mime\Address;
@@ -50,8 +49,7 @@ readonly class CronExpireTakeOver implements CronTaskInterface
                 $expiredUser->setImpersonateExpiryDate(null);
                 $expiredUser->save();
 
-                /** @var cs_portal_item $portal */
-                $portal = $expiredUser->getRelatedPortalUserItem()->getContextItem();
+                $portal = $expiredUser->getPortal();
 
                 $subject = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_SUBJECT', $portal->getTitle());
 

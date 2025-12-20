@@ -532,101 +532,6 @@ class cs_portal_item extends cs_guide_item
         unset($manager);
     }
 
-    // #########################################################
-    // statistic functions
-    // #########################################################
-
-    public function getCountUsedAccounts($start, $end)
-    {
-        $retour = 0;
-
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setContextLimit($this->getItemID());
-        $retour = $user_manager->getCountUsedAccounts($start, $end);
-        unset($user_manager);
-
-        return $retour;
-    }
-
-    public function getCountOpenAccounts($start, $end)
-    {
-        $retour = 0;
-
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setContextLimit($this->getItemID());
-        $retour = $user_manager->getCountOpenAccounts($start, $end);
-        unset($user_manager);
-
-        return $retour;
-    }
-
-    public function getCountAllAccounts($start, $end)
-    {
-        $retour = 0;
-
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setContextLimit($this->getItemID());
-        $retour = $user_manager->getCountAllAccounts($start, $end);
-        unset($user_manager);
-
-        return $retour;
-    }
-
-    public function getCountPlugin($plugin, $start, $end)
-    {
-        $retour = 0;
-
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->resetLimits();
-        $user_manager->setContextLimit($this->getItemID());
-        $retour = $user_manager->getCountPlugin($plugin, $start, $end);
-        unset($user_manager);
-
-        return $retour;
-    }
-
-    public function getCountAllTypeRooms($type, $start, $end)
-    {
-        $retour = 0;
-
-        $room_manager = $this->_environment->getRoomManager();
-        $room_manager->resetLimits();
-        $room_manager->setContextLimit($this->getItemID());
-        $retour = $room_manager->getCountAllTypeRooms($type, $start, $end);
-        unset($room_manager);
-
-        return $retour;
-    }
-
-    public function getCountUsedTypeRooms($type, $start, $end)
-    {
-        $retour = 0;
-
-        $room_manager = $this->_environment->getRoomManager();
-        $room_manager->resetLimits();
-        $room_manager->setContextLimit($this->getItemID());
-        $retour = $room_manager->getCountUsedTypeRooms($type, $start, $end);
-        unset($room_manager);
-
-        return $retour;
-    }
-
-    public function getCountActiveTypeRooms($type, $start, $end)
-    {
-        $retour = 0;
-
-        $room_manager = $this->_environment->getRoomManager();
-        $room_manager->resetLimits();
-        $room_manager->setContextLimit($this->getItemID());
-        $retour = $room_manager->getCountActiveTypeRooms($type, $start, $end);
-        unset($room_manager);
-
-        return $retour;
-    }
-
     /** get UsageInfos
      * this method returns the usage infos.
      *
@@ -908,54 +813,11 @@ class cs_portal_item extends cs_guide_item
         return $list;
     }
 
-    public function getAuthSourceListCASEnabled()
-    {
-        $list = $this->getAuthSourceList();
-        if (!$list->isEmpty()) {
-            $item = $list->getFirst();
-            while ($item) {
-                if (!$item->show() or 'CAS' != mb_strtoupper((string) $item->getSourceType(), 'UTF-8')) {
-                    $list->removeElement($item);
-                }
-                $item = $list->getNext();
-            }
-        }
-
-        return $list;
-    }
-
-    public function getAuthSourceListTypo3WebEnabled()
-    {
-        $list = $this->getAuthSourceList();
-        if (!$list->isEmpty()) {
-            $item = $list->getFirst();
-            while ($item) {
-                if (!$item->show() or 'TYPO3WEB' != mb_strtoupper((string) $item->getSourceType(), 'UTF-8')) {
-                    $list->removeElement($item);
-                }
-                $item = $list->getNext();
-            }
-        }
-
-        return $list;
-    }
-
     public function getAuthSource($item_id)
     {
         $manager = $this->_environment->getAuthSourceManager();
 
         return $manager->getItem($item_id);
-    }
-
-    public function getCountAuthSourceListEnabled()
-    {
-        $retour = 0;
-        $list = $this->getAuthSourceListEnabled();
-        if (isset($list)) {
-            $retour = $list->getcount();
-        }
-
-        return $retour;
     }
 
     public function setShowAuthAtLogin()
@@ -981,23 +843,6 @@ class cs_portal_item extends cs_guide_item
         return $retour;
     }
 
-    public function showAuthAtLogin()
-    {
-        $retour = true;
-        $show = $this->_getShowAuthAtLogin();
-        if (!empty($show)
-             and -1 == $show
-        ) {
-            $retour = false;
-        }
-
-        return $retour;
-    }
-
-    // ##########################################
-    // portal description wellcome text
-    // ##########################################
-
     /** get description array.
      *
      * @return array description text in different languages
@@ -1019,57 +864,6 @@ class cs_portal_item extends cs_guide_item
     public function setDescriptionWellcome1Array($value)
     {
         $this->_addExtra('DESCRIPTION_WELLCOME_1', (array) $value);
-    }
-
-    /** get description of a context
-     * this method returns the description of the context.
-     *
-     * @return string description of a context
-     */
-    public function getDescriptionWellcome1ByLanguage($language)
-    {
-        $retour = null;
-        if ('browser' == $language) {
-            $language = $this->_environment->getSelectedLanguage();
-        }
-        $desc_array = $this->getDescriptionWellcome1Array();
-        if (isset($desc_array[cs_strtoupper($language)])) {
-            $retour = $desc_array[cs_strtoupper($language)];
-        } else {
-            $translator = $this->_environment->getTranslationObject();
-            $retour = $translator->getMessageInLang(mb_strtolower((string) $language, 'UTF-8'), 'HOMEPAGE_PAGE_ROOT_TITLE').' '.$translator->getMessageInLang(mb_strtolower((string) $language, 'UTF-8'), 'COMMON_IN').' ...';
-        }
-
-        return $retour;
-    }
-
-    public function getDescriptionWellcome1()
-    {
-        $retour = '';
-        $retour = $this->getDescriptionWellcome1ByLanguage($this->_environment->getSelectedLanguage());
-        if (!isset($retour)) {
-            $current_user = $this->_environment->getCurrentUserItem();
-            $retour = $this->getDescriptionWellcome1ByLanguage($this->_environment->getUserLanguage());
-        }
-        if (!isset($retour)) {
-            $translator = $this->_environment->getTranslationObject();
-            $retour = $translator->getMessage('HOMEPAGE_PAGE_ROOT_TITLE').' '.$translator->getMessage('COMMON_IN').' ...';
-        }
-
-        return $retour;
-    }
-
-    /** set description of a context
-     * this method sets the description of the context.
-     *
-     * @param string value description of the context
-     * @param string value lanugage of the description
-     */
-    public function setDescriptionWellcome1ByLanguage($value, $language)
-    {
-        $desc_array = $this->getDescriptionWellcome1Array();
-        $desc_array[mb_strtoupper((string) $language, 'UTF-8')] = $value;
-        $this->setDescriptionWellcome1Array($desc_array);
     }
 
     /** get description array.
@@ -1116,45 +910,6 @@ class cs_portal_item extends cs_guide_item
         return $retour;
     }
 
-    public function getDescriptionWellcome2()
-    {
-        $retour = '';
-        $retour = $this->getDescriptionWellcome2ByLanguage($this->_environment->getSelectedLanguage());
-        if (!isset($retour)) {
-            $current_user = $this->_environment->getCurrentUserItem();
-            $retour = $this->getDescriptionWellcome2ByLanguage($this->_environment->getUserLanguage());
-        }
-        if (!isset($retour)) {
-            $retour = '... '.$this->getTitle();
-        }
-
-        return $retour;
-    }
-
-    /** set description of a context
-     * this method sets the description of the context.
-     *
-     * @param string value description of the context
-     * @param string value lanugage of the description
-     */
-    public function setDescriptionWellcome2ByLanguage($value, $language)
-    {
-        $desc_array = $this->getDescriptionWellcome2Array();
-        $desc_array[mb_strtoupper((string) $language, 'UTF-8')] = $value;
-        $this->setDescriptionWellcome2Array($desc_array);
-    }
-
-    public function showAllwaysPrivateRoomLink()
-    {
-        $retour = true;
-        $value = $this->_getShowPrivateRoomLink();
-        if (-1 == $value) {
-            $retour = false;
-        }
-
-        return $retour;
-    }
-
     private function _getShowPrivateRoomLink()
     {
         $retour = 1;
@@ -1169,20 +924,6 @@ class cs_portal_item extends cs_guide_item
     {
         $this->_setExtra('SHOW_PRIVATE_ROOM_LINK', (int) $value);
     }
-
-    public function setShowAllwaysPrivateRoomLink()
-    {
-        $this->_setShowPrivateRoomLink(1);
-    }
-
-    public function unsetShowAllwaysPrivateRoomLink()
-    {
-        $this->_setShowPrivateRoomLink(-1);
-    }
-
-    // ###########################################
-    // count rooms
-    // ###########################################
 
     /** get count project rooms in extras.
      *
@@ -1205,30 +946,6 @@ class cs_portal_item extends cs_guide_item
     private function _setCountProjectRoomsExtra($value)
     {
         $this->_addExtra('COUNT_ROOM_PROJECT', (int) $value);
-    }
-
-    /** increase count project rooms in extras.
-     *
-     * @param bool save portal item? default = false
-     */
-    public function increaseCountProjectRoomsExtra($save = false)
-    {
-        $this->_setCountProjectRoomsExtra((int) ($this->_getCountProjectRoomsExtra() + 1));
-        if ($save) {
-            $this->save();
-        }
-    }
-
-    /** decrease count project rooms in extras.
-     *
-     * @param bool save portal item? default = false
-     */
-    public function decreaseCountProjectRoomsExtra($save = false)
-    {
-        $this->_setCountProjectRoomsExtra((int) ($this->_getCountProjectRoomsExtra() - 1));
-        if ($save) {
-            $this->save();
-        }
     }
 
     /** get count community rooms in extras.
@@ -1254,30 +971,6 @@ class cs_portal_item extends cs_guide_item
         $this->_addExtra('COUNT_ROOM_COMMUNITY', (int) $value);
     }
 
-    /** increase count community rooms in extras.
-     *
-     * @param bool save portal item? default = false
-     */
-    public function increaseCountCommunityRoomsExtra($save = false)
-    {
-        $this->_setCountCommunityRoomsExtra((int) ($this->_getCountCommunityRoomsExtra() + 1));
-        if ($save) {
-            $this->save();
-        }
-    }
-
-    /** decrease count community rooms in extras.
-     *
-     * @param bool save portal item? default = false
-     */
-    public function decreaseCountCommunityRoomsExtra($save = false)
-    {
-        $this->_setCountCommunityRoomsExtra((int) ($this->_getCountCommunityRoomsExtra() - 1));
-        if ($save) {
-            $this->save();
-        }
-    }
-
     /** get count group rooms in extras.
      *
      * @return int count group rooms
@@ -1301,30 +994,6 @@ class cs_portal_item extends cs_guide_item
         $this->_addExtra('COUNT_ROOM_GROUP', (int) $value);
     }
 
-    /** increase count group rooms in extras.
-     *
-     * @param bool save portal item? default = false
-     */
-    public function increaseCountGroupRoomsExtra($save = false)
-    {
-        $this->_setCountGroupRoomsExtra((int) ($this->_getCountGroupRoomsExtra() + 1));
-        if ($save) {
-            $this->save();
-        }
-    }
-
-    /** decrease count group rooms in extras.
-     *
-     * @param bool save portal item? default = false
-     */
-    public function decreaseCountGroupRoomsExtra($save = false)
-    {
-        $this->_setCountGroupRoomsExtra((int) ($this->_getCountGroupRoomsExtra() - 1));
-        if ($save) {
-            $this->save();
-        }
-    }
-
     /** get count private rooms in extras.
      *
      * @return int count private rooms
@@ -1346,78 +1015,6 @@ class cs_portal_item extends cs_guide_item
     private function _setCountPrivateRoomsExtra($value)
     {
         $this->_addExtra('COUNT_ROOM_PRIVATE', (int) $value);
-    }
-
-    /** increase count private rooms in extras.
-     *
-     * @param bool save portal item? default = false
-     */
-    public function increaseCountPrivateRoomsExtra($save = false)
-    {
-        $this->_setCountPrivateRoomsExtra((int) ($this->_getCountPrivateRoomsExtra() + 1));
-        if ($save) {
-            $this->save();
-        }
-    }
-
-    /** decrease count private rooms in extras.
-     *
-     * @param bool save portal item? default = false
-     */
-    public function decreaseCountPrivateRoomsExtra($save = false)
-    {
-        $this->_setCountPrivateRoomsExtra((int) ($this->_getCountPrivateRoomsExtra() - 1));
-        if ($save) {
-            $this->save();
-        }
-    }
-
-    /** get count project rooms from manager.
-     *
-     * @return int count project rooms
-     */
-    private function _getCountProjectRoomsManager()
-    {
-        if (!isset($this->_project_list_count)) {
-            $manager = $this->_environment->getProjectManager();
-            $manager->setContextLimit($this->getItemID());
-            $this->_project_list_count = $manager->getCountAll();
-            unset($manager);
-        }
-
-        return $this->_project_list_count;
-    }
-
-    /** get count community rooms from manager.
-     *
-     * @return int count community rooms
-     */
-    private function _getCountCommunityRoomsManager()
-    {
-        if (!isset($this->_community_list_count)) {
-            $manager = $this->_environment->getCommunityManager();
-            $manager->setContextLimit($this->getItemID());
-            $this->_community_list_count = $manager->getCountAll();
-            unset($manager);
-        }
-
-        return $this->_community_list_count;
-    }
-
-    /** get count private rooms from manager.
-     *
-     * @return int count private rooms
-     */
-    private function _getCountPrivateRoomsManager()
-    {
-        if (!isset($this->_private_list_count)) {
-            $manager = $this->_environment->getPrivateRoomManager();
-            $manager->setContextLimit($this->getItemID());
-            $this->_private_list_count = $manager->getCountAll();
-            unset($manager);
-        }
-
-        return $this->_private_list_count;
     }
 
     private function _getCountRoomRedundancy()
@@ -1565,15 +1162,6 @@ class cs_portal_item extends cs_guide_item
         }
 
         return $retour;
-    }
-
-    public function isTemporaryLockActivated()
-    {
-        if (1 == $this->getTemporaryLock()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /** set wordpress url.
