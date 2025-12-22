@@ -734,16 +734,9 @@ class cs_environment
         }
     }
 
-    /** get boolean, if you are in the community room or not.
-     *
-     * @return boolean, true  = you are in the community room
-     *                  false = you are not in the community room
-     */
-    public function inCommunityRoom()
+    public function inCommunityRoom(): bool
     {
-        $context_item = $this->getCurrentContextItem();
-
-        return $context_item->isCommunityRoom();
+        return $this->getCurrentContextItem()->isCommunityRoom();
     }
 
     public function inPrivateRoom(): bool
@@ -758,64 +751,28 @@ class cs_environment
         return $context_item->isOpenForGuests();
     }
 
-    /** get boolean, if you are in a group room or not.
-     *
-     * @return boolean, true  = you are in a group room
-     *                  false = you are not in a group room
-     */
-    public function inGroupRoom()
+    public function inGroupRoom(): bool
     {
-        $context_item = $this->getCurrentContextItem();
-
-        return $context_item->isGroupRoom();
+        return $this->getCurrentContextItem()->isGroupRoom();
+    }
+    public function inUserroom(): bool
+    {
+        return $this->getCurrentContextItem()->isUserroom();
     }
 
-    /** get boolean, if you are in a user room or not.
-     *
-     * @return boolean, true  = you are in a user room
-     *                  false = you are not in a user room
-     */
-    public function inUserroom()
+    public function inProjectRoom(): bool
     {
-        $context_item = $this->getCurrentContextItem();
-
-        return $context_item->isUserroom();
+        return $this->getCurrentContextItem()->isProjectRoom();
     }
 
-    /** get boolean, if you are in a project room or not.
-     *
-     * @return boolean, true  = you are in a project room
-     *                  false = you are not in a project room
-     */
-    public function inProjectRoom()
+    public function inPortal(): bool
     {
-        $context_item = $this->getCurrentContextItem();
-
-        return $context_item->isProjectRoom();
+        return $this->getCurrentContextItem()->isPortal();
     }
 
-    /** get boolean, if you are in a portal or not.
-     *
-     * @return boolean, true  = you are in a portal
-     *                  false = you are not in a portal
-     */
-    public function inPortal()
+    public function inServer(): bool
     {
-        $context_item = $this->getCurrentContextItem();
-
-        return $context_item->isPortal();
-    }
-
-    /** get boolean, if you are in a server or not.
-     *
-     * @return boolean, true  = you are in a server
-     *                  false = you are not in a server
-     */
-    public function inServer()
-    {
-        $context_item = $this->getCurrentContextItem();
-
-        return $context_item->isServer();
+        return $this->getCurrentContextItem()->isServer();
     }
 
     /** get Instance of the translation object
@@ -899,26 +856,14 @@ class cs_environment
         return 'de';
     }
 
-    public function getRootUserItem()
+    public function getRootUserItem(): cs_user_item
     {
-        $user_manager = $this->getUserManager();
-
-        return $user_manager->getRootUser();
+        return $this->getUserManager()->getRootUser();
     }
 
-    public function getRootUserItemID()
+    public function getRootUserItemID(): int
     {
-        $retour = null;
-        $root_user = $this->getRootUserItem();
-        if (isset($root_user)) {
-            $item_id = $root_user->getItemID();
-            if (!empty($item_id)) {
-                $retour = $item_id;
-            }
-            unset($root_user);
-        }
-
-        return $retour;
+        return $this->getRootUserItem()->getItemID();
     }
 
     public function getDBConnector(): db_mysql_connector
@@ -954,21 +899,6 @@ class cs_environment
         }
 
         return $this->_misc_text_converter;
-    }
-
-    public function changeContextToPrivateRoom($contextId = null)
-    {
-        $currentUser = $this->getCurrentUserItem();
-        $privateRoomItem = $currentUser->getOwnRoom();
-        $privateRoomContextID = $privateRoomItem->getItemID();
-
-        $contextIdToSet = $contextId ?: $privateRoomContextID;
-
-        // set new context information and reset the loaded manager
-        $this->setCurrentContextID($contextIdToSet);
-        $this->setCurrentContextItem($privateRoomItem);
-        $this->setCurrentUserItem($currentUser->getRelatedPrivateRoomUserItem());
-        $this->unsetAllInstancesExceptTranslator();
     }
 
     public function getSymfonyContainer(): ContainerInterface
