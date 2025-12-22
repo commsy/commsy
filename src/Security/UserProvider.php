@@ -15,6 +15,8 @@ namespace App\Security;
 
 use App\Entity\Account;
 use App\Entity\AuthSource;
+use App\Entity\Portal;
+use App\Repository\PortalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -27,7 +29,8 @@ class UserProvider implements UserProviderInterface
 {
     public function __construct(
         private readonly RequestStack $requestStack,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly PortalRepository $portalRepository
     ) {
     }
 
@@ -40,21 +43,26 @@ class UserProvider implements UserProviderInterface
      *
      * @throws UserNotFoundException if the user is not found
      */
-    public function loadUserByIdentifier($username): Account
+    public function loadUserByIdentifier($identifier): Account
     {
+        if ($identifier === 'root') {
+            return $this->entityManager->getRepository(Account::class)
+                ->findOneBy(['username' => 'root', 'authSource' => 100]);
+        }
+
         // Load a User object from your data source or throw UsernameNotFoundException.
         // The $username argument may not actually be a username:
         // it is whatever value is being returned by the getUsername()
         // method in your User class.
         $account = $this->loadUser(
-            $username,
-            $this->extractContexIdFromRequest(),
+            $identifier,
+            $this->extractPortalIdFromRequest(),
             $this->extractAuthSourceIdFromRequest()
         );
         if (null === $account) {
             $account = $this->loadUser(
-                $username,
-                $this->extractContexIdFromRequest('takeover_context'),
+                $identifier,
+                $this->extractPortalIdFromRequest('takeover_context'),
                 $this->extractAuthSourceIdFromRequest('takeover_authSourceId')
             );
         }
@@ -85,17 +93,22 @@ class UserProvider implements UserProviderInterface
             throw new UnsupportedUserException(sprintf('Invalid user class "%s".', $user::class));
         }
 
+        if ($user->getUsername() === 'root') {
+            return $this->entityManager->getRepository(Account::class)
+                ->findOneBy(['username' => 'root', 'authSource' => 100]);
+        }
+
         // Return a User object after making sure its data is "fresh".
         // Or throw a UsernameNotFoundException if the user no longer exists.
         $account = $this->loadUser(
             $user->getUsername(),
-            $this->extractContexIdFromRequest(),
+            $this->extractPortalIdFromRequest(),
             $this->extractAuthSourceIdFromRequest()
         );
         if (null === $account) {
             $account = $this->loadUser(
                 $user->getUsername(),
-                $this->extractContexIdFromRequest('takeover_context'),
+                $this->extractPortalIdFromRequest('takeover_context'),
                 $this->extractAuthSourceIdFromRequest('takeover_authSourceId')
             );
         }
@@ -115,13 +128,13 @@ class UserProvider implements UserProviderInterface
         return Account::class === $class;
     }
 
-    private function loadUser(string $username, int $contextId, int $authSourceId): ?Account
+    private function loadUser(string $username, Portal $portal, int $authSourceId): ?Account
     {
         try {
             $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
 
             return $this->entityManager->getRepository(Account::class)
-                ->findOneByCredentials($username, $contextId, $authSource);
+                ->findOneByCredentials($username, $portal, $authSource);
         } catch (NonUniqueResultException) {
         }
 
@@ -129,9 +142,9 @@ class UserProvider implements UserProviderInterface
     }
 
     /**
-     * Extracts context id from the request.
+     * Extracts portal from the request.
      */
-    private function extractContexIdFromRequest(string $key = 'context'): int
+    private function extractPortalIdFromRequest(string $key = 'context'): Portal
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
         if ($currentRequest) {
@@ -139,7 +152,7 @@ class UserProvider implements UserProviderInterface
             $contextId = $session->get($key);
 
             if (null !== $contextId) {
-                return $contextId;
+                return $this->portalRepository->find($contextId);
             }
         }
 

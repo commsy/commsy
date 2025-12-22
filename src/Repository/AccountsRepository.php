@@ -34,27 +34,27 @@ class AccountsRepository extends ServiceEntityRepository
      * IMPORTANT: DO NOT DELETE!
      * This is used by the UniqueEntity annotation in App\Entity\Account.
      *
-     * @param array $fields associative array of account credentials with keys: `username`, `contextId`, `authSource`
+     * @param array $fields associative array of account credentials with keys: `username`, `portal`, `authSource`
      *
      * @throws NonUniqueResultException
      */
     public function findOneByCredentialsArray(array $fields): ?Account
     {
-        return $this->findOneByCredentials($fields['username'], $fields['contextId'], $fields['authSource']);
+        return $this->findOneByCredentials($fields['username'], $fields['portal'], $fields['authSource']);
     }
 
     /**
      * @throws NonUniqueResultException
      */
-    public function findOneByCredentials(string $username, int $context, AuthSource $authSource): ?Account
+    public function findOneByCredentials(string $username, Portal $portal, AuthSource $authSource): ?Account
     {
         return $this->createQueryBuilder('a')
             ->where('a.username = :username')
             ->andWhere('a.authSource = :authSource')
-            ->andWhere('a.contextId = :contextId')
+            ->andWhere('a.portal = :portal')
             ->setParameters(new ArrayCollection([
                 new Parameter('username', $username),
-                new Parameter('contextId', $context),
+                new Parameter('portal', $portal),
                 new Parameter('authSource', $authSource),
             ]))
             ->getQuery()
@@ -65,10 +65,10 @@ class AccountsRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->where('a.email = :email')
-            ->andWhere('a.contextId = :contextId')
+            ->andWhere('a.portal = :portalId')
             ->setParameters(new ArrayCollection([
                 new Parameter('email', $email),
-                new Parameter('contextId', $portalId),
+                new Parameter('portalId', $portalId),
             ]))
             ->getQuery()
             ->getResult();
@@ -98,9 +98,9 @@ class AccountsRepository extends ServiceEntityRepository
     public function countByPortal()
     {
         return $this->createQueryBuilder('a')
-            ->groupBy('a.contextId')
+            ->groupBy('a.portal')
             ->select('COUNT(a) as count', 'p as portal')
-            ->innerJoin(Portal::class, 'p', Join::WITH, 'a.contextId = p.id')
+            ->innerJoin(Portal::class, 'p', Join::WITH, 'a.portal = p.id')
             ->where('p.deleter IS NULL')
             ->andWhere('p.deletionDate IS NULL')
             ->getQuery()

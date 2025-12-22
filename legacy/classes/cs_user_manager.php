@@ -741,19 +741,12 @@ class cs_user_manager extends cs_manager
         return !$itemsList ? [] : $itemsList->to_array();
     }
 
-    public function getRootUser()
+    public function getRootUser(): cs_user_item
     {
         if (!isset($this->_root_user)) {
             $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user') . ' WHERE ' . $this->addDatabasePrefix('user') . ".user_id = 'root' AND context_id = '" . encode(AS_DB, $this->_environment->getServerID()) . "'";
             $result = $this->_db_connector->performQuery($query);
-            if (!isset($result)) {
-                trigger_error('Problems selecting one user item.', E_USER_WARNING);
-            } elseif (!empty($result[0])) {
-                $this->_root_user = $this->_buildItem($result[0]);
-                unset($result);
-            } else {
-                trigger_error('can not get root user object - ' . __LINE__ . ' - ' . __FILE__, E_USER_WARNING);
-            }
+            $this->_root_user = $this->_buildItem($result[0]);
         }
 
         return $this->_root_user;

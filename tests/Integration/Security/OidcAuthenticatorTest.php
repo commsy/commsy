@@ -32,7 +32,7 @@ class OidcAuthenticatorTest extends KernelTestCase
         ]);
         $account = AccountFactory::createOne([
             'username' => 'identifier',
-            'contextId' => $portal->getId(),
+            'portal' => $portal,
             'authSource' => $oidcSource,
         ]);
 
@@ -92,7 +92,7 @@ class OidcAuthenticatorTest extends KernelTestCase
         $account = AccountFactory::createOne([
             'username' => 'oldidentifier',
             'email' => 'e@mail.de',
-            'contextId' => $portal->getId(),
+            'portal' => $portal,
             'authSource' => $oidcSource,
         ]);
 
@@ -152,7 +152,7 @@ class OidcAuthenticatorTest extends KernelTestCase
         $account = AccountFactory::createOne([
             'username' => 'identifier',
             'email' => 'old@mail.de',
-            'contextId' => $portal->getId(),
+            'portal' => $portal,
             'authSource' => $oidcSource,
         ]);
 

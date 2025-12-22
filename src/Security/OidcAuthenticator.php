@@ -17,6 +17,7 @@ use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceOIDC;
+use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
 use App\Repository\AccountsRepository;
 use App\Security\Oidc\Flow\AuthorizationCodeFlow;
@@ -117,7 +118,7 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                 // Always try to identify an account by username first
                 $identifedByUsername = true;
                 $account = $this->entityManager->getRepository(Account::class)
-                    ->findOneByCredentials($userInfo->getIdentifier(), $context, $oidcAuthSource);
+                    ->findOneByCredentials($userInfo->getIdentifier(), $oidcAuthSource->getPortal(), $oidcAuthSource);
 
                 if (!$account && $oidcAuthSource->getUseEmailAsIdentifier()) {
                     // find by email
@@ -125,7 +126,7 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                     $accountRepository = $this->entityManager->getRepository(Account::class);
                     $account = $accountRepository->findOneBy([
                         'authSource' => $oidcAuthSource,
-                        'contextId' => $context,
+                        'portal' => $context,
                         'email' => $userInfo->getEmail(),
                     ]);
                     $lookupAccount = $account ? clone $account : null;
@@ -136,7 +137,7 @@ class OidcAuthenticator extends AbstractCommsyAuthenticator
                     // if we did not find an existing account, create one
                     $account = new Account();
                     $account->setAuthSource($oidcAuthSource);
-                    $account->setContextId($context);
+                    $account->setPortal($this->entityManager->getReference(Portal::class, $context));
                     $account->setLanguage(AccountLanguage::GERMAN);
                     $account->setUsername($userInfo->getIdentifier());
                     $account->setFirstname($userInfo->getFirstName());

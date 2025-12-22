@@ -124,22 +124,22 @@ class AccountFilterType extends AbstractType
                             ->setParameter('locked', true),
                         // Requesting
                         3 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.portal AND pu.userId = a.username AND pu.authSource = a.authSource')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 1),
                         // User
                         4 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.portal AND pu.userId = a.username AND pu.authSource = a.authSource')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 2),
                         // Moderator
                         5 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.portal AND pu.userId = a.username AND pu.authSource = a.authSource')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 3),
                         // Contact
                         6 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.contextId AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.portal AND pu.userId = a.username AND pu.authSource = a.authSource')
                             ->andWhere($expr->eq('pu.isContact', ':contact'))
                             ->setParameter('contact', true),
                         // Community workspace moderator

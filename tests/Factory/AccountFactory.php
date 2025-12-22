@@ -16,8 +16,6 @@ namespace Tests\Factory;
 use App\Account\AccountLanguage;
 use App\Entity\Account;
 use App\Facade\AccountCreatorFacade;
-use Override;
-use ReflectionProperty;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
@@ -78,11 +76,10 @@ final class AccountFactory extends PersistentObjectFactory
             ->afterInstantiate(function(Account $account): void {
                 $account->setPassword($this->passwordHasher->hashPassword($account, $account->getPlainPassword()));
 
-                $contextIdProperty = new ReflectionProperty(Account::class, 'contextId');
-                if (!$contextIdProperty->isInitialized($account)) {
+                if (!$account->getPortal()) {
                     $portal = PortalFactory::randomOrCreate();
-                    $account->setContextId($portal->getId());
-                    $account->setAuthSource($portal->getauthsources()->first());
+                    $account->setPortal($portal);
+                    $account->setAuthSource($portal->getAuthSources()->first());
                 }
 
                 $this->accountCreatorFacade->persistNewAccount($account);

@@ -17,6 +17,7 @@ use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceLdap;
+use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
 use App\Utils\RequestContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -125,14 +126,14 @@ class LdapAuthenticator extends AbstractCommsyAuthenticator
         $ldapUser = $ldapProvider->loadUserByIdentifier($credentials['email']);
 
         $account = $this->entityManager->getRepository(Account::class)
-            ->findOneByCredentials($credentials['email'], $credentials['context'], $ldapAuthSource);
+            ->findOneByCredentials($credentials['email'], $ldapAuthSource->getPortal(), $ldapAuthSource);
         $extraFields = $ldapUser->getExtraFields();
 
         if (null === $account) {
             // if we did not found an existing account, create one
             $account = new Account();
             $account->setAuthSource($ldapAuthSource);
-            $account->setContextId($credentials['context']);
+            $account->setPortal($this->entityManager->getReference(Portal::class, $credentials['context']));
             $account->setLanguage(AccountLanguage::GERMAN);
             $account->setUsername($ldapUser->getUserIdentifier());
             $account->setFirstname($extraFields['givenName']);
