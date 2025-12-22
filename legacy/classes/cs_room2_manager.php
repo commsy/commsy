@@ -154,18 +154,7 @@ class cs_room2_manager extends cs_context_manager
            $user = $this->_environment->getCurrentUserItem();
        }
 
-       if ($item->isContinuous()) {
-           $continuous = 1;
-       } else {
-           $continuous = 0;
-       }
-
-       if ($item->getPublic()) {
-           $public = $item->getPublic();
-       } else {
-           $public = 0;
-       }
-
+       $continuous = $item->isContinuous() ? 1 : 0;
        $title = str_ireplace("'", '"', (string) $item->getTitle());
 
        $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
