@@ -13,13 +13,17 @@
 
 namespace Tests\Api;
 
+use Tests\Factory\PortalFactory;
 use Tests\Factory\RoomFactory;
+use Tests\Story\RoomStory;
+use Zenstruck\Foundry\Attribute\WithStory;
 
+#[WithStory(RoomStory::class)]
 class RoomTest extends AbstractApiTestCase
 {
     public function testListRoomsFull(): void
     {
-        $room = RoomFactory::createOne();
+        $room = RoomStory::get('room');
 
         $client = $this->createClientWithCredentials();
         $client->request('GET', '/api/v2/rooms', [
@@ -39,7 +43,9 @@ class RoomTest extends AbstractApiTestCase
                     'creationDate' => 'string',
                     'modificationDate' => 'string',
                     'title' => 'string',
-                    'type' => 'string',
+                    'type' => [
+                        'enum' => ['project', 'community', 'grouproom'],
+                    ],
                     'roomDescription' => 'string',
                 ],
             ],
@@ -56,7 +62,7 @@ class RoomTest extends AbstractApiTestCase
 
     public function testListRoomsReadOnly(): void
     {
-        $room = RoomFactory::createOne();
+        $room = RoomStory::get('room');
 
         $client = $this->createClientWithCredentials($this->getReadOnlyToken());
         $client->request('GET', '/api/v2/rooms', [
@@ -76,7 +82,9 @@ class RoomTest extends AbstractApiTestCase
                     'creationDate' => 'string',
                     'modificationDate' => 'string',
                     'title' => 'string',
-                    'type' => 'string',
+                    'type' => [
+                        'enum' => ['project', 'community', 'grouproom'],
+                    ],
                     'roomDescription' => 'string',
                 ],
             ],
@@ -93,7 +101,7 @@ class RoomTest extends AbstractApiTestCase
 
     public function testGetRoomFull(): void
     {
-        $room = RoomFactory::createOne();
+        $room = RoomStory::get('room');
 
         $client = $this->createClientWithCredentials();
         $client->request('GET', "/api/v2/rooms/{$room->getItemId()}", [
@@ -111,7 +119,9 @@ class RoomTest extends AbstractApiTestCase
                 'creationDate' => 'string',
                 'modificationDate' => 'string',
                 'title' => 'string',
-                'type' => 'string',
+                'type' => [
+                    'enum' => ['project', 'community', 'grouproom'],
+                ],
                 'roomDescription' => 'string',
             ],
         ]);
@@ -125,7 +135,7 @@ class RoomTest extends AbstractApiTestCase
 
     public function testGetRoomReadOnly(): void
     {
-        $room = RoomFactory::createOne();
+        $room = RoomStory::get('room');
 
         $client = $this->createClientWithCredentials($this->getReadOnlyToken());
         $client->request('GET', "/api/v2/rooms/{$room->getItemId()}", [
@@ -143,7 +153,9 @@ class RoomTest extends AbstractApiTestCase
                 'creationDate' => 'string',
                 'modificationDate' => 'string',
                 'title' => 'string',
-                'type' => 'string',
+                'type' => [
+                    'enum' => ['project', 'community', 'grouproom'],
+                ],
                 'roomDescription' => 'string',
             ],
         ]);
@@ -159,6 +171,57 @@ class RoomTest extends AbstractApiTestCase
     {
         $client = $this->createClientWithCredentials($this->getReadOnlyToken());
         $client->request('GET', '/api/v2/rooms/123', [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testPrivateRoomIsNotInCollection(): void
+    {
+        $portal = PortalFactory::createOne();
+        RoomFactory::createOne([
+            'type' => 'privateroom',
+            'portal' => $portal,
+        ]);
+
+        $client = $this->createClientWithCredentials();
+        $client->request('GET', '/api/v2/rooms', [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $this->assertResponseIsSuccessful();
+
+        // We do not iterate each result here, but using the schema to check the structure of the response.
+        $this->assertMatchesJsonSchema([
+            'type' => 'array',
+            'items' => [
+                'type' => 'object',
+                'properties' => [
+                    'type' => [
+                        'enum' => ['project', 'community', 'grouproom'],
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function testGetPrivateRoomReturnsNotFound(): void
+    {
+        $portal = PortalFactory::createOne();
+        $privateRoom = RoomFactory::createOne([
+            'type' => 'privateroom',
+            'portal' => $portal,
+        ]);
+
+        $client = $this->createClientWithCredentials();
+        $client->request('GET', "/api/v2/rooms/{$privateRoom->getItemId()}", [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
