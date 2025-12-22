@@ -24,8 +24,9 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class LocalAccountValidator extends ConstraintValidator
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager
+    ) {
     }
 
     public function validate($localAccount, Constraint $constraint): void
@@ -43,10 +44,11 @@ class LocalAccountValidator extends ConstraintValidator
                 'portal' => $localAccount->getContextId(),
                 'enabled' => 1,
             ]);
+
         $localAccount = $this->entityManager->getRepository(Account::class)
             ->findOneByCredentials(
                 $localAccount->getUsername(),
-                $localAccount->getContextId(),
+                $localSource->getPortal(),
                 $localSource
             );
 

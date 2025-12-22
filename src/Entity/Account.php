@@ -25,6 +25,7 @@ use App\Repository\AccountsRepository;
 use App\Validator\Constraints\EmailRegex;
 use ArrayObject;
 use DateTime;
+use Deprecated;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -38,9 +39,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AccountsRepository::class)]
-#[UniqueEntity(fields: ['contextId', 'username', 'authSource'], repositoryMethod: 'findOneByCredentialsArray', errorPath: 'username')]
+#[UniqueEntity(fields: ['portal', 'username', 'authSource'], repositoryMethod: 'findOneByCredentialsArray', errorPath: 'username')]
 #[ORM\Table(name: 'accounts')]
-#[ORM\UniqueConstraint(name: 'accounts_idx', columns: ['context_id', 'username', 'auth_source_id'])]
+#[ORM\UniqueConstraint(name: 'accounts_idx', columns: ['portal_id', 'username', 'auth_source_id'])]
 #[EmailRegex]
 #[ApiResource(
     operations: [
@@ -101,9 +102,10 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     #[Groups(['api', 'api_check_local_login'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\ManyToOne(targetEntity: Portal::class)]
+    #[ORM\JoinColumn(name: 'portal_id', referencedColumnName: 'id', nullable: true)]
     #[Groups(['api_check_local_login'])]
-    private int $contextId;
+    private ?Portal $portal = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\NotBlank]
@@ -236,15 +238,21 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
         return null;
     }
 
-    public function getContextId(): int
+    public function getPortal(): ?Portal
     {
-        return $this->contextId;
+        return $this->portal;
     }
 
-    public function setContextId(int $contextId): static
+    public function setPortal(?Portal $portal): static
     {
-        $this->contextId = $contextId;
+        $this->portal = $portal;
         return $this;
+    }
+
+    #[Deprecated(message: 'Use getPortal() instead.')]
+    public function getContextId(): ?int
+    {
+        return $this->portal?->getId();
     }
 
     public function getUsername(): string

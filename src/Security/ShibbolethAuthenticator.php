@@ -17,6 +17,7 @@ use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\AuthSourceShibboleth;
+use App\Entity\Portal;
 use App\Facade\AccountCreatorFacade;
 use App\Utils\RequestContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -103,6 +104,8 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
             'email' => $request->server->get($authSource->getMappingEmail()),
         ];
 
+
+
         $request->getSession()->set(
             SecurityRequestAttributes::LAST_USERNAME,
             $credentials['email']
@@ -141,13 +144,13 @@ class ShibbolethAuthenticator extends AbstractCommsyAuthenticator
         $session->set('authSourceId', $shibAuthSource->getId());
 
         $account = $this->entityManager->getRepository(Account::class)
-            ->findOneByCredentials($credentials['username'], $credentials['context'], $shibAuthSource);
+            ->findOneByCredentials($credentials['username'], $shibAuthSource->getPortal(), $shibAuthSource);
 
         if (null === $account) {
             // if we did not find an existing account, create one
             $account = new Account();
             $account->setAuthSource($shibAuthSource);
-            $account->setContextId($credentials['context']);
+            $account->setPortal($this->entityManager->getReference(Portal::class, $credentials['context']));
             $account->setLanguage(AccountLanguage::GERMAN);
             $account->setUsername($credentials['username']);
             $account->setFirstname($credentials['firstname']);

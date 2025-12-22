@@ -43,7 +43,7 @@ class AccountsCheckLocalLoginRequestHandler
             if ($localSource) {
                 $account = $this->accountsRepository->findOneByCredentials(
                     $data->getUsername(),
-                    $data->getContextId(),
+                    $localSource->getPortal(),
                     $localSource
                 );
 

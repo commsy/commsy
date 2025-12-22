@@ -133,7 +133,7 @@ class RoomRepository extends ServiceEntityRepository
             ->andWhere('r.deletionDate IS NULL')
             ->andWhere('r.type = :type')
             ->andWhere('a.authSource = :authSource')
-            ->andWhere('a.contextId = :portalId')
+            ->andWhere('a.portal = :portalId')
             ->andWhere('a.username = :username')
             ->orderBy('r.creationDate', 'DESC')
             ->setParameters(new ArrayCollection([

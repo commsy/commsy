@@ -57,7 +57,7 @@ class UniqueUserIdValidator extends ConstraintValidator
             }
 
             $accountRepository = $this->entityManager->getRepository(Account::class);
-            $lookup = $accountRepository->findOneByCredentials($userId, $user->getContextId(), $user->getAuthSource());
+            $lookup = $accountRepository->findOneByCredentials($userId, $user->getPortal(), $user->getAuthSource());
 
             if ($lookup) {
                 $this->context->buildViolation($constraint->message)

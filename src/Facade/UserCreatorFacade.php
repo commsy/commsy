@@ -82,12 +82,11 @@ class UserCreatorFacade
      */
     private function findFreeIdentifier(string $identifier, AuthSource $authSource): string
     {
-        $portalId = $authSource->getPortal()->getId();
         $accountRepository = $this->entityManager->getRepository(Account::class);
         $lookup = $identifier;
         $suffix = 0;
 
-        while ($accountRepository->findOneByCredentials($lookup, $portalId, $authSource)) {
+        while ($accountRepository->findOneByCredentials($lookup, $authSource->getPortal(), $authSource)) {
             ++$suffix;
             $lookup = $identifier.$suffix;
         }
@@ -122,7 +121,7 @@ class UserCreatorFacade
         $account->setFirstname($firstname);
         $account->setLastname($lastname);
         $account->setEmail($email);
-        $account->setContextId($authSource->getPortal()->getId());
+        $account->setPortal($authSource->getPortal());
         $account->setLanguage(AccountLanguage::GERMAN);
         $account->setAuthSource($authSource);
 
