@@ -138,6 +138,7 @@ class RoomManager
     public function createRoom(
         cs_room2_manager $roomManager,
         int $contextID,
+        int $portalId,
         string $title,
         string $description = '',
         ?cs_room_item $roomTemplate = null,
@@ -164,6 +165,7 @@ class RoomManager
         $newRoom->setCreationDate(date('Y-m-d H:i:s'));
 
         $newRoom->setContextID($contextID);
+        $newRoom->setPortalID($portalId);
         $newRoom->open();
 
         $newRoom->setTitle($title);

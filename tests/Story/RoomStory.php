@@ -13,6 +13,7 @@
 
 namespace Tests\Story;
 
+use App\Entity\Account;
 use Tests\Factory\RoomFactory;
 use Zenstruck\Foundry\Story;
 
@@ -22,10 +23,12 @@ final class RoomStory extends Story
     {
         AccountStory::load();
 
+        /** @var Account $account */
         $account = AccountStory::get('account');
 
         $this->addState('room', RoomFactory::createOne([
             'contextId' => $account->getContextId(),
+            'portal' => $account->getPortal(),
         ]));
     }
 }

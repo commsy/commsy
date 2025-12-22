@@ -171,6 +171,7 @@ class cs_room2_manager extends cs_context_manager
        $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                 'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
                 'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
+                'portal_id="'.encode(AS_DB, $item->getPortalID()).'",'.
                 'creator_id="'.encode(AS_DB, $user->getItemID()).'",'.
                 'modifier_id="'.encode(AS_DB, $user->getItemID()).'",'.
                 'creation_date="'.$current_datetime.'",'.

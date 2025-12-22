@@ -535,6 +535,7 @@ class RoomController extends AbstractController
                 $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
                 $legacyRoom->setModificatorItem($currentUser);
                 $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
+                $legacyRoom->setPortalID($legacyEnvironment->getCurrentPortalID());
                 $legacyRoom->open();
 
                 if ('project' == $formData['type_select'] && isset($context['type_sub']['community_rooms'])) {

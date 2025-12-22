@@ -1119,6 +1119,7 @@ class cs_user_manager extends cs_manager
                 $room_item->setCreatorItem($item);
                 $room_item->setCreationDate(getCurrentDateTimeInMySQL());
                 $room_item->setContextID($this->_environment->getCurrentPortalID());
+                $room_item->setPortalID($this->_environment->getCurrentPortalID());
                 $room_item->setShowTitle();
                 $room_item->setStatus(RoomStatus::OPEN->value);
                 $room_item->setTitle('PRIVATE_ROOM');

@@ -37,6 +37,16 @@ class cs_room_item extends cs_context_item
     // methods for linking times (clock pulses) and rooms #
     // #####################################################
 
+    public function getPortalID(): int
+    {
+        return (int) $this->_getValue('portal_id');
+    }
+
+    public function setPortalID(int $portalId): void
+    {
+        $this->_setValue('portal_id', $portalId);
+    }
+
     public function isContinuous(): bool
     {
         return intval($this->_getValue('continuous')) === 1;

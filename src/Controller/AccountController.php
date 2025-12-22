@@ -97,7 +97,7 @@ class AccountController extends AbstractController
 
         $account = new Account();
         $account->setAuthSource($localAuthSource);
-        $account->setContextId($portal->getId());
+        $account->setPortal($portal);
 
         $form = $this->createForm(SignUpFormType::class, $account, [
             'portal' => $portal,
@@ -276,7 +276,7 @@ class AccountController extends AbstractController
                 try {
                     $accountToMerge = $accountRepository->findOneByCredentials(
                         $formData['combineUserId'],
-                        $portal->getId(),
+                        $selectedAuthSource->getPortal(),
                         $selectedAuthSource
                     );
 

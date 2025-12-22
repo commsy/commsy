@@ -75,6 +75,7 @@ final class RoomFactory extends PersistentObjectFactory
                 $conn->insert('room', [
                     'item_id' => $itemId,
                     'context_id' => $room->getContextId(),
+                    'portal_id' => $room->getPortal()->getId(),
                     'title' => $room->getTitle(),
                     'extras' => $room->getExtras() ? serialize($room->getExtras()) : null,
                     'status' => $room->getStatus(),
