@@ -69,6 +69,10 @@ class Room
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
+    #[ORM\ManyToOne(targetEntity: Portal::class)]
+    #[ORM\JoinColumn(name: 'portal_id', referencedColumnName: 'id')]
+    private ?Portal $portal = null;
+
     #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
     #[Groups(['api'])]
@@ -243,6 +247,15 @@ class Room
     public function setContextId(int $contextId): Room
     {
         $this->contextId = $contextId;
+        return $this;
+    }
+    public function getPortal(): ?Portal
+    {
+        return $this->portal;
+    }
+    public function setPortal(?Portal $portal): Room
+    {
+        $this->portal = $portal;
         return $this;
     }
 

@@ -226,6 +226,7 @@ class ProjectController extends AbstractController
                 $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
                 $legacyRoom->setModificatorItem($currentUser);
                 $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
+                $legacyRoom->setPortalID($legacyEnvironment->getCurrentPortalID());
                 $legacyRoom->open();
                 $legacyRoom->setCommunityListByID([$roomId]);
 

@@ -246,6 +246,7 @@ class cs_privateroom_manager extends cs_room2_manager
         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
             'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
             'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
+            'portal_id="'.encode(AS_DB, $item->getContextID()).'",'.
             'creator_id="'.encode(AS_DB, $user->getItemID()).'",'.
             'modifier_id="'.encode(AS_DB, $user->getItemID()).'",'.
             'creation_date="'.$current_datetime.'",'.

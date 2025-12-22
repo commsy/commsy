@@ -131,13 +131,6 @@ class cs_userroom_item extends cs_room_item
     }
 
     // portal
-
-    public function getPortalID(): ?int
-    {
-        // NOTE: the context item of a user room is the hosting project room
-        return $this->getContextItem()->getContextID();
-    }
-
     public function getPortalItem(): ?cs_portal_item
     {
         $portalId = $this->getPortalID();

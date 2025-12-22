@@ -230,7 +230,7 @@ class SecurityController extends AbstractController
                 $localAccount = $managerRegistry->getRepository(Account::class)
                     ->findOneByCredentials(
                         $localAccount->getUsername(),
-                        $localAccount->getContextId(),
+                        $localSource->getPortal(),
                         $localSource
                     );
 
@@ -347,7 +347,7 @@ class SecurityController extends AbstractController
             $localAccount = $managerRegistry->getRepository(Account::class)
                 ->findOneByCredentials(
                     $accountFromToken->getUsername(),
-                    $accountFromToken->getContextId(),
+                    $localSource->getPortal(),
                     $localSource
                 );
 

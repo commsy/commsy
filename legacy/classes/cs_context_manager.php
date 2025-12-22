@@ -590,6 +590,7 @@ class cs_context_manager extends cs_manager
 
        $query .= 'title="'.encode(AS_DB, $item->getTitle()).'",'.
                  "context_id='".encode(AS_DB, $item->getContextID())."',".
+                 "portal_id='".encode(AS_DB, $item->getPortalID())."',".
                  "extras='".encode(AS_DB, serialize($item->getExtraInformation()))."',".
                  "status='".encode(AS_DB, $item->getStatus())."',".
                  "activity='".encode(AS_DB, $activity_points)."',".
@@ -629,6 +630,7 @@ class cs_context_manager extends cs_manager
        $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                 'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
                 'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
+                'portal_id="'.encode(AS_DB, $item->getPortalID()).'",'.
                 'creator_id="'.encode(AS_DB, $user->getItemID()).'",'.
                 'modifier_id="'.encode(AS_DB, $user->getItemID()).'",'.
                 'creation_date="'.$current_datetime.'",'.

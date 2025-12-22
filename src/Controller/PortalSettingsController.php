@@ -1449,8 +1449,8 @@ class PortalSettingsController extends AbstractController
     ): Response {
         $queryBuilder = $accountsRepository->createQueryBuilder('a')
             ->select('a')
-            ->andWhere('a.contextId = :contextId')
-            ->setParameter('contextId', $portal->getId());
+            ->andWhere('a.portal = :portal')
+            ->setParameter('portal', $portal);
 
         $filterForm = $this->createForm(AccountFilterType::class, null, [
             'portalId' => $portal->getId(),

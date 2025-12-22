@@ -66,7 +66,16 @@ class UserroomService
         /**
          * @var $newRoom cs_userroom_item
          */
-        $newRoom = $this->roomManager->createRoom($roomManager, $roomContext, $roomTitle, "", $userroomTemplate, $firstRoomModerator, $firstRoomModerator);
+        $newRoom = $this->roomManager->createRoom(
+            $roomManager,
+            $roomContext,
+            $room->getContextID(),
+            $roomTitle,
+            "",
+            $userroomTemplate,
+            $firstRoomModerator,
+            $firstRoomModerator
+        );
         if (!$newRoom) {
             return null;
         }
