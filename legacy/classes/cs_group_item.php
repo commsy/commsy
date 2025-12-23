@@ -89,6 +89,7 @@ class cs_group_item extends cs_label_item
                 $grouproom_item = $grouproom_manager->getNewItem();
                 $grouproom_item->setTitle(html_entity_decode($this->getTitle()));
                 $grouproom_item->setContextID($portal->getId());
+                $grouproom_item->setPortalID($portal->getId());
                 $grouproom_item->setLinkedProjectRoomItemID($parentRoom->getItemID());
                 $grouproom_item->setCheckNewMemberNever();
                 $language = $parentRoom->getLanguage();
