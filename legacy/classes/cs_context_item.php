@@ -2101,8 +2101,6 @@ class cs_context_item extends cs_item
             $manager = $this->_environment->getUserRoomManager();
         } elseif ($this->isCommunityRoom()) {
             $manager = $this->_environment->getCommunityManager();
-        } elseif ($this->isPortal()) {
-            $manager = $this->_environment->getPortalManager();
         } elseif ($this->isServer()) {
             $manager = $this->_environment->getServerManager();
         }

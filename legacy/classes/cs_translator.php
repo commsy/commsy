@@ -29,11 +29,6 @@ class cs_translator
     private string $_file_path = 'etc/messages/';
 
     /**
-     * flag wether to resolve messagetags or not, set in config.php.
-     */
-    private bool $_dont_resolve_messagetags = false;
-
-    /**
      * containing the selected language.
      */
     private string $_selected_language = '';
@@ -398,24 +393,21 @@ class cs_translator
         if ($this->_issetSessionLanguage()) {
             $language = $this->_getSessionLanguage();
         }
-        if ($this->_dont_resolve_messagetags or 'no_trans' == $language) {
-            $text = $MsgID;
+
+        if (!$this->isLanguageAvailable($language)) {
+            $language = $this->_default_language;
+        }
+
+        // load message.dat
+        if (!isset($this->messageArray[$MsgID][$language])) {
+            $this->_loadMessages($this->_getRubricOutMessageTag($MsgID), $language);
+        }
+
+        if (isset($this->messageArray[$MsgID][$language])) {
+            $text = $this->messageArray[$MsgID][$language];
+            $text = $this->text_replace($text, ...$params);
         } else {
-            if (!$this->isLanguageAvailable($language)) {
-                $language = $this->_default_language;
-            }
-
-            // load message.dat
-            if (!isset($this->messageArray[$MsgID][$language])) {
-                $this->_loadMessages($this->_getRubricOutMessageTag($MsgID), $language);
-            }
-
-            if (isset($this->messageArray[$MsgID][$language])) {
-                $text = $this->messageArray[$MsgID][$language];
-                $text = $this->text_replace($text, ...$params);
-            } else {
-                $text = $MsgID;
-            }
+            $text = $MsgID;
         }
 
         return $text;
@@ -584,14 +576,6 @@ class cs_translator
         }
 
         return $retour;
-    }
-
-    /** dontResolveMessageTags
-     * this methode set the flag to: DONT RESOLVE MESSAGETAGS.
-     */
-    public function dontResolveMessageTags()
-    {
-        $this->_dont_resolve_messagetags = true;
     }
 
     /** setDBConnector

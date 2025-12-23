@@ -13,8 +13,10 @@
 
 namespace App\Cron\Tasks;
 
+use App\Entity\Room;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
+use App\Repository\RoomRepository;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use DateTimeImmutable;
@@ -28,7 +30,8 @@ class CronWorkflow implements CronTaskInterface
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly RouterInterface $router,
-        private readonly Mailer $mailer
+        private readonly Mailer $mailer,
+        private readonly RoomRepository $roomRepository
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -43,9 +46,8 @@ class CronWorkflow implements CronTaskInterface
             $latestMaterialVersionId = $materialManager->getLatestVersionID($resubmissionItemInfo['item_id']);
 
             if (isset($material) && !$material->isDeleted() && ($resubmissionItemInfo['version_id'] == $latestMaterialVersionId)) {
-                $roomManager = $this->legacyEnvironment->getRoomManager();
-                $room = $roomManager->getItem($material->getContextId());
-
+                /** @var Room $room */
+                $room = $this->roomRepository->find($material->getContextId());
                 if ($material->getWorkflowResubmission() && $room->withWorkflowResubmission()) {
                     $emailReceivers = [];
 
@@ -86,7 +88,7 @@ class CronWorkflow implements CronTaskInterface
                     $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $room->getTitle(),
                         $material->getTitle(), $link);
 
-                    $portal = $room->getPortalItem();
+                    $portal = $room->getPortal();
 
                     $this->mailer->sendMultipleRaw(
                         $translator->getMessage(
@@ -111,8 +113,8 @@ class CronWorkflow implements CronTaskInterface
             $latestMaterialVersionId = $materialManager->getLatestVersionID($validityItemInfo['item_id']);
 
             if (isset($material) && !$material->isDeleted() && ($validityItemInfo['item_id'] == $latestMaterialVersionId)) {
-                $roomManager = $this->legacyEnvironment->getRoomManager();
-                $room = $roomManager->getItem($material->getContextId());
+                /** @var Room $room */
+                $room = $this->roomRepository->find($material->getContextId());
 
                 if ($material->getWorkflowValidity() && $material->withWorkflowValidity()) {
                     $emailReceivers = [];
@@ -153,7 +155,7 @@ class CronWorkflow implements CronTaskInterface
                     $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $room->getTitle(),
                         $material->getTitle(), $link);
 
-                    $portal = $room->getPortalItem();
+                    $portal = $room->getPortal();
 
                     $this->mailer->sendMultipleRaw(
                         $translator->getMessage(

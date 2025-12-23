@@ -146,6 +146,11 @@ services:
             $projectDir: '%kernel.project_dir%'
             $serviceContainer: '@service_container'
 
+    cs_environment:
+        class: cs_environment
+        autowire: true
+        public: true
+
     commsy_legacy.category_service:
         alias: App\Utils\CategoryService
 

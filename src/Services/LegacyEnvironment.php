@@ -17,40 +17,35 @@ use cs_environment;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class LegacyEnvironment
+readonly class LegacyEnvironment
 {
-    private ?cs_environment $environment = null;
-
     public function __construct(
-        private readonly string $projectDir,
-        private readonly Container $serviceContainer,
-        private readonly RequestStack $requestStack
+        private string $projectDir,
+        private RequestStack $requestStack,
+        private Container $serviceContainer,
+        private cs_environment $csEnvironment
     ) {
+        $legacyDir = $this->projectDir.'/legacy';
+        set_include_path(get_include_path().PATH_SEPARATOR.$legacyDir);
+
+        include_once 'etc/cs_constants.php';
+        include_once 'functions/misc_functions.php';
+        include_once 'classes/cs_environment.php';
+
+        global $symfonyContainer;
+        $symfonyContainer = $this->serviceContainer;
+
+        // try to find the current room id from the request and set context in legacy environment
+        $contextId = $this->guessContextId();
+        $this->csEnvironment->setCurrentContextID($contextId);
+
+        global $environment;
+        $environment = $this->csEnvironment;
     }
 
     public function getEnvironment(): cs_environment
     {
-        if (null === $this->environment) {
-            $legacyDir = $this->projectDir.'/legacy';
-            set_include_path(get_include_path().PATH_SEPARATOR.$legacyDir);
-
-            include_once 'etc/cs_constants.php';
-            include_once 'functions/misc_functions.php';
-
-            global $symfonyContainer;
-            $symfonyContainer = $this->serviceContainer;
-
-            include_once 'classes/cs_environment.php';
-            global $environment;
-            $environment = new cs_environment();
-            $this->environment = $environment;
-
-            // try to find the current room id from the request and set context in legacy environment
-            $contextId = $this->guessContextId();
-            $this->environment->setCurrentContextID($contextId);
-        }
-
-        return $this->environment;
+        return $this->csEnvironment;
     }
 
     /**
