@@ -14,6 +14,7 @@
 use App\Entity\Portal;
 use App\Helper\LocaleHelper;
 use App\Proxy\PortalProxy;
+use App\Repository\PortalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -47,10 +48,7 @@ class cs_environment
      */
     public $current_context = null;
 
-    /**
-     * @var cs_portal_item portal item
-     */
-    public $_current_portal = null;
+    public ?PortalProxy $currentPortal = null;
 
     public $_current_portal_id = 0;
 
@@ -61,6 +59,11 @@ class cs_environment
     private ?db_mysql_connector $_db_mysql_connector = null;
     private bool $_cache_on = true;
     private ?misc_text_converter $_misc_text_converter = null;
+
+    public function __construct(
+        private PortalRepository $portalRepository
+    ) {
+    }
 
     /**
      * get the current user
@@ -211,23 +214,18 @@ class cs_environment
         return 99;
     }
 
-    /** get portal object
-     * returns the portal object.
-     *
-     * @return cs_portal_item portal item
-     */
-    public function getCurrentPortalItem()
+    public function getCurrentPortalItem(): ?PortalProxy
     {
-        if ($this->_current_portal) {
-            return $this->_current_portal;
+        if ($this->currentPortal) {
+            return $this->currentPortal;
         }
 
         if (empty($this->_current_portal_id)) {
             $contextItem = $this->getCurrentContextItem();
             if ($contextItem->isServer()) {
-                $this->_current_portal = null;
+                $this->currentPortal = null;
             } elseif ($contextItem->isPortal()) {
-                $this->_current_portal = $contextItem;
+                $this->currentPortal = $contextItem;
             } else {
                 $currentPortalId = $contextItem->getContextID();
 
@@ -236,30 +234,24 @@ class cs_environment
                     $currentPortalId = $contextItem->getPortalId();
                 }
 
-                global $symfonyContainer;
-                /** @var EntityManagerInterface $entityManager */
-                $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-                $portal = $entityManager->getRepository(Portal::class)->find($currentPortalId);
+                $portal = $this->portalRepository->find($currentPortalId);
 
                 if ($portal) {
-                    $this->_current_portal = new PortalProxy($portal, $this);
+                    $this->currentPortal = new PortalProxy($portal, $this);
                 }
             }
         } else {
-            global $symfonyContainer;
-            /** @var EntityManagerInterface $entityManager */
-            $entityManager = $symfonyContainer->get('doctrine.orm.entity_manager');
-            $portal = $entityManager->getRepository(Portal::class)->find($this->_current_portal_id);
+            $portal = $this->portalRepository->find($this->_current_portal_id);
 
             if ($portal) {
-                $this->_current_portal = new PortalProxy($portal, $this);
+                $this->currentPortal = new PortalProxy($portal, $this);
             }
         }
 
-        if (isset($this->_current_portal)) {
-            $this->_current_portal_id = $this->_current_portal->getItemID();
+        if (isset($this->currentPortal)) {
+            $this->_current_portal_id = $this->currentPortal->getItemID();
 
-            return $this->_current_portal;
+            return $this->currentPortal;
         }
 
         return null;
@@ -600,12 +592,6 @@ class cs_environment
         return $this->_getInstance('cs_server_manager');
     }
 
-    public function getPortalManager(): cs_portal_manager
-    {
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_getInstance('cs_portal_manager');
-    }
-
     public function getEntryManager(): cs_entry_manager
     {
         /* @noinspection PhpIncompatibleReturnTypeInspection */
@@ -703,8 +689,6 @@ class cs_environment
             return $this->getGroupRoomManager();
         } elseif (cs_userroom_item::ROOM_TYPE_USER == $type) {
             return $this->getUserRoomManager();
-        } elseif (CS_PORTAL_TYPE == $type) {
-            return $this->getPortalManager();
         } elseif (CS_SERVER_TYPE == $type) {
             return $this->getServerManager();
         } elseif (CS_FILE_TYPE == $type) {
@@ -782,14 +766,10 @@ class cs_environment
      */
     public function getTranslationObject()
     {
-        global $dont_resolve_messagetags;
-
         if (!isset($this->instance['translation_object'])) {
             $this->instance['translation_object'] = new cs_translator();
-            if ($dont_resolve_messagetags) {
-                $this->instance['translation_object']->dontResolveMessageTags();
-            }
             $this->instance['translation_object']->setSelectedLanguage($this->getSelectedLanguage());
+
             $context_item = $this->getCurrentContextItem();
             if ($this->inCommunityRoom()) {
                 $this->instance['translation_object']->setContext('community');
@@ -805,8 +785,8 @@ class cs_environment
                 $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
             } elseif ($this->inUserroom()) {
                 $this->instance['translation_object']->setContext(cs_userroom_item::ROOM_TYPE_USER);
-                $portal_item = $context_item->getPortalItem();
-                $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
+                $portal = $this->portalRepository->find($context_item->getContextID());
+                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inPrivateRoom()) {
                 $this->instance['translation_object']->setContext('private');
                 $portal_item = $context_item->getContextItem();

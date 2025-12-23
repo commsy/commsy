@@ -201,8 +201,6 @@ class cs_context_manager extends cs_manager
            $retour = new cs_grouproom_item($this->_environment);
        } elseif (cs_userroom_item::ROOM_TYPE_USER == $type) {
            $retour = new cs_userroom_item($this->_environment);
-       } elseif (CS_PORTAL_TYPE == $type) {
-           $retour = new cs_portal_item($this->_environment);
        } else {
            trigger_error('do not know this type: '.$type, E_USER_WARNING);
        }
@@ -287,11 +285,6 @@ class cs_context_manager extends cs_manager
 
             if (isset($this->_room_type) && !empty($this->_room_type)) {
                 $current_portal = $this->_environment->getCurrentPortalItem();
-                if (!isset($current_portal) && !empty($context_id)) {
-                    $portal_manager = $this->_environment->getPortalManager();
-                    $current_portal = $portal_manager->getItem($context_id);
-                }
-
                 if ('guest' === $user_id && CS_COMMUNITY_TYPE === $this->_room_type) {
                     $queryBuilder->andWhere('c.is_open_for_guests = "1"');
                     $queryBuilder->andWhere('c.type = :roomType');
@@ -317,11 +310,6 @@ class cs_context_manager extends cs_manager
                 }
             } else {
                 $current_portal = $this->_environment->getCurrentPortalItem();
-                if (!isset($current_portal) and !empty($context_id)) {
-                    $portal_manager = $this->_environment->getPortalManager();
-                    $current_portal = $portal_manager->getItem($context_id);
-                }
-
                 if ((isset($current_portal) && !$current_portal->withGroupRoomFunctions()) || !$grouproom) {
                     $queryBuilder->andWhere('c.type != :groupRoomType');
                     $queryBuilder->setParameter('groupRoomType', CS_GROUPROOM_TYPE);
@@ -659,18 +647,10 @@ class cs_context_manager extends cs_manager
        unset($item);
    }
 
-   public function minimizeActivityPoints($quotient)
+   public function minimizeActivityPoints($quotient): void
    {
-       $retour = false;
        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET activity=ROUND(activity/'.encode(AS_DB, $quotient).') WHERE activity > 0;';
-       $result = $this->_db_connector->performQuery($query);
-       if (!isset($result) or !$result) {
-           trigger_error('Problems minimizing activity points.', E_USER_WARNING);
-       } else {
-           $retour = true;
-       }
-
-       return $retour;
+       $this->_db_connector->performQuery($query);
    }
 
     /** delete a project

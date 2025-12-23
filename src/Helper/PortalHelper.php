@@ -18,13 +18,15 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_list;
 use cs_time_item;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PortalHelper
 {
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 

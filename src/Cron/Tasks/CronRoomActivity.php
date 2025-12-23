@@ -25,18 +25,23 @@ class CronRoomActivity implements CronTaskInterface
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly EntityManagerInterface $entityManager
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function run(?DateTimeImmutable $lastRun): void
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        $portalManager = $this->legacyEnvironment->getPortalManager();
-
         $roomManager->minimizeActivityPoints(self::QUOTIENT);
-        $portalManager->minimizeActivityPoints(self::QUOTIENT);
+
+        $this->entityManager->createQuery(
+            'UPDATE App\Entity\Portal p SET p.activity = ROUND(p.activity / :q) WHERE p.activity > 0'
+        )
+            ->setParameter('q', self::QUOTIENT)
+            ->execute();
 
         $portalRepository = $this->entityManager->getRepository(Portal::class);
         $portals = $portalRepository->findActivePortals();
