@@ -592,12 +592,6 @@ class cs_environment
         return $this->_getInstance('cs_server_manager');
     }
 
-    public function getEntryManager(): cs_entry_manager
-    {
-        /* @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->_getInstance('cs_entry_manager');
-    }
-
     /** get instance of a class, INTERNAL
      * returns a single instance of a class. a reference to the returned object must
      * be assigned, otherwise a copy is created.
@@ -711,8 +705,6 @@ class cs_environment
             return $this->getTag2TagManager();
         } elseif (CS_BUZZWORD_TYPE == $type) {
             return $this->getBuzzwordManager();
-        } elseif (CS_ENTRY_TYPE == $type) {
-            return $this->getEntryManager();
         } else {
             throw new LogicException('do not know this type [' . $type . ']');
         }
