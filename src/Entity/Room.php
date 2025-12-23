@@ -235,6 +235,20 @@ class Room
         return $this;
     }
 
+    public function withWorkflowResubmission(): bool
+    {
+        $value = $this->getExtras()['WITHWORKFLOWRESUBMISSION'] ?? 1;
+
+        return $value == 2;
+    }
+
+    public function withWorkflowValidity(): bool
+    {
+        $value = $this->getExtras()['WITHWORKFLOWVALIDITY'] ?? 1;
+
+        return $value == 2;
+    }
+
     public function setItemId(int $id): Room
     {
         $this->itemId = $id;
