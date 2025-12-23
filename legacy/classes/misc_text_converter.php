@@ -750,8 +750,8 @@ class misc_text_converter
                 CS_PRIVATEROOM_TYPE == $type ||
                 CS_GROUPROOM_TYPE == $type ||
                 CS_MYROOM_TYPE == $type ||
-                CS_PROJECT_TYPE == $type ||
-                CS_PORTAL_TYPE == $type/* ||
+                CS_PROJECT_TYPE == $type/* ||
+                CS_PORTAL_TYPE == $type ||
                 $type == CS_SERVER_TYPE*/) {
                 $image_text = ahref_curl($word, 'home', 'index', '', $word);
             } else {
