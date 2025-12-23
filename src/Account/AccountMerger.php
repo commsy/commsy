@@ -165,7 +165,6 @@ class AccountMerger
             CS_ROOM_TYPE,
             CS_SECTION_TYPE,
             CS_TASK_TYPE,
-            CS_PORTAL_TYPE,
             CS_TODO_TYPE,
             CS_TAG_TYPE,
             CS_TAG2TAG_TYPE,
