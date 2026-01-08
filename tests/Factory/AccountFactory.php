@@ -72,7 +72,6 @@ final class AccountFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            ->withoutPersisting()
             ->afterInstantiate(function(Account $account): void {
                 $account->setPassword($this->passwordHasher->hashPassword($account, $account->getPlainPassword()));
 
@@ -81,7 +80,8 @@ final class AccountFactory extends PersistentObjectFactory
                     $account->setPortal($portal);
                     $account->setAuthSource($portal->getAuthSources()->first());
                 }
-
+            })
+            ->afterPersist(function (Account $account): void {
                 $this->accountCreatorFacade->persistNewAccount($account);
             })
         ;

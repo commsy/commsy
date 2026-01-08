@@ -62,7 +62,7 @@ readonly class AccountManager
          * if the legacy environment portal id matches the user context id. We force this behaviour by setting
          * it here explicitly.
          */
-        $this->legacyEnvironment->setCurrentPortalID($account->getContextId());
+        $this->legacyEnvironment->setCurrentPortalID($account->getPortal()->getId());
 
         $portalUser = $this->userService->getPortalUser($lookupAccount ?? $account);
         if ($portalUser) {

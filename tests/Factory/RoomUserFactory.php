@@ -94,6 +94,7 @@ final class RoomUserFactory extends PersistentObjectFactory
                     'creation_date' => $now,
                     'modification_date' => $now,
                     'deletion_date' => null,
+                    'account_id' => $account->getId(),
                     'user_id' => $user->getUserId(),
                     'status' => $user->getStatus(),
                     'is_contact' => (int) $user->getIsContact(),

@@ -13,7 +13,6 @@ use App\Repository\UserRepository;
 use App\Utils\RoomService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Tests\Factory\AccountFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 use Zenstruck\Foundry\Test\Factories;
@@ -49,9 +48,10 @@ final class AccountLifecycleTest extends KernelTestCase
         // Check for a valid portal user
         $userRepository = repository(User::class);
         $portalUser = $userRepository->findOneBy([
-            'room' => $account->getContextId(),
+            'room' => $account->getPortal()->getId(),
             'userId' => $account->getUsername(),
-            'portal' => $account->getContextId(),
+            'portal' => $account->getPortal(),
+            'account' => $account,
         ]);
         assert_persisted($portalUser);
 
@@ -75,6 +75,7 @@ final class AccountLifecycleTest extends KernelTestCase
         self::assertEquals($account->getContextId(), $roomUser->getPortal()->getId());
     }
 
+    #[WithStory(RoomWithMemberStory::class)]
     public function testAccountDeletion(): void
     {
         self::bootKernel();
@@ -104,6 +105,7 @@ final class AccountLifecycleTest extends KernelTestCase
         self::assertEquals($numUsersBefore - 3, $numUsersAfter);
     }
 
+    #[WithStory(RoomWithMemberStory::class)]
     public function testRoomUserDeletion(): void
     {
         self::bootKernel();
