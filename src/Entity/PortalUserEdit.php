@@ -43,8 +43,6 @@ class PortalUserEdit
 
     private $email;
 
-    private $emailChangeAll;
-
     private $icq;
 
     private $msn;
@@ -167,16 +165,6 @@ class PortalUserEdit
     public function setEmail(?string $email): void
     {
         $this->email = $email;
-    }
-
-    public function getEmailChangeAll(): ?bool
-    {
-        return $this->emailChangeAll;
-    }
-
-    public function setEmailChangeAll(?bool $emailChangeAll): void
-    {
-        $this->emailChangeAll = $emailChangeAll;
     }
 
     public function getIcq(): ?string

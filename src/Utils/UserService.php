@@ -266,7 +266,7 @@ class UserService
     public function getPortalUser(Account $account): cs_user_item
     {
         $this->userManager->resetLimits();
-        $this->userManager->setContextLimit($account->getContextId());
+        $this->userManager->setContextLimit($account->getPortal()->getId());
         $this->userManager->setUserIDLimit($account->getUsername());
         $this->userManager->setAuthSourceLimit($account->getAuthSource()->getId());
         $this->userManager->select();
@@ -344,6 +344,11 @@ class UserService
         }
 
         return $user;
+    }
+
+    public function getDoctrineUser(cs_user_item $user): User
+    {
+        return $this->userRepository->find($user->getItemID());
     }
 
     public function getUserInContext(Account $account, int $contextId): ?cs_user_item

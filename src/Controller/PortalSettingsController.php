@@ -1748,10 +1748,12 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        LegacyEnvironment $legacyEnvironment,
+        AccountManager $accountManager,
+        EntityManagerInterface $entityManager,
         int $userId
     ): Response {
         $user = $userService->getUser($userId);
+
         $userEdit = new PortalUserEdit();
         $userEdit->setFirstName($user->getFirstname());
         $userEdit->setLastName($user->getLastName());
@@ -1779,62 +1781,41 @@ class PortalSettingsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var PortalUserEdit $editAccountIndex */
             $editAccountIndex = $form->getData();
-            $user->setFirstname($editAccountIndex->getFirstName());
-            $user->setLastname($editAccountIndex->getLastName());
+
+            $account = $accountManager->getAccountForUser($user);
+
+            $account->setFirstname($editAccountIndex->getFirstname());
+            $account->setLastname($editAccountIndex->getLastname());
+            $account->setEmail($editAccountIndex->getEmail());
+
+            $accountManager->propagateAccountDataToProfiles($account);
+            $entityManager->persist($account);
+            $entityManager->flush();
+
+            // This is important: propagateAccountDataToProfiles will update the portal user, but changes will be
+            // overwritten if not also updated here
+            $user->setFirstname($editAccountIndex->getFirstname());
+            $user->setLastname($editAccountIndex->getLastname());
+            $user->setEmail($editAccountIndex->getEmail());
+
             $user->setTitle($editAccountIndex->getAcademicDegree());
             $user->setBirthday($editAccountIndex->getBirthday());
             $user->setStreet($editAccountIndex->getStreet());
             $user->setZipcode($editAccountIndex->getZip());
             $user->setCity($editAccountIndex->getCity());
-            $user->setOffice($editAccountIndex->getWorkspace());
+
+            if ($workspace = $editAccountIndex->getWorkspace()) {
+                $user->setOffice($workspace);
+            }
+
             $user->setTelephone($editAccountIndex->getTelephone());
             $user->setCellularphone($editAccountIndex->getSecondTelephone());
-            $user->setEmail($editAccountIndex->getEmail());
-
-            if ($editAccountIndex->getEmailChangeAll()) {
-                $relatedUsers = $user->getRelatedUserList();
-                foreach ($relatedUsers as $relatedUser) {
-                    $relatedUser->setEmail($editAccountIndex->getEmail());
-                    $relatedUser->save();
-                }
-            }
             $user->setICQ($editAccountIndex->getIcq());
             $user->setMSN($editAccountIndex->getMsn());
             $user->setSkype($editAccountIndex->getSkype());
             $user->setYahoo($editAccountIndex->getYahoo());
             $user->setHomepage($editAccountIndex->getHomepage());
             $user->setDescription($editAccountIndex->getDescription());
-
-//            if (!empty($editAccountIndex->getPicture())) {
-//                //TODO: Does this piece of code make sense, if we set a new picture anyway?
-//                if ($editAccountIndex->isOverrideExistingPicture()) {
-//                    $disc_manager = $environment->getDiscManager();
-//                    if ($disc_manager->existsFile($user->getPicture())) {
-//                        $disc_manager->unlinkFile($user->getPicture());
-//                    }
-//                    $user->setPicture('');
-//                    if (isset($portal_user_item)) {
-//                        $portal_user_item->setPicture('');
-//                    }
-//                }
-//
-//                $filename = 'cid' . $environment->getCurrentContextID() . '_' . $user_item->getUserID() . '_' . $_FILES['upload']['name'];
-//                $disc_manager = $environment->getDiscManager();
-//                $disc_manager->copyFile($_FILES['upload']['tmp_name'], $filename, true);
-//                $user_item->setPicture($filename);
-//                if (isset($portal_user_item)) {
-//                    if ($disc_manager->copyImageFromRoomToRoom($filename, $portal_user_item->getContextID())) {
-//                        $value_array = explode('_', $filename);
-//                        $old_room_id = $value_array[0];
-//                        $old_room_id = str_replace('cid', '', $old_room_id);
-//                        $value_array[0] = 'cid' . $portal_user_item->getContextID();
-//                        $new_picture_name = implode('_', $value_array);
-//                        $portal_user_item->setPicture($new_picture_name);
-//                    }
-//                }
-//
-//                $user->setPicture($editAccountIndex->getPicture());
-//            }
 
             if ('standard' == $editAccountIndex->getMayCreateContext()) {
                 $user->setIsAllowedToCreateContext(true); // TODO how do we get the pre-set portal value?
