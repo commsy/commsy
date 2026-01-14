@@ -34,7 +34,7 @@ class FixContext extends GeneralCheck
                 LEFT JOIN portal AS c4 ON t.context_id = c4.id
                 LEFT JOIN server AS c5 ON t.context_id = c5.item_id
                 WHERE t.context_id IS NOT NULL
-                AND c1.item_id IS NULL AND c3.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
+                AND c1.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
             ";
             $this->executeSQL($sql, $io);
         }
@@ -47,7 +47,7 @@ class FixContext extends GeneralCheck
             LEFT JOIN portal AS c4 ON f.context_id = c4.id
             LEFT JOIN server AS c5 ON f.context_id = c5.item_id
             WHERE f.context_id IS NOT NULL
-            AND c1.item_id IS NULL AND c3.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
+            AND c1.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
         ';
         $this->executeSQL($sql, $io);
 
@@ -59,7 +59,7 @@ class FixContext extends GeneralCheck
             LEFT JOIN portal AS c4 ON f.context_id = c4.id
             LEFT JOIN server AS c5 ON f.context_id = c5.item_id
             WHERE f.context_id IS NOT NULL
-            AND c1.item_id IS NULL AND c3.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
+            AND c1.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL;
         ';
         $this->executeSQL($sql, $io);
 
