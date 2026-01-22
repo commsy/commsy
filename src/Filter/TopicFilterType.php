@@ -78,7 +78,7 @@ class TopicFilterType extends AbstractType
         $resolver
             ->setDefaults([
                 'csrf_protection' => false,
-                'validation_topics' => ['filtering'], // avoid NotBlank() constraint-related message
+                'validation_groups' => ['filtering'], // avoid NotBlank() constraint-related message
                 'method' => 'get',
             ])
             ->setRequired([
