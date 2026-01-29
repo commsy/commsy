@@ -103,7 +103,7 @@ class cs_user_manager extends cs_manager
 
     public $_sort_order = null;
 
-    public $_root_user = null;
+    public cs_user_item $rootUser;
 
     public $_context_array_limit = null;
 
@@ -743,13 +743,13 @@ class cs_user_manager extends cs_manager
 
     public function getRootUser(): cs_user_item
     {
-        if (!isset($this->_root_user)) {
+        if (!isset($this->rootUser)) {
             $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user') . ' WHERE ' . $this->addDatabasePrefix('user') . ".user_id = 'root' AND context_id = '" . encode(AS_DB, $this->_environment->getServerID()) . "'";
             $result = $this->_db_connector->performQuery($query);
-            $this->_root_user = $this->_buildItem($result[0]);
+            $this->rootUser = $this->_buildItem($result[0]);
         }
 
-        return $this->_root_user;
+        return $this->rootUser;
     }
 
     /** Prepares the db_array for the item.
