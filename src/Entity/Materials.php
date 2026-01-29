@@ -22,14 +22,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Materials.
- */
 #[ORM\Entity(repositoryClass: MaterialsRepository::class)]
 #[ORM\Table(name: 'materials')]
-#[ORM\Index(columns: ['context_id'], name: 'context_id')]
-#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
-#[ORM\Index(columns: ['modifier_id'], name: 'modifier_id')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
+#[ORM\Index(name: 'modifier_id', columns: ['modifier_id'])]
 class Materials
 {
     use EntityDatesTrait;

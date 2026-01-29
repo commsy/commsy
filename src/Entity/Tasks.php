@@ -18,13 +18,10 @@ use App\Utils\EntityDatesTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Tasks.
- */
 #[ORM\Entity(repositoryClass: TasksRepository::class)]
 #[ORM\Table(name: 'tasks')]
-#[ORM\Index(columns: ['context_id'], name: 'context_id')]
-#[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 class Tasks
 {
     use EntityDatesTrait;
@@ -37,11 +34,17 @@ class Tasks
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
-    private string $creatorId = '0';
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id', nullable: true)]
+    private ?User $creator = null;
 
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id', nullable: true)]
+    private ?User $modifier = null;
+
+    #[ORM\ManyToOne(targetEntity: 'User')]
+    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
+    private ?User $deleter = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private string $title;
@@ -50,5 +53,5 @@ class Tasks
     private string $status;
 
     #[ORM\Column(name: 'linked_item_id', type: Types::INTEGER, nullable: false)]
-    private string $linkedItemId = '0';
+    private int $linkedItemId;
 }
