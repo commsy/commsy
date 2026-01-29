@@ -170,7 +170,8 @@ class RoomTest extends AbstractApiTestCase
     public function testGetRoomNotFound(): void
     {
         $client = $this->createClientWithCredentials($this->getReadOnlyToken());
-        $client->request('GET', '/api/v2/rooms/123', [
+        $nonExistingId = PHP_INT_MAX;
+        $client->request('GET', "/api/v2/rooms/$nonExistingId", [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',

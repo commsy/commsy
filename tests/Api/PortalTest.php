@@ -158,7 +158,8 @@ class PortalTest extends AbstractApiTestCase
     public function testGetPortalNotFound(): void
     {
         $client = $this->createClientWithCredentials($this->getReadOnlyToken());
-        $client->request('GET', '/api/v2/portals/123', [
+        $nonExistingId = PHP_INT_MAX;
+        $client->request('GET', "/api/v2/portals/$nonExistingId", [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
