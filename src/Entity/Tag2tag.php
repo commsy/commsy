@@ -13,22 +13,22 @@
 
 namespace App\Entity;
 
-use DateTime;
-use DateTimeInterface;
+use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Tag2tag.
- */
 #[ORM\Entity]
 #[ORM\Table(name: 'tag2tag')]
 #[ORM\Index(columns: ['from_item_id'], name: 'from_item_id')]
-#[ORM\Index(columns: ['context_id'], name: 'context_id')]
-#[ORM\Index(columns: ['deletion_date'], name: 'deletion_date')]
-#[ORM\Index(columns: ['deleter_id'], name: 'deleter_id')]
+#[ORM\Index(name: 'context_id', columns: ['context_id'])]
+#[ORM\Index(name: 'deletion_date', columns: ['deletion_date'])]
+#[ORM\Index(name: 'deleter_id', columns: ['deleter_id'])]
 class Tag2tag
 {
+    use EntityDatesTrait;
+    use EntityUsersTrait;
+
     #[ORM\Column(name: 'link_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -42,24 +42,6 @@ class Tag2tag
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private int $contextId;
-
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
-    private int $creatorId;
-
-    #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
-    private ?DateTime $creationDate = null;
-
-    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: false)]
-    private string $modifierId = '0';
-
-    #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: false)]
-    private ?DateTime $modificationDate = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
-
-    #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $deletionDate = null;
 
     #[ORM\Column(name: 'sorting_place', type: Types::BOOLEAN, nullable: true)]
     private ?bool $sortingPlace = null;

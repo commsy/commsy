@@ -235,6 +235,15 @@ class Room
         return $this;
     }
 
+    public function setShouldCreateUserRooms(bool $shouldCreate): Room
+    {
+        $extras = $this->getExtras();
+        $extras['CREATE_USER_ROOMS'] = $shouldCreate ? 1 : 0;
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
     public function withWorkflowResubmission(): bool
     {
         $value = $this->getExtras()['WITHWORKFLOWRESUBMISSION'] ?? 1;
