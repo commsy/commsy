@@ -1,5 +1,6 @@
 <div {{ attributes }}>
     <hr class="cs-list-divider">
+
     <h4 class="cs-list-section-header">
         <span class="cs-detail-section-header-background">
             {{ 'Categories'|trans({}, 'category') }}
@@ -13,34 +14,40 @@
         {% if editMode %}
             {{ form_start(form) }}
                 {% if form.newCategory is defined %}
-                    {{ form_widget(form.newCategory) }}
+                    <div class="uk-flex uk-flex-middle uk-margin-small-bottom">
+                        <div class="uk-flex-1">
+                            {{ form_row(form.newCategory) }}
+                        </div>
+
+                        <button
+                            type="button"
+                            class="uk-button uk-button-small uk-button-primary uk-margin-small-left"
+                            {{ live_action('addCategory') }}
+                        >{{ 'Create'|trans({}, 'menu') }}</button>
+                    </div>
                 {% endif %}
 
                 {{ form_errors(form.categories) }}
-                <div data-live-ignore>
-                    {{ form_widget(form.categories) }}
-                </div>
-            {{ form_end(form) }}
 
+                {{ render_tree(this.getTree(enum('App\\Utils\\Tree\\TreeMode').CHECKBOXES)) }}
+            {{ form_end(form) }}
             {% if not embedded %}
                 <div class="uk-margin-top">
                     <button
+                        type="button"
                         class="uk-button uk-button-primary"
                         {{ live_action('save', { 'fromButton': true }) }}
                     >{{ 'save'|trans({}, 'form') }}</button>
 
                     <button
+                        type="button"
                         class="uk-button uk-button-secondary"
                         {{ live_action('cancel') }}
                     >{{ 'cancel'|trans({}, 'form') }}</button>
                 </div>
             {% endif %}
         {% else %}
-            {% from 'item/macros.html.twig' import nestedTagList %}
-
-            <div class="cs-tree-plain">
-                {{ nestedTagList(this.item.tagsArray, this.roomCategories, 1) }}
-            </div>
+            {{ render_tree(this.getTree(enum('App\\Utils\\Tree\\TreeMode').VIEW)) }}
         {% endif %}
     </div>
 </div>

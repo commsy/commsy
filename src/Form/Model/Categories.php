@@ -15,16 +15,16 @@ namespace App\Form\Model;
 
 final class Categories
 {
-    private ?array $categories;
+    private array $categories = [];
 
     private ?string $newCategory = null;
 
-    public function getCategories(): ?array
+    public function getCategories(): array
     {
         return $this->categories;
     }
 
-    public function setCategories(?array $categories): self
+    public function setCategories(array $categories): self
     {
         $this->categories = $categories;
         return $this;

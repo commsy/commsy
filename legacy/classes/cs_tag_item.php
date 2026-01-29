@@ -185,7 +185,6 @@ class cs_tag_item extends cs_item
 
     public function getChildrenList(): ?cs_list
     {
-        $retour = null;
         if (!isset($this->_children_list)) {
             $tag2tag_manager = $this->_environment->getTag2TagManager();
             $child_id_array = $tag2tag_manager->getChildrenItemIDArray($this->getItemID());

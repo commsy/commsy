@@ -23,6 +23,9 @@ use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
+use App\Utils\Tree\Tree;
+use App\Utils\Tree\TreeBuilderInterface;
+use App\Utils\Tree\TreeMode;
 use cs_environment;
 use cs_item;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -68,19 +71,15 @@ final class CategoryComponent extends AbstractController
         private readonly LabelService $labelService,
         private readonly CategoryService $categoryService,
         private readonly RoomService $roomService,
-        readonly LegacyEnvironment $environment,
+        private readonly TreeBuilderInterface $treeBuilder,
+        readonly LegacyEnvironment $environment
     ) {
         $this->legacyEnvironment = $environment->getEnvironment();
     }
 
     #[PostMount]
-    public function loadTags(): void
+    public function init(): void
     {
-        if ($this->formData == null) {
-            $legacyItem = $this->itemService->getTypedItem($this->itemId);
-            $this->formData = (new Categories())->setCategories($this->labelService->getLinkedCategoryIds($legacyItem));
-        }
-
         $legacyBaseItem = $this->itemService->getItem($this->itemId);
         $legacyItem = $this->itemService->getTypedItem($this->itemId);
         $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
@@ -93,6 +92,11 @@ final class CategoryComponent extends AbstractController
 
     protected function instantiateForm(): FormInterface
     {
+        if ($this->formData == null) {
+            $legacyItem = $this->itemService->getTypedItem($this->itemId);
+            $this->formData = new Categories()->setCategories($this->labelService->getLinkedCategoryIds($legacyItem));
+        }
+
         $legacyItem = $this->itemService->getTypedItem($this->itemId);
         $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
 
@@ -100,12 +104,49 @@ final class CategoryComponent extends AbstractController
         // quering for categories resulting in an empty response
         $this->legacyEnvironment->setCurrentContextID($legacyItem->getContextID());
 
-        $this->dispatchBrowserEvent('category:init');
-
+        $availableCategories = $this->labelService->getCategories($legacyItem->getContextID());
         return $this->createForm(ItemCategoryType::class, $this->formData, [
-            'roomId' => $legacyItem->getContextID(),
-            'mandatoryCategories' => $legacyRoom->withTags() && $legacyRoom->isTagMandatory()
+            'mandatoryCategories' => $legacyRoom->withTags() && $legacyRoom->isTagMandatory(),
+            'availableCategories' => $availableCategories,
         ]);
+    }
+
+    #[LiveAction]
+    public function addCategory(CategoryService $categoryService): void
+    {
+        $this->submitForm(false);
+
+        /** @var Categories $dto */
+        $dto = $this->getForm()->getData();
+
+        if ($dto->getNewCategory() && $this->isGranted(CategoryVoter::EDIT)) {
+            $legacyItem = $this->itemService->getTypedItem($this->itemId);
+            $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
+
+            if (!$legacyRoom->withTags()) {
+                throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
+            }
+
+            // Create new tag
+            $newTag = $categoryService->addTag($dto->getNewCategory(), $legacyRoom->getItemID());
+
+            // Add the new tag to the selected categories
+            $currentCategories = $this->labelService->getLinkedCategoryIds($legacyItem);
+            $currentCategories[] = $newTag->getItemID();
+
+            // Update item
+            $legacyItem->setTagListByID($currentCategories);
+            $legacyItem->save();
+
+            $this->formValues['newCategory'] = '';
+            $this->resetForm();
+        }
+    }
+
+    #[LiveAction]
+    public function enableEditMode(): void
+    {
+        $this->editMode = true;
     }
 
     public function getItem(): cs_item
@@ -113,23 +154,28 @@ final class CategoryComponent extends AbstractController
         return $this->itemService->getTypedItem($this->itemId);
     }
 
-    public function getRoomCategories(): iterable
+    public function getTree(TreeMode $mode): Tree
     {
-        return $this->categoryService->getTags($this->getItem()->getContextID());
-    }
+        $tree = $this->treeBuilder->createTree($mode);
 
-    #[LiveAction]
-    public function enableEditMode(): void
-    {
-        $this->editMode = true;
-        $this->dispatchBrowserEvent('category:edit');
+        $availableCategories = $this->categoryService->getTags($this->getItem()->getContextID());
+        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+
+        $tree->setData($availableCategories);
+
+        if ($mode === TreeMode::VIEW) {
+            $tree->setHighlightedIds($this->labelService->getLinkedCategoryIds($legacyItem));
+        } else {
+            $tree->setCheckboxSelector('input[name="item_category[categories][]"]');
+        }
+
+        return $tree;
     }
 
     #[LiveAction]
     #[LiveListener('DraftEdit:save')]
     public function save(
         EventDispatcherInterface $eventDispatcher,
-        CategoryService $categoryService,
         ReaderService $readerService,
         #[LiveArg]
         bool $fromButton = false
@@ -149,14 +195,6 @@ final class CategoryComponent extends AbstractController
             throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
         }
 
-        // Create new tag currently not persisted
-        if ($categories->getNewCategory() && $this->isGranted(CategoryVoter::EDIT)) {
-            $categoryCollection->add($categoryService->addTag(
-                $categories->getNewCategory(),
-                $legacyRoom->getItemID())->getItemID()
-            );
-        }
-
         // Update item
         $legacyItem->setTagListByID($categoryCollection->toArray());
         $legacyItem->save();
@@ -171,6 +209,14 @@ final class CategoryComponent extends AbstractController
         } else {
             $readerService->markItemAsRead($legacyItem);
         }
+
+        $tag2tagManager = $this->legacyEnvironment->getTag2TagManager();
+        $tag2tagManager->resetCachedChildrenIdArray();
+
+        $tagManager = $this->legacyEnvironment->getTagManager();
+        $tagManager->resetCache();
+
+        $this->resetForm();
     }
 
     #[LiveAction]

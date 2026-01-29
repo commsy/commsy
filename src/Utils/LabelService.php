@@ -127,17 +127,7 @@ class LabelService
      */
     public function getLinkedCategoryIds(cs_item $item): array
     {
-        $linkedCategories = [];
-        $categoriesList = $item->getTagList();
-
-        /** @var cs_tag_item $categoryItem */
-        $categoryItem = $categoriesList->getFirst();
-        while ($categoryItem) {
-            $linkedCategories[] = $categoryItem->getItemId();
-            $categoryItem = $categoriesList->getNext();
-        }
-
-        return $linkedCategories;
+        return $item->getTagList()->getIDArray();
     }
 
     /**
