@@ -100,7 +100,8 @@ class ServerTest extends AbstractApiTestCase
     public function testGetServerNotFound(): void
     {
         $client = $this->createClientWithCredentials();
-        $client->request('GET', '/api/v2/servers/123', [
+        $nonExistingId = PHP_INT_MAX;
+        $client->request('GET', "/api/v2/servers/$nonExistingId", [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',

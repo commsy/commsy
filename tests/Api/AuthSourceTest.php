@@ -131,7 +131,8 @@ class AuthSourceTest extends AbstractApiTestCase
         AuthSourceLocalFactory::createOne();
 
         $client = $this->createClientWithCredentials();
-        $client->request('GET', '/api/v2/auth_sources/123', [
+        $nonExistingId = PHP_INT_MAX;
+        $client->request('GET', "/api/v2/auth_sources/$nonExistingId", [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
