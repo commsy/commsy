@@ -93,7 +93,7 @@ class UserCest
 
         $account = new Account();
         $account->setAuthSource($localAuthSource);
-        $account->setContextId($portal->getId());
+        $account->setPortal($portal);
         $account->setLanguage(AccountLanguage::GERMAN);
         $account->setFirstname('Firstname');
         $account->setLastname('lastname');
