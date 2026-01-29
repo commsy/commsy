@@ -181,8 +181,8 @@
     };
 
   function initTrees() {
-    $('.cs-tree-plain').each(function () {
-      $(this).first('ul').jstree({
+    $('[data-cs-tree]').each(function () {
+      $(this).jstree({
         core: {
           themes: {
             icons: false
@@ -200,13 +200,5 @@
     });
   }
   initTrees();
-
-  window.addEventListener('category:init', () => {
-    initTrees();
-  });
-
-  window.addEventListener('category:edit', () => {
-    UIkit.tree($('#item-categories'));
-  });
 
 })(UIkit);

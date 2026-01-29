@@ -38,6 +38,13 @@ class CategoryService
 
     public function getTags($roomId): array
     {
+        // Reset cache
+        $tag2tagManager = $this->legacyEnvironment->getEnvironment()->getTag2TagManager();
+        $tag2tagManager->resetCachedChildrenIdArray();
+
+        $tagManager = $this->legacyEnvironment->getEnvironment()->getTagManager();
+        $tagManager->resetCache();
+
         $tagManager = $this->legacyEnvironment->getEnvironment()->getTagManager();
         $rootItem = $tagManager->getRootTagItemFor($roomId);
 

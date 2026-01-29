@@ -14,11 +14,10 @@
 namespace App\Form\Type\Item;
 
 use App\Form\Model\Categories;
-use App\Form\Type\TreeChoiceType;
 use App\Security\Authorization\Voter\CategoryVoter;
-use App\Utils\LabelService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -31,15 +30,14 @@ class ItemCategoryType extends AbstractType
 {
     public function __construct(
         private readonly Security $security,
-        private readonly LabelService $labelService,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $categories = $this->labelService->getCategories($options['roomId']);
+        $categories = $options['availableCategories'];
 
         $builder
-            ->add('categories', TreeChoiceType::class, [
+            ->add('categories', ChoiceType::class, [
                 'label' => false,
                 'choices' => $categories,
                 'choice_label' => function ($choice, $key, $value) {
@@ -49,10 +47,12 @@ class ItemCategoryType extends AbstractType
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
-                // TODO: use separate validator to take newCategory field into account
                 'constraints' => $options['mandatoryCategories'] ?
                     [new Count(min: 1, minMessage: 'Please select at least one category')] :
                     [],
+                'attr' => [
+                    'class' => 'uk-hidden',
+                ]
             ])
         ;
 
@@ -65,7 +65,7 @@ class ItemCategoryType extends AbstractType
                     'attr' => [
                         'placeholder' => new TranslatableMessage('New category', [], 'category'),
                     ],
-                    'label' => 'newCategory',
+                    'label' => false,
                     'required' => false,
                 ]);
             }
@@ -78,9 +78,9 @@ class ItemCategoryType extends AbstractType
             ->setDefaults([
                 'data_class' => Categories::class,
             ])
-            ->setRequired(['roomId', 'mandatoryCategories'])
-            ->setAllowedTypes('roomId', 'int')
+            ->setRequired(['mandatoryCategories', 'availableCategories'])
             ->setAllowedTypes('mandatoryCategories', 'bool')
+            ->setAllowedTypes('availableCategories', 'array')
         ;
     }
 }

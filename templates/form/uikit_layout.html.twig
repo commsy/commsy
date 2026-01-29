@@ -108,7 +108,7 @@
         {% endif %}
     </div>
 
-    <div id="item-categories" data-cs-tree>
+    <div id="jstree-wrapper-{{ random() }}" data-cs-tree>
         <ul class="uk-list uk-list-striped">
             {{ treeMacro.nestedChoiceTree(form.vars.choices, 0) }}
             </li>
