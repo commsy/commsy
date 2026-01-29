@@ -150,7 +150,7 @@ class UserCreatorFacade
             $slug = $roomSlugRepository->findOneBy(['slug' => trim($roomSlug)]);
             if ($slug) {
                 $room = $slug->getRoom();
-                if ($room->getContextId() == $account->getContextId()) {
+                if ($room->getContextId() == $account->getPortal()->getId()) {
                     return $room->getItemId();
                 }
             }
