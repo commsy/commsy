@@ -14,8 +14,10 @@
 namespace App\Utils;
 
 use App\Entity\Account;
+use App\Entity\User;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
+use App\Repository\UserRepository;
 use App\Services\LegacyEnvironment;
 use cs_context_item;
 use cs_environment;
@@ -52,6 +54,7 @@ class UserService
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly RoomService $roomService,
+        private readonly UserRepository $userRepository,
         private readonly Security $security
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();

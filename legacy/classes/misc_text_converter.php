@@ -827,20 +827,18 @@ class misc_text_converter
         }
     }
 
-    private function _array_encode($array, $mode)
+    private function _array_encode($array, $mode): array
     {
-        $retour_array = [];
+        $result = [];
         foreach ($array as $key => $value) {
-            if (is_array($value)) {    // nicht in eine if-Anweisung, sonst
-                if (count($value) > 0) {  // werden leere Arrays an die _text_encode weitergegeben
-                    $retour_array[$key] = $this->_array_encode($value, $mode);
-                }
+            if (is_array($value)) {
+                $result[$key] = count($value) > 0 ? $this->_array_encode($value, $mode) : [];
             } else {
-                $retour_array[$key] = $this->_text_encode($value, $mode);
+                $result[$key] = $this->_text_encode($value, $mode);
             }
         }
 
-        return $retour_array;
+        return $result;
     }
 
     private function _text_encode($text, $mode)

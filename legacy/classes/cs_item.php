@@ -1369,7 +1369,6 @@ class cs_item
             $link_array['link_type'] = $changed_key;
             $link_manager->save($link_array);
         }
-        // MERDE
     }
 
     public function _setValueAsID($key, $value)
