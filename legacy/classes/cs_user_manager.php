@@ -773,58 +773,70 @@ class cs_user_manager extends cs_manager
     public function _update($item, $with_creator_id = false)
     {
         parent::_update($item);
-        $query = 'UPDATE ' . $this->addDatabasePrefix('user') . ' SET ';
+
+        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+        $queryBuilder->update('user');
+
         if ($item->isChangeModificationOnSave()) {
-            $modificator = $item->getModificatorItem();
-            if (isset($modificator)) {
-                $modifier_id = $modificator->getItemID();
-                if (!empty($modifier_id)) {
-                    $query .= 'modifier_id="' . encode(AS_DB, $modifier_id) . '",';
-                }
-                unset($modificator);
+            $modifier_id = $item->getModificatorItem()?->getItemID();
+            if (!empty($modifier_id)) {
+                $queryBuilder->set('modifier_id', ':modifierId');
+                $queryBuilder->setParameter('modifierId', $modifier_id);
             }
-            $query .= 'modification_date="' . encode(AS_DB, getCurrentDateTimeInMySQL()) . '",';
+
+            $queryBuilder->set('modification_date', ':modificationDate');
+            $queryBuilder->setParameter('modificationDate', getCurrentDateTimeInMySQL());
         }
-
-        $contact_status = $item->getContactStatus();
-        if (empty($contact_status)) {
-            $contact_status = 0;
-        }
-
-        $usePortalEmail = $item->getUsePortalEmail();
-        if (empty($usePortalEmail)) {
-            $usePortalEmail = 0;
-        }
-
-        $portalId = ($item->isRoot()) ? null : $item->getPortalID();
-
-        $query .= 'context_id="' . encode(AS_DB, $item->getContextID()) . '",';
-        $query .= 'portal_id="' . encode(AS_DB, $portalId) . '",';
-        $query .= 'status="' . encode(AS_DB, $item->getStatus()) . '",';
-        $query .= 'is_contact="' . encode(AS_DB, $contact_status) . '",';
-        $query .= 'account_id="' . encode(AS_DB, $item->getAccountID()) . '",';
-        $query .= 'user_id="' . encode(AS_DB, $item->getUserID()) . '",';
-        $query .= 'auth_source="' . $item->getAuthSource() . '",';
-        $query .= 'firstname="' . encode(AS_DB, $item->getFirstname()) . '",';
-        $query .= 'lastname="' . encode(AS_DB, $item->getLastname()) . '",';
-        $query .= 'email="' . encode(AS_DB, $item->getRoomEmail()) . '",';
-        $query .= 'city="' . encode(AS_DB, $item->getCity()) . '",';
-        $query .= 'visible="' . encode(AS_DB, $item->getVisible()) . '",';
-        $query .= 'description="' . encode(AS_DB, $item->getDescription()) . '",';
-        $query .= 'use_portal_email="' . encode(AS_DB, $usePortalEmail) . '",';
 
         // if user was entered by system (creator_id == 0) then creator_id must change from 0 to item_id of the user_item
         // see methode _create()
         if ($with_creator_id) {
-            $query .= 'creator_id="' . encode(AS_DB, $item->getCreatorID()) . '",';
+            $queryBuilder->set('creator_id', ':creatorId');
+            $queryBuilder->setParameter('creatorId', $item->getCreatorID());
         }
 
-        $query .= "extras='" . encode(AS_DB, serialize($item->getExtraInformation())) . "'";
-        $query .= ' WHERE item_id="' . encode(AS_DB, $item->getItemID()) . '"';
+        $contact_status = $item->getContactStatus() ?: 0;
+        $usePortalEmail = $item->getUsePortalEmail() ?: 0;
+        $portalId = ($item->isRoot()) ? null : $item->getPortalID();
 
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems upating user item.', E_USER_ERROR);
+        $queryBuilder
+            ->set('context_id', ':contextId')
+            ->set('portal_id', ':portalId')
+            ->set('status', ':status')
+            ->set('is_contact', ':isContact')
+            ->set('account_id', ':accountId')
+            ->set('user_id', ':userId')
+            ->set('auth_source', ':authSource')
+            ->set('firstname', ':firstname')
+            ->set('lastname', ':lastname')
+            ->set('email', ':email')
+            ->set('city', ':city')
+            ->set('visible', ':visible')
+            ->set('description', ':description')
+            ->set('use_portal_email', ':usePortalEmail')
+            ->set('extras', ':extras')
+            ->where('item_id = :itemId')
+            ->setParameter('contextId', $item->getContextID())
+            ->setParameter('portalId', $portalId)
+            ->setParameter('status', $item->getStatus())
+            ->setParameter('isContact', $contact_status)
+            ->setParameter('accountId', $item->getAccountID())
+            ->setParameter('userId', $item->getUserID())
+            ->setParameter('authSource', $item->getAuthSource())
+            ->setParameter('firstname', $item->getFirstname())
+            ->setParameter('lastname', $item->getLastname())
+            ->setParameter('email', $item->getRoomEmail())
+            ->setParameter('city', $item->getCity())
+            ->setParameter('visible', $item->getVisible())
+            ->setParameter('description', $item->getDescription())
+            ->setParameter('usePortalEmail', $usePortalEmail)
+            ->setParameter('extras', empty($item->getExtraInformation()) ? null : serialize($item->getExtraInformation()))
+            ->setParameter('itemId', $item->getItemID());
+
+        try {
+            $queryBuilder->executeStatement();
+        } catch (\Doctrine\DBAL\Exception $e) {
+            throw new RuntimeException('Problems updating user item.', 0, $e);
         }
     }
 
@@ -921,7 +933,7 @@ class cs_user_manager extends cs_manager
             ->setParameter('city', $item->getCity())
             ->setParameter('visible', $item->getVisible())
             ->setParameter('description', $item->getDescription())
-            ->setParameter('extras', serialize($item->getExtraInformation()));
+            ->setParameter('extras', empty($item->getExtraInformation()) ? null : serialize($item->getExtraInformation()));
 
         try {
             $queryBuilder->executeStatement();
