@@ -81,7 +81,7 @@ final class CategoryComponent extends AbstractController
     public function init(): void
     {
         $legacyBaseItem = $this->itemService->getItem($this->itemId);
-        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+        $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
         $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
 
         // If the item is a draft and categories are mandatory, start in embedded edit mode
@@ -93,11 +93,11 @@ final class CategoryComponent extends AbstractController
     protected function instantiateForm(): FormInterface
     {
         if ($this->formData == null) {
-            $legacyItem = $this->itemService->getTypedItem($this->itemId);
+            $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
             $this->formData = new Categories()->setCategories($this->labelService->getLinkedCategoryIds($legacyItem));
         }
 
-        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+        $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
         $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
 
         // TODO: This is just a workaround to prevent a legacy default to the portal id when
@@ -120,7 +120,7 @@ final class CategoryComponent extends AbstractController
         $dto = $this->getForm()->getData();
 
         if ($dto->getNewCategory() && $this->isGranted(CategoryVoter::EDIT)) {
-            $legacyItem = $this->itemService->getTypedItem($this->itemId);
+            $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
             $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
 
             if (!$legacyRoom->withTags()) {
@@ -151,7 +151,7 @@ final class CategoryComponent extends AbstractController
 
     public function getItem(): cs_item
     {
-        return $this->itemService->getTypedItem($this->itemId);
+        return $this->itemService->getTypedItem($this->itemId, $this->versionId);
     }
 
     public function getTree(TreeMode $mode): Tree
@@ -159,7 +159,7 @@ final class CategoryComponent extends AbstractController
         $tree = $this->treeBuilder->createTree($mode);
 
         $availableCategories = $this->categoryService->getTags($this->getItem()->getContextID());
-        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+        $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
 
         $tree->setData($availableCategories);
 
@@ -188,7 +188,7 @@ final class CategoryComponent extends AbstractController
         $categoryCollection = new ArrayCollection($categories->getCategories());
 
         // Are categories enabled?
-        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+        $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
         $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
 
         if (!$legacyRoom->withTags()) {
