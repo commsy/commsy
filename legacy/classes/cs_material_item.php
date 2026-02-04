@@ -1399,6 +1399,7 @@ public function cloneCopy($new_version = false)
         $clone_item->setLabel($label_item->getName());
     }
     $clone_item->setBuzzwordArray($this->getBuzzwordArray());
+    $clone_item->_saveBuzzwords();
     $clone_item->setFileIDArray($this->getFileIDArray());
     $group_list = $this->getGroupList();
     $clone_item->setGroupList($group_list);
