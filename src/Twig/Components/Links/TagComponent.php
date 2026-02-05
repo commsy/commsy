@@ -67,7 +67,7 @@ final class TagComponent extends AbstractController
     public function loadTags(): void
     {
         if ($this->formData == null) {
-            $legacyItem = $this->itemService->getTypedItem($this->itemId);
+            $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
             $tagNames = (new ArrayCollection(iterator_to_array($legacyItem->getBuzzwordList())))
                 ->map(fn (cs_label_item $label) => $label->getName())
             ;
@@ -75,7 +75,7 @@ final class TagComponent extends AbstractController
         }
 
         $legacyBaseItem = $this->itemService->getItem($this->itemId);
-        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+        $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
         $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
 
         // If the item is a draft and tags are mandatory, start in embedded edit mode
@@ -86,7 +86,7 @@ final class TagComponent extends AbstractController
 
     protected function instantiateForm(): FormInterface
     {
-        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+        $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
         $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
 
         return $this->createForm(ItemTagsType::class, $this->formData, [
@@ -97,7 +97,7 @@ final class TagComponent extends AbstractController
 
     public function getTags(): iterable
     {
-        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+        $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
         return $legacyItem->getBuzzwordList();
     }
 
@@ -124,7 +124,7 @@ final class TagComponent extends AbstractController
         $tagCollection = new ArrayCollection($tags->getTags());
 
         // Are buzzwords enabled?
-        $legacyItem = $this->itemService->getTypedItem($this->itemId);
+        $legacyItem = $this->itemService->getTypedItem($this->itemId, $this->versionId);
         $legacyRoom = $this->roomService->getRoomItem($legacyItem->getContextID());
 
         if (!$legacyRoom->withBuzzwords()) {
