@@ -21,7 +21,7 @@ class cs_translator
     private array $messageArray = [];
     private array $timeMessageArray = [];
 
-    private array $availableLanguages = [];
+    private ?array $availableLanguages = null;
 
     /**
      * containing the path to the message.dats.
@@ -317,7 +317,7 @@ class cs_translator
      *
      * @return array of available languages
      */
-    public function getAvailableLanguages()
+    public function getAvailableLanguages(): array
     {
         if (!isset($this->availableLanguages)) {
             $filename_array = [];
@@ -341,11 +341,9 @@ class cs_translator
         return $this->availableLanguages;
     }
 
-    public function isLanguageAvailable($lang)
+    public function isLanguageAvailable($lang): bool
     {
-        $lang_array = $this->getAvailableLanguages();
-
-        return in_array($lang, $lang_array);
+        return in_array($lang, $this->getAvailableLanguages());
     }
 
     public function setDefaultLanguage($value)
@@ -591,14 +589,14 @@ class cs_translator
     /** setSelectedLanguage
      * this methode set the selected language, form environment.
      *
-     * @param string language (de,en,...)
+     * @param string $language (de,en,...)
      */
-    public function setSelectedLanguage($value)
+    public function setSelectedLanguage(string $language): void
     {
-        if (!$this->isLanguageAvailable($value)) {
-            $value = $this->_default_language;
+        if (!$this->isLanguageAvailable($language)) {
+            $language = $this->_default_language;
         }
-        $this->_selected_language = $value;
+        $this->_selected_language = $language;
     }
 
     /** getSelectedLanguage

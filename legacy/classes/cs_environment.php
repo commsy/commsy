@@ -12,7 +12,6 @@
  */
 
 use App\Entity\Portal;
-use App\Helper\LocaleHelper;
 use App\Proxy\PortalProxy;
 use App\Repository\PortalRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -815,17 +814,11 @@ class cs_environment
 
     public function getUserLanguage(): string
     {
-        /** @var ContainerInterface $symfonyContainer */
-        global $symfonyContainer;
-
         /** @var RequestStack $requestStack */
-        $requestStack = $symfonyContainer->get('request_stack');
+        $requestStack = $this->getSymfonyContainer()->get('request_stack');
         $request = $requestStack->getCurrentRequest();
-        if ($request) {
-            return $request->getLocale();
-        }
 
-        return 'de';
+        return $request?->getLocale() ?? 'de';
     }
 
     public function getRootUserItem(): cs_user_item
