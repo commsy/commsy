@@ -127,11 +127,11 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: Types::STRING, length: 32, nullable: true)]
-    private ?string $passwordMd5;
+    private ?string $passwordMd5 = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['api_check_local_login'])]
-    private ?string $password;
+    private ?string $password = null;
 
     #[ORM\Column(type: Types::STRING, length: 50)]
     #[Assert\NotBlank]
@@ -177,8 +177,6 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     public function __construct()
     {
         $this->lastLogin = null;
-        $this->password = null;
-        $this->passwordMd5 = null;
         $this->activityState = self::ACTIVITY_ACTIVE;
         $this->settings = new ArrayCollection();
     }
@@ -449,16 +447,24 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     // Serializable
     public function __serialize(): array
     {
-        $serializableData = get_object_vars($this);
-        unset($serializableData['authSource']);
-        return $serializableData;
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'email' => $this->email,
+            'locked' => $this->locked,
+        ];
     }
 
     public function __unserialize(array $data): void
     {
-        foreach ($data as $key => $value) {
-            $this->{$key} = $value;
-        }
+        $this->id = $data['id'];
+        $this->username = $data['username'];
+        $this->firstname = $data['firstname'];
+        $this->lastname = $data['lastname'];
+        $this->email = $data['email'];
+        $this->locked = $data['locked'];
     }
 
     /**
