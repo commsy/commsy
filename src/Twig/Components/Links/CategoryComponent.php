@@ -61,7 +61,7 @@ final class CategoryComponent extends AbstractController
     public int $itemId;
 
     #[LiveProp]
-    public int $versionId;
+    public ?int $versionId = null;
 
     #[LiveProp]
     public ?Categories $formData = null;

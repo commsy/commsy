@@ -16,7 +16,7 @@
     </ul>
 {% endmacro %}
 
-{% macro structure(showCategories, showHashtags, itemId, versionId = 0) %}
+{% macro structure(showCategories, showHashtags, itemId, versionId = null) %}
     {% if (showCategories or showHashtags) %}
         <twig:v2:panel title="{{ 'categoriesAndBuzzwords'|trans }}">
             <twig:block name="content">

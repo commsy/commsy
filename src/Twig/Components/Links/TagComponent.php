@@ -52,7 +52,7 @@ final class TagComponent extends AbstractController
     public int $itemId;
 
     #[LiveProp]
-    public int $versionId;
+    public ?int $versionId = null;
 
     #[LiveProp]
     public ?Tags $formData = null;
