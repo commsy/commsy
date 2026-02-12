@@ -15,8 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 use function Zenstruck\Foundry\Persistence\assert_not_persisted;
 use function Zenstruck\Foundry\Persistence\assert_persisted;
 use function Zenstruck\Foundry\Persistence\repository;
@@ -26,8 +24,6 @@ use function Zenstruck\Foundry\Persistence\repository;
  */
 final class AccountLifecycleTest extends KernelTestCase
 {
-    use ResetDatabase, Factories;
-
     #[WithStory(RoomWithMemberStory::class)]
     public function testInitialUserState(): void
     {

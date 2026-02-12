@@ -14,7 +14,6 @@
 namespace Tests\Api;
 
 use App\Entity\Account;
-use App\Repository\FilesRepository;
 use App\WOPI\Auth\AccessTokenGenerator;
 use App\WOPI\Permission\WOPIPermission;
 use DateTimeImmutable;

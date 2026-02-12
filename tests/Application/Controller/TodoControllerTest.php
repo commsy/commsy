@@ -43,12 +43,14 @@ class TodoControllerTest extends AbstractApplicationTestCase
     public function testDetail(): void
     {
         $this->client->request('GET', "/room/$this->roomId/todo/create");
-        $response = $this->client->getResponse();
-        $locationHeader = $response->headers->get('Location');
-        preg_match('~^/room/\d+/todo/(\d+)~', $locationHeader, $matches);
-        $itemId = intval($matches[1]);
+        $this->assertResponseRedirects();
 
-        $this->client->request('GET', "/room/{$this->roomId}/todo/$itemId");
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $itemId = (int) $this->client->getRequest()->attributes->get('itemId');
+
+        $this->client->request('GET', "/room/$this->roomId/todo/$itemId");
         $this->assertResponseIsSuccessful();
 
         // Forbidden
@@ -60,10 +62,12 @@ class TodoControllerTest extends AbstractApplicationTestCase
     public function testEdit(): void
     {
         $this->client->request('GET', "/room/$this->roomId/todo/create");
-        $response = $this->client->getResponse();
-        $locationHeader = $response->headers->get('Location');
-        preg_match('~^/room/\d+/todo/(\d+)~', $locationHeader, $matches);
-        $itemId = intval($matches[1]);
+        $this->assertResponseRedirects();
+
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $itemId = (int) $this->client->getRequest()->attributes->get('itemId');
 
         $this->client->request('GET', "/room/$this->roomId/todo/$itemId/edit");
         $this->assertResponseIsSuccessful();

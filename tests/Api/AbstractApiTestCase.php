@@ -16,13 +16,9 @@ namespace Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use Symfony\Component\HttpFoundation\Request;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 abstract class AbstractApiTestCase extends ApiTestCase
 {
-    use ResetDatabase, Factories;
-
     public function setUp(): void
     {
         ApiTestCase::$alwaysBootKernel = false;

@@ -24,7 +24,7 @@ class PortalTest extends AbstractApiTestCase
         PortalFactory::createOne(['title' => 'Some portal']);
 
         $client = $this->createClientWithCredentials();
-        $client->request('GET', '/api/v2/portals', [
+        $response = $client->request('GET', '/api/v2/portals', [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
@@ -48,11 +48,10 @@ class PortalTest extends AbstractApiTestCase
             ],
         ]);
 
-        $this->assertJsonContains([
-            [
-                'title' => 'Some portal',
-            ],
-        ]);
+        $data = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $titles = array_column($data, 'title');
+
+        self::assertContains('Some portal', $titles);
     }
 
     public function testListPortalsReadOnly(): void

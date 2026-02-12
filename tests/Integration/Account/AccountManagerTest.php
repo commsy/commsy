@@ -16,16 +16,12 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Factory\AccountFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 use function Zenstruck\Foundry\Persistence\assert_not_persisted;
 use function Zenstruck\Foundry\Persistence\assert_persisted;
 use function Zenstruck\Foundry\Persistence\repository;
 
 class AccountManagerTest extends KernelTestCase
 {
-    use ResetDatabase, Factories;
-
     public function testDeleteAccount(): void
     {
         self::bootKernel();

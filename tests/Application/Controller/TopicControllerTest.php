@@ -42,42 +42,46 @@ class TopicControllerTest extends AbstractApplicationTestCase
 
     public function testDetail(): void
     {
-        $this->client->request('GET', "/room/{$this->roomId}/topic/create");
-        $response = $this->client->getResponse();
-        $locationHeader = $response->headers->get('Location');
-        preg_match('~^/room/\d+/topic/(\d+)~', $locationHeader, $matches);
-        $itemId = intval($matches[1]);
+        $this->client->request('GET', "/room/$this->roomId/topic/create");
+        $this->assertResponseRedirects();
 
-        $this->client->request('GET', "/room/{$this->roomId}/topic/$itemId");
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $itemId = (int) $this->client->getRequest()->attributes->get('itemId');
+
+        $this->client->request('GET', "/room/$this->roomId/topic/$itemId");
         $this->assertResponseIsSuccessful();
 
         // Forbidden
         $this->logout();
-        $this->client->request('GET', "/room/{$this->roomId}/topic/$itemId");
+        $this->client->request('GET', "/room/$this->roomId/topic/$itemId");
         $this->assertResponseRedirects("/login/{$this->account->getContextId()}");
     }
 
     public function testEdit(): void
     {
-        $this->client->request('GET', "/room/{$this->roomId}/topic/create");
-        $response = $this->client->getResponse();
-        $locationHeader = $response->headers->get('Location');
-        preg_match('~^/room/\d+/topic/(\d+)~', $locationHeader, $matches);
-        $itemId = intval($matches[1]);
+        $this->client->request('GET', "/room/$this->roomId/topic/create");
+        $this->assertResponseRedirects();
 
-        $this->client->request('GET', "/room/{$this->roomId}/topic/$itemId/edit");
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $itemId = (int) $this->client->getRequest()->attributes->get('itemId');
+
+        $this->client->request('GET', "/room/$this->roomId/topic/$itemId/edit");
         $this->assertResponseIsSuccessful();
     }
 
     public function testFeed(): void
     {
-        $this->client->request('GET', "/room/{$this->roomId}/topic/feed");
+        $this->client->request('GET', "/room/$this->roomId/topic/feed");
         $this->assertResponseIsSuccessful();
     }
 
     public function testList(): void
     {
-        $this->client->request('GET', "/room/{$this->roomId}/topic");
+        $this->client->request('GET', "/room/$this->roomId/topic");
         $this->assertResponseIsSuccessful();
     }
 }

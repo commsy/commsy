@@ -15,13 +15,9 @@ namespace Tests\Application;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class AbstractApplicationTestCase extends WebTestCase
 {
-    use ResetDatabase, Factories;
-
     protected KernelBrowser $client;
 
     public function setUp(): void

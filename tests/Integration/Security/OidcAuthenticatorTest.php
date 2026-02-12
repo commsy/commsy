@@ -15,13 +15,9 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Tests\Factory\AccountFactory;
 use Tests\Factory\AuthSourceOIDCFactory;
 use Tests\Factory\PortalFactory;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class OidcAuthenticatorTest extends KernelTestCase
 {
-    use ResetDatabase, Factories;
-
     public function testAccountIsUpdated(): void
     {
         self::bootKernel();

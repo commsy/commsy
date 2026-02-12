@@ -42,42 +42,46 @@ class MaterialControllerTest extends AbstractApplicationTestCase
 
     public function testDetail(): void
     {
-        $this->client->request('GET', "/room/{$this->roomId}/material/create");
-        $response = $this->client->getResponse();
-        $locationHeader = $response->headers->get('Location');
-        preg_match('~^/room/\d+/material/(\d+)~', $locationHeader, $matches);
-        $itemId = intval($matches[1]);
+        $this->client->request('GET', "/room/$this->roomId/material/create");
+        $this->assertResponseRedirects();
 
-        $this->client->request('GET', "/room/{$this->roomId}/material/$itemId");
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $itemId = (int) $this->client->getRequest()->attributes->get('itemId');
+
+        $this->client->request('GET', "/room/$this->roomId/material/$itemId");
         $this->assertResponseIsSuccessful();
 
         // Forbidden
         $this->logout();
-        $this->client->request('GET', "/room/{$this->roomId}/material/$itemId");
+        $this->client->request('GET', "/room/$this->roomId/material/$itemId");
         $this->assertResponseRedirects("/login/{$this->account->getContextId()}");
     }
 
     public function testEdit(): void
     {
-        $this->client->request('GET', "/room/{$this->roomId}/material/create");
-        $response = $this->client->getResponse();
-        $locationHeader = $response->headers->get('Location');
-        preg_match('~^/room/\d+/material/(\d+)~', $locationHeader, $matches);
-        $itemId = intval($matches[1]);
+        $this->client->request('GET', "/room/$this->roomId/material/create");
+        $this->assertResponseRedirects();
 
-        $this->client->request('GET', "/room/{$this->roomId}/material/$itemId/edit");
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        $itemId = (int) $this->client->getRequest()->attributes->get('itemId');
+
+        $this->client->request('GET', "/room/$this->roomId/material/$itemId/edit");
         $this->assertResponseIsSuccessful();
     }
 
     public function testFeed(): void
     {
-        $this->client->request('GET', "/room/{$this->roomId}/material/feed");
+        $this->client->request('GET', "/room/$this->roomId/material/feed");
         $this->assertResponseIsSuccessful();
     }
 
     public function testList(): void
     {
-        $this->client->request('GET', "/room/{$this->roomId}/material");
+        $this->client->request('GET', "/room/$this->roomId/material");
         $this->assertResponseIsSuccessful();
     }
 }

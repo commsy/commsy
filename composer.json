@@ -101,7 +101,7 @@
         "symfony/maker-bundle": "^1.21",
         "symfony/phpunit-bridge": "^7.2",
         "symfony/web-profiler-bundle": "7.4.*",
-        "zenstruck/foundry": "^2.3"
+        "zenstruck/foundry": "^2.9"
     },
     "config": {
         "optimize-autoloader": true,
