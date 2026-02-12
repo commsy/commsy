@@ -1,3 +1,0 @@
-<?php
-$message["ACCESS_NOT_GRANTED"]["en"] = "We are sorry, you do not have sufficient privileges to access the desired page or data.";
-?>

@@ -1,3 +1,0 @@
-<?php
-$message["SEND_MAIL_DESC"]["de"] = "Sendebestätigung";
-?>

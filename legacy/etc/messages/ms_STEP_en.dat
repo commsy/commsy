@@ -1,5 +1,0 @@
-<?php
-$message["STEP_CHANGE_BUTTON"]["en"] = "Save step";
-$message["STEP_MINUTES"]["en"] = "Working time";
-$message["STEP_SAVE_BUTTON"]["en"] = "Save step";
-?>

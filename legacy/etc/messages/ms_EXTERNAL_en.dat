@@ -1,3 +1,0 @@
-<?php
-$message["EXTERNAL_VIEWER_DESCRIPTION"]["en"] = "External Access (Accounts separated with white space)";
-?>

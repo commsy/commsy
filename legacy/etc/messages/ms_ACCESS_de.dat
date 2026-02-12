@@ -1,3 +1,0 @@
-<?php
-$message["ACCESS_NOT_GRANTED"]["de"] = "Auf diese Daten dürfen Sie nicht zugreifen.";
-?>

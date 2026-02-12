@@ -1,3 +1,0 @@
-<?php
-$message["ETCHAT_USER_ENTER_CHATROOM"]["en"] = "<b>%1</b> is new";
-?>

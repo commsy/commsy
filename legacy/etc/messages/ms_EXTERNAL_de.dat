@@ -1,3 +1,0 @@
-<?php
-$message["EXTERNAL_VIEWER_DESCRIPTION"]["de"] = "Externer Zugriff (Angabe der Kennungen durch Leerzeichen getrennt)";
-?>
