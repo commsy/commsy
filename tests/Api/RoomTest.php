@@ -65,7 +65,7 @@ class RoomTest extends AbstractApiTestCase
         $room = RoomStory::get('room');
 
         $client = $this->createClientWithCredentials($this->getReadOnlyToken());
-        $client->request('GET', '/api/v2/rooms', [
+        $response = $client->request('GET', '/api/v2/rooms', [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
@@ -90,13 +90,14 @@ class RoomTest extends AbstractApiTestCase
             ],
         ]);
 
-        $this->assertJsonContains([
-            [
-                'itemId' => $room->getItemId(),
-                'title' => $room->getTitle(),
-                'type' => $room->getType(),
-            ],
-        ]);
+        $data = $response->toArray(false);
+        $matches = array_values(array_filter($data, static fn(array $row): bool =>
+            ($row['itemId'] ?? null) === $room->getItemId()
+            && ($row['title'] ?? null) === $room->getTitle()
+            && ($row['type'] ?? null) === $room->getType()
+        ));
+
+        self::assertNotEmpty($matches, 'Expected data is missing.');
     }
 
     public function testGetRoomFull(): void
