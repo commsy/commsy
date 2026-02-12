@@ -47,7 +47,7 @@ class UserProvider implements UserProviderInterface
     {
         if ($identifier === 'root') {
             return $this->entityManager->getRepository(Account::class)
-                ->findOneBy(['username' => 'root', 'authSource' => 100]);
+                ->findOneBy(['username' => 'root', 'portal' => null]);
         }
 
         // Load a User object from your data source or throw UsernameNotFoundException.
@@ -95,7 +95,7 @@ class UserProvider implements UserProviderInterface
 
         if ($user->getUsername() === 'root') {
             return $this->entityManager->getRepository(Account::class)
-                ->findOneBy(['username' => 'root', 'authSource' => 100]);
+                ->findOneBy(['username' => 'root', 'portal' => null]);
         }
 
         // Return a User object after making sure its data is "fresh".
