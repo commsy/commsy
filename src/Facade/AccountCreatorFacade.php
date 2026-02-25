@@ -42,13 +42,13 @@ class AccountCreatorFacade
          * if the legacy environment portal id matches the user context id. We force this behaviour by setting
          * it here explicitly.
          */
-        $this->legacyEnvironment->setCurrentPortalID($account->getContextId());
+        $this->legacyEnvironment->setCurrentPortalID($account->getPortal()?->getId());
 
         // Create portal user
         // The private room item will also be created
         $portalUser = $userManager->getNewItem();
         $portalUser->setAuthSource($account->getAuthSource()->getId());
-        $portalUser->setContextID($account->getContextId());
+        $portalUser->setContextID($account->getPortal()?->getId());
         $portalUser->setUserID($account->getUsername());
         $portalUser->setFirstname($account->getFirstname());
         $portalUser->setLastname($account->getLastname());

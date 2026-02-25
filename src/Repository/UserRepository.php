@@ -109,7 +109,7 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('u.userId = :username')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleterId IS NULL')
-            ->setParameter('contextId', $account->getContextId())
+            ->setParameter('contextId', $account->getPortal())
             ->setParameter('authSourceId', $account->getAuthSource()->getId())
             ->setParameter('username', $account->getUsername())
             ->getQuery()
