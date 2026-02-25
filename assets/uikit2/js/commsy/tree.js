@@ -180,25 +180,4 @@
         this.hover_node = $.noop;
     };
 
-  function initTrees() {
-    $('[data-cs-tree]').each(function () {
-      $(this).jstree({
-        core: {
-          themes: {
-            icons: false
-          },
-          multiple: true
-        },
-        checkbox: {
-          keep_selected_style: false,
-          three_state: false
-        },
-        plugins: [
-          "wholerow", "nohover"
-        ]
-      });
-    });
-  }
-  initTrees();
-
 })(UIkit);
