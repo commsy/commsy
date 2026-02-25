@@ -237,7 +237,7 @@ class cs_context_manager extends cs_manager
             $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
             $queryBuilder
-                ->select('c.item_id', 'c.context_id', 'c.creator_id', 'c.modifier_id', 'c.creation_date',
+                ->select('c.item_id', 'c.context_id', 'c.portal_id', 'c.creator_id', 'c.modifier_id', 'c.creation_date',
                     'c.modification_date', 'c.title', 'c.status', 'c.activity', 'c.type',
                     'c.is_open_for_guests', 'c.continuous', 'c.template', 'c.contact_persons', 'c.room_description',
                     'c.lastlogin')

@@ -98,14 +98,6 @@ class cs_room2_manager extends cs_context_manager
        if ($this->_update_with_changing_modification_information) {
            parent::_update($item);
        }
-       $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET ';
-       if ($this->_update_with_changing_modification_information) {
-           $query .= 'modification_date="'.getCurrentDateTimeInMySQL().'",';
-           $modifier_id = $this->_current_user->getItemID();
-           if (!empty($modifier_id)) {
-               $query .= 'modifier_id="'.encode(AS_DB, $modifier_id).'",';
-           }
-       }
 
        $open_for_guests = $item->isOpenForGuests() ? 1 : 0;
        $continuous = $item->isContinuous() ? 1 : 0;
@@ -114,30 +106,68 @@ class cs_room2_manager extends cs_context_manager
 
        $title = str_ireplace("'", '"', (string) $item->getTitle());
 
-       $query .= 'title="'.encode(AS_DB, $title).'",'.
-                 "extras='".encode(AS_DB, serialize($item->getExtraInformation()))."',".
-                 "status='".encode(AS_DB, $item->getStatus())."',".
-                 "activity='".encode(AS_DB, $activity)."',".
-                 "continuous='".$continuous."',".
-                 "template='".$template."',".
-                 "is_open_for_guests='".$open_for_guests."',".
-                 "contact_persons='".encode(AS_DB, $item->getContactPersonString())."',";
+       $table = $this->addDatabasePrefix($this->_db_table);
+
+       $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
+       $queryBuilder
+           ->update($table)
+           ->set('title', ':title')
+           ->set('portal_id', ':portal_id')
+           ->set('extras', ':extras')
+           ->set('status', ':status')
+           ->set('activity', ':activity')
+           ->set('continuous', ':continuous')
+           ->set('template', ':template')
+           ->set('is_open_for_guests', ':is_open_for_guests')
+           ->set('contact_persons', ':contact_persons')
+           ->where('item_id = :item_id')
+           ->setParameter('title', $title)
+           ->setParameter('portal_id', $item->getPortalID())
+           ->setParameter('extras', serialize($item->getExtraInformation()))
+           ->setParameter('status', $item->getStatus())
+           ->setParameter('activity', $activity)
+           ->setParameter('continuous', $continuous)
+           ->setParameter('template', $template)
+           ->setParameter('is_open_for_guests', $open_for_guests)
+           ->setParameter('contact_persons', $item->getContactPersonString())
+           ->setParameter('item_id', $item->getItemID());
+
+       if ($this->_update_with_changing_modification_information) {
+           $queryBuilder
+               ->set('modification_date', ':modification_date')
+               ->setParameter('modification_date', getCurrentDateTimeInMySQL());
+
+           $modifier_id = $this->_current_user->getItemID();
+           if (!empty($modifier_id)) {
+               $queryBuilder
+                   ->set('modifier_id', ':modifier_id')
+                   ->setParameter('modifier_id', $modifier_id);
+           }
+       }
 
        if ($this->_existsField($this->_db_table, 'room_description')) {
-           $query .= "room_description='".encode(AS_DB, $item->getDescription())."'";
+           $queryBuilder
+               ->set('room_description', ':description')
+               ->setParameter('description', $item->getDescription());
        } else {
-           $query .= "description='".encode(AS_DB, $item->getDescription())."'";
+           $queryBuilder
+               ->set('description', ':description')
+               ->setParameter('description', $item->getDescription());
        }
 
        if ($this->_existsField($this->_db_table, 'archived') && method_exists($item, 'getArchived')) {
-           $query .= ', archived='.encode(AS_DB, $item->getArchived() ? 1 : 0);
+           $queryBuilder
+               ->set('archived', ':archived')
+               ->setParameter('archived', $item->getArchived() ? 1 : 0);
        }
 
-       $query .= ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
-
-       $result = $this->_db_connector->performQuery($query);
-       if (!isset($result) or !$result) {
-           trigger_error('Problems updating '.$this->_db_table.' item from query: "'.$query.'"', E_USER_WARNING);
+       try {
+           $queryBuilder->executeStatement();
+       } catch (\Doctrine\DBAL\Exception $e) {
+           trigger_error(
+               'Problems updating '.$this->_db_table.' item from query: "'.$queryBuilder->getSQL().'"',
+               E_USER_WARNING
+           );
        }
    }
 
