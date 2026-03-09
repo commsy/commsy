@@ -47,9 +47,7 @@ class RoomProfileGeneralType extends AbstractType
                  * Workaround for https://github.com/symfony/ux/pull/2397
                  * We always add the field for now and just control the visibility.
                  */
-//                if (!$checked || !file_exists($options['cropPath'])) {
-//                    return;
-//                }
+                $hasCropPath = is_string($options['cropPath']) && file_exists($options['cropPath']);
 
                 $field->add(CropperType::class, [
                     'public_url' => $options['cropPublicUrl'],
@@ -58,7 +56,7 @@ class RoomProfileGeneralType extends AbstractType
                         'preview' => '#cropper-preview',
                     ],
                     'attr' => [
-                        'class' => !file_exists($options['cropPath']) || !$checked ? 'uk-hidden' : '',
+                        'class' => !$hasCropPath || !$checked ? 'uk-hidden' : '',
                     ]
                 ]);
             })

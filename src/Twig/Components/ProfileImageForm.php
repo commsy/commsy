@@ -62,7 +62,7 @@ final class ProfileImageForm extends AbstractController
             $imagePath = $this->profileHelper->getTempProfileImagePath($account, $user->getContextID());
 
             $this->formData = [
-                'useProfileImage' => !empty($user->getPicture()) || file_exists($imagePath),
+                'useProfileImage' => !empty($user->getPicture()) || (is_string($imagePath) && file_exists($imagePath)),
             ];
         }
     }

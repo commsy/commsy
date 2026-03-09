@@ -204,7 +204,9 @@ class UserTransformer extends AbstractTransformer
             $userObject->setStreet($userData['street']);
             $userObject->setZipcode($userData['zipCode']);
             $userObject->setCity($userData['city']);
-            $userObject->setOffice($userData['room']);
+            if (($userData['room'] ?? null) !== null) {
+                $userObject->setOffice($userData['room']);
+            }
             $userObject->setOrganisation($userData['organisation']);
             $userObject->setPosition($userData['position']);
             $userObject->setICQ($userData['icq']);

@@ -203,8 +203,7 @@ class ProfileController extends AbstractController
             $userItem->save();
 
             $userList = $userItem->getRelatedUserList(true);
-            $tempUserItem = $userList->getFirst();
-            while ($tempUserItem) {
+            foreach ($userList as $tempUserItem) {
                 if ($formData['titleChangeInAllContexts']) {
                     $tempUserItem->setTitle($formData['title']);
                 }
@@ -217,8 +216,9 @@ class ProfileController extends AbstractController
                 if ($formData['cityChangeInAllContexts']) {
                     $tempUserItem->setCity($formData['city']);
                 }
-                if ($formData['roomChangeInAllContexts']) {
-                    $tempUserItem->setRoom($formData['room']);
+
+                if ($formData['roomChangeInAllContexts'] && ($formData['room'] ?? null) !== null) {
+                    $tempUserItem->setOffice($formData['room']);
                 }
                 if ($formData['organisationChangeInAllContexts']) {
                     $tempUserItem->setOrganisation($formData['organisation']);
@@ -227,7 +227,6 @@ class ProfileController extends AbstractController
                     $tempUserItem->setPosition($formData['position']);
                 }
                 $tempUserItem->save();
-                $tempUserItem = $userList->getNext();
             }
 
             return $this->redirectToRoute('app_profile_address', ['roomId' => $roomId, 'itemId' => $itemId]);
