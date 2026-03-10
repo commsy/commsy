@@ -895,10 +895,6 @@ class DateController extends BaseController
         }
 
         $formData = $transformer->transform($dateItem);
-        $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
-        $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
-        $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
-        $formData['draft'] = $isDraft;
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId]);
         $calendarsOptions = [];
@@ -950,32 +946,6 @@ class DateController extends BaseController
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($form->has('category_mapping')) {
-                    $categoryIds = $formData['category_mapping']['categories'] ?? [];
-
-                    if (isset($formData['category_mapping']['newCategory']) && $this->isGranted(CategoryVoter::EDIT)) {
-                        $newCategoryTitle = $formData['category_mapping']['newCategory'];
-                        $newCategory = $categoryService->addTag($newCategoryTitle, $roomId);
-                        $categoryIds[] = $newCategory->getItemID();
-                    }
-
-                    if (!empty($categoryIds)) {
-                        $dateItem->setTagListByID($categoryIds);
-                    }
-                }
-                if ($form->has('hashtag_mapping')) {
-                    $hashtagIds = $formData['hashtag_mapping']['hashtags'] ?? [];
-
-                    if (isset($formData['hashtag_mapping']['newHashtag'])) {
-                        $newHashtagTitle = $formData['hashtag_mapping']['newHashtag'];
-                        $newHashtag = $labelService->getNewHashtag($newHashtagTitle, $roomId);
-                        $hashtagIds[] = $newHashtag->getItemID();
-                    }
-
-                    if (!empty($hashtagIds)) {
-                        $dateItem->setBuzzwordListByID($hashtagIds);
-                    }
-                }
 
                 $valuesToChange = [];
                 if ($valuesBeforeChange['startingTime'] != $dateItem->getStartingTime()) {

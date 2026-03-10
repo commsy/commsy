@@ -34,8 +34,9 @@ class DateType extends AbstractType
 {
     use CategoryTagValidatorTrait;
 
-    public function __construct(private readonly Security $security)
-    {
+    public function __construct(
+        private readonly Security $security
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
