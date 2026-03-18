@@ -719,6 +719,8 @@ class cs_labels_manager extends cs_manager
      {
          parent::_update($item);
 
+         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : getCurrentDateTimeInMySQL();
+
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
          $queryBuilder
@@ -731,7 +733,7 @@ class cs_labels_manager extends cs_manager
              ->set('public', ':public')
              ->where('item_id = :itemId')
              ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
-             ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+             ->setParameter('modificationDate', $modificationDate)
              ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
              ->setParameter('description', $item->getDescription())
              ->setParameter('extras', serialize($item->getExtraInformation()))
