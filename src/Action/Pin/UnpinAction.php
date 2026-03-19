@@ -38,7 +38,11 @@ class UnpinAction implements ActionInterface
 
         foreach ($items as $item) {
             $item->setPinned(false);
+
+            $changeModificationOnSave = $item->isChangeModificationOnSave();
+            $item->setChangeModificationOnSave(false);
             $item->save();
+            $item->setChangeModificationOnSave($changeModificationOnSave);
         }
 
         return new JsonDataResponse([

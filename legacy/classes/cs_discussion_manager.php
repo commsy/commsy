@@ -295,6 +295,9 @@ class cs_discussion_manager extends cs_manager
      public function _update($item)
      {
          parent::_update($item);
+
+         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : getCurrentDateTimeInMySQL();
+
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
          $queryBuilder
@@ -310,7 +313,7 @@ class cs_discussion_manager extends cs_manager
              ->set('public', ':public')
              ->where('item_id = :itemId')
              ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
-             ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+             ->setParameter('modificationDate', $modificationDate)
              ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
              ->setParameter('title', $item->getTitle())
              ->setParameter('description', $item->getDescription())

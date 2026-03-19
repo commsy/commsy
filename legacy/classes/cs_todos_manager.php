@@ -368,6 +368,8 @@ class cs_todos_manager extends cs_manager
          /* @var cs_todo_item $item */
          parent::_update($item);
 
+         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : getCurrentDateTimeInMySQL();
+
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
          $queryBuilder
@@ -383,7 +385,7 @@ class cs_todos_manager extends cs_manager
              ->set('description', ':description')
              ->where('item_id = :itemId')
              ->setParameter('modifierId', $item->getModificatorItem()->getItemID())
-             ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+             ->setParameter('modificationDate', $modificationDate)
              ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
              ->setParameter('title', $item->getTitle())
              ->setParameter('status', $item->getInternalStatus())
