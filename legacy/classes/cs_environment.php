@@ -764,24 +764,24 @@ class cs_environment
             $context_item = $this->getCurrentContextItem();
             if ($this->inCommunityRoom()) {
                 $this->instance['translation_object']->setContext('community');
-                $portal_item = $context_item->getContextItem();
-                $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
+                $portal = $this->portalRepository->find($context_item->getPortalID());
+                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inProjectRoom()) {
                 $this->instance['translation_object']->setContext('project');
-                $portal_item = $context_item->getContextItem();
-                $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
+                $portal = $this->portalRepository->find($context_item->getPortalID());
+                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inGroupRoom()) {
                 $this->instance['translation_object']->setContext(CS_GROUPROOM_TYPE);
-                $portal_item = $context_item->getContextItem();
-                $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
+                $portal = $this->portalRepository->find($context_item->getPortalID());
+                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inUserroom()) {
                 $this->instance['translation_object']->setContext(cs_userroom_item::ROOM_TYPE_USER);
-                $portal = $this->portalRepository->find($context_item->getContextID());
+                $portal = $this->portalRepository->find($context_item->getPortalID());
                 $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inPrivateRoom()) {
                 $this->instance['translation_object']->setContext('private');
-                $portal_item = $context_item->getContextItem();
-                $this->instance['translation_object']->setTimeMessageArray($portal_item->getTimeTextArray());
+                $portal = $this->portalRepository->find($context_item->getPortalID());
+                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inPortal()) {
                 $this->instance['translation_object']->setContext('portal');
                 $this->instance['translation_object']->setTimeMessageArray($context_item->getTimeTextArray());
