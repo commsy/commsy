@@ -41,7 +41,7 @@ class PortalRepository extends ServiceEntityRepository
         if (!$portal) {
             // NOTE: for user rooms, the context is its parent project room (whose context is the portal)
             $parentRoom = $this->roomRepository->find($contextId);
-            $portal = $this->find($parentRoom->getContextId());
+            $portal = $parentRoom->getPortal() ?? $this->find($parentRoom->getContextId());
         }
 
         if (!$portal) {
