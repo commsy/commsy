@@ -819,7 +819,7 @@ class UserService
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
-                $success = $mailer->sendRaw(
+                $mailer->sendRaw(
                     $subject,
                     $body,
                     RecipientFactory::createRecipient($user),

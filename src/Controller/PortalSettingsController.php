@@ -1614,12 +1614,13 @@ class PortalSettingsController extends AbstractController
         RouterInterface $router,
         ContactFormHelper $contactFormHelper
     ): Response {
-        $user = $userService->getCurrentUserItem();
+        $currentUser = $userService->getCurrentUserItem();
+
         $recipientArray = [];
         $recipientIds = explode(', ', (string) $recipients);
         foreach ($recipientIds as $recipientId) {
-            $currentUser = $userService->getUser($recipientId);
-            $recipientArray[] = $currentUser;
+            $user = $userService->getUser($recipientId);
+            $recipientArray[] = $user;
         }
 
         $sendMail = new AccountIndexSendMail();
@@ -1641,14 +1642,17 @@ class PortalSettingsController extends AbstractController
                     $sendMail->getSubject(),
                     $sendMail->getMessage(),
                     $portal->getTitle(),
-                    $userService->getCurrentUserItem(),
+                    $currentUser,
                     [],
                     $sendMail->getRecipients(),
                     '',
                     $sendMail->getCopyToSender()
                 );
 
+                $this->addFlash('mailSend', $sendStatus->isSuccess());
                 $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
+                $this->addFlash('deliveredRecipients', $sendStatus->getDeliveredRecipients());
+                $this->addFlash('failedRecipients', $sendStatus->getFailedRecipients());
 
                 $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                     'portalId' => $portal->getId(),
@@ -1662,7 +1666,7 @@ class PortalSettingsController extends AbstractController
         }
 
         return $this->render('portal_settings/account_index_send_mail.html.twig', [
-            'user' => $user,
+            'user' => $currentUser,
             'form' => $form,
             'recipients' => $recipientArray,
         ]);

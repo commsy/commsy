@@ -6,6 +6,14 @@
                 <source>Subject</source>
                 <target>Betreff</target>
             </trans-unit>
+            <trans-unit id="mailFromPortal">
+                <source>This email has been sent by ... from portal ...</source>
+                <target>Diese E-Mail wurde von {sender_name} über das Portal "{room_name}" an {recipients} versendet.</target>
+            </trans-unit>
+            <trans-unit id="mailFromRoom">
+                <source>This email has been sent by ... from room ...</source>
+                <target>Diese E-Mail wurde von {sender_name} über den Raum "{room_name}" an {recipients} versendet.</target>
+            </trans-unit>
             <trans-unit id="mailFromProjectRoom">
                 <source>This email has been sent by ... from project room ...</source>
                 <target>Diese E-Mail wurde von {sender_name} über den Projektraum "{room_name}" versendet.</target>
@@ -79,8 +87,8 @@
                 <target>Eintrag versenden</target>
             </trans-unit>
             <trans-unit id="mailSendBody">
-                <source>This email has been sent by sender to recipient</source>
-                <target>Diese E-Mail wurde von {sender_name} an {recipient_name} versendet.</target>
+                <source>This email has been sent by sender ... from room ... to recipient ...</source>
+                <target>Diese E-Mail wurde von {sender_name} über den Raum "{room_name}" an {recipient_name} versendet.</target>
             </trans-unit>
             <trans-unit id="mailSendSuccess">
                 <source>Your email has been successfully sent.</source>
@@ -98,9 +106,13 @@
                 <source>This email has been sent to all users of this group</source>
                 <target>Diese E-Mail wurde von {sender_name} an die Mitglieder der Gruppe "{group_name}" (Raum "{room_name}") versendet.</target>
             </trans-unit>
-            <trans-unit id="mailSendWarning">
-                <source>Your email may only have been partially sent.</source>
-                <target>Ihre E-Mail wurde möglicherweise nur teilweise versendet. Es gab Probleme bei der Zustellung.</target>
+            <trans-unit id="mailSendWarningPartialFailure">
+                <source>Your email was only partially sent.</source>
+                <target>Ihre E-Mail wurde nur teilweise versendet. Es gab Probleme bei der Zustellung an folgende EmpfängerInnen:</target>
+            </trans-unit>
+            <trans-unit id="mailSendWarningTotalFailure">
+                <source>Your email could not be sent.</source>
+                <target>Ihre E-Mail konnte nicht versendet werden. Es gab Probleme bei der Zustellung an folgende EmpfängerInnen:</target>
             </trans-unit>
             <trans-unit id="mailBackToEntry">
                 <source>Back to</source>

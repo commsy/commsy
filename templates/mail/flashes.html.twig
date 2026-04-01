@@ -1,6 +1,8 @@
 {% macro mailSendFlashes(backLink, backLabel) %}
     {% set mailSend = app.flashes('mailSend')|first %}
     {% set recipientCount = app.flashes('recipientCount')|first %}
+    {% set deliveredRecipients = app.flashes('deliveredRecipients')|first %}
+    {% set failedRecipients = app.flashes('failedRecipients')|first %}
 
     {% if mailSend is same as (true) %}
         <div class="uk-alert uk-alert-success">
@@ -8,9 +10,31 @@
             {{ 'Your email has been successfully sent to multiple users'|trans({'user_count': recipientCount}, "mail") }}
         </div>
     {% else %}
-        <div class="uk-alert uk-alert-warning">
+        {% if failedRecipients|length is same as recipientCount %}
+            {% set alertClass = 'uk-alert-danger' %}
+            {% set alertMessage = 'Your email could not be sent.'|trans({}, "mail") %}
+        {% else %}
+            {% set alertClass = 'uk-alert-warning' %}
+            {% set alertMessage = 'Your email was only partially sent.'|trans({}, "mail") %}
+        {% endif %}
+        <div class="uk-alert {{ alertClass }}">
             <i class="uk-icon-exclamation-triangle uk-icon-medium"></i>
-            {{ 'Your email may only have been partially sent.'|trans({}, "mail") }}
+            {{ alertMessage }}
+            <ul>
+                {%- for failedRecipient in failedRecipients -%}
+                    {%- set fullName = failedRecipient.fullName -%}
+                    <li>
+                        {%- if not failedRecipient.fullName is empty -%}
+                            {{- fullName|e -}}
+                        {%- endif -%}
+                        {%- if not failedRecipient.email is empty and failedRecipient.isEmailVisible is same as(true) -%}
+                            {%- if not fullName is empty %} ({% endif -%}
+                            {{- failedRecipient.email -}}
+                            {%- if not fullName is empty -%}){%- endif -%}
+                        {%- endif -%}
+                    </li>
+                {%- endfor -%}
+            </ul>
         </div>
     {% endif %}
 

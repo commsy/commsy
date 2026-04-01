@@ -17,9 +17,13 @@ class Recipient
 {
     private ?string $email = null;
 
+    private bool $isEmailVisible = true;
+
     private ?string $firstname = null;
 
     private ?string $lastname = null;
+
+    private ?string $fullname = null;
 
     private ?string $language = null;
 
@@ -34,6 +38,18 @@ class Recipient
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function isEmailVisible(): bool
+    {
+        return $this->isEmailVisible;
+    }
+
+    public function setIsEmailVisible(bool $isEmailVisible): self
+    {
+        $this->isEmailVisible = $isEmailVisible;
 
         return $this;
     }
@@ -66,6 +82,34 @@ class Recipient
         $this->lastname = $lastname;
 
         return $this;
+    }
+
+    // NOTE: We allow to explicitly set $fullname since, in some cases, individual name
+    //       parts aren't available. However, if $fullname has not been set explicitly,
+    //       we assemble the full name from $firstname and $lastname.
+    public function setFullName(?string $fullname): Recipient
+    {
+        $this->fullname = $fullname;
+        return $this;
+    }
+
+    public function getFullName(): string
+    {
+        $fullname = $this->fullname;
+
+        if (!empty($fullname)) {
+            return $fullname;
+        }
+
+        $fullnameParts = [];
+        if (!empty($this->getFirstname())) {
+            $fullnameParts[] = $this->getFirstname();
+        }
+        if (!empty($this->getLastname())) {
+            $fullnameParts[] = $this->getLastname();
+        }
+
+        return !empty($fullnameParts) ? implode(' ', $fullnameParts) : '';
     }
 
     public function getLanguage(): ?string

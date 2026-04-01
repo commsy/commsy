@@ -15,8 +15,11 @@
 namespace App\Mail\Helper;
 
 use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Utils\MailAssistant;
 use cs_user_item;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use InvalidArgumentException;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -35,51 +38,49 @@ final readonly class ContactFormHelper
         string $from,
         cs_user_item $currentUser,
         array $files,
-        array $recipients,
+        array $recipientUsers,
         string $additionalRecipient,
         bool $copyToSender
     ): EmailSendStatus {
-        $recipientCount = 0;
-        $message = (new Email())
+        $email = (new Email())
             ->subject($subject)
             ->html($message);
 
         // reply to
-        if ($currentUser->isEmailVisible()) {
-            $message->replyTo(new Address($currentUser->getEmail(), $currentUser->getFullName()));
+        $validator = new EmailValidator();
+        $currentUserEmail = $currentUser->getEmail();
+        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+            if ($currentUser->isEmailVisible()) {
+                $email->replyTo(new Address($currentUserEmail, $currentUser->getFullName()));
+            }
         }
 
         // files
         if (!empty($files)) {
-            $message = $this->mailAssistant->addAttachments($files, $message);
+            $email = $this->mailAssistant->addAttachments($files, $email);
         }
+
+        $recipients = [];
 
         // copy to sender
         if ($copyToSender) {
-            $recipientCount++;
-            $senderMessage = clone $message;
-            $senderMessage->to(new Address($currentUser->getEmail(), $currentUser->getFullName()));
-            $this->mailer->sendEmailObject($senderMessage, $from);
+            $recipients[] = RecipientFactory::createRecipient($currentUser);
         }
 
         // to
-        foreach ($recipients as $recipient) {
-            if (!$recipient instanceof cs_user_item) {
+        foreach ($recipientUsers as $user) {
+            if (!$user instanceof cs_user_item) {
                 throw new InvalidArgumentException();
             }
 
-            $message->addTo(new Address($recipient->getEmail(), $recipient->getFullName()));
+            $recipients[] = RecipientFactory::createRecipient($user);
         }
 
-        // cc
         if (!empty($additionalRecipient)) {
-            $message->addCc(new Address($additionalRecipient));
+            $recipients[] = RecipientFactory::createFromRaw($additionalRecipient);
         }
 
-        $recipientCount += count($message->getTo()) + count($message->getCc());
-
-        $success = $this->mailer->sendEmailObject($message, $from);
-
-        return new EmailSendStatus($success, $recipientCount);
+        // send email to each recipient individually
+        return $this->mailer->sendEmailObject($email, $from, $recipients);
     }
 }

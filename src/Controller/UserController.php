@@ -36,14 +36,12 @@ use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AccountMail;
 use App\Utils\ItemService;
-use App\Utils\MailAssistant;
 use App\Utils\TopicService;
 use App\Utils\UserService;
 use cs_room_item;
 use cs_user_item;
+use cs_userroom_item;
 use Doctrine\ORM\EntityManagerInterface;
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
@@ -55,8 +53,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -118,25 +114,37 @@ class UserController extends BaseController
     ): Response {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        $transUnit = ($roomItem)
+            ? 'This email has been sent by ... from room ...'
+            : 'This email has been sent by ... from portal ...';
+
         $item = $this->userService->getUser(intval($itemId));
-        $formData = null;
-        if (!is_null($item->getLinkedUserroomItem())) {
-            $recipients = [];
-            $recipients[$item->getFullName()] = $item->getFullName();
-            foreach ($item->getLinkedUserroomItem()->getModeratorList() as $moderator) {
-                $recipients[$moderator->getFullName()] = $moderator->getFullName();
+
+        $recipients = [$item];
+        $recipientNames[$item->getFullName()] = $item->getFullName();
+
+        // for email sent from a project room user's detail page to all members of that user's user room,
+        // include the user room's moderators
+        if (!empty($moderatorIds)) {
+            $moderatorIds = explode(',', (string) $moderatorIds);
+            foreach ($moderatorIds as $moderatorId) {
+                $moderator = $this->userService->getUser(intval($moderatorId));
+                $recipients[] = $moderator;
+                $recipientNames[$moderator->getFullName()] = $moderator->getFullName();
             }
-            $message = $translator->trans('This email has been sent by ... from userroom ...', [
-                'sender_name' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
-                'room_name' => $item->getLinkedUserroomItem()->getTitle(),
-                'recipients' => implode(', ', $recipients),
-            ], 'mail');
-            $message = '<br><br>--<br>'.$message;
-            $search = ', ';
-            $replace = ' & ';
-            $message = strrev(implode(strrev($replace), explode(strrev($search), strrev($message), 2)));
-            $formData = ['message' => $message];
         }
+
+        $message = '<br><br>--<br>' . $translator->trans($transUnit, [
+            'sender_name' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
+            'room_name' => $roomItem?->getTitle() ?? $portalItem->getTitle(),
+            'recipients' => implode(', ', $recipientNames),
+        ], 'mail');
+        $search = ', ';
+        $replace = ' & ';
+        $message = strrev(implode(strrev($replace), explode(strrev($search), strrev($message), 2)));
+        $formData = ['message' => $message];
 
         $form = $this->createForm(AccountContactFormType::class, $formData, [
             'item' => $item,
@@ -162,14 +170,6 @@ class UserController extends BaseController
 
             $formData = $form->getData();
 
-            $recipients = [$item];
-            if (!empty($moderatorIds)) {
-                $moderators = explode(', ', (string) $moderatorIds);
-                foreach ($moderators as $moderatorId) {
-                    $recipients[] = $this->userService->getUser($moderatorId);
-                }
-            }
-
             // send mail
             $sendStatus = $contactFormHelper->handleContactFormSending(
                 $formData['subject'],
@@ -184,6 +184,8 @@ class UserController extends BaseController
 
             $this->addFlash('mailSend', $sendStatus->isSuccess());
             $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
+            $this->addFlash('deliveredRecipients', $sendStatus->getDeliveredRecipients());
+            $this->addFlash('failedRecipients', $sendStatus->getFailedRecipients());
 
             // redirect to success page
             return $this->redirectToRoute('app_user_sendsuccesscontact', [
@@ -611,7 +613,7 @@ class UserController extends BaseController
             'nextItemId' => $infoArray['nextItemId'],
             'lastItemId' => $infoArray['lastItemId'],
             'readCount' => $infoArray['readCount'],
-            'moderatorIds' => implode(', ', $moderatorIds),
+            'moderatorIds' => implode(',', $moderatorIds),
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'userCount' => $infoArray['userCount'],
             'draft' => $infoArray['draft'],
@@ -743,23 +745,27 @@ class UserController extends BaseController
     #[IsGranted('RUBRIC_USER')]
     public function send(
         Request $request,
+        ContactFormHelper $contactFormHelper,
         TranslatorInterface $translator,
-        MailAssistant $mailAssistant,
-        Mailer $mailer,
         int $roomId,
         int $itemId
     ): Response {
-        $item = $this->itemService->getTypedItem($itemId);
+        $room = $this->getRoom($roomId);
 
+        $item = $this->itemService->getTypedItem($itemId);
         if (!$item) {
             throw $this->createNotFoundException('no item found for id '.$itemId);
         }
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        $defaultBodyMessage = '<br/><br/><br/>--<br/>'.$translator->trans(
-            'This email has been sent by sender to recipient',
-            ['sender_name' => $currentUser->getFullName(), 'recipient_name' => $item->getFullName()],
+        $defaultBodyMessage = '<br/><br/>--<br/>' . $translator->trans(
+            'This email has been sent by sender ... from room ... to recipient ...',
+            [
+                'sender_name' => $currentUser->getFullName(),
+                'room_name' => $room->getTitle(),
+                'recipient_name' => $item->getFullName()
+            ],
             'mail'
         );
 
@@ -780,39 +786,24 @@ class UserController extends BaseController
 
             if ('save' == $saveType) {
                 $formData = $form->getData();
-
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-                // TODO: validate sender & recipient email addresses (similar to sendMultipleAction())
-                $sender = new Address($currentUser->getEmail(), $currentUser->getFullName());
-                $recipient = new Address($item->getEmail(), $item->getFullName());
-
-                // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $email = (new Email())
-                    ->subject($formData['subject'])
-                    ->html($formData['message']);
-
-                $formDataFiles = $formData['files'];
-                if ($formDataFiles) {
-                    $email = $mailAssistant->addAttachments($formDataFiles, $email);
-                }
-
-                if ($currentUser->isEmailVisible()) {
-                    $email->replyTo($sender);
-                }
-
-                $recipients = [$recipient];
-
-                // form option: copy_to_sender
-                if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    $recipients[] = $sender;
-                }
-
                 // send mail
-                foreach ($recipients as $rec) {
-                    $email->to($rec);
-                    $mailer->sendEmailObject($email, $portalItem->getTitle());
-                }
+                $sendStatus = $contactFormHelper->handleContactFormSending(
+                    $formData['subject'],
+                    $formData['message'] ?: '',
+                    $portalItem->getTitle(),
+                    $currentUser,
+                    $formData['files'],
+                    [$item],
+                    '',
+                    $formData['copy_to_sender']
+                );
+
+                $this->addFlash('mailSend', $sendStatus->isSuccess());
+                $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
+                $this->addFlash('deliveredRecipients', $sendStatus->getDeliveredRecipients());
+                $this->addFlash('failedRecipients', $sendStatus->getFailedRecipients());
 
                 // redirect to success page
                 return $this->redirectToRoute('app_user_sendsuccess', [
@@ -854,13 +845,33 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/send/success/contact/{originPath}')]
-    public function sendSuccessContact($roomId, $itemId, $originPath): Response
-    {
+    public function sendSuccessContact(
+        TranslatorInterface $translator,
+        $roomId,
+        $itemId,
+        $originPath
+    ): Response {
         // get item
         $item = $this->itemService->getTypedItem($itemId);
 
         if (!$item) {
             throw $this->createNotFoundException('no item found for id '.$itemId);
+        }
+
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $title = $roomItem?->getTitle() ?? ''; // app_room_home, app_dashboard_overview
+        if ($originPath === 'app_portalsettings_accountindex') {
+            $title = $translator->trans('settings', [], 'portal');
+        } else if ($originPath === 'app_project_list') {
+            $title = $translator->trans('Project rooms', [], 'portal');
+        } else if ($originPath === 'app_room_listall') {
+            $title = $translator->trans('All rooms', [], 'room');
+        } else if ($originPath === 'app_user_list') {
+            $title = $translator->trans('user', [], 'menu');
+        } else if ($originPath === 'app_user_detail') {
+            $title = $item->getFullname();
         }
 
         return $this->render('user/send_success_contact.html.twig', [
@@ -869,7 +880,7 @@ class UserController extends BaseController
                 'itemId' => $itemId,
                 'portalId' => $roomId,
             ]),
-            'title' => $item->getFullname(),
+            'title' => $title,
         ]);
     }
 
@@ -1160,9 +1171,8 @@ class UserController extends BaseController
     #[Route(path: '/room/{roomId}/user/sendMultiple')]
     public function sendMultiple(
         Request $request,
+        ContactFormHelper $contactFormHelper,
         TranslatorInterface $translator,
-        MailAssistant $mailAssistant,
-        Mailer $mailer,
         int $roomId
     ): Response {
         $room = $this->getRoom($roomId);
@@ -1181,17 +1191,21 @@ class UserController extends BaseController
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        // include a footer message in the email body (which may be esp. useful if some emails are sent via BCC mail)
+        // include a footer message in the email body (which may be useful if sender email is hidden & left out from replyTo)
         $userCount = is_countable($userIds) ? count($userIds) : 0;
         $defaultBodyMessage = '';
         if ($userCount) {
-            $defaultBodyMessage .= '<br/><br/><br/>--<br/>';
+            $defaultBodyMessage .= '<br/><br/>--<br/>';
             if (1 == $userCount) {
                 $user = $this->userService->getUser(reset($userIds));
                 if ($user) {
                     $defaultBodyMessage .= $translator->trans(
-                        'This email has been sent by sender to recipient',
-                        ['sender_name' => $currentUser->getFullName(), 'recipient_name' => $user->getFullName()],
+                        'This email has been sent by sender ... from room ... to recipient ...',
+                        [
+                            'sender_name' => $currentUser->getFullName(),
+                            'room_name' => $room->getTitle(),
+                            'recipient_name' => $user->getFullName()
+                        ],
                         'mail'
                     );
                 }
@@ -1221,7 +1235,7 @@ class UserController extends BaseController
         ]);
         $form->handleRequest($request);
 
-        // get all affected user
+        // get all affected users
         $users = [];
         if (isset($formData['users'])) {
             foreach ($formData['users'] as $userId) {
@@ -1237,56 +1251,24 @@ class UserController extends BaseController
 
             if ('save' == $saveType) {
                 $formData = $form->getData();
-
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-                // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $recipients = [];
-                $validator = new EmailValidator();
-                $failedUsers = [];
-                foreach ($users as $user) {
-                    if ($validator->isValid($user->getEmail(), new RFCValidation())) {
-                        $recipients[] = new Address($user->getEmail(), $user->getFullName());
-                    } else {
-                        $failedUsers[] = $user;
-                    }
-                }
-
-                $replyTo = [];
-                if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
-                    if ($currentUser->isEmailVisible()) {
-                        $replyTo[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
-                    }
-
-                    // form option: copy_to_sender
-                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        $recipients[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
-                    }
-                }
-
-                // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $email = (new Email())
-                    ->subject($formData['subject'])
-                    ->html($formData['message'])
-                    ->replyTo(...$replyTo);
-
-                $formDataFiles = $formData['files'];
-                if ($formDataFiles) {
-                    $email = $mailAssistant->addAttachments($formDataFiles, $email);
-                }
-
-                $mailSend = true;
-                foreach ($recipients as $recipient) {
-                    $email->to($recipient);
-                    $send = $mailer->sendEmailObject($email, $portalItem->getTitle());
-                    $mailSend = $mailSend && $send;
-                }
-
-                $this->addFlash('recipientCount', count($recipients));
-
                 // send mail
-                $mailSend = $mailSend && empty($failedUsers);
-                $this->addFlash('mailSend', $mailSend);
+                $sendStatus = $contactFormHelper->handleContactFormSending(
+                    $formData['subject'],
+                    $formData['message'] ?: '',
+                    $portalItem->getTitle(),
+                    $currentUser,
+                    $formData['files'],
+                    $users,
+                    '',
+                    $formData['copy_to_sender']
+                );
+
+                $this->addFlash('mailSend', $sendStatus->isSuccess());
+                $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
+                $this->addFlash('deliveredRecipients', $sendStatus->getDeliveredRecipients());
+                $this->addFlash('failedRecipients', $sendStatus->getFailedRecipients());
 
                 // redirect to success page
                 return $this->redirectToRoute('app_user_sendmultiplesuccess', [

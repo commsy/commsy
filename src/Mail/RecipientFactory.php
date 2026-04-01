@@ -17,6 +17,7 @@ use App\Entity\Account;
 use App\Proxy\PortalProxy;
 use cs_room_item;
 use cs_user_item;
+use Symfony\Component\Mime\Email;
 
 class RecipientFactory
 {
@@ -42,6 +43,18 @@ class RecipientFactory
         return $recipients;
     }
 
+    public static function createRecipientsFromEmail(Email $email): iterable
+    {
+        $addresses = $email->getTo();
+
+        foreach ($addresses as $address) {
+            $recipient = new Recipient();
+            $recipient->setFullName($address->getName());
+            $recipient->setEmail($address->getAddress());
+            yield $recipient;
+        }
+    }
+
     public static function createRecipients(cs_user_item ...$users): iterable
     {
         foreach ($users as $user) {
@@ -55,6 +68,7 @@ class RecipientFactory
         $recipient->setFirstname($user->getFirstname());
         $recipient->setLastname($user->getLastname());
         $recipient->setEmail($user->getEmail());
+        $recipient->setIsEmailVisible($user->isEmailVisible());
 
         $room = $user->getContextItem();
 
@@ -73,12 +87,14 @@ class RecipientFactory
         string $email,
         string $firstname = '',
         string $lastname = '',
-        string $language = 'de'
+        string $language = 'de',
+        bool $isEmailVisible = true
     ): Recipient {
         $recipient = new Recipient();
         $recipient->setFirstname($firstname);
         $recipient->setLastname($lastname);
         $recipient->setEmail($email);
+        $recipient->setIsEmailVisible($isEmailVisible);
         $recipient->setLanguage($language);
 
         return $recipient;

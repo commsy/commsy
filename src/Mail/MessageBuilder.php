@@ -44,7 +44,7 @@ readonly class MessageBuilder
         string $subject,
         string $message,
         string $fromSenderName,
-        Recipient $recipient,
+        ?Recipient $recipient = null,
         array $replyTo = [],
         array $cc = []
     ): Email {
@@ -54,13 +54,8 @@ readonly class MessageBuilder
             ->html($message);
 
         // To
-        if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
-            $email->to(new Address(
-                $recipient->getEmail(),
-                $recipient->getFirstname().' '.$recipient->getLastname()
-            ));
-        } else {
-            $email->to(new Address($recipient->getEmail()));
+        if ($recipient) {
+            $email->to(new Address($recipient->getEmail(), $recipient->getFullName()));
         }
 
         // Reply-To
@@ -79,20 +74,15 @@ readonly class MessageBuilder
     public function generateFromMessage(
         MessageInterface $message,
         string $fromSenderName,
-        Recipient $recipient,
+        ?Recipient $recipient = null,
         array $replyTo = []
     ): Email {
         $email = (new TemplatedEmail())
             ->from(new Address($this->emailFrom, $fromSenderName));
 
         // To
-        if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
-            $email->to(new Address(
-                $recipient->getEmail(),
-                $recipient->getFirstname().' '.$recipient->getLastname()
-            ));
-        } else {
-            $email->to(new Address($recipient->getEmail()));
+        if ($recipient) {
+            $email->to(new Address($recipient->getEmail(), $recipient->getFullName()));
         }
 
         // Reply-To
