@@ -34,11 +34,6 @@ class cs_translator
     private string $_selected_language = '';
 
     /**
-     * containing the selected language.
-     */
-    private string $_session_language = '';
-
-    /**
      * containing the special rubric names, get from current room.
      */
     private array $_rubric_translation_array = [];
@@ -47,11 +42,6 @@ class cs_translator
      * containing the special email texts, get from current room.
      */
     private array $_email_array = [];
-
-    /**
-     * containing the loaded message.dats to delete while saving.
-     */
-    private array $_loaded_message_dats = [];
 
     /**
      * containing the context: community or project or portal.
@@ -63,8 +53,6 @@ class cs_translator
      */
     private string $_default_language = 'de';
 
-    private array $_dat_folder_array = [];
-
     /** constructor
      * the only available constructor, initial values for internal variables.
      */
@@ -73,58 +61,23 @@ class cs_translator
         $this->_file_path = realpath(__DIR__).'/../'.$this->_file_path;
     }
 
-    /** _loadAllMessages - INTERNAL
-     * this methode loads all message.dats from commsy -> for language edit.
-     */
-    public function _loadAllMessages()
-    {
-        $directory = dir($this->_file_path);
-        while ($entry = $directory->read()) {
-            if (1 == mb_strpos($entry, 's_') and mb_strpos($entry, '.dat') and 'm' == $entry[0]) {
-                if (file_exists($this->_file_path.$entry)) {
-                    include_once $this->_file_path.$entry;
-                    $this->_loaded_message_dats[] = $entry;
-                    if (!empty($message)) {
-                        $message = encode(FROM_FILE, $message);
-                        $this->messageArray = multi_array_merge($this->messageArray, $message);
-                        unset($message);
-                    }
-                }
-            }
-        }
-    }
-
     /** _loadMessages - INTERNAL
      * this methode loads ms_$rubric_$language.dat.
      *
      * @param string $rubric   to load (first word of message tag)
      * @param string $language to load (de,en,...), if is empty -> all languages will be loaded
      */
-    public function _loadMessages($rubric, $language)
+    public function _loadMessages(string $rubric, string $language): void
     {
         $message = [];
         if (!empty($language)) {
             $entry = 'ms_'.$rubric.'_'.$language.'.dat';
             if (file_exists($this->_file_path.$entry)) {
                 include_once $this->_file_path.$entry;
-                $this->_loaded_message_dats[] = $entry;
                 if (!empty($message)) {
                     $message = encode(FROM_FILE, $message);
                     $this->messageArray = multi_array_merge($this->messageArray, $message);
                     unset($message);
-                }
-            } else {
-                foreach ($this->_dat_folder_array as $folder) {
-                    if (file_exists($folder.'/'.$entry)) {
-                        include_once $folder.'/'.$entry;
-                        $this->_loaded_message_dats[] = $entry;
-                        if (!empty($message)) {
-                            $message = encode(FROM_FILE, $message);
-                            $this->messageArray = multi_array_merge($this->messageArray, $message);
-                            unset($message);
-                        }
-                        break;
-                    }
                 }
             }
         } else {
@@ -133,7 +86,6 @@ class cs_translator
                 if (mb_stristr($entry, $rubric)) {
                     if (file_exists($this->_file_path.$entry)) {
                         include_once $this->_file_path.$entry;
-                        $this->_loaded_message_dats[] = $entry;
                         if (!empty($message)) {
                             $message = encode(FROM_FILE, $message);
                             $this->messageArray = multi_array_merge($this->messageArray, $message);
@@ -143,161 +95,6 @@ class cs_translator
                 }
             }
         }
-    }
-
-    /** saveMessages
-     * save stored messages to the message.dats.
-     */
-    public function saveMessages()
-    {
-        $lang_array = [];
-        foreach ($this->messageArray as $key => $value) {
-            $rubric = $this->_getRubricOutMessageTag($key);
-            foreach ($value as $language => $translation) {
-                $lang_array[$language][$rubric][$key][$language] = $translation;
-            }
-        }
-        $this->_deleteLoadedMessages();
-        foreach ($lang_array as $language => $rubric_array) {
-            foreach ($rubric_array as $rubric => $message_array) {
-                $filename = $this->_file_path.'ms_'.$rubric.'_'.$language.'.dat';
-                $messagefile = fopen($filename, 'w');
-                fwrite($messagefile, $this->_translate2String(encode(AS_FILE, $message_array)));
-                fclose($messagefile);
-            }
-        }
-    }
-
-    /** saveMessageBundles
-     * save stored messages to java bundle files.
-     */
-    public function saveMessageBundles()
-    {
-        $lang_array = [];
-        foreach ($this->messageArray as $key => $value) {
-            $rubric = $this->_getRubricOutMessageTag($key);
-            foreach ($value as $language => $translation) {
-                $lang_array[$language][$rubric][$key][$language] = $translation;
-            }
-        }
-        $this->_deleteLoadedMessageBundles();
-        foreach ($lang_array as $language => $rubric_array) {
-            $filename = mb_strtolower($this->_file_path.'c3p0_'.$language.'.properties', 'UTF-8');
-            $messagefile = fopen($filename, 'a');
-            fwrite($messagefile, "// \$Id\$\n// DO NOT EDIT, CHANGES WILL BE LOST! - This file is generated on the basis of a PHP file\n// To make changes to this file use the edit message function within the commsy system itself\n");
-            foreach ($rubric_array as $rubric => $message_array) {
-                echo "writing file '".$filename."'<br/>\n";
-                flush();
-                fwrite($messagefile, '// ### '.$filename." ###\n");
-                fwrite($messagefile, $this->_translate2JavaString(encode(FROM_FILE, $message_array)));
-            }
-            fclose($messagefile);
-        }
-    }
-
-    /** _deleteAllMessages - INTERNAL
-     * this methode deletes all message.dats.
-     */
-    public function _deleteAllMessages()
-    {
-        $directory = dir($this->_file_path);
-        while ($entry = $directory->read()) {
-            if (1 == mb_strpos($entry, 's_') and mb_strpos($entry, '.dat') and 'm' == $entry[0]) {
-                if (file_exists($this->_file_path.$entry)) {
-                    unlink($this->_file_path.$entry);
-                }
-            }
-        }
-    }
-
-    /** _deleteAllMessageBundles - INTERNAL
-     * this methode deletes all message property files.
-     */
-    public function _deleteAllMessageBundles()
-    {
-        $directory = dir($this->_file_path);
-        while ($entry = $directory->read()) {
-            if (1 == mb_strpos($entry, 's_') and mb_strpos($entry, '.properties') and 'm' == $entry[0]) {
-                if (file_exists($this->_file_path.$entry)) {
-                    unlink($this->_file_path.$entry);
-                }
-            }
-        }
-    }
-
-    /** _deleteLoadedMessages - INTERNAL
-     * this methode deletes all loaded message.dats.
-     */
-    public function _deleteLoadedMessages()
-    {
-        foreach ($this->_loaded_message_dats as $entry) {
-            if (file_exists($this->_file_path.$entry)) {
-                unlink($this->_file_path.$entry);
-            }
-        }
-    }
-
-    /** _deleteLoadedMessageBundles - INTERNAL
-     * this methode deletes all loaded message.dats.
-     */
-    public function _deleteLoadedMessageBundles()
-    {
-        foreach ($this->_loaded_message_dats as $entry) {
-            if (file_exists($this->_file_path.$entry)) {
-                // unlink($this->_file_path.$entry);
-            }
-        }
-    }
-
-    /** _translate2String - INTERNAL
-     * this methode translate a message array to a string to write it into a file.
-     *
-     * @param array message array to translate
-     *
-     * @return string $message_text message array as string
-     *
-     * @author CommSy Development Group
-     */
-    public function _translate2String($message_array)
-    {
-        ksort($message_array);
-        reset($message_array);
-        $message_text = "<?php\n";
-        foreach ($message_array as $key => $value) {
-            foreach ($value as $key2 => $value2) {
-                $message_text .= '$message["'.$key.'"]["'.$key2.'"] = "'.$value2.'";'."\n";
-            }
-        }
-        $message_text .= '?>';
-
-        return $message_text;
-    }
-
-    /** _translate2String - INTERNAL
-     * this methode translate a message array to a string to write it into a file.
-     *
-     * @param array message array to translate
-     *
-     * @return string $message_text message array as string
-     */
-    public function _translate2JavaString($message_array)
-    {
-        ksort($message_array);
-        reset($message_array);
-        $message_text = '';
-        foreach ($message_array as $key => $value) {
-            foreach ($value as $key2 => $value2) {
-                for ($i = 0; $i < 10; ++$i) {
-                    $value2 = str_replace('%'.($i + 1), '{'.$i.'}', (string) $value2);
-                }
-                $value2 = strtr($value2, "\n", ' ');
-                $key = strtr($key, ' ', '_');
-                $message_text .= ''.$key.'='.$value2.''."\r\n";
-            }
-        }
-        $message_text .= '';
-
-        return $message_text;
     }
 
     /** _getRubricOutMessageTag - INTERNAL
@@ -307,7 +104,7 @@ class cs_translator
      *
      * @return string rubric (first word)
      */
-    public function _getRubricOutMessageTag($messag_tag)
+    private function _getRubricOutMessageTag($messag_tag): string
     {
         return mb_substr((string) $messag_tag, 0, mb_strpos((string) $messag_tag, '_'));
     }
@@ -388,10 +185,6 @@ class cs_translator
      */
     public function getMessageInLang(string $language, string $MsgID, ...$params): string
     {
-        if ($this->_issetSessionLanguage()) {
-            $language = $this->_getSessionLanguage();
-        }
-
         if (!$this->isLanguageAvailable($language)) {
             $language = $this->_default_language;
         }
@@ -447,9 +240,6 @@ class cs_translator
 
     public function getEmailMessageInLang(string $language, string $MsgID, ...$params): string
     {
-        if ($this->_issetSessionLanguage()) {
-            $language = $this->_getSessionLanguage();
-        }
         if (!empty($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')])) {
             $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')], ...$params);
         } elseif (!empty($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')])) {
@@ -545,9 +335,6 @@ class cs_translator
 
     public function getTimeMessageInLang($language, $MsgID)
     {
-        if ($this->_issetSessionLanguage()) {
-            $language = $this->_getSessionLanguage();
-        }
         $retour = $MsgID;
         if (!$this->isLanguageAvailable($language)) {
             $language = $this->_default_language;
@@ -601,42 +388,10 @@ class cs_translator
 
     /** getSelectedLanguage
      * this methode get the selected language.
-     *
-     * @return string language (de,en,...)
      */
-    public function getSelectedLanguage()
+    public function getSelectedLanguage(): string
     {
         return $this->_selected_language;
-    }
-
-    /** setSessionLanguage
-     * this methode set the session language, form environment.
-     *
-     * @param string language (de,en,...)
-     */
-    public function setSessionLanguage($value)
-    {
-        $this->_session_language = $value;
-    }
-
-    /** getSelectedLanguage
-     * this methode get the selected language.
-     *
-     * @return string language (de,en,...)
-     */
-    private function _getSessionLanguage()
-    {
-        return $this->_session_language;
-    }
-
-    private function _issetSessionLanguage()
-    {
-        $retour = false;
-        if (!empty($this->_session_language)) {
-            $retour = true;
-        }
-
-        return $retour;
     }
 
     /**
@@ -700,16 +455,6 @@ class cs_translator
     public function setTimeMessageArray($value): void
     {
         $this->timeMessageArray = (array) $value;
-    }
-
-    /** setMessageArray
-     * this methode set the message array, needed in language_edit.
-     *
-     * @param array message_array
-     */
-    public function setMessageArray($value)
-    {
-        $this->messageArray = (array) $value;
     }
 
     /** replace %x in text
@@ -810,12 +555,7 @@ class cs_translator
         if (!empty($rubric)) {
             $rubric_array = $this->_getRubricArray($rubric);
             if (!empty($rubric_array)) {
-                $language = '';
-                if ($this->_issetSessionLanguage()) {
-                    $language = $this->_getSessionLanguage();
-                } else {
-                    $language = $this->_selected_language;
-                }
+                $language = $this->_selected_language;
                 if (!empty($language)
                      and !empty($rubric_array[mb_strtoupper($language)]['GENUS'])
                 ) {
@@ -835,12 +575,7 @@ class cs_translator
         ) {
             $genus = $this->_getRubricGenus($rubric);
             $adjective_array = $this->_getAdjectiveArray();
-            $language = '';
-            if ($this->_issetSessionLanguage()) {
-                $language = $this->_getSessionLanguage();
-            } else {
-                $language = $this->_selected_language;
-            }
+            $language = $this->_selected_language;
             if (!empty($genus)
                  and !empty($adjective_array)
                  and !empty($language)
@@ -937,11 +672,7 @@ class cs_translator
     public function _getRubricName($rubric, $position, $upper_case)
     {
         $rubric_array = $this->_getRubricArray($rubric);
-        if ($this->_issetSessionLanguage()) {
-            $language = $this->_getSessionLanguage();
-        } else {
-            $language = $this->_selected_language;
-        }
+        $language = $this->_selected_language;
         if (isset($rubric_array[cs_strtoupper($language)][cs_strtoupper($position)])) {
             $text = $rubric_array[cs_strtoupper($language)][cs_strtoupper($position)];
         } else {
@@ -1013,11 +744,6 @@ class cs_translator
         $cs_article['EN'] = 'the';
         $rubric_array = $this->_getRubricArray($rubric);
         $language = cs_strtoupper($this->_selected_language);
-        if ($this->_issetSessionLanguage()) {
-            $language = cs_strtoupper($this->_getSessionLanguage());
-        } else {
-            $language = cs_strtoupper($this->_selected_language);
-        }
         if ('EN' == $language) {
             $text = $cs_article[$language];
         } else {
@@ -1030,23 +756,12 @@ class cs_translator
         return $text;
     }
 
-    public function getDateTimeInLang($datetime, $oclock = true)
-    {
-        $date = $this->_getDateTimeInLang($datetime, $oclock);
-        $date = mb_eregi_replace('/', ' ', (string) $date);
-
-        return $date;
-    }
-
     /** translate a Date and Time from a MYSQL-datetime depending on selectet language.
      */
     public function _getDateTimeInLang($datetime, $oclock = true)
     {
         $Datetime = [];
         $language = $this->_selected_language;
-        if ($this->_issetSessionLanguage()) {
-            $language = $this->_getSessionLanguage();
-        }
         $length = mb_strlen((string) $datetime);
 
         if (2 == mb_substr_count((string) $datetime, '-')) {
@@ -1183,9 +898,6 @@ class cs_translator
     public function getTimeLanguage(string $timestring): ?string
     {
         $language = $this->_selected_language;
-        if ($this->_issetSessionLanguage()) {
-            $language = $this->_getSessionLanguage();
-        }
 
         if (2 == mb_substr_count($timestring, ':')) {
             $hour = $timestring[0].$timestring[1];
@@ -1215,18 +927,5 @@ class cs_translator
         }
 
         return null;
-    }
-
-    /** getMessageArray
-     * this method gets the message array.
-     *
-     * @return array message array
-     */
-    public function getMessageArray()
-    {
-        ksort($this->messageArray);
-        reset($this->messageArray);
-
-        return $this->messageArray;
     }
 }
