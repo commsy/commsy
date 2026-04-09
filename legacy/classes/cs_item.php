@@ -986,20 +986,18 @@ class cs_item
 
     /** get data value
      * this method returns the value for the specified key or an empty string if it is not set.
-     *
-     * @param string key
      */
-    public function _getValue($key)
+    public function _getValue($key): mixed
     {
-        if (!isset($this->_data[$key])) {
-            if ('extras' == $key) {
+        if (!array_key_exists($key, $this->_data)) {
+            if ('extras' === $key) {
                 if ($this->_db_load_extras) {
                     $this->_data[$key] = [];
                 } else {
                     $this->_loadExtras();
                 }
             } else {
-                $this->_data[$key] = '';
+                return null;
             }
         }
 
