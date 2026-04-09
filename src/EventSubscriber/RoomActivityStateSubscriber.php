@@ -50,7 +50,7 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         // Block all transitions if the portal configuration has disabled the account activity feature
         /** @var Portal $portal */
-        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
+        $portal = $room->getPortal();
         if (!$portal) {
             $event->setBlocked(true);
 
@@ -96,7 +96,7 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
         $room = $event->getSubject();
 
         /** @var Portal $portal */
-        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
+        $portal = $room->getPortal();
 
         if (!$room->getLastLogin() ||
             !$this->datePassedDays($room->getLastLogin(), $portal->getClearInactiveRoomsNotifyLockDays())
@@ -116,7 +116,7 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
         $room = $event->getSubject();
 
         /** @var Portal $portal */
-        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
+        $portal = $room->getPortal();
         if (!$room->getActivityStateUpdated() ||
             !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsLockDays())
         ) {
@@ -136,7 +136,7 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
-        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
+        $portal = $room->getPortal();
         if (!$room->getActivityStateUpdated() ||
             !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsNotifyDeleteDays())
         ) {
@@ -156,7 +156,7 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
 
         // Deny transition if the inactive period is not long enough
         /** @var Portal $portal */
-        $portal = $this->portalRepository->findPortalByRoomContext($room->getContextId());
+        $portal = $room->getPortal();
         if (!$room->getActivityStateUpdated() ||
             !$this->datePassedDays($room->getActivityStateUpdated(), $portal->getClearInactiveRoomsDeleteDays())
         ) {

@@ -92,11 +92,11 @@ class cs_item
                      ) {
                          /** @var PortalRepository $portalRepository */
                          $portalRepository = $this->_environment->getSymfonyContainer()->get(PortalRepository::class);
-                         $portal = $portalRepository->findPortalByRoomContext($contextId);
+                         $portal = $portalRepository->findPortalById($contextId);
 
                          // Portal is only a valid response if this is not an instance of a user item or (in case it is)
                          // it must be the portal user (context is matching the portal id), otherwise it is a room user
-                         if (!$this instanceof cs_user_item || $this->getContextID() === $portal->getId()) {
+                         if ($portal && (!$this instanceof cs_user_item || $contextId === $portal->getId())) {
                              $this->contextItem = new PortalProxy($portal, $this->_environment);
                              return $this->contextItem;
                          }
@@ -112,7 +112,7 @@ class cs_item
 
                  if (isset($item) && is_object($item)) {
                      $manager = $this->_environment->getManager($item->getItemType());
-                     $contextItem = $manager->getItem($this->getContextId());
+                     $contextItem = $manager->getItem($contextId);
                      if (!$contextItem instanceof cs_context_item) {
                          return null;
                      }
@@ -139,14 +139,17 @@ class cs_item
      * This also works for a user room whose context is its parent
      * project room (whose context, in turn, is the portal).
      */
-    public function getPortal(): PortalProxy
+    public function getPortal(): ?PortalProxy
     {
         global $symfonyContainer;
 
         /** @var PortalRepository $portalRepository*/
         $portalRepository = $symfonyContainer->get(PortalRepository::class);
 
-        $portal = $portalRepository->findPortalByRoomContext($this->getContextID());
+        $portal = $portalRepository->findPortalById($this->getContextID());
+        if (!$portal) {
+            return null;
+        }
 
         return new PortalProxy($portal, $this->_environment);
     }
