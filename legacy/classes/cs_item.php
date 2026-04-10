@@ -989,7 +989,7 @@ class cs_item
      */
     public function _getValue($key): mixed
     {
-        if (!array_key_exists($key, $this->_data)) {
+        if (!isset($this->_data[$key])) {
             if ('extras' === $key) {
                 if ($this->_db_load_extras) {
                     $this->_data[$key] = [];
@@ -997,7 +997,7 @@ class cs_item
                     $this->_loadExtras();
                 }
             } else {
-                return null;
+                $this->_data[$key] = '';
             }
         }
 

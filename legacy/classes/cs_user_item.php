@@ -70,7 +70,8 @@ class cs_user_item extends cs_item
      */
     public function getAccountID(): ?int
     {
-        return $this->_getValue('account_id');
+        $value = $this->_getValue('account_id');
+        return $value !== '' ? (int) $value : null;
     }
 
     /**
@@ -937,9 +938,9 @@ class cs_user_item extends cs_item
     /** get status of user
      * this method returns an integer value corresponding with the users status.
      *
-     * @return int|null status
+     * @return int|string status
      */
-    public function getStatus(): ?int
+    public function getStatus(): int|string
     {
         return $this->_getValue('status');
     }
