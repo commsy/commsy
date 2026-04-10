@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity]
 #[ORM\Table(name: 'link_modifier_item')]
+#[ORM\Index(name: 'idx_modifier_id', columns: ['modifier_id'])]
 class LinkModifierItem
 {
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
