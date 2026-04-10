@@ -139,16 +139,15 @@ class cs_item
      * This also works for a user room whose context is its parent
      * project room (whose context, in turn, is the portal).
      */
-    public function getPortal(): ?PortalProxy
+    public function getPortal(): PortalProxy
     {
-        global $symfonyContainer;
-
-        /** @var PortalRepository $portalRepository*/
-        $portalRepository = $symfonyContainer->get(PortalRepository::class);
+        /** @var PortalRepository $portalRepository */
+        $portalRepository = $this->_environment->getSymfonyContainer()->get(PortalRepository::class);
 
         $portal = $portalRepository->findPortalById($this->getContextID());
+
         if (!$portal) {
-            return null;
+            throw new UnexpectedResultException(sprintf('Could not find portal for item with ID "%s" and context ID "%s".', $this->getItemID(), $this->getContextID()));
         }
 
         return new PortalProxy($portal, $this->_environment);
