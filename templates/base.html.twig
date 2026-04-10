@@ -1,6 +1,6 @@
 {% import 'common/footer.html.twig' as footer %}
 
-{% set requestContextId = app.request.attributes.get('portalId') ?? app.request.attributes.get('roomId') ?? app.user.contextId %}
+{% set requestContextId = commsy.portal.id ?? commsy.room.itemId ?? app.user.contextId ?? commsy.server.id %}
 
 <!DOCTYPE html>
 <html lang="{{ selectedLanguage() }}">
