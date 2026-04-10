@@ -163,7 +163,7 @@ readonly class Mailer
     }
 
     /**
-     * Sends the given message as an email to the given recipient.
+     * Sends the given message as an email to the given recipient while honoring the recipient's preferred language.
      *
      * @param MessageInterface $message The message to send
      * @param Recipient        $recipient The recipient for the email
@@ -185,7 +185,7 @@ readonly class Mailer
     }
 
     /**
-     * Sends the given message as an email to all recipients.
+     * Sends the given message as an email to all recipients, honoring each recipient's preferred language.
      *
      * @param MessageInterface $message The message to send
      * @param Recipient[]      $recipients The recipients for the email
@@ -201,8 +201,13 @@ readonly class Mailer
         string $fromSenderName = 'CommSy',
         array $replyTo = []
     ): EmailSendStatus {
-        $email = $this->messageBuilder->generateFromMessage($message, $fromSenderName, null, $replyTo);
+        $sendStatuses = [];
 
-        return $this->sendEmailObject($email, $fromSenderName, $recipients);
+        foreach ($recipients as $recipient) {
+            $email = $this->messageBuilder->generateFromMessage($message, $fromSenderName, $recipient, $replyTo);
+            $sendStatuses[] = $this->sendEmailObject($email, $fromSenderName, [$recipient]);
+        }
+
+        return EmailSendStatus::combine($sendStatuses);
     }
 }

@@ -53,4 +53,21 @@ final readonly class EmailSendStatus
     {
         return $this->failedRecipients;
     }
+
+    public static function combine(array $sendStatuses): EmailSendStatus
+    {
+        $success = true;
+        $numRecipients = 0;
+        $deliveredRecipients = [];
+        $failedRecipients = [];
+
+        foreach ($sendStatuses as $sendStatus) {
+            $success = $success && $sendStatus->isSuccess();
+            $numRecipients += $sendStatus->getNumRecipients();
+            $deliveredRecipients = array_merge($deliveredRecipients, $sendStatus->getDeliveredRecipients());
+            $failedRecipients = array_merge($failedRecipients, $sendStatus->getFailedRecipients());
+        }
+
+        return new self($success, $numRecipients, $deliveredRecipients, $failedRecipients);
+    }
 }

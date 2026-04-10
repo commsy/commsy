@@ -74,16 +74,14 @@ readonly class MessageBuilder
     public function generateFromMessage(
         MessageInterface $message,
         string $fromSenderName,
-        ?Recipient $recipient = null,
+        Recipient $recipient,
         array $replyTo = []
     ): Email {
         $email = (new TemplatedEmail())
             ->from(new Address($this->emailFrom, $fromSenderName));
 
         // To
-        if ($recipient) {
-            $email->to(new Address($recipient->getEmail(), $recipient->getFullName()));
-        }
+        $email->to(new Address($recipient->getEmail(), $recipient->getFullName()));
 
         // Reply-To
         if (!empty($replyTo)) {
