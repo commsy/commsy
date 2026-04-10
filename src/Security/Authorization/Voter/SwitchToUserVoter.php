@@ -52,6 +52,10 @@ class SwitchToUserVoter extends Voter
             return false;
         }
 
+        if ('root' === $account->getUsername()) {
+            return true;
+        }
+
         /** @var cs_user_item $portalUser */
         $portalUser = $this->userService->getPortalUser($account);
 

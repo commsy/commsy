@@ -251,10 +251,11 @@ final readonly class ReaderService
         $versionIds = array_values($versionIds);
 
         if (empty($userIds)) {
-            $userIds = [$this->userService->getRelatedUserForItem($items[0])?->getItemID()];
-            if (empty($userIds)) {
+            $relatedUser = $this->userService->getRelatedUserForItem($items[0]);
+            if (!$relatedUser) {
                 return;
             }
+            $userIds = [$relatedUser->getItemID()];
         }
 
         // Delete previous entries
