@@ -28,12 +28,11 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Contracts\Translation\TranslatorInterface;
-
 class SendType extends AbstractType
 {
-    public function __construct(private readonly MailAssistant $mailAssistant, private readonly TranslatorInterface $translator)
-    {
+    public function __construct(
+        private readonly MailAssistant $mailAssistant,
+    ) {
     }
 
     /**
@@ -47,9 +46,6 @@ class SendType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $mailAssistant = $this->mailAssistant;
-
-        $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
-        $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
 
         $builder
             ->add('subject', TextType::class, [
@@ -225,9 +221,8 @@ class SendType extends AbstractType
                 'constraints' => [new SendRecipientsConstraint()],
             ])
             ->add('upload', FileType::class, [
-                'attr' => [
-                    'data-uk-csupload' => '{"path": "'.$options['uploadUrl'].'", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
-                ],
+                'upload_url' => $options['uploadUrl'],
+                'email_attachment' => true,
                 'required' => false,
                 'multiple' => true,
                 'label' => 'Attachments',

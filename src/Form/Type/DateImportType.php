@@ -21,23 +21,11 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DateImportType extends AbstractType
 {
-    public function __construct(
-        /**
-         * The Symfony translator.
-         */
-        private readonly TranslatorInterface $translator
-    ) {
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
-        $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
-
         $builder
             ->add('files', CollectionType::class, [
                 'allow_add' => true,
@@ -45,7 +33,14 @@ class DateImportType extends AbstractType
                 'entry_options' => [
                 ],
             ])
-            ->add('upload', FileType::class, ['label' => 'upload', 'attr' => ['data-uk-csupload' => '{"path": "'.$options['uploadUrl'].'", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}', 'accept' => 'text/calendar'], 'required' => false, 'translation_domain' => 'date', 'multiple' => false])
+            ->add('upload', FileType::class, [
+                'upload_url' => $options['uploadUrl'],
+                'label' => 'upload',
+                'attr' => ['accept' => 'text/calendar'],
+                'required' => false,
+                'translation_domain' => 'date',
+                'multiple' => false,
+            ])
             ->add('calendar', ChoiceType::class, ['placeholder' => false, 'choices' => $options['calendars'], 'choice_attr' => $options['calendarsAttr'], 'label' => 'calendar', 'required' => true, 'expanded' => false, 'multiple' => false])
             ->add('calendartitle', TextType::class, ['label' => 'Title', 'translation_domain' => 'calendar', 'required' => false])
             ->add('calendarcolor', TextType::class, [

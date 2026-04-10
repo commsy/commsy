@@ -24,13 +24,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Contracts\Translation\TranslatorInterface;
-
 class GroupSendType extends AbstractType
 {
-    public function __construct(private readonly TranslatorInterface $translator)
-    {
-    }
 
     /**
      * Builds the form.
@@ -42,9 +37,6 @@ class GroupSendType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
-        $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
-
         $builder
             ->add('subject', TextType::class, [
                 'constraints' => [
@@ -78,9 +70,8 @@ class GroupSendType extends AbstractType
                 'required' => true,
             ])
             ->add('upload', FileType::class, [
-                'attr' => [
-                    'data-uk-csupload' => '{"path": "'.$options['uploadUrl'].'", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
-                ],
+                'upload_url' => $options['uploadUrl'],
+                'email_attachment' => true,
                 'required' => false,
                 'multiple' => true,
                 'label' => 'Attachments',

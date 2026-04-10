@@ -13,14 +13,26 @@
 
 namespace App\Form\Extension;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UploadFileTypeExtension extends AbstractTypeExtension
 {
+    public function __construct(
+        #[Autowire('%commsy.upload.max_file_size%')]
+        private readonly int $maxFileSize,
+        #[Autowire('%commsy.upload.max_email_attachment_size%')]
+        private readonly int $maxEmailAttachmentSize,
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     /**
      * Returns the class of the type being extended.
      */
@@ -31,8 +43,9 @@ class UploadFileTypeExtension extends AbstractTypeExtension
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        // makes it legal for FileType fields to have an upload_url option
-        $resolver->setDefined(['upload_url']);
+        $resolver->setDefined(['upload_url', 'upload_limit_mb']);
+        $resolver->setDefault('email_attachment', false);
+        $resolver->setAllowedTypes('email_attachment', 'bool');
     }
 
     /**
@@ -40,10 +53,9 @@ class UploadFileTypeExtension extends AbstractTypeExtension
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $maxUploadFileSize = $this->getMaxUploadSizeInMegabytes();
+        $maxUploadFileSize = $this->resolveMaxUploadSize($options);
 
         if (!empty($maxUploadFileSize)) {
-            // set a "max_upload_size" variable that will be available when rendering this field
             $view->vars['max_upload_size'] = $maxUploadFileSize;
         }
 
@@ -53,38 +65,64 @@ class UploadFileTypeExtension extends AbstractTypeExtension
     }
 
     /**
-     * Returns the maximum file size (in megabytes) that's allowed by this server for any file upload.
+     * Runs after all buildView calls are complete — including child types like UploadDropzoneType.
+     * Builds or enriches the data-uk-csupload JSON with all upload configuration.
      */
-    private function getMaxUploadSizeInMegabytes(): float
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
-        $maxUploadSizeInBytes = $this->getConfigValueInBytes('upload_max_filesize');
-        $maxUploadSizeInMegabytes = round($maxUploadSizeInBytes / 1_048_576);
+        $uploadUrl = $options['upload_url'] ?? null;
+        $hasCsupload = isset($view->vars['attr']['data-uk-csupload']);
 
-        return $maxUploadSizeInMegabytes;
-    }
-
-    /**
-     * For a PHP configuration key whose value describes a size in (kilo/mega)bytes, returns the value in bytes.
-     * Returns 0.0 on failure.
-     *
-     * @param string $configName The PHP configuration key whose size value shall be retrieved via `ini_get`.
-     *                           Note that the value must resolve to a number or a number followed by a one-letter suffix (like "1k" or "2M").
-     */
-    private function getConfigValueInBytes(string $configName): float
-    {
-        $value = ini_get($configName);
-        if (empty($value)) {
-            return 0.0;
+        if (!$uploadUrl && !$hasCsupload) {
+            return;
         }
 
-        // if necessary, convert to a number in bytes
-        $value = trim($value);
-        $suffix = strtolower($value[strlen($value) - 1]);
-        $value = intval($value);
-        return match ($suffix) {
-            'k' => $value * 1024,
-            'm' => $value * 1_048_576,
-            default => $value,
-        };
+        $maxUploadFileSize = $this->resolveMaxUploadSize($options);
+        $maxFileUploads = (int) (ini_get('max_file_uploads') ?: 20);
+
+        $csuploadData = $hasCsupload
+            ? json_decode($view->vars['attr']['data-uk-csupload'], true) ?? []
+            : [];
+
+        if ($uploadUrl) {
+            $csuploadData['path'] ??= $uploadUrl;
+        }
+
+        $csuploadData += [
+            'errorMessage' => $this->translator->trans('upload error', [], 'error'),
+            'noFileIdsMessage' => $this->translator->trans('upload error', [], 'error'),
+            'maxFileUploads' => $maxFileUploads,
+            'fileLimitMessage' => $this->translator->trans('upload error file limit', [
+                '%max_limit%' => $maxFileUploads,
+            ], 'error'),
+        ];
+
+        if (!empty($maxUploadFileSize)) {
+            $csuploadData['maxFileSizeMb'] = $maxUploadFileSize;
+            $csuploadData['fileSizeLimitMessage'] = $this->translator->trans(
+                'upload error size limit',
+                ['%max_size%' => $maxUploadFileSize],
+                'error'
+            );
+        }
+
+        $view->vars['attr']['data-uk-csupload'] = json_encode($csuploadData);
+    }
+
+    private function resolveMaxUploadSize(array $options): float
+    {
+        if (isset($options['upload_limit_mb']) && $options['upload_limit_mb'] > 0) {
+            return (float) $options['upload_limit_mb'];
+        }
+
+        if (!empty($options['email_attachment']) && $this->maxEmailAttachmentSize > 0) {
+            return (float) $this->maxEmailAttachmentSize;
+        }
+
+        if ($this->maxFileSize > 0) {
+            return (float) $this->maxFileSize;
+        }
+
+        return round(UploadedFile::getMaxFilesize() / 1_048_576);
     }
 }

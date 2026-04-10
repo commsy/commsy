@@ -14,13 +14,20 @@
 namespace App\Form\Type;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ItemDescriptionType extends AbstractType
 {
+    public function __construct(
+        #[Autowire('%commsy.upload.max_file_size%')]
+        private readonly int $maxFileSize,
+    ) {
+    }
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -45,7 +52,7 @@ class ItemDescriptionType extends AbstractType
                     // as its default upload method; see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browser_api.html
                     'filebrowserUploadMethod' => 'form',
                     'filebrowserUploadUrl' => $options['uploadUrl'],
-                    'maxUploadSize' => $this->getConfigValueInBytes('upload_max_filesize'),
+                    'maxUploadSize' => $this->getEffectiveMaxUploadSizeInBytes(),
                 ],
                 'translation_domain' => 'material',
                 'required' => false,
@@ -122,27 +129,14 @@ class ItemDescriptionType extends AbstractType
     }
 
     /**
-     * For a PHP configuration key whose value describes a size in (kilo/mega)bytes, returns the value in bytes.
-     * Returns 0.0 on failure.
-     *
-     * @param string $configName The PHP configuration key whose size value shall be retrieved via `ini_get`.
-     *                           Note that the value must resolve to a number or a number followed by a one-letter suffix (like "1k" or "2M").
+     * Returns the effective maximum upload size in bytes: the app-level limit if configured, otherwise the PHP ini limit.
      */
-    private function getConfigValueInBytes(string $configName): float
+    private function getEffectiveMaxUploadSizeInBytes(): int
     {
-        $value = ini_get($configName);
-        if (empty($value)) {
-            return 0.0;
+        if ($this->maxFileSize > 0) {
+            return $this->maxFileSize * 1_048_576;
         }
 
-        // if necessary, convert to a number in bytes
-        $value = trim($value);
-        $suffix = strtolower($value[strlen($value) - 1]);
-        $value = intval($value);
-        return match ($suffix) {
-            'k' => $value * 1024,
-            'm' => $value * 1_048_576,
-            default => $value,
-        };
+        return UploadedFile::getMaxFilesize();
     }
 }

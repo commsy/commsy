@@ -19,7 +19,9 @@ use App\Services\FileUploader;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use App\Utils\ItemService;
+use App\Validator\UploadSizeValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +29,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Vich\UploaderBundle\FileAbstraction\ReplacingFile;
 use Vich\UploaderBundle\Handler\UploadHandler;
 
@@ -36,6 +39,25 @@ use Vich\UploaderBundle\Handler\UploadHandler;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class UploadController extends AbstractController
 {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+        private readonly UploadSizeValidator $uploadSizeValidator,
+        #[Autowire('%commsy.upload.max_file_size%')]
+        private readonly int $maxFileSize,
+        #[Autowire('%commsy.upload.max_email_attachment_size%')]
+        private readonly int $maxEmailAttachmentSize,
+    ) {
+    }
+
+    private function postMaxSizeErrorResponse(array $extraFields = []): JsonResponse
+    {
+        $limitMb = $this->uploadSizeValidator->getPhpMaxUploadSizeInMegabytes();
+
+        return new JsonResponse(array_merge($extraFields, [
+            'error' => $this->translator->trans('upload error size limit', ['%max_size%' => $limitMb], 'error'),
+        ]));
+    }
+
     #[Route(path: '/room/{roomId}/upload/{itemId}')]
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function upload(
@@ -47,6 +69,10 @@ class UploadController extends AbstractController
         int $roomId,
         ?int $itemId = null
     ): JsonResponse {
+        if ($this->uploadSizeValidator->isPostMaxSizeExceeded($request)) {
+            return $this->postMaxSizeErrorResponse(['fileIds' => []]);
+        }
+
         $environment = $legacyEnvironment->getEnvironment();
 
         $response = new JsonResponse();
@@ -57,6 +83,10 @@ class UploadController extends AbstractController
         if ($item) {
             foreach ($files['files'] as $file) {
                 /** @var UploadedFile $file */
+                if ($error = $this->uploadSizeValidator->validateFileSize($file, $this->maxFileSize)) {
+                    return $response->setData(['fileIds' => [], 'error' => $error]);
+                }
+
                 $fileId = $fileUploader->upload($file, $environment->getCurrentPortalID(), $roomId);
                 $tempFile = $fileService->getFile($fileId);
                 $responseData[$fileId] = htmlentities((string) $tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
@@ -105,6 +135,10 @@ class UploadController extends AbstractController
         FileService $fileService,
         LegacyEnvironment $legacyEnvironment
     ): JsonResponse {
+        if ($this->uploadSizeValidator->isPostMaxSizeExceeded($request)) {
+            return $this->postMaxSizeErrorResponse(['fileIds' => []]);
+        }
+
         $environment = $legacyEnvironment->getEnvironment();
 
         $response = new JsonResponse();
@@ -116,8 +150,13 @@ class UploadController extends AbstractController
 
         $files = $request->files->all();
 
+        $responseData = [];
         foreach ($files['files'] as $file) {
             /** @var UploadedFile $file */
+            if ($error = $this->uploadSizeValidator->validateFileSize($file, $this->maxFileSize)) {
+                return $response->setData(['fileIds' => [], 'error' => $error]);
+            }
+
             $fileId = $fileUploader->upload($file, $environment->getCurrentPortalID(), $roomId);
             $tempFile = $fileService->getFile($fileId);
             $responseData[$fileId] = htmlentities((string) $tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
@@ -148,9 +187,27 @@ class UploadController extends AbstractController
         $item = $itemService->getTypedItem($itemId);
         $fileIds = $item->getFileIDArray();
 
+        if ($this->uploadSizeValidator->isPostMaxSizeExceeded($request)) {
+            return $this->json([
+                'uploaded' => 0,
+                'error' => ['message' => $this->translator->trans(
+                    'upload error size limit',
+                    ['%max_size%' => $this->uploadSizeValidator->getPhpMaxUploadSizeInMegabytes()],
+                    'error'
+                )],
+            ]);
+        }
+
         if ($request->files) {
             /** @var UploadedFile $file */
             $file = $request->files->get('upload');
+
+            if ($file && ($error = $this->uploadSizeValidator->validateFileSize($file, $this->maxFileSize))) {
+                return $this->json([
+                    'uploaded' => 0,
+                    'error' => ['message' => $error],
+                ]);
+            }
 
             if ($file && $file->isValid() && $file->getSize()) {
                 $movedFile = $file->move($file->getPathInfo()->getRealPath(), $file->getFilename() . 'commsy3');
@@ -212,6 +269,10 @@ class UploadController extends AbstractController
     #[Route(path: '/room/{roomId}/upload/mailattachments/')]
     public function mailAttachments($roomId, Request $request): Response
     {
+        if ($this->uploadSizeValidator->isPostMaxSizeExceeded($request)) {
+            return $this->postMaxSizeErrorResponse(['attachmentInfo' => []]);
+        }
+
         $files = $request->files->all();
 
         $response = new JsonResponse();
@@ -219,6 +280,10 @@ class UploadController extends AbstractController
 
         /** @var UploadedFile $file */
         foreach ($files['files'] as $file) {
+            if ($error = $this->uploadSizeValidator->validateFileSize($file, $this->maxEmailAttachmentSize)) {
+                return $response->setData(['attachmentInfo' => [], 'error' => $error]);
+            }
+
             $tempUploadDir = $this->getParameter('kernel.project_dir').'/files/temp/';
             $fileId = md5(uniqid());
             $fileName = $fileId.'.'.$file->guessExtension();
