@@ -20,6 +20,7 @@ use App\Repository\UserRepository;
 use App\Services\LegacyEnvironment;
 use App\User\UserListBuilder;
 use App\Utils\UserService;
+use BadMethodCallException;
 use cs_environment;
 use cs_list;
 use cs_room_item;
@@ -40,7 +41,7 @@ readonly class AccountManager
         LegacyEnvironment $legacyEnvironment,
         private UserService $userService,
         private RequestStack $requestStack,
-        private UserListBuilder $userListBuilder
+        private UserListBuilder $userListBuilder,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -154,47 +155,12 @@ readonly class AccountManager
         return $portalRepository->find($account->getContextId());
     }
 
+    /**
+     * @deprecated Use AccountDeleter::dispatch() instead
+     */
     public function delete(Account $account): void
     {
-        $portalUser = null;
-        $userList = new cs_list();
-
-        try {
-            // NOTE: normally, we'd fire an `AccountDeletedEvent` here; however, this is actually done in the legacy code:
-            // `cs_user_manager->delete()` will fire an `AccountDeletedEvent` for each user object
-            $portalUser = $this->userService->getPortalUser($account);
-
-            $userList = $this->userListBuilder
-                ->fromAccount($account)
-                ->withProjectRoomUser()
-                ->withCommunityRoomUser()
-                ->withUserRoomUser()
-                ->withPrivateRoomUser()
-                ->getList();
-        } catch (LogicException) {
-            // Account without portal user
-        } finally {
-            $users = iterator_to_array($userList);
-            array_walk($users, fn(cs_user_item $user) => $user->delete());
-
-            $portalUser?->delete();
-
-            try {
-                /*
-                 * With the introduction of the account_id column in the user table (@see migration Version20250514125210)
-                 * it is now possible that user entries are soft-deleted and still hold a reference to the account table.
-                 * Those must also be set to null before removing the account entry itself.
-                 */
-                $usersWithAccountRef = $this->userRepository->findBy(['account' => $account]);
-                foreach ($usersWithAccountRef as $userWithAccountRef) {
-                    $userWithAccountRef->setAccount(null);
-                }
-
-                $this->entityManager->remove($account);
-                $this->entityManager->flush();
-            } catch (Exception $e) {
-            }
-        }
+        throw new BadMethodCallException('Use AccountDeleter::dispatch() for account deletion.');
     }
 
     public function lock(Account $account): void
