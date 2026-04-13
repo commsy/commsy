@@ -625,42 +625,4 @@ class cs_tag_manager extends cs_manager
           return $retour;
       }
 
-      public function deleteTagsOfUser($uid)
-      {
-          global $symfonyContainer;
-          $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-
-          if (null !== $disableOverwrite && 'TRUE' !== $disableOverwrite) {
-              $current_datetime = getCurrentDateTimeInMySQL();
-              $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB, $uid).'"';
-              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title != "CS_TAG_ROOT"';
-              $result = $this->_db_connector->performQuery($query);
-              if (!empty($result)) {
-                  foreach ($result as $rs) {
-                      $updateQuery = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
-
-                      /* flag */
-                      if ('FLAG' === $disableOverwrite) {
-                          $updateQuery .= ' public = "-1",';
-                          $updateQuery .= ' modification_date = "'.$current_datetime.'"';
-                      }
-
-                      /* disabled */
-                      if ('FALSE' === $disableOverwrite) {
-                          $updateQuery .= ' modification_date = "'.$current_datetime.'",';
-                          $updateQuery .= ' title = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-                          $updateQuery .= ' public = "1"';
-                      }
-
-                      $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
-                      $result2 = $this->_db_connector->performQuery($updateQuery);
-                      if (!isset($result2) or !$result2) {
-                          trigger_error('Problems automatic deleting '.$this->_db_table.'.', E_USER_WARNING);
-                      }
-                      unset($result2);
-                  }
-                  unset($result);
-              }
-          }
-      }
 }

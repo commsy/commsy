@@ -480,40 +480,4 @@ class cs_step_manager extends cs_manager
          $this->_data = $data;
      }
 
-     public function deleteStepsOfUser($uid)
-     {
-         global $symfonyContainer;
-         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-
-         if (null !== $disableOverwrite && 'TRUE' !== $disableOverwrite) {
-             $currentDatetime = getCurrentDateTimeInMySQL();
-             $query = 'SELECT '.$this->addDatabasePrefix('step').'.* FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').'.creator_id = "'.encode(AS_DB, $uid).'"';
-             $result = $this->_db_connector->performQuery($query);
-
-             if (!empty($result)) {
-                 foreach ($result as $rs) {
-                     $updateQuery = 'UPDATE '.$this->addDatabasePrefix('step').' SET';
-
-                     /* flag */
-                     if ('FLAG' === $disableOverwrite) {
-                         $updateQuery .= ' public = "-1",';
-                         $updateQuery .= ' modification_date = "'.$currentDatetime.'"';
-                     }
-
-                     /* disabled */
-                     if ('FALSE' === $disableOverwrite) {
-                         $updateQuery .= ' title = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-                         $updateQuery .= ' description = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-                         $updateQuery .= ' modification_date = "'.$currentDatetime.'"';
-                     }
-
-                     $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
-                     $result2 = $this->_db_connector->performQuery($updateQuery);
-                     if (!$result2) {
-                         trigger_error('Problems automatic deleting steps from query: "'.$updateQuery.'"', E_USER_WARNING);
-                     }
-                 }
-             }
-         }
-     }
 }

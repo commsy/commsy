@@ -425,42 +425,6 @@ class cs_announcement_manager extends cs_manager
     // statistic functions
     // #######################################################
 
-    public function deleteAnnouncementsofUser($uid)
-    {
-        global $symfonyContainer;
-        $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-
-        if (null !== $disableOverwrite && 'TRUE' !== $disableOverwrite) {
-            $currentDatetime = getCurrentDateTimeInMySQL();
-            $query = 'SELECT ' . $this->addDatabasePrefix($this->_db_table) . '.* FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . '.creator_id = "' . encode(AS_DB, $uid) . '"';
-            $result = $this->_db_connector->performQuery($query);
-
-            if (!empty($result)) {
-                foreach ($result as $rs) {
-                    $updateQuery = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET';
-
-                    /* flag */
-                    if ('FLAG' === $disableOverwrite) {
-                        $updateQuery .= ' public = "-1",';
-                    }
-
-                    /* disabled */
-                    if ('FALSE' === $disableOverwrite) {
-                        $updateQuery .= ' title = "' . encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
-                        $updateQuery .= ' description = "' . encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
-                    }
-
-                    $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
-                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB, $rs['item_id']) . '"';
-                    $result2 = $this->_db_connector->performQuery($updateQuery);
-                    if (!$result2) {
-                        trigger_error('Problems automatic deleting ' . $this->_db_table . '.', E_USER_WARNING);
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * @param int[] $contextIds List of context ids
      * @param array Limits for buzzwords / categories
