@@ -33,6 +33,7 @@ use App\Form\Type\Account\MergeAccountsType;
 use App\Form\Type\Account\NewsletterType;
 use App\Form\Type\Account\NotificationType;
 use App\Form\Type\Account\PersonalInformationType;
+use App\Account\AccountDeleter;
 use App\Form\Type\Account\PrivacyType;
 use App\Form\Type\SignUpFormType;
 use App\Privacy\PersonalDataCollector;
@@ -349,20 +350,30 @@ class AccountController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/account/privacy')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function privacy($portalId, Request $request): Response
+    public function privacy(
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        Request $request,
+        Security $security,
+        EntityManagerInterface $entityManager
+    ): Response
     {
-        $form = $this->createForm(PrivacyType::class);
+        /** @var Account $account */
+        $account = $security->getUser();
+
+        $form = $this->createForm(PrivacyType::class, $account, [
+            'portal' => $portal,
+        ]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // generate & serve a PDF with the user's personal master data
-            return $this->redirectToRoute('app_account_privacyprint', [
-                'portalId' => $portalId,
-            ]);
+            $entityManager->persist($account);
+            $entityManager->flush();
         }
 
         return $this->render('account/privacy.html.twig', [
             'form' => $form,
+            'portal' => $portal,
         ]);
     }
 
@@ -492,10 +503,9 @@ class AccountController extends AbstractController
         TranslatorInterface $translator,
         AccountManager $accountManager,
         Security $security,
-        FormFactoryInterface $formFactory
+        FormFactoryInterface $formFactory,
+        AccountDeleter $accountDeleter
     ): Response {
-        $deleteParameter = $this->getParameter('commsy.security.privacy_disable_overwriting');
-
         $lockForm = $formFactory->createNamedBuilder('lock_form', DeleteType::class, [
             'confirm_string' => $translator->trans('lock', [], 'profile'),
         ])->getForm();
@@ -507,9 +517,7 @@ class AccountController extends AbstractController
         if ($request->request->has('lock_form')) {
             $lockForm->handleRequest($request);
             if ($lockForm->isSubmitted() && $lockForm->isValid()) {
-                // lock account
-
-                /** @var $account Account */
+                /** @var Account $account */
                 $account = $security->getUser();
                 $accountManager->lock($account);
 
@@ -519,18 +527,15 @@ class AccountController extends AbstractController
         elseif ($request->request->has('delete_form')) {
             $deleteForm->handleRequest($request);
             if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
-                // delete account
-
-                /** @var $account Account */
+                /** @var Account $account */
                 $account = $security->getUser();
-                $accountManager->delete($account);
+                $accountDeleter->dispatch($account);
 
                 return $this->redirectToRoute('app_logout');
             }
         }
 
         return $this->render('account/delete_account.html.twig', [
-            'override' => $deleteParameter,
             'form_lock' => $lockForm,
             'form_delete' => $deleteForm,
         ]);

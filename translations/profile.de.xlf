@@ -484,6 +484,18 @@
                 <source>profile.portal_moderation</source>
                 <target>Portal-Moderation</target>
             </trans-unit>
+            <trans-unit id="profile.privacy.deletion_title">
+                <source>profile.privacy.deletion_title</source>
+                <target>Löschung von Einträgen</target>
+            </trans-unit>
+            <trans-unit id="profile.privacy.cascading_items_deletion_strategy.label">
+                <source>profile.privacy.cascading_items_deletion_strategy.label</source>
+                <target>Einträge bei Accountlöschung ebenfalls löschen</target>
+            </trans-unit>
+            <trans-unit id="profile.privacy.cascading_items_deletion_strategy.help">
+                <source>profile.privacy.cascading_items_deletion_strategy.help</source>
+                <target>Sollen bei Löschung eines Accounts auch alle Einträge des Nutzers gelöscht werden?</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
