@@ -10,8 +10,8 @@ use Doctrine\DBAL\Connection;
 class DatesDeleter implements RubricDeleter
 {
     public function __construct(
-        private LegacyEnvironment $legacyEnvironment,
-        private Connection $connection,
+        private readonly LegacyEnvironment $legacyEnvironment,
+        private readonly Connection $connection,
     ) {}
 
     public function rubricKey(): string

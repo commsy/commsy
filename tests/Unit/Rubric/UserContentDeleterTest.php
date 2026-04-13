@@ -23,6 +23,7 @@ class UserContentDeleterTest extends TestCase
 
         $this->deleter = new UserContentDeleter(
             new \ArrayIterator([]),
+            new \ArrayIterator([]),
             $this->settingsManager,
             $connection,
         );

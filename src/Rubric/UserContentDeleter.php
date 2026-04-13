@@ -11,24 +11,29 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 class UserContentDeleter
 {
     /** @param iterable<RubricDeleter> $deleters */
+    /** @param iterable<SubEntryRedactor> $subEntryRedactors */
     public function __construct(
         #[AutowireIterator('app.rubric.deleter')]
         private iterable $deleters,
+        #[AutowireIterator('app.rubric.sub_entry_redactor')]
+        private iterable $subEntryRedactors,
         private AccountSettingsManager $accountSettingsManager,
         private Connection $connection,
     ) {}
 
     /**
      * Erases the footprint of a user in a given context.
-     * Depending on the resolved strategy, items created by the user are either
-     * deleted (CASCADE_ITEMS) or kept with nullified references (KEEP_ITEMS).
      *
-     * References (creator_id, modifier_id) are always nullified.
+     * Depending on the resolved strategy:
+     * - CASCADE_ITEMS: Main entries are deleted (via legacy cascade), sub-entries
+     *   in surviving parent items are redacted, all references are nullified.
+     * - KEEP_ITEMS: Nothing is deleted, only references are nullified.
      */
     public function eraseUserFootprint(int $userId, int $contextId, ?Account $account): void
     {
         $strategy = $this->resolveStrategy($account);
 
+        // 1. Main entries via RubricDeleters (rubric-specific tables only)
         foreach ($this->deleters as $deleter) {
             if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
                 foreach ($deleter->findItemsCreatedBy($userId, $contextId) as $item) {
@@ -39,17 +44,32 @@ class UserContentDeleter
             $deleter->nullifyReferencesInContext($userId, $contextId);
         }
 
-        $this->nullifyCrossRubricReferences($userId, $contextId);
+        // 2. Sub-entries: never deleted, but redacted (CASCADE) and references nullified (always)
+        foreach ($this->subEntryRedactors as $redactor) {
+            if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
+                $redactor->redactContentOfUser($userId, $contextId);
+            }
+
+            $redactor->nullifyReferencesInContext($userId, $contextId);
+        }
+
+        // 3. Shared references (items table, files, links)
+        $this->cleanupSharedReferences($userId, $contextId);
     }
 
     /**
-     * Nullifies references in tables that are not rubric-specific:
-     * - files.creator_id
-     * - link_modifier_item (rows deleted, since modifier_id is part of PK)
-     * - items.deleter_id (for items in this context)
+     * Cleans up references in tables shared across all rubrics:
+     * - items table (modifier_id)
+     * - files (creator_id)
+     * - link_modifier_item (modifier references)
      */
-    private function nullifyCrossRubricReferences(int $userId, int $contextId): void
+    private function cleanupSharedReferences(int $userId, int $contextId): void
     {
+        $this->connection->executeStatement(
+            'UPDATE items SET modifier_id = NULL WHERE modifier_id = :userId AND context_id = :contextId',
+            ['userId' => $userId, 'contextId' => $contextId]
+        );
+
         $this->connection->executeStatement(
             'UPDATE files SET creator_id = NULL WHERE creator_id = :userId AND context_id = :contextId',
             ['userId' => $userId, 'contextId' => $contextId]

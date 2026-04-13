@@ -18,8 +18,11 @@ interface RubricDeleter
     public function findItemsCreatedBy(int $userId, int $contextId): iterable;
 
     /**
-     * Deletes a single item of this rubric including its sub-items
-     * (Sections, DiscussionArticles, Steps, Annotations).
+     * Deletes a single item of this rubric.
+     *
+     * Currently delegates to the legacy cs_item::delete() which handles
+     * cascade deletion of sub-items (Sections, DiscussionArticles, Steps),
+     * Elasticsearch removal, link cleanup, etc.
      */
     public function deleteItem(cs_item $item): void;
 
