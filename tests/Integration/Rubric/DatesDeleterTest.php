@@ -356,5 +356,21 @@ final class DatesDeleterTest extends KernelTestCase
             (int) $row['deleter_id'],
             sprintf('link_items row %d must record the correct deleter_id', $linkId)
         );
+
+        // cs_link_manager::_create() writes a twin row into `items`
+        // (type = 'link_item') to allocate the AUTO_INCREMENT id before
+        // inserting into `link_items`. ItemDeletionHelper must soft-delete
+        // both sides so the two tables stay in sync.
+        $twin = $this->connection->fetchAssociative(
+            'SELECT deletion_date, deleter_id FROM items WHERE item_id = :id',
+            ['id' => $linkId]
+        );
+        self::assertIsArray($twin, sprintf('Expected items twin row for link_items id %d', $linkId));
+        self::assertNotNull($twin['deletion_date'], sprintf('items twin of link_items %d must be soft-deleted', $linkId));
+        self::assertSame(
+            $this->deleterId,
+            (int) $twin['deleter_id'],
+            sprintf('items twin of link_items %d must record the correct deleter_id', $linkId)
+        );
     }
 }

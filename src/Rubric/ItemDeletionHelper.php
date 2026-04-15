@@ -14,6 +14,7 @@
 namespace App\Rubric;
 
 use App\Files\FileManager;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -34,22 +35,43 @@ class ItemDeletionHelper
      * Soft-deletes all `link_items` rows that reference the given item, either
      * as first/second linked item or as the subject of the row itself.
      *
-     * Equivalent to legacy `cs_link_manager::deleteLinksBecauseItemIsDeleted()`.
+     * Equivalent to legacy `cs_link_manager::deleteLinksBecauseItemIsDeleted()`,
+     * but additionally soft-deletes the `items` twin row of each affected
+     * link_item: `cs_link_manager::_create()` allocates a row in `items`
+     * (type = 'link_item') to obtain the AUTO_INCREMENT id before inserting
+     * into `link_items`, and `cs_link_manager::delete()` cleans up both sides
+     * via `parent::delete()`. The legacy batch-cascade `deleteLinksBecause
+     * ItemIsDeleted()` skipped the twin, leaving orphaned `items` rows; we fix
+     * that inconsistency here so the two tables stay in sync.
      */
     public function softDeleteLinkItems(int $itemId, int $deleterId): void
     {
-        $this->connection->executeStatement(
-            'UPDATE link_items
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE first_item_id = :itemId OR second_item_id = :itemId',
-            ['deleterId' => $deleterId, 'itemId' => $itemId]
-        );
+        $linkItemIds = array_map('intval', $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM link_items
+                WHERE (first_item_id = :itemId
+                       OR second_item_id = :itemId
+                       OR item_id = :itemId)
+                  AND deletion_date IS NULL',
+            ['itemId' => $itemId]
+        ));
+        if (empty($linkItemIds)) {
+            return;
+        }
 
         $this->connection->executeStatement(
             'UPDATE link_items
                 SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE item_id = :itemId',
-            ['deleterId' => $deleterId, 'itemId' => $itemId]
+                WHERE item_id IN (:ids)',
+            ['deleterId' => $deleterId, 'ids' => $linkItemIds],
+            ['ids' => ArrayParameterType::INTEGER]
+        );
+
+        $this->connection->executeStatement(
+            'UPDATE items
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE item_id IN (:ids)',
+            ['deleterId' => $deleterId, 'ids' => $linkItemIds],
+            ['ids' => ArrayParameterType::INTEGER]
         );
     }
 
@@ -158,7 +180,7 @@ class ItemDeletionHelper
                 SET deletion_date = NOW(), deleter_id = :deleterId, status = 'CLOSED'
                 WHERE item_id IN (:ids)",
             ['deleterId' => $deleterId, 'ids' => $taskIds],
-            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+            ['ids' => ArrayParameterType::INTEGER]
         );
 
         foreach ($taskIds as $taskId) {
@@ -239,22 +261,37 @@ class ItemDeletionHelper
 
         $ids = array_values(array_unique(array_map('intval', $itemIds)));
 
-        $this->connection->executeStatement(
-            'UPDATE link_items
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE first_item_id IN (:ids)
-                   OR second_item_id IN (:ids)
-                   OR item_id IN (:ids)',
-            ['deleterId' => $deleterId, 'ids' => $ids],
-            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
-        );
+        // Collect the item_ids of every link_items row that references any of
+        // the batched ids (as subject, first or second linked item) *before*
+        // soft-deleting them, so we can soft-delete their `items` twin rows in
+        // the same pass. See {@see softDeleteLinkItems()} for why the twin
+        // exists and why the legacy batch cascade missed it.
+        $linkItemIds = array_map('intval', $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM link_items
+                WHERE (first_item_id IN (:ids)
+                       OR second_item_id IN (:ids)
+                       OR item_id IN (:ids))
+                  AND deletion_date IS NULL',
+            ['ids' => $ids],
+            ['ids' => ArrayParameterType::INTEGER]
+        ));
+
+        if (!empty($linkItemIds)) {
+            $this->connection->executeStatement(
+                'UPDATE link_items
+                    SET deletion_date = NOW(), deleter_id = :deleterId
+                    WHERE item_id IN (:ids)',
+                ['deleterId' => $deleterId, 'ids' => $linkItemIds],
+                ['ids' => ArrayParameterType::INTEGER]
+            );
+        }
 
         $this->connection->executeStatement(
             'UPDATE links
                 SET deletion_date = NOW(), deleter_id = :deleterId
                 WHERE from_item_id IN (:ids) OR to_item_id IN (:ids)',
             ['deleterId' => $deleterId, 'ids' => $ids],
-            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+            ['ids' => ArrayParameterType::INTEGER]
         );
 
         if ($allFileLinkVersions) {
@@ -264,7 +301,7 @@ class ItemDeletionHelper
                     SET deletion_date = NOW(), deleter_id = :deleterId
                     WHERE item_iid IN (:ids)',
                 ['deleterId' => $deleterId, 'ids' => $ids],
-                ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+                ['ids' => ArrayParameterType::INTEGER]
             );
         } else {
             // Non-versioned rubrics: delegate to FileManager item-by-item.
@@ -273,12 +310,15 @@ class ItemDeletionHelper
             }
         }
 
+        // Soft-delete the `items` rows for both the batched ids themselves and
+        // the link_items twin rows in a single UPDATE.
+        $itemsRowIds = array_values(array_unique(array_merge($ids, $linkItemIds)));
         $this->connection->executeStatement(
             'UPDATE items
                 SET deletion_date = NOW(), deleter_id = :deleterId
                 WHERE item_id IN (:ids)',
-            ['deleterId' => $deleterId, 'ids' => $ids],
-            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+            ['deleterId' => $deleterId, 'ids' => $itemsRowIds],
+            ['ids' => ArrayParameterType::INTEGER]
         );
     }
 }
