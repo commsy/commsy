@@ -40,7 +40,6 @@ use App\Utils\TopicService;
 use App\Utils\UserService;
 use cs_room_item;
 use cs_user_item;
-use cs_userroom_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Liip\ImagineBundle\Imagine\Data\DataManager;

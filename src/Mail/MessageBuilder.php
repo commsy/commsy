@@ -13,10 +13,10 @@
 
 namespace App\Mail;
 
+use App\Services\LegacyEnvironment;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Psr\Log\LoggerInterface;
-use App\Services\LegacyEnvironment;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mime\Address;
