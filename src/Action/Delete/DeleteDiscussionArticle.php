@@ -13,19 +13,35 @@
 
 namespace App\Action\Delete;
 
+use App\Rubric\Discussion\DiscussionDeleter;
+use App\Services\LegacyEnvironment;
 use cs_discussionarticle_item;
+use cs_environment;
 use cs_item;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Thin wrapper around {@see DiscussionDeleter::deleteArticle()}. The deleter
+ * handles both the leaf-delete case (regular soft-delete) and the
+ * "has-answers" case (content purge + author anonymisation while keeping the
+ * row alive) and re-indexes the parent discussion afterwards.
+ */
 class DeleteDiscussionArticle implements DeleteInterface
 {
-    public function __construct(private readonly RouterInterface $router)
-    {
+    private readonly cs_environment $legacyEnvironment;
+
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly DiscussionDeleter $discussionDeleter,
+        LegacyEnvironment $legacyEnvironment,
+    ) {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function delete(cs_item $item): void
     {
-        $item->delete();
+        $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+        $this->discussionDeleter->deleteArticle((int) $item->getItemId(), $deleterId);
     }
 
     public function getRedirectRoute(cs_item $item): ?string
