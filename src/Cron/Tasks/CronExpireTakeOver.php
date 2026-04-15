@@ -55,12 +55,12 @@ readonly class CronExpireTakeOver implements CronTaskInterface
 
                 $contactModerators = $portal->getContactModeratorList();
                 $ccMails = [];
-                $ccMails[] = new Address($this->legacyEnvironment->getRootUserItem()->getEmail());
+                $ccMails[] = $this->legacyEnvironment->getRootUserItem()->getEmail();
                 foreach ($contactModerators as $contactModerator) {
                     /** @var cs_user_item $contactModerator */
                     $contactModeratorMail = $contactModerator->getEmail();
                     if (!empty($contactModeratorMail)) {
-                        $ccMails[] = new Address($contactModeratorMail);
+                        $ccMails[] = $contactModeratorMail;
                     }
                 }
 

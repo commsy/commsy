@@ -64,7 +64,9 @@ readonly class Mailer
         }
 
         if (empty($uniqueRecipients)) {
-            throw new NotFoundHttpException('Message cannot be generated: No recipients specified.');
+            $this->logger->warning('Email cannot be sent: No recipients specified.');
+
+            return new EmailSendStatus(false, 0, $deliveredRecipients, $failedRecipients);
         }
 
         // send an individual email to each of the unique recipients
@@ -75,12 +77,16 @@ readonly class Mailer
                 $emailObject = clone $email;
                 $emailObject = $this->messageBuilder->generateFromEmail($emailObject, $fromSenderName);
 
-                $address = new Address($recipient->getEmail(), $recipient->getFullName());
+                $recipientEmail = $recipient->getEmail();
+                $recipientName = $recipient->getFullName();
+                $address = new Address($recipientEmail, $recipientName); // throws an RfcComplianceException if email validation fails
                 $emailObject->to($address);
 
                 $this->symfonyMailer->send($emailObject);
             } catch (RfcComplianceException $e) {
-                $this->logger->warning('Message cannot be generated, RFC violation.', [$e->getMessage()]);
+                $logMessage = sprintf('Message cannot be generated due to RFC violation for email address "%s"', $recipientEmail);
+                $logMessage .= !empty($recipientName) ? sprintf(' ("%s").', $recipientName) : '.';
+                $this->logger->warning($logMessage, [$e->getMessage()]);
                 $success = false;
             } catch (TransportExceptionInterface) {
                 $success = false;
@@ -100,7 +106,7 @@ readonly class Mailer
      * Creates an email object from the given parameters and sends it to the given recipient.
      *
      * @param string           $subject The email's subject
-     * @param string           $message The email's message
+     * @param string           $htmlMessage The email's message
      * @param Recipient        $recipient The recipient for the email
      * @param string           $fromSenderName The sender's name, defaults to 'CommSy'
      * @param Address|string[] $replyTo List of Reply to addresses (Address objects or string-based email addresses)
@@ -111,7 +117,7 @@ readonly class Mailer
      */
     public function sendRaw(
         string $subject,
-        string $message,
+        string $htmlMessage,
         Recipient $recipient,
         string $fromSenderName = 'CommSy',
         array $replyTo = [],
@@ -119,7 +125,7 @@ readonly class Mailer
     ): EmailSendStatus {
         $email = $this->messageBuilder->generateFromString(
             $subject,
-            $message,
+            $htmlMessage,
             $fromSenderName,
             $recipient,
             $replyTo,
@@ -133,7 +139,7 @@ readonly class Mailer
      * Creates an email object from the given parameters and sends it to all recipients.
      *
      * @param string           $subject The email's subject
-     * @param string           $message The email's message
+     * @param string           $htmlMessage The email's message
      * @param Recipient[]      $recipients The recipients for the email
      * @param string           $fromSenderName The sender's name, defaults to 'CommSy'
      * @param Address|string[] $replyTo List of Reply to addresses (Address objects or string-based email addresses)
@@ -144,7 +150,7 @@ readonly class Mailer
      */
     public function sendMultipleRaw(
         string $subject,
-        string $message,
+        string $htmlMessage,
         array $recipients,
         string $fromSenderName = 'CommSy',
         array $replyTo = [],
@@ -152,7 +158,7 @@ readonly class Mailer
     ): EmailSendStatus {
         $email = $this->messageBuilder->generateFromString(
             $subject,
-            $message,
+            $htmlMessage,
             $fromSenderName,
             null,
             $replyTo,
