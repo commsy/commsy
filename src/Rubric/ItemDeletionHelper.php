@@ -1,0 +1,284 @@
+<?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace App\Rubric;
+
+use App\Files\FileManager;
+use Doctrine\DBAL\Connection;
+
+/**
+ * Shared low-level deletion primitives used by RubricDeleter implementations.
+ *
+ * Mirrors the soft-delete behaviour of the legacy `cs_item::_delete()` cascade
+ * (link_items, links, annotations, items row) but exposes it as explicit
+ * DBAL operations so each RubricDeleter can compose only what it needs.
+ */
+class ItemDeletionHelper
+{
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly FileManager $fileManager,
+    ) {}
+
+    /**
+     * Soft-deletes all `link_items` rows that reference the given item, either
+     * as first/second linked item or as the subject of the row itself.
+     *
+     * Equivalent to legacy `cs_link_manager::deleteLinksBecauseItemIsDeleted()`.
+     */
+    public function softDeleteLinkItems(int $itemId, int $deleterId): void
+    {
+        $this->connection->executeStatement(
+            'UPDATE link_items
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE first_item_id = :itemId OR second_item_id = :itemId',
+            ['deleterId' => $deleterId, 'itemId' => $itemId]
+        );
+
+        $this->connection->executeStatement(
+            'UPDATE link_items
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE item_id = :itemId',
+            ['deleterId' => $deleterId, 'itemId' => $itemId]
+        );
+    }
+
+    /**
+     * Soft-deletes all rows in the `links` table that reference the given item,
+     * regardless of link_type (`buzzword_for`, `in_time`, `label_for`, …) and
+     * direction (from/to).
+     *
+     * This fixes a legacy inconsistency: `cs_dates_manager::delete()` cleaned
+     * up `links` via `deleteLinksBecauseItemIsDeleted()`, while other rubric
+     * managers either skipped it (Discussion, Material, Task) or hard-deleted
+     * a single type (Announcement's `relevant_for`). All rubrics migrated off
+     * the legacy cascade use this helper so the behaviour is uniform.
+     */
+    public function softDeleteLinks(int $itemId, int $deleterId): void
+    {
+        $this->connection->executeStatement(
+            'UPDATE links
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE from_item_id = :itemId OR to_item_id = :itemId',
+            ['deleterId' => $deleterId, 'itemId' => $itemId]
+        );
+    }
+
+    /**
+     * Soft-deletes all annotations attached to the given item, including their
+     * `items` twin rows and their `link_items` references.
+     *
+     * Equivalent to legacy `cs_item::deleteAssociatedAnnotations()` which loads
+     * the annotation list and calls `delete()` on each.
+     */
+    public function softDeleteAnnotations(int $parentItemId, int $deleterId): void
+    {
+        $annotationIds = $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM annotations
+                WHERE linked_item_id = :parentItemId AND deletion_date IS NULL',
+            ['parentItemId' => $parentItemId]
+        );
+
+        foreach ($annotationIds as $annotationId) {
+            $annotationId = (int) $annotationId;
+
+            $this->connection->executeStatement(
+                'UPDATE annotations
+                    SET deletion_date = NOW(), deleter_id = :deleterId
+                    WHERE item_id = :itemId',
+                ['deleterId' => $deleterId, 'itemId' => $annotationId]
+            );
+
+            $this->softDeleteLinkItems($annotationId, $deleterId);
+            $this->softDeleteItemsRow($annotationId, $deleterId);
+        }
+    }
+
+    /**
+     * Soft-deletes `item_link_file` rows attached to the given item.
+     *
+     * Delegates to the existing FileManager service. Note that the legacy
+     * `delete()` methods only cleaned up file links for Material items — this
+     * refactoring applies the cleanup uniformly across all rubrics, since any
+     * cs_item can carry file attachments.
+     */
+    public function softDeleteFileLinks(int $itemId, ?int $versionId = null): void
+    {
+        // When versionId is not given, treat it as "all versions" (0).
+        $this->fileManager->softDeleteFileLink($itemId, $versionId ?? 0);
+    }
+
+    /**
+     * Soft-deletes every task created by `$userId` in `$contextId`, along
+     * with the task's annotations and auxiliary rows (link_items, links,
+     * file_links, items twin).
+     *
+     * Tasks are **not a rubric** — they are a system workflow artefact
+     * (TASK_USER_REQUEST on moderated-room applications and similar legacy
+     * entries). Instead of modelling them as a `RubricDeleter` they are
+     * handled here as an auxiliary table the way link_items, annotations
+     * and file_links are handled: as supporting data that needs cleaning
+     * up around the edges of the real deletion work.
+     *
+     * Mirrors the legacy `cs_task_item::delete()` behaviour including the
+     * `status = 'CLOSED'` flip (so moderator UIs that still look at open
+     * requests never surface ghost rows of deleted users).
+     *
+     * @todo Prüfen, ob die `tasks`-Tabelle perspektivisch entsorgt werden
+     *       kann — der User-Request-Workflow ließe sich auch ohne eigene
+     *       Tabelle modellieren. Solange sie bleibt, ist das hier der
+     *       einzige aktive Löschpfad in der neuen Architektur.
+     */
+    public function deleteUserTasks(int $userId, int $contextId, int $deleterId): void
+    {
+        $taskIds = array_map('intval', $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM tasks
+                WHERE creator_id = :userId
+                  AND context_id = :contextId
+                  AND deleter_id IS NULL
+                  AND deletion_date IS NULL',
+            ['userId' => $userId, 'contextId' => $contextId]
+        ));
+        if (empty($taskIds)) {
+            return;
+        }
+
+        $this->connection->executeStatement(
+            "UPDATE tasks
+                SET deletion_date = NOW(), deleter_id = :deleterId, status = 'CLOSED'
+                WHERE item_id IN (:ids)",
+            ['deleterId' => $deleterId, 'ids' => $taskIds],
+            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+        );
+
+        foreach ($taskIds as $taskId) {
+            $this->softDeleteAnnotations($taskId, $deleterId);
+        }
+
+        $this->softDeleteAuxiliaryRowsForItems($taskIds, $deleterId);
+    }
+
+    /**
+     * NULLifies `tasks.creator_id` references to `$userId` within `$contextId`.
+     * Called unconditionally (both CASCADE_ITEMS and KEEP_ITEMS strategies)
+     * so surviving tasks of the deleted user become author-less. The `tasks`
+     * table has no `modifier_id` column (see initial.sql), so creator is the
+     * only reference to clean.
+     */
+    public function nullifyUserTaskReferences(int $userId, int $contextId): void
+    {
+        $this->connection->executeStatement(
+            'UPDATE tasks SET creator_id = NULL
+                WHERE creator_id = :userId AND context_id = :contextId',
+            ['userId' => $userId, 'contextId' => $contextId]
+        );
+    }
+
+    /**
+     * Soft-deletes **every version** of `item_link_file` rows for the given
+     * item. Needed for versioned rubrics (Material, Section): the FileManager
+     * variant filters on an exact `version_id` match, so it cannot purge
+     * attachments from older versions in one go.
+     *
+     * The legacy `cs_material_item::delete()` cascade passed the *current*
+     * version id into `deleteByItem()` even when dropping all versions — that
+     * was a bug; this helper fixes it by dropping the version filter entirely.
+     */
+    public function softDeleteAllFileLinkVersions(int $itemId, int $deleterId): void
+    {
+        $this->connection->executeStatement(
+            'UPDATE item_link_file
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE item_iid = :itemId',
+            ['deleterId' => $deleterId, 'itemId' => $itemId]
+        );
+    }
+
+    /**
+     * Soft-deletes the shared `items` table row for the given item.
+     *
+     * Equivalent to legacy base `cs_manager::delete()` which is invoked from
+     * every rubric manager's delete() as `parent::delete()`.
+     */
+    public function softDeleteItemsRow(int $itemId, int $deleterId): void
+    {
+        $this->connection->executeStatement(
+            'UPDATE items
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE item_id = :itemId',
+            ['deleterId' => $deleterId, 'itemId' => $itemId]
+        );
+    }
+
+    /**
+     * Batch variant: soft-delete every reference in `link_items`, `links`,
+     * `item_link_file` and the shared `items` row for the given list of item
+     * ids. Used by rubrics that wipe out hierarchies in one go (e.g.
+     * DiscussionDeleter removing all articles of a discussion) — the single
+     * SQL statements are cheaper than looping singular helpers per item.
+     *
+     * Annotations are intentionally *not* included here: rubrics that carry
+     * annotations still call {@see softDeleteAnnotations()} on a per-parent
+     * basis because the parent id is the join key, not the batched ids.
+     */
+    public function softDeleteAuxiliaryRowsForItems(array $itemIds, int $deleterId, bool $allFileLinkVersions = false): void
+    {
+        if (empty($itemIds)) {
+            return;
+        }
+
+        $ids = array_values(array_unique(array_map('intval', $itemIds)));
+
+        $this->connection->executeStatement(
+            'UPDATE link_items
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE first_item_id IN (:ids)
+                   OR second_item_id IN (:ids)
+                   OR item_id IN (:ids)',
+            ['deleterId' => $deleterId, 'ids' => $ids],
+            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+        );
+
+        $this->connection->executeStatement(
+            'UPDATE links
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE from_item_id IN (:ids) OR to_item_id IN (:ids)',
+            ['deleterId' => $deleterId, 'ids' => $ids],
+            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+        );
+
+        if ($allFileLinkVersions) {
+            // Versioned rubrics (Material, Section): match regardless of version_id.
+            $this->connection->executeStatement(
+                'UPDATE item_link_file
+                    SET deletion_date = NOW(), deleter_id = :deleterId
+                    WHERE item_iid IN (:ids)',
+                ['deleterId' => $deleterId, 'ids' => $ids],
+                ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+            );
+        } else {
+            // Non-versioned rubrics: delegate to FileManager item-by-item.
+            foreach ($ids as $id) {
+                $this->fileManager->softDeleteFileLink($id, 0);
+            }
+        }
+
+        $this->connection->executeStatement(
+            'UPDATE items
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE item_id IN (:ids)',
+            ['deleterId' => $deleterId, 'ids' => $ids],
+            ['ids' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+        );
+    }
+}

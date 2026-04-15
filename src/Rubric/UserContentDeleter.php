@@ -19,6 +19,7 @@ class UserContentDeleter
         private iterable $subEntryRedactors,
         private AccountSettingsManager $accountSettingsManager,
         private Connection $connection,
+        private ItemDeletionHelper $itemDeletionHelper,
     ) {}
 
     /**
@@ -33,16 +34,28 @@ class UserContentDeleter
     {
         $strategy = $this->resolveStrategy($account);
 
-        // 1. Main entries via RubricDeleters (rubric-specific tables only)
+        // 1. Main entries via RubricDeleters. Each deleter is self-contained and
+        //    handles its entire cleanup (rubric table, sub-entries, links,
+        //    annotations, file links, items row, event dispatch) — identical to
+        //    the path taken by the UI delete action.
         foreach ($this->deleters as $deleter) {
             if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
-                foreach ($deleter->findItemsCreatedBy($userId, $contextId) as $item) {
-                    $deleter->deleteItem($item);
+                foreach ($deleter->findItemIdsCreatedBy($userId, $contextId) as $itemId) {
+                    $deleter->deleteItem($itemId, $userId);
                 }
             }
 
             $deleter->nullifyReferencesInContext($userId, $contextId);
         }
+
+        // 1b. Tasks — not a rubric, handled as an auxiliary table alongside
+        //     link_items / annotations. Cascade-delete the ones the user
+        //     created (so moderator UIs don't see ghost REQUESTs), then
+        //     always nullify any creator references left behind.
+        if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
+            $this->itemDeletionHelper->deleteUserTasks($userId, $contextId, $userId);
+        }
+        $this->itemDeletionHelper->nullifyUserTaskReferences($userId, $contextId);
 
         // 2. Sub-entries: never deleted, but redacted (CASCADE) and references nullified (always)
         foreach ($this->subEntryRedactors as $redactor) {
@@ -59,17 +72,15 @@ class UserContentDeleter
 
     /**
      * Cleans up references in tables shared across all rubrics:
-     * - items table (modifier_id)
      * - files (creator_id)
      * - link_modifier_item (modifier references)
+     *
+     * Note: the `items` table itself has no `modifier_id` / `creator_id`
+     * columns (see initial.sql) — modifier history lives in
+     * `link_modifier_item` and is purged below.
      */
     private function cleanupSharedReferences(int $userId, int $contextId): void
     {
-        $this->connection->executeStatement(
-            'UPDATE items SET modifier_id = NULL WHERE modifier_id = :userId AND context_id = :contextId',
-            ['userId' => $userId, 'contextId' => $contextId]
-        );
-
         $this->connection->executeStatement(
             'UPDATE files SET creator_id = NULL WHERE creator_id = :userId AND context_id = :contextId',
             ['userId' => $userId, 'contextId' => $contextId]
