@@ -69,7 +69,7 @@ final class AnnotationFactory extends PersistentObjectFactory
         return $this
             ->withoutPersisting()
             ->instantiateWith(
-                Instantiator::withConstructor()->allowExtra('room', 'creator', 'linkedItemId')
+                Instantiator::withConstructor()->allowExtra('room', 'creator', 'linkedItemId', 'description')
             )
             ->afterInstantiate(function(Annotations $annotation, array $attributes): void {
                 $room = $attributes['room'] ?? null;
@@ -91,8 +91,9 @@ final class AnnotationFactory extends PersistentObjectFactory
                 $item = $env->getAnnotationManager()->getNewItem();
                 $item->setContextID($room->getItemId());
                 $item->setLinkedItemID($linkedItemId);
-                if ($annotation->getDescription() !== null) {
-                    $item->setDescription($annotation->getDescription());
+                $description = $attributes['description'] ?? null;
+                if (is_string($description) && $description !== '') {
+                    $item->setDescription($description);
                 }
 
                 // Promote the legacy swallowed trigger_error into a real failure.

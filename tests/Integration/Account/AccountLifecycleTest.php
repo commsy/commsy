@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Account;
 
-use App\Account\AccountManager;
+use App\Account\AccountDeleter;
 use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
@@ -87,9 +87,11 @@ final class AccountLifecycleTest extends KernelTestCase
             'deletionDate' => null,
         ]);
 
-        /** @var AccountManager $accountManager */
-        $accountManager = self::getContainer()->get(AccountManager::class);
-        $accountManager->delete($account);
+        // AccountManager::delete() has been deprecated in favour of AccountDeleter.
+        // We call delete() (synchronous) directly instead of dispatch() (async via
+        // Messenger), because the following assertions inspect DB state immediately.
+        $accountDeleter = self::getContainer()->get(AccountDeleter::class);
+        $accountDeleter->delete($account);
 
         assert_not_persisted($account);
 

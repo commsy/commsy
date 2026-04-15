@@ -60,4 +60,9 @@ class Annotations
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN)]
     private ?bool $public = false;
+
+    public function getItemId(): ?int
+    {
+        return $this->itemId ?? null;
+    }
 }

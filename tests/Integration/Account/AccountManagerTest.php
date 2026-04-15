@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Account;
 
+use App\Account\AccountDeleter;
 use App\Account\AccountManager;
 use App\Account\AccountSettingsManager;
 use App\Entity\Account;
@@ -29,7 +30,7 @@ class AccountManagerTest extends KernelTestCase
         // Fresh account from factory
         $account = AccountFactory::createOne();
         assert_persisted($account);
-        $this->getAccountManager()->delete($account);
+        $this->getAccountDeleter()->delete($account);
         assert_not_persisted($account);
     }
 
@@ -110,13 +111,18 @@ class AccountManagerTest extends KernelTestCase
         $accountSettings = $accountSettingsRepository->findOneBy(['account' => $account]);
         $this->assertNotNull($accountSettings);
 
-        $this->getAccountManager()->delete($account);
+        $this->getAccountDeleter()->delete($account);
         assert_not_persisted($account);
     }
 
     private function getAccountManager(): AccountManager
     {
         return self::getContainer()->get(AccountManager::class);
+    }
+
+    private function getAccountDeleter(): AccountDeleter
+    {
+        return self::getContainer()->get(AccountDeleter::class);
     }
 
     private function getAccountSettingsManager(): AccountSettingsManager
