@@ -313,7 +313,9 @@ class LegacyCopy implements CopyStrategy
             $id_array = $manager->copyDataFromRoomToRoom(
                 $source->getItemID(),
                 $target->getItemID(),
-                $creator->getItemID());
+                $creator->getItemID(),
+                '',
+                $target->getType());
             $new_id_array = $new_id_array + $id_array;
         }
 

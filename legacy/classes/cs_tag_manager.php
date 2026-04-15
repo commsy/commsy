@@ -609,9 +609,9 @@ class cs_tag_manager extends cs_manager
         }
     }
 
-      public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '')
+      public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '', $newRoomType = '')
       {
-          $retour = parent::copyDataFromRoomToRoom($old_id, $new_id, $user_id, $id_array);
+          $retour = parent::copyDataFromRoomToRoom($old_id, $new_id, $user_id, $id_array, $newRoomType);
 
           $tag_root_item_old = $this->getRootTagItemFor($old_id);
           if (isset($tag_root_item_old)) {
