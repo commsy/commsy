@@ -75,7 +75,9 @@ class RecipientFactory
         // default local is 'de'
         $language = $room?->getLanguage() ?? 'de';
         if ($language === 'user') {
-            $language = $user->getLanguage() !== 'browser' ? $user->getLanguage() : 'de';
+            $account = $user->getAccount();
+            $accountLanguage = $account?->getLanguage()->value ?? 'de';
+            $language = $accountLanguage !== 'browser' ? $accountLanguage : 'de';
         }
 
         $recipient->setLanguage($language);

@@ -14,6 +14,10 @@
                 <source>upload error file limit</source>
                 <target>Upload fehlgeschlagen, Sie können maximal %max_limit% Dateien gleichzeitig hochladen.</target>
             </trans-unit>
+            <trans-unit id="error-upload-size-limit">
+                <source>upload error size limit</source>
+                <target>Upload fehlgeschlagen, die Datei überschreitet das zulässige Limit von %max_size% MB.</target>
+            </trans-unit>
             <trans-unit id="error-deprecated-markup">
                 <source>deprecated markup</source>
                 <target>Die Anzeige von %markup% wird nicht mehr unterstützt, bitte betten Sie Medieninhalte direkt über den Editor ein.</target>

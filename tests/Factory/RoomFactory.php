@@ -61,11 +61,16 @@ final class RoomFactory extends PersistentObjectFactory
                 $conn = $this->entityManager->getConnection();
                 $now = new DateTimeImmutable()->format('Y-m-d H:i:s');
 
+                $deleterId = $room->getDeleter()?->getItemId();
+                $deletionDate = $room->getDeletionDate() ? $room->getDeletionDate()->format('Y-m-d H:i:s') : null;
+
                 // Insert in items
                 $conn->insert('items', [
                     'context_id' => $room->getContextId(),
                     'modification_date' => $now,
                     'type' => $room->getType(),
+                    'deleter_id' => $deleterId,
+                    'deletion_date' => $deletionDate,
                 ]);
 
                 $itemId = (int) $conn->lastInsertId();
@@ -87,6 +92,8 @@ final class RoomFactory extends PersistentObjectFactory
                     'template' => (int) $room->isTemplate(),
                     'contact_persons' => $room->getContactPersons(),
                     'room_description' => $room->getRoomDescription(),
+                    'deleter_id' => $deleterId,
+                    'deletion_date' => $deletionDate,
                     'lastlogin' => null,
                     'activity_state' => $room->getActivityState(),
                     'activity_state_updated' => null,

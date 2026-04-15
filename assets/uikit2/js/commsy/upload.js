@@ -12,6 +12,8 @@
             errorMessage: '',
             noFileIdsMessage: '',
             fileLimitMessage: '',
+            fileSizeLimitMessage: '',
+            maxFileSizeMb: 0,
         },
 
         boot: function() {
@@ -43,6 +45,16 @@
                         UIkit.notify($this.options.fileLimitMessage, 'danger');
                         return false;
                     }
+
+                    if ($this.options.maxFileSizeMb > 0) {
+                        let maxBytes = $this.options.maxFileSizeMb * 1048576;
+                        for (let i = 0; i < files.length; i++) {
+                            if (files[i].size > maxBytes) {
+                                UIkit.notify($this.options.fileSizeLimitMessage, 'danger');
+                                return false;
+                            }
+                        }
+                    }
                 },
 
                 loadstart: function() {
@@ -67,6 +79,10 @@
 
                         try {
                             let responseData = JSON.parse(response);
+
+                            if (responseData['error']) {
+                                UIkit.notify(responseData['error'], 'danger');
+                            }
 
                             if (responseData['fileIds']) {
                                 let prototypeNode = $('form[name="upload"] div[data-prototype]');
@@ -98,7 +114,7 @@
                                     }
                                 }
 
-                                if (responseData['fileIds'].length == 0) {
+                                if (!responseData['error'] && responseData['fileIds'].length == 0) {
                                     UIkit.notify($this.options.noFileIdsMessage, 'danger');
                                 }
 
@@ -152,7 +168,7 @@
                                         .append(labelNode);
                                 }
 
-                                if (attachmentInfoArray.length == 0) {
+                                if (!responseData['error'] && attachmentInfoArray.length == 0) {
                                     UIkit.notify($this.options.noFileIdsMessage, 'danger');
                                 }
                             }

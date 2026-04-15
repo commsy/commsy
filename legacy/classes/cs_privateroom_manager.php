@@ -182,7 +182,7 @@ class cs_privateroom_manager extends cs_room2_manager
         }
 
         if ($this->_active_limit) {
-            $query .= ' AND '.$this->addDatabasePrefix('accounts').'.context_id = '.$this->addDatabasePrefix($this->_db_table).'.context_id';
+            $query .= ' AND '.$this->addDatabasePrefix('accounts').'.portal_id = '.$this->addDatabasePrefix($this->_db_table).'.portal_id';
             $query .= ' AND '.$this->addDatabasePrefix('accounts').'.last_login >= "'.getCurrentDateTimeMinusDaysInMySQL(100).'"';
         }
 

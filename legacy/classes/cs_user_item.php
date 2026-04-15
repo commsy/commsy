@@ -11,6 +11,7 @@
  * file that was distributed with this source code.
  */
 
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -55,15 +56,22 @@ class cs_user_item extends cs_item
         }
     }
 
+    public function getAccount(): ?Account
+    {
+        $accountManager = $this->_environment->getSymfonyContainer()->get(AccountManager::class);
+        return $accountManager->getAccountForUser($this);
+    }
+
     /**
      * Returns this user item's account ID which represents the relationship to the corresponding account
      * in the `accounts` table.
      *
-     * @return int the ID of the account that's linked to this user item
+     * @return int|null the ID of the account that's linked to this user item
      */
-    public function getAccountID(): int
+    public function getAccountID(): ?int
     {
-        return $this->_getValue('account_id');
+        $value = $this->_getValue('account_id');
+        return $value !== '' ? (int) $value : null;
     }
 
     /**

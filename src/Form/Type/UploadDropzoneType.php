@@ -15,33 +15,10 @@ namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UploadDropzoneType extends AbstractType
 {
-    public function __construct(
-        private readonly TranslatorInterface $translator
-    ) {
-    }
-
-    public function buildView(FormView $view, FormInterface $form, array $options): void
-    {
-        $jsOptions = [
-            'path' => $options['uploadUrl'],
-            'maxFileUploads' => (int) (ini_get('max_file_uploads') ?: 20),
-            'errorMessage' => $this->translator->trans('upload error', [], 'error'),
-            'noFileIdsMessage' => $this->translator->trans('upload error', [], 'error'),
-            'fileLimitMessage' => $this->translator->trans('upload error file limit', [
-                '%max_limit%' => (int) (ini_get('max_file_uploads') ?: 20),
-            ], 'error'),
-        ];
-
-        $view->vars['attr']['data-uk-csupload'] = json_encode($jsOptions);
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
@@ -50,15 +27,8 @@ class UploadDropzoneType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'material',
                 'multiple' => true,
-                'errorMessage' => $this->translator->trans('upload error', [], 'error'),
-                'noFileIdsMessage' => $this->translator->trans('upload error', [], 'error'),
-                'fileLimitMessage' => $this->translator->trans('upload error file limit', [
-                    '%max_limit%' => (int) (ini_get('max_file_uploads') ?: 20),
-                ], 'error'),
             ])
-            ->setRequired([
-                'uploadUrl'
-            ]);
+            ->setRequired(['upload_url']);
     }
 
     public function getParent(): string

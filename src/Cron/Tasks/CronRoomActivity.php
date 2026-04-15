@@ -37,16 +37,14 @@ class CronRoomActivity implements CronTaskInterface
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomManager->minimizeActivityPoints(self::QUOTIENT);
 
-        $this->entityManager->createQuery(
-            'UPDATE App\Entity\Portal p SET p.activity = ROUND(p.activity / :q) WHERE p.activity > 0'
-        )
-            ->setParameter('q', self::QUOTIENT)
-            ->execute();
-
         $portalRepository = $this->entityManager->getRepository(Portal::class);
         $portals = $portalRepository->findActivePortals();
         foreach ($portals as $portal) {
             /* @var Portal $portal */
+            if ($portal->getActivity() > 0) {
+                $portal->setActivity(round($portal->getActivity() / self::QUOTIENT));
+            }
+
             $portal->setMaxRoomActivityPoints(round($portal->getMaxRoomActivityPoints() / self::QUOTIENT));
 
             // TODO ??? This will save the portal with an updated modification time due to ORM lifecycle callbacks

@@ -50,22 +50,16 @@ class UserProvider implements UserProviderInterface
                 ->findOneBy(['username' => 'root', 'portal' => null]);
         }
 
+        $portal = $this->extractPortalIdFromRequest()
+            ?? $this->extractPortalIdFromRequest('takeover_context')
+            ?? null;
+
         // Load a User object from your data source or throw UsernameNotFoundException.
         // The $username argument may not actually be a username:
         // it is whatever value is being returned by the getUsername()
         // method in your User class.
-        $account = $this->loadUser(
-            $identifier,
-            $this->extractPortalIdFromRequest(),
-            $this->extractAuthSourceIdFromRequest()
-        );
-        if (null === $account) {
-            $account = $this->loadUser(
-                $identifier,
-                $this->extractPortalIdFromRequest('takeover_context'),
-                $this->extractAuthSourceIdFromRequest('takeover_authSourceId')
-            );
-        }
+        $account = $this->loadUser($identifier,$portal, $this->extractAuthSourceIdFromRequest())
+            ?? $this->loadUser($identifier, $portal, $this->extractAuthSourceIdFromRequest('takeover_authSourceId'));
 
         if (null === $account) {
             throw new UserNotFoundException();
@@ -98,20 +92,14 @@ class UserProvider implements UserProviderInterface
                 ->findOneBy(['username' => 'root', 'portal' => null]);
         }
 
+        $portal = $this->extractPortalIdFromRequest()
+            ?? $this->extractPortalIdFromRequest('takeover_context')
+            ?? null;
+
         // Return a User object after making sure its data is "fresh".
         // Or throw a UsernameNotFoundException if the user no longer exists.
-        $account = $this->loadUser(
-            $user->getUsername(),
-            $this->extractPortalIdFromRequest(),
-            $this->extractAuthSourceIdFromRequest()
-        );
-        if (null === $account) {
-            $account = $this->loadUser(
-                $user->getUsername(),
-                $this->extractPortalIdFromRequest('takeover_context'),
-                $this->extractAuthSourceIdFromRequest('takeover_authSourceId')
-            );
-        }
+        $account = $this->loadUser($user->getUsername(),$portal, $this->extractAuthSourceIdFromRequest())
+            ?? $this->loadUser($user->getUsername(), $portal, $this->extractAuthSourceIdFromRequest('takeover_authSourceId'));
 
         if (null === $account) {
             throw new UserNotFoundException();
@@ -144,7 +132,7 @@ class UserProvider implements UserProviderInterface
     /**
      * Extracts portal from the request.
      */
-    private function extractPortalIdFromRequest(string $key = 'context'): Portal
+    private function extractPortalIdFromRequest(string $key = 'context'): ?Portal
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
         if ($currentRequest) {
@@ -156,13 +144,13 @@ class UserProvider implements UserProviderInterface
             }
         }
 
-        throw new UserNotFoundException();
+        return null;
     }
 
     /**
      * Extracts auth source id from the request.
      */
-    private function extractAuthSourceIdFromRequest(string $key = 'authSourceId'): int
+    private function extractAuthSourceIdFromRequest(string $key = 'authSourceId'): ?int
     {
         $currentRequest = $this->requestStack->getCurrentRequest();
         if ($currentRequest) {
@@ -174,6 +162,6 @@ class UserProvider implements UserProviderInterface
             }
         }
 
-        throw new UserNotFoundException();
+        return null;
     }
 }

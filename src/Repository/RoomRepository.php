@@ -193,8 +193,8 @@ class RoomRepository extends ServiceEntityRepository
         $query = $this->getEntityManager()->createQuery('
             SELECT r.itemId FROM App\Entity\Room r
             WHERE r.type NOT IN (:excludedTypes) AND
-            r.deleter IS NOT NULL AND
-            r.deletionDate IS NOT NULL
+            r.deleter IS NULL AND
+            r.deletionDate IS NULL
         ');
         $query->setParameters([
             'excludedTypes' => $excludedTypes,

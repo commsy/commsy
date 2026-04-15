@@ -36,6 +36,10 @@ parameters:
     commsy.upload.account: '%env(EMAIL_UPLOAD_ACCOUNT)%'
     commsy.upload.password: '%env(EMAIL_UPLOAD_PASSWORD)%'
 
+    # Upload size limits in MB (0 = no app-level limit, PHP/webserver limits apply)
+    commsy.upload.max_file_size: '%env(int:UPLOAD_MAX_FILE_SIZE)%'
+    commsy.upload.max_email_attachment_size: '%env(int:UPLOAD_MAX_EMAIL_ATTACHMENT_SIZE)%'
+
     # Login
     commsy.login.shibboleth_direct_login: false
     commsy.login.shibboleth_redirect_url: ''

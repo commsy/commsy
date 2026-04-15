@@ -752,10 +752,8 @@ class cs_environment
 
     /** get Instance of the translation object
      * returns an object for translation of message tags.
-     *
-     * @return \cs_translator
      */
-    public function getTranslationObject()
+    public function getTranslationObject(): cs_translator
     {
         if (!isset($this->instance['translation_object'])) {
             $this->instance['translation_object'] = new cs_translator();
@@ -793,16 +791,6 @@ class cs_environment
                 $this->instance['translation_object']->setEmailTextArray($context_item->getEmailTextArray());
             }
         }
-
-        // we need sometimes the language, even if the user is unknown at that time
-        // so we must change the language, when we know the user and selected language has changed
-        else {
-            $language_now = $this->getSelectedLanguage();
-            $language_stored = $this->instance['translation_object']->getSelectedLanguage();
-            if ($language_now != $language_stored) {
-                $this->instance['translation_object']->setSelectedLanguage($language_now);
-            }
-        } // end of if statement
 
         return $this->instance['translation_object'];
     }

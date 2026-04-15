@@ -15,11 +15,9 @@ namespace App\EventSubscriber;
 
 use App\Account\AccountManager;
 use App\Entity\Account;
-use App\Entity\Portal;
 use App\Mail\Factories\AccountMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
-use App\Repository\PortalRepository;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -27,13 +25,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\EnteredEvent;
 use Symfony\Component\Workflow\Event\GuardEvent;
 
-class AccountActivityStateSubscriber implements EventSubscriberInterface
+readonly class AccountActivityStateSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly PortalRepository $portalRepository,
-        private readonly AccountManager $accountManager,
-        private readonly AccountMessageFactory $accountMessageFactory,
-        private readonly Mailer $mailer
+        private AccountManager $accountManager,
+        private AccountMessageFactory $accountMessageFactory,
+        private Mailer $mailer
     ) {
     }
 
@@ -45,17 +42,16 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         /** @var Account $account */
         $account = $event->getSubject();
 
-        // Block all transitions if the portal configuration has disabled the account activity feature
-        /** @var Portal $portal */
-        $portal = $this->portalRepository->find($account->getContextId());
-        if (!$portal->isClearInactiveAccountsFeatureEnabled()) {
+        // Deny, if the account is the root account
+        if ('root' === $account->getUsername()) {
             $event->setBlocked(true);
 
             return;
         }
 
-        // Deny, if the account is the root account
-        if ('root' === $account->getUsername()) {
+        // Block all transitions if the portal configuration has disabled the account activity feature
+        $portal = $account->getPortal();
+        if (!$portal->isClearInactiveAccountsFeatureEnabled()) {
             $event->setBlocked(true);
 
             return;
@@ -79,8 +75,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         /** @var Account $account */
         $account = $event->getSubject();
 
-        /** @var Portal $portal */
-        $portal = $this->portalRepository->find($account->getContextId());
+        $portal = $account->getPortal();
         if (!$account->getLastLogin() ||
             !$this->datePassedDays($account->getLastLogin(), $portal->getClearInactiveAccountsNotifyLockDays())
         ) {
@@ -98,8 +93,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         /** @var Account $account */
         $account = $event->getSubject();
 
-        /** @var Portal $portal */
-        $portal = $this->portalRepository->find($account->getContextId());
+        $portal = $account->getPortal();
         if (!$account->getActivityStateUpdated() ||
             !$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsLockDays())
         ) {
@@ -118,8 +112,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         $account = $event->getSubject();
 
         // Deny transition if the inactive period is not long enough
-        /** @var Portal $portal */
-        $portal = $this->portalRepository->find($account->getContextId());
+        $portal = $account->getPortal();
         if (!$account->getActivityStateUpdated() ||
             !$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsNotifyDeleteDays())
         ) {
@@ -138,8 +131,7 @@ class AccountActivityStateSubscriber implements EventSubscriberInterface
         $account = $event->getSubject();
 
         // Deny transition if the inactive period is not long enough
-        /** @var Portal $portal */
-        $portal = $this->portalRepository->find($account->getContextId());
+        $portal = $account->getPortal();
         if (!$account->getActivityStateUpdated() ||
             !$this->datePassedDays($account->getActivityStateUpdated(), $portal->getClearInactiveAccountsDeleteDays())
         ) {

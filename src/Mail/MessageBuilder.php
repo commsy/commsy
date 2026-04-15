@@ -16,6 +16,7 @@ namespace App\Mail;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Psr\Log\LoggerInterface;
+use App\Services\LegacyEnvironment;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mime\Address;
@@ -30,6 +31,7 @@ readonly class MessageBuilder
         private string $emailFrom,
         private LoggerInterface $logger,
         private LocaleSwitcher $localeSwitcher,
+        private LegacyEnvironment $legacyEnvironment,
         #[Autowire(param: 'locale')]
         private string $defaultLocale,
     ) {
@@ -120,15 +122,23 @@ readonly class MessageBuilder
 
         $this->localeSwitcher->runWithLocale($recipient->getLanguage(), function(string $locale) use ($message, $email) {
             // use recipient's locale
-            $email->locale($locale === 'browser' ? $this->defaultLocale : $locale);
+            $effectiveLocale = $locale === 'browser' ? $this->defaultLocale : $locale;
+            $email->locale($effectiveLocale);
 
             // Subject
             $subject = $this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail');
             $email->subject($subject);
 
-            // Body
-            $email->htmlTemplate($message->getTemplateName());
-            $email->context($message->getParameters());
+            // Body: set legacy translator to the same locale so getParameters() produces translated content
+            $legacyTranslator = $this->legacyEnvironment->getEnvironment()->getTranslationObject();
+            $previousLanguage = $legacyTranslator->getSelectedLanguage();
+            $legacyTranslator->setSelectedLanguage($effectiveLocale);
+            try {
+                $email->htmlTemplate($message->getTemplateName());
+                $email->context($message->getParameters());
+            } finally {
+                $legacyTranslator->setSelectedLanguage($previousLanguage);
+            }
         });
 
         return $email;

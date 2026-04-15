@@ -133,7 +133,7 @@ final class FileList extends AbstractController
 
         return $this->createFormBuilder()
             ->add('upload', UploadDropzoneType::class, [
-                'uploadUrl' => $this->generateUrl('app_upload_attach', [
+                'upload_url' => $this->generateUrl('app_upload_attach', [
                     'roomId' => $item->getContextID(),
                     'itemId' => $this->itemId,
                     'versionId' => $this->versionId,

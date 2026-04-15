@@ -29,7 +29,7 @@ trait EntityDatesTrait
     private DateTime $modificationDate;
 
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTime $deletionDate;
+    private ?DateTime $deletionDate = null;
 
     #[ORM\PrePersist]
     public function setInitialDateValues(): void

@@ -228,14 +228,6 @@ function getDifference(string $timestampLower, string $timestampHigher): int
 // date functions -> now in translation object
 // ####
 
-function getDateTimeInLang($datetime, $oclock = true)
-{
-    global $environment;
-    $translator = $environment->getTranslationObject();
-
-    return $translator->getDateTimeInLang($datetime, $oclock);
-}
-
 function getTimeInLang($datetime)
 {
     global $environment;
