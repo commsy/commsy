@@ -13,19 +13,43 @@
 
 namespace App\Action\Delete;
 
+use App\Rubric\RubricDeleter;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use cs_environment;
 use cs_item;
 use cs_material_item;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
+/**
+ * Generic delete strategy used by all rubric controllers as the default.
+ *
+ * Dispatches deletion to the matching {@see RubricDeleter} (identified by
+ * `rubricKey()` == `cs_item::getItemType()`) so that UI deletions go through
+ * exactly the same code path as the user-footprint erasure flow
+ * ({@see \App\Rubric\UserContentDeleter}).
+ *
+ * Items without a registered `RubricDeleter` (e.g. topics, groups, users)
+ * fall back to the legacy `cs_item::delete()` cascade. Material keeps its
+ * multi-version fast path via `deleteAllVersions()` — this will move into
+ * {@see \App\Rubric\Material\MaterialDeleter} once that deleter is migrated
+ * away from legacy delegation.
+ */
 class DeleteGeneric implements DeleteInterface
 {
     protected cs_environment $legacyEnvironment;
 
+    /** @var array<string, RubricDeleter>|null Lazy index by rubricKey(). */
+    private ?array $deleterMap = null;
+
+    /**
+     * @param iterable<RubricDeleter> $rubricDeleters
+     */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        protected MarkedService $markedService
+        protected MarkedService $markedService,
+        #[AutowireIterator('app.rubric.deleter')]
+        private readonly iterable $rubricDeleters,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -35,14 +59,30 @@ class DeleteGeneric implements DeleteInterface
         if ($item->getItemType() === 'material') {
             /** @var cs_material_item $item */
             $item->deleteAllVersions();
+        } elseif (($deleter = $this->findDeleter($item->getItemType())) !== null) {
+            $deleterId = $this->legacyEnvironment->getCurrentUserItem()->getItemID();
+            $deleter->deleteItem($item->getItemId(), $deleterId);
         } else {
             $item->delete();
         }
 
         $this->markedService->removeItemFromClipboard($item->getItemId());
     }
+
     public function getRedirectRoute(cs_item $item): ?string
     {
         return null;
+    }
+
+    private function findDeleter(string $itemType): ?RubricDeleter
+    {
+        if ($this->deleterMap === null) {
+            $this->deleterMap = [];
+            foreach ($this->rubricDeleters as $deleter) {
+                $this->deleterMap[$deleter->rubricKey()] = $deleter;
+            }
+        }
+
+        return $this->deleterMap[$itemType] ?? null;
     }
 }
