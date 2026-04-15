@@ -14,24 +14,32 @@
 namespace App\EventSubscriber;
 
 use App\Event\ItemDeletedEvent;
-use App\Event\ItemReindexEvent;
 use App\Mail\Mailer;
 use App\Mail\Messages\ItemDeletedMessage;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
-use App\Utils\ReaderService;
 use cs_environment;
-use cs_item;
 use cs_user_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Notification-side-effects on item lifecycle events.
+ *
+ * ES reindexing and read-status cache invalidation used to live here as well,
+ * but have been split out into {@see ElasticaSubscriber::onItemReindex()} and
+ * {@see ReadStatusSubscriber::onItemReindex()} so each subscriber now owns a
+ * single fachliche responsibility.
+ */
 class ItemSubscriber implements EventSubscriberInterface
 {
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(private readonly Mailer $mailer, LegacyEnvironment $legacyEnvironment, private readonly ItemService $itemService, private readonly ReaderService $readerService)
-    {
+    public function __construct(
+        private readonly Mailer $mailer,
+        LegacyEnvironment $legacyEnvironment,
+        private readonly ItemService $itemService,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -39,7 +47,6 @@ class ItemSubscriber implements EventSubscriberInterface
     {
         return [
             ItemDeletedEvent::NAME => 'onItemDeleted',
-            ItemReindexEvent::class => 'onItemReindex',
         ];
     }
 
@@ -70,30 +77,5 @@ class ItemSubscriber implements EventSubscriberInterface
 
         $message = new ItemDeletedMessage($typedItem, $this->legacyEnvironment->getCurrentUserItem());
         $this->mailer->sendMultiple($message, $moderatorRecipients);
-    }
-
-    public function onItemReindex(ItemReindexEvent $event): void
-    {
-        if ($event->getItem()) {
-            $typedItem = $event->getItem();
-
-            $this->updateSearchIndex($typedItem);
-        }
-    }
-
-    /**
-     * Updates the Elastic search index for the given item, and invalidates its cached read status.
-     *
-     * @param cs_item $item the item whose search index entry shall be updated
-     */
-    private function updateSearchIndex(cs_item $item): void
-    {
-        if (method_exists($item, 'updateElastic')) {
-            $item->updateElastic();
-
-            // NOTE: read status cache items also get invalidated via the ReadStatusPreChangeEvent
-            // which will be triggered when items get marked as read
-            $this->readerService->invalidateCachedReadStatusForItem($item);
-        }
     }
 }
