@@ -53,14 +53,9 @@ import {MathJax} from "./commsy/MathJax";
 let mathJax = new MathJax();
 mathJax.bootstrap();
 
-import '@fullcalendar/core/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
-import deLocale from '@fullcalendar/core/locales/de';
-import enLocale from '@fullcalendar/core/locales/en-gb';
 import { setup as setupCalendar } from "./commsy/fullcalendar";
-setupCalendar([deLocale, enLocale], 'calendar');
-setupCalendar([deLocale, enLocale], 'calendarDashboard', false);
+setupCalendar('calendar');
+setupCalendar('calendarDashboard', false);
 
 // start the Stimulus application
 import '../../bootstrap';

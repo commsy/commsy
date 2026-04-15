@@ -38,7 +38,11 @@ class PinAction implements ActionInterface
 
         foreach ($items as $item) {
             $item->setPinned(true);
+
+            $changeModificationOnSave = $item->isChangeModificationOnSave();
+            $item->setChangeModificationOnSave(false);
             $item->save();
+            $item->setChangeModificationOnSave($changeModificationOnSave);
         }
 
         return new JsonDataResponse([

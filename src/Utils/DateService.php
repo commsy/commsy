@@ -13,21 +13,25 @@
 
 namespace App\Utils;
 
+use App\Entity\Dates;
+use App\Entity\Items;
 use App\Services\LegacyEnvironment;
 use cs_dates_item;
 use cs_dates_manager;
 use cs_environment;
 use cs_manager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
 
-class DateService
+readonly class DateService
 {
-    private readonly cs_environment $legacyEnvironment;
+    private cs_environment $legacyEnvironment;
+    private cs_dates_manager $datesManager;
 
-    private readonly cs_dates_manager $datesManager;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $this->datesManager = $this->legacyEnvironment->getDatesManager();
@@ -279,5 +283,25 @@ class DateService
         $dateList = $this->datesManager->get();
 
         return $dateList->to_array();
+    }
+
+    public function undraft(int $itemId): void
+    {
+        $subQueryBuilder = $this->entityManager->createQueryBuilder();
+        $subQueryBuilder
+            ->select('d.itemId')
+            ->from(Dates::class, 'd')
+            ->where('d.recurrenceId = :itemId')
+            ->orWhere('d.itemId = :itemId');
+
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder
+            ->update(Items::class, 'i')
+            ->set('i.draft', ':draft')
+            ->where($queryBuilder->expr()->in('i.itemId', $subQueryBuilder->getDQL()))
+            ->setParameter('itemId', $itemId)
+            ->setParameter('draft', false)
+            ->getQuery()
+            ->execute();
     }
 }

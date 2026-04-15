@@ -37,7 +37,7 @@ class CommsyVoter implements VoterInterface
 
         // Room
         $roomId = $this->requestStack->getCurrentRequest()->attributes->get('roomId', '');
-        if (stristr($item->getUri(), 'room/'.$roomId.'/'.$controller)) {
+        if ($item->getUri() === 'room/'.$roomId.'/'.$controller) {
             return in_array($action, ['detail', 'list', 'calendar', 'changestatus']);
         }
 

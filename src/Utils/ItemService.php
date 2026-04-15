@@ -16,6 +16,7 @@ namespace App\Utils;
 use App\Repository\ItemRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyEnvironment;
+use cs_dates_item;
 use cs_environment;
 use cs_item;
 use cs_item_manager;
@@ -31,6 +32,7 @@ class ItemService
     public function __construct(
         private readonly Security $security,
         private readonly ItemRepository $itemRepository,
+        private readonly DateService $dateService,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -126,28 +128,12 @@ class ItemService
         $item = $this->getTypedItem($itemId);
 
         if (isset($item)) {
-            if ($item->isA('material')) {
-                $file_list = $item->getFileListWithFilesFromSections();
-            } elseif ($item->isA('discussion')) {
-                $file_list = $item->getFileListWithFilesFromArticles();
-            } elseif ($item->isA('todo')) {
-                $file_list = $item->getFileListWithFilesFromSteps();
-            } else {
-                $file_list = $item->getFileList();
-            }
+            $file_list = $item->getFileList();
 
-            if ($item->isA('section')) {
-                $material_item = $item->getLinkedItem();
-                $file_list2 = $material_item->getFileList();
-                if (isset($file_list2) and !empty($file_list2) and $file_list2->getCount() > 0) {
-                    $file_list->addList($file_list2);
-                }
-            }
-
-            if (!empty($file_list)) {
-                $file_array = $file_list->to_Array();
-
+            if (isset($file_list)) {
+                $file_array = $file_list->to_array();
                 $file_name_array = [];
+
                 foreach ($file_array as $file) {
                     $file_name_array[htmlentities((string) $file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
                 }
@@ -255,5 +241,19 @@ class ItemService
         }
 
         return $allowedActions;
+    }
+
+    public function undraft(int $itemId): void
+    {
+        $item = $this->getItem($itemId);
+        $typedItem = $this->getTypedItem($itemId);
+        if ($typedItem instanceof cs_dates_item) {
+            $this->dateService->undraft($itemId);
+
+            return;
+        }
+
+        $item?->setDraftStatus(0);
+        $item?->saveAsItem();
     }
 }

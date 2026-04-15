@@ -294,6 +294,8 @@ class cs_announcement_manager extends cs_manager
     {
         parent::_update($announcement_item);
 
+        $modificationDate = !$announcement_item->isChangeModificationOnSave() ? $announcement_item->getModificationDate() : getCurrentDateTimeInMySQL();
+
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
         $queryBuilder
@@ -308,7 +310,7 @@ class cs_announcement_manager extends cs_manager
             ->where('item_id = :itemId')
             ->setParameter('title', $announcement_item->getTitle())
             ->setParameter('modifierId', $announcement_item->getModificatorItem()->getItemID())
-            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('modificationDate', $modificationDate)
             ->setParameter('activationDate', $announcement_item->isNotActivated() ? $announcement_item->getActivatingDate() : null)
             ->setParameter('description', $announcement_item->getDescription())
             ->setParameter('public', $announcement_item->isPublic() ? 1 : 0)

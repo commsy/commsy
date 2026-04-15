@@ -25,10 +25,8 @@ use App\Form\Type\ItemWorkflowType;
 use App\Form\Type\SendType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
-use App\Security\Authorization\Voter\CategoryVoter;
 use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
-use App\Utils\CategoryService;
 use App\Utils\DateService;
 use App\Utils\ItemService;
 use App\Utils\LabelService;
@@ -53,7 +51,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use UnexpectedValueException;
@@ -886,9 +883,7 @@ class ItemController extends AbstractController
         int $roomId,
         int $itemId
     ): Response {
-        $item = $itemService->getItem($itemId);
-        $item->setDraftStatus(0);
-        $item->saveAsItem();
+        $itemService->undraft($itemId);
 
         return new Response();
     }

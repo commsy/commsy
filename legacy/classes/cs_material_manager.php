@@ -759,6 +759,8 @@ class cs_material_manager extends cs_manager
                  $world_public = '0';
              }
 
+             $modificationDate = !$material_item->isChangeModificationOnSave() ? $material_item->getModificationDate() : getCurrentDateTimeInMySQL();
+
              $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
              $workflowResubmissionDate = $material_item->getWorkflowResubmissionDate();
@@ -789,7 +791,7 @@ class cs_material_manager extends cs_manager
                  ->setParameter('itemId', $material_item->getItemID())
                  ->setParameter('versionId', $material_item->getVersionID())
                  ->setParameter('modifierId', $modificator->getItemID())
-                 ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+                 ->setParameter('modificationDate', $modificationDate)
                  ->setParameter('activationDate', $material_item->isNotActivated() ? $material_item->getActivatingDate() : null)
                  ->setParameter('title', $material_item->getTitle())
                  ->setParameter('description', $material_item->getDescription())

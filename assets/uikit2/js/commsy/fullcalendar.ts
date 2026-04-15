@@ -2,9 +2,11 @@ import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import EventApi from "@fullcalendar/core/api/EventApi";
+import { EventApi } from "@fullcalendar/core";
+import deLocale from '@fullcalendar/core/locales/de';
+import enLocale from '@fullcalendar/core/locales/en-gb';
 
-export function setup(locales, id: string, editable: boolean = true): void {
+export function setup(id: string, editable: boolean = true): void {
   document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById(id);
     if (calendarEl) {
@@ -15,15 +17,15 @@ export function setup(locales, id: string, editable: boolean = true): void {
           end: '16:00',
           dow: [1, 2, 3, 4, 5]
         },
-        defaultView: calendarEl.dataset.defaultView ?? null,
+        initialView: calendarEl.dataset.defaultView ?? null,
         editable: editable,
         events: calendarEl.dataset.eventsUrl,
-        header: {
+        headerToolbar: {
           left: 'dayGridMonth,timeGridWeek,timeGridDay',
           center: 'title',
           right: 'prevYear,prev,today,next,nextYear'
         },
-        locales: locales,
+        locales: [deLocale, enLocale],
         locale: calendarEl.dataset.locale === 'de' ? 'de' : 'en-gb',
         timeZone: 'UTC',
         views: {
