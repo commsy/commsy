@@ -13,19 +13,23 @@
 
 namespace App\Action\Delete;
 
-use App\Services\CalendarsService;
+use App\Rubric\Dates\DatesDeleter;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use cs_dates_item;
 use cs_environment;
 use cs_item;
-use cs_list;
-use DateTime;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Thin wrapper that dispatches between single-occurrence, series and
+ * "exclude from series" deletion paths. All actual deletion work (row
+ * soft-delete, links/annotations cleanup, CalDAV sync-token bump, event
+ * dispatch) lives in {@see DatesDeleter}.
+ */
 class DeleteDate implements DeleteInterface
 {
-    private bool $recurring;
+    private bool $recurring = false;
 
     private string $dateMode = 'normal';
 
@@ -34,8 +38,8 @@ class DeleteDate implements DeleteInterface
     public function __construct(
         private readonly RouterInterface $router,
         private readonly MarkedService $markedService,
-        private readonly CalendarsService $calendarsService,
-        LegacyEnvironment $legacyEnvironment
+        private readonly DatesDeleter $datesDeleter,
+        LegacyEnvironment $legacyEnvironment,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -52,46 +56,25 @@ class DeleteDate implements DeleteInterface
 
     public function delete(cs_item $item): void
     {
-        $item->delete();
-
-        $this->markedService->removeItemFromClipboard($item->getItemId());
-
         /** @var cs_dates_item $date */
         $date = $item;
 
-        $this->calendarsService->updateSynctoken($date->getCalendarId());
+        $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+        $itemId = (int) $date->getItemId();
+        $recurrenceId = (int) $date->getRecurrenceId();
 
-        $datesManager = $this->legacyEnvironment->getDatesManager();
-        $datesManager->resetLimits();
-        $datesManager->setRecurrenceLimit($date->getRecurrenceId());
-        $datesManager->setWithoutDateModeLimit();
-        $datesManager->select();
-
-        /** @var cs_list $recurringDates */
-        $recurringDates = $datesManager->get();
-
-        if ($this->recurring && '' != $date->getRecurrenceId()) {
-            $recurringDate = $recurringDates->getFirst();
-            while ($recurringDate) {
-                $recurringDate->delete();
-                $recurringDate = $recurringDates->getNext();
-            }
+        if ($this->recurring && $recurrenceId > 0) {
+            $this->datesDeleter->deleteSeries($recurrenceId, $deleterId);
+        } elseif ($recurrenceId > 0) {
+            $this->datesDeleter->excludeOccurrenceFromSeries($itemId, $deleterId);
         } else {
-            $recurringDate = $recurringDates->getFirst();
-            while ($recurringDate) {
-                $recurrencePattern = $recurringDate->getRecurrencePattern();
-                $recurrencePatternExcludeDate = new DateTime($date->getDateTime_start());
-                if (!isset($recurrencePattern['recurringExclude'])) {
-                    $recurrencePattern['recurringExclude'] = [$recurrencePatternExcludeDate->format('Ymd\THis')];
-                } else {
-                    $recurrencePattern['recurringExclude'][] = $recurrencePatternExcludeDate->format('Ymd\THis');
-                }
-                $recurringDate->setRecurrencePattern($recurrencePattern);
-                $recurringDate->save();
-
-                $recurringDate = $recurringDates->getNext();
-            }
+            $this->datesDeleter->deleteItem($itemId, $deleterId);
         }
+
+        // UI-specific side effect: drop the item from every user's clipboard.
+        // Kept here rather than in the deleter because clipboard state is a
+        // UI concern that does not apply to account-wide user-content cleanup.
+        $this->markedService->removeItemFromClipboard($itemId);
     }
 
     public function getRedirectRoute(cs_item $item): ?string
@@ -99,7 +82,7 @@ class DeleteDate implements DeleteInterface
         /** @var cs_dates_item $date */
         $date = $item;
 
-        if ('normal' == $this->dateMode) {
+        if ('normal' === $this->dateMode) {
             return $this->router->generate('app_date_list', [
                 'roomId' => $date->getContextID(),
             ]);
