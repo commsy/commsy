@@ -23,6 +23,7 @@ use App\Form\Type\ItemDescriptionType;
 use App\Form\Type\ItemLinksType;
 use App\Form\Type\ItemWorkflowType;
 use App\Form\Type\SendType;
+use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
 use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
@@ -484,9 +485,9 @@ class ItemController extends AbstractController
     public function send(
         Request $request,
         ItemService $itemService,
+        ContactFormHelper $contactFormHelper,
         MailAssistant $mailAssistant,
         LegacyEnvironment $legacyEnvironment,
-        Mailer $mailer,
         int $roomId,
         int $itemId
     ): Response {
@@ -544,9 +545,48 @@ class ItemController extends AbstractController
                 ]);
             }
 
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+            $formData = $form->getData();
+            $formDataSubject = (Send::class == $formData::class ? (is_null($formData->getSubject()) ? false : $formData->getSubject()) : $formData['subject']);
+            $formDataMessage = (Send::class == $formData::class ? (is_null($formData->getMessage()) ? false : $formData->getMessage()) : $formData['message']);
+            $formDataFiles = (Send::class == $formData::class ? (is_null($formData->getFiles()) ? false : $formData->getFiles()) : $formData['files']);
+            $isSendToCreator = (Send::class == $formData::class ? (is_null($formData->getSendToCreator()) ? false : $formData->getSendToCreator()) : $form->has('send_to_creator') && $formData['send_to_creator']);
+            $isCopyToSender = (Send::class == $formData::class ? (is_null($formData->getCopyToSender()) ? false : $formData->getCopyToSender()) : $form->has('copy_to_sender') && $formData['copy_to_sender']);
+            $isAdditionalRecipients = (Send::class == $formData::class ? !is_null($formData->getAdditionalRecipients()) : $form->has('additional_recipients'));
+
+            $recipients = $mailAssistant->getRecipients($form, $item);;
+
+            // form option: send_to_creator
+            if ($isSendToCreator) {
+                $recipients[] = $item->getCreatorItem();
+            }
+
+            // form option: additional_recipients
+            // TODO: support multiple $additionalRecipients
+            $additionalRecipients = [];
+            if ($isAdditionalRecipients) {
+                $formDataAdditionalRecipients = (Send::class == $formData::class
+                    ? ($formData->getAdditionalRecipients()) : $formData['additional_recipients']);
+                $additionalRecipients = array_filter($formDataAdditionalRecipients);
+            }
+
             // send mail
-            $recipientCount = $mailAssistant->handleItemSendMessage($form, $item, $portalItem->getTitle());
-            $this->addFlash('recipientCount', $recipientCount);
+            $sendStatus = $contactFormHelper->handleContactFormSending(
+                $formDataSubject,
+                $formDataMessage ?: '',
+                $portalItem->getTitle(),
+                $currentUser,
+                $formDataFiles,
+                $recipients,
+                !empty($additionalRecipients) ? $additionalRecipients[0] : '', // TODO: support multiple $additionalRecipients
+                $isCopyToSender
+            );
+
+            $this->addFlash('mailSend', $sendStatus->isSuccess());
+            $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
+            $this->addFlash('deliveredRecipients', $sendStatus->getDeliveredRecipients());
+            $this->addFlash('failedRecipients', $sendStatus->getFailedRecipients());
 
             // redirect to success page
             return $this->redirectToRoute('app_item_sendsuccess', [

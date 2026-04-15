@@ -120,77 +120,7 @@ class MailAssistant
         return false;
     }
 
-    public function handleItemSendMessage(
-        FormInterface $form,
-        cs_item $item,
-        string $from
-    ): int
-    {
-        $recipientCount = 0;
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $formData = $form->getData();
-
-        $replyTo = [];
-        if ($currentUser->isEmailVisible()) {
-            $replyTo[] = new Address($currentUser->getEmail(), $currentUser->getFullName());
-        }
-
-        $formDataSubject = (Send::class == $formData::class ? (is_null($formData->getSubject()) ? false : $formData->getSubject()) : $formData['subject']);
-        $formDataMessage = (Send::class == $formData::class ? (is_null($formData->getMessage()) ? false : $formData->getMessage()) : $formData['message']);
-
-        $message = (new Email())
-            ->subject($formDataSubject)
-            ->html($formDataMessage)
-            ->replyTo(...$replyTo);
-
-        // form option: files
-        $formDataFiles = (Send::class == $formData::class ? (is_null($formData->getFiles()) ? false : $formData->getFiles()) : $formData['files']);
-        if ($formDataFiles) {
-            $message = $this->addAttachments($formDataFiles, $message);
-        }
-
-        // form option: copy_to_sender
-        $isSendToCreator = (Send::class == $formData::class ? (is_null($formData->getSendToCreator()) ? false : $formData->getSendToCreator()) : $form->has('send_to_creator') && $formData['send_to_creator']);
-        if ($isSendToCreator) {
-            $recipientCount++;
-            $itemCreator = $item->getCreatorItem();
-            $creatorMessage = clone $message;
-            $creatorMessage->to(new Address($itemCreator->getEmail(), $itemCreator->getFullName()));
-            $this->mailer->sendEmailObject($creatorMessage, $from);
-        }
-
-        $isCopyToSender = (Send::class == $formData::class ? (is_null($formData->getCopyToSender()) ? false : $formData->getCopyToSender()) : $form->has('copy_to_sender') && $formData['copy_to_sender']);
-        if ($isCopyToSender) {
-            $recipientCount++;
-            $senderMessage = clone $message;
-            $senderMessage->to(new Address($currentUser->getEmail(), $currentUser->getFullName()));
-            $this->mailer->sendEmailObject($senderMessage, $from);
-        }
-
-        $recipients = $this->getRecipients($form, $item);
-
-        // form option: additional_recipients
-        $isAdditionalRecipients = (Send::class == $formData::class ? !is_null($formData->getAdditionalRecipients()) : $form->has('additional_recipients'));
-        if ($isAdditionalRecipients) {
-            $formDataAdditionalRecipients = (Send::class == $formData::class
-                ? ($formData->getAdditionalRecipients()) : $formData['additional_recipients']);
-            $additionalRecipients = array_filter($formDataAdditionalRecipients);
-
-            if (!empty($additionalRecipients)) {
-                $recipients = array_merge($recipients, array_combine($additionalRecipients, $additionalRecipients));
-            }
-        }
-
-        foreach ($recipients as $email => $name) {
-            $recipientCount++;
-            $message->to(new Address($email, $name));
-            $this->mailer->sendEmailObject($message, $from);
-        }
-
-        return $recipientCount;
-    }
-
-    private function getRecipients(FormInterface $form, $item): array
+    public function getRecipients(FormInterface $form, $item): array
     {
         $recipients = new cs_list();
 
@@ -253,15 +183,7 @@ class MailAssistant
             }
         }
 
-        $recipientArray = [];
-        foreach ($recipients as $recipient) {
-            /** @var cs_user_item $recipient */
-            if (!array_key_exists($recipient->getEmail(), $recipientArray)) {
-                $recipientArray[$recipient->getEmail()] = $recipient->getFullName();
-            }
-        }
-
-        return $recipientArray;
+        return $recipients->to_array();
     }
 
     /**

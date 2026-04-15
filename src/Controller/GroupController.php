@@ -29,6 +29,7 @@ use App\Form\Type\AnnotationType;
 use App\Form\Type\GroupSendType;
 use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
+use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
@@ -44,15 +45,11 @@ use App\Utils\UserService;
 use cs_group_item;
 use cs_grouproom_item;
 use cs_room_item;
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
 use Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -758,7 +755,7 @@ class GroupController extends BaseController
     #[Route(path: '/room/{roomId}/group/sendMultiple')]
     public function sendMultiple(
         Request $request,
-        MailAssistant $mailAssistant,
+        ContactFormHelper $contactFormHelper,
         int $roomId
     ): Response {
         $room = $this->getRoom($roomId);
@@ -784,7 +781,7 @@ class GroupController extends BaseController
         $groupCount = is_countable($groupIds) ? count($groupIds) : 0;
         $defaultBodyMessage = '';
         if ($groupCount) {
-            $defaultBodyMessage .= '<br/><br/><br/>--<br/>';
+            $defaultBodyMessage .= '<br/><br/>--<br/>';
             if (1 == $groupCount) {
                 $group = $this->groupService->getGroup(reset($groupIds));
                 if ($group) {
@@ -829,57 +826,24 @@ class GroupController extends BaseController
 
             if ('save' == $saveType) {
                 $formData = $form->getData();
-
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-                // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $recipients = [];
-                $validator = new EmailValidator();
-                foreach ($users as $user) {
-                    $userEmail = $user->getEmail();
-                    $userName = $user->getFullName();
-                    if ($validator->isValid($userEmail, new RFCValidation())) {
-                        $recipients[$userEmail] = $userName;
-                    }
-                }
-
-                $replyTo = [];
-                $currentUserEmail = $currentUser->getEmail();
-                $currentUserName = $currentUser->getFullName();
-                if ($validator->isValid($currentUserEmail, new RFCValidation())) {
-                    if ($currentUser->isEmailVisible()) {
-                        $replyTo[] = new Address($currentUserEmail, $currentUserName);
-                    }
-
-                    // form option: copy_to_sender
-                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        $recipients[$currentUserEmail] = $currentUserName;
-                    }
-                }
-
-                // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $message = (new Email())
-                    ->subject($formData['subject'])
-                    ->html($formData['message'])
-                    ->replyTo(...$replyTo);
-
-                $formDataFiles = $formData['files'];
-                if ($formDataFiles) {
-                    $message = $mailAssistant->addAttachments($formDataFiles, $message);
-                }
-
-                $mailSend = true;
-                foreach ($recipients as $email => $name) {
-                    $message->to(new Address($email, $name));
-                    $send = $this->mailer->sendEmailObject($message, $portalItem->getTitle());
-                    $mailSend = $mailSend && $send;
-                }
-
-                $this->addFlash('recipientCount', count($recipients));
-
                 // send mail
-                $mailSend = $this->mailer->sendEmailObject($message, $portalItem->getTitle());
-                $this->addFlash('mailSend', $mailSend);
+                $sendStatus = $contactFormHelper->handleContactFormSending(
+                    $formData['subject'],
+                    $formData['message'] ?: '',
+                    $portalItem->getTitle(),
+                    $currentUser,
+                    $formData['files'],
+                    $users,
+                    '',
+                    $formData['copy_to_sender']
+                );
+
+                $this->addFlash('mailSend', $sendStatus->isSuccess());
+                $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
+                $this->addFlash('deliveredRecipients', $sendStatus->getDeliveredRecipients());
+                $this->addFlash('failedRecipients', $sendStatus->getFailedRecipients());
 
                 // redirect to success page
                 return $this->redirectToRoute('app_group_sendmultiplesuccess', [
@@ -912,12 +876,11 @@ class GroupController extends BaseController
     #[Route(path: '/room/{roomId}/group/{itemId}/send')]
     public function send(
         Request $request,
-        MailAssistant $mailAssistant,
+        ContactFormHelper $contactFormHelper,
         int $roomId,
         int $itemId
     ): Response {
         $item = $this->itemService->getTypedItem($itemId);
-
         if (!$item) {
             throw $this->createNotFoundException('no item found for id '.$itemId);
         }
@@ -925,7 +888,7 @@ class GroupController extends BaseController
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $room = $this->getRoom($roomId);
 
-        $defaultBodyMessage = '<br/><br/><br/>--<br/>'.$this->translator->trans(
+        $defaultBodyMessage = '<br/><br/>--<br/>' . $this->translator->trans(
             'This email has been sent to all users of this group',
             [
                 'sender_name' => $currentUser->getFullName(),
@@ -952,57 +915,27 @@ class GroupController extends BaseController
 
             if ('save' == $saveType) {
                 $formData = $form->getData();
-
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
                 $users = $this->userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
-                // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
-                $recipients = [];
-                $validator = new EmailValidator();
-                foreach ($users as $user) {
-                    $userEmail = $user->getEmail();
-                    $userName = $user->getFullName();
-                    if ($validator->isValid($userEmail, new RFCValidation())) {
-                        $recipients[$userEmail] = $userName;
-                    }
-                }
+                // send mail
+                $sendStatus = $contactFormHelper->handleContactFormSending(
+                    $formData['subject'],
+                    $formData['message'] ?: '',
+                    $portalItem->getTitle(),
+                    $currentUser,
+                    $formData['files'],
+                    $users,
+                    '',
+                    $formData['copy_to_sender']
+                );
 
-                $replyTo = [];
-                $currentUserEmail = $currentUser->getEmail();
-                $currentUserName = $currentUser->getFullName();
-                if ($validator->isValid($currentUserEmail, new RFCValidation())) {
-                    if ($currentUser->isEmailVisible()) {
-                        $replyTo[] = new Address($currentUserEmail, $currentUserName);
-                    }
-
-                    // form option: copy_to_sender
-                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        $recipients[$currentUserEmail] = $currentUserName;
-                    }
-                }
-
-                // TODO: use MailAssistant to generate the Swift message and to add its recipients etc
-                $email = (new Email())
-                    ->subject($formData['subject'])
-                    ->html($formData['message'])
-                    ->replyTo(...$replyTo);
-
-                $formDataFiles = $formData['files'];
-                if ($formDataFiles) {
-                    $email = $mailAssistant->addAttachments($formDataFiles, $email);
-                }
-
-                $mailSend = true;
-                foreach ($recipients as $userEmail => $userName) {
-                    $email->to(new Address($userEmail, $userName));
-                    $send = $this->mailer->sendEmailObject($email, $portalItem->getTitle());
-                    $mailSend = $mailSend && $send;
-                }
-
-                $this->addFlash('recipientCount', count($recipients));
-                $this->addFlash('mailSend', $mailSend);
+                $this->addFlash('mailSend', $sendStatus->isSuccess());
+                $this->addFlash('recipientCount', $sendStatus->getNumRecipients());
+                $this->addFlash('deliveredRecipients', $sendStatus->getDeliveredRecipients());
+                $this->addFlash('failedRecipients', $sendStatus->getFailedRecipients());
 
                 // redirect to success page
                 return $this->redirectToRoute('app_group_sendmultiplesuccess', [

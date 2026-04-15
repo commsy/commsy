@@ -14,14 +14,23 @@
 
 namespace App\Mail\Helper;
 
+use cs_user_item;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 #[Exclude]
 final readonly class EmailSendStatus
 {
+    /**
+     * @param bool           $success Success status denoting whether the email was sent successfully (`true`) or not (`false`)
+     * @param int            $numRecipients Total number of recipients
+     * @param cs_user_item[] $deliveredRecipients List of recipients for whom the email could be delivered successfully
+     * @param cs_user_item[] $failedRecipients List of recipients for whom the email could not be delivered
+     */
     public function __construct(
         private bool $success,
-        private int $numRecipients
+        private int $numRecipients,
+        private array $deliveredRecipients,
+        private array $failedRecipients
     ) {
     }
 
@@ -33,5 +42,32 @@ final readonly class EmailSendStatus
     public function getNumRecipients(): int
     {
         return $this->numRecipients;
+    }
+
+    public function getDeliveredRecipients(): array
+    {
+        return $this->deliveredRecipients;
+    }
+
+    public function getFailedRecipients(): array
+    {
+        return $this->failedRecipients;
+    }
+
+    public static function combine(array $sendStatuses): EmailSendStatus
+    {
+        $success = true;
+        $numRecipients = 0;
+        $deliveredRecipients = [];
+        $failedRecipients = [];
+
+        foreach ($sendStatuses as $sendStatus) {
+            $success = $success && $sendStatus->isSuccess();
+            $numRecipients += $sendStatus->getNumRecipients();
+            $deliveredRecipients = array_merge($deliveredRecipients, $sendStatus->getDeliveredRecipients());
+            $failedRecipients = array_merge($failedRecipients, $sendStatus->getFailedRecipients());
+        }
+
+        return new self($success, $numRecipients, $deliveredRecipients, $failedRecipients);
     }
 }

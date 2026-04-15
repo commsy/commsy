@@ -14,6 +14,9 @@
 namespace App\Mail;
 
 use App\Services\LegacyEnvironment;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mime\Address;
@@ -26,6 +29,7 @@ readonly class MessageBuilder
     public function __construct(
         private TranslatorInterface $translator,
         private string $emailFrom,
+        private LoggerInterface $logger,
         private LocaleSwitcher $localeSwitcher,
         private LegacyEnvironment $legacyEnvironment,
         #[Autowire(param: 'locale')]
@@ -33,74 +37,88 @@ readonly class MessageBuilder
     ) {
     }
 
+    /**
+     * Sets the From address for the given email object to this class's default From address and returns it.
+     *
+     * @param Email  $email The email to be modified
+     * @param string $fromSenderName The sender's name
+     *
+     * @return Email The modified email object
+     */
     public function generateFromEmail(
         Email $email,
         string $fromSenderName
     ): Email {
-        $email->from(new Address($this->emailFrom, $fromSenderName));
+        $email = $this->setFromAddress($email, $this->emailFrom, $fromSenderName);
 
         return $email;
     }
 
+    /**
+     * Creates an email object from the given subject, HTML string and sender/recipient parameters.
+     *
+     * @param string           $subject The email's subject
+     * @param string           $htmlMessage The email's message
+     * @param string           $fromSenderName The sender's name
+     * @param Recipient|null   $recipient The recipient for the email, defaults to null
+     * @param Address|string[] $replyTo List of Reply to addresses (Address objects or string-based email addresses)
+     * @param Address|string[] $cc List of Cc addresses (Address objects or string-based email addresses)
+     *
+     * @return Email The generated email object
+     */
     public function generateFromString(
         string $subject,
-        string $message,
+        string $htmlMessage,
         string $fromSenderName,
-        Recipient $recipient,
+        ?Recipient $recipient = null,
         array $replyTo = [],
         array $cc = []
     ): Email {
         $email = (new Email())
             ->subject($subject)
-            ->from(new Address($this->emailFrom, $fromSenderName))
-            ->html($message);
+            ->html($htmlMessage);
+
+        // From
+        $email = $this->setFromAddress($email, $this->emailFrom, $fromSenderName);
 
         // To
-        if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
-            $email->to(new Address(
-                $recipient->getEmail(),
-                $recipient->getFirstname().' '.$recipient->getLastname()
-            ));
-        } else {
-            $email->to(new Address($recipient->getEmail()));
+        if ($recipient) {
+            $email = $this->setToAddress($email, $recipient->getEmail(), $recipient->getFullName());
         }
 
         // Reply-To
-        if (!empty($replyTo)) {
-            $email->replyTo(...$replyTo);
-        }
+        $email = $this->addReplyToAddresses($email, $replyTo);
 
         // Cc
-        if (!empty($cc)) {
-            $email->cc(...$cc);
-        }
+        $email = $this->addCcAddresses($email, $cc);
 
         return $email;
     }
 
+    /**
+     * Creates an email object from the given message object and sender/recipient parameters.
+     *
+     * @param MessageInterface $message The email's message
+     * @param string           $fromSenderName The sender's name
+     * @param Recipient        $recipient The recipient for the email
+     * @param Address|string[] $replyTo List of Reply to addresses (Address objects or string-based email addresses)
+     *
+     * @return Email The generated email object
+     */
     public function generateFromMessage(
         MessageInterface $message,
         string $fromSenderName,
         Recipient $recipient,
         array $replyTo = []
     ): Email {
-        $email = (new TemplatedEmail())
-            ->from(new Address($this->emailFrom, $fromSenderName));
+        // From
+        $email = $this->setFromAddress(new TemplatedEmail(), $this->emailFrom, $fromSenderName);
 
         // To
-        if (!empty($recipient->getFirstname()) || !empty($recipient->getLastname())) {
-            $email->to(new Address(
-                $recipient->getEmail(),
-                $recipient->getFirstname().' '.$recipient->getLastname()
-            ));
-        } else {
-            $email->to(new Address($recipient->getEmail()));
-        }
+        $email = $this->setToAddress($email, $recipient->getEmail(), $recipient->getFullName());
 
         // Reply-To
-        if (!empty($replyTo)) {
-            $email->replyTo(...$replyTo);
-        }
+        $email = $this->addReplyToAddresses($email, $replyTo);
 
         $this->localeSwitcher->runWithLocale($recipient->getLanguage(), function(string $locale) use ($message, $email) {
             // use recipient's locale
@@ -124,5 +142,106 @@ readonly class MessageBuilder
         });
 
         return $email;
+    }
+
+    /**
+     * Adds the given address as From address to the given email.
+     *
+     * @param Email  $email The email to be modified
+     * @param string $emailAddress The email address of the sender
+     * @param string $emailName The sender's name, defaults to an empty string
+     *
+     * @return Email The modified email object
+     */
+    private function setFromAddress(Email $email, string $emailAddress, string $emailName = ''): Email
+    {
+        $address = $this->createAddress($emailAddress, $emailName);
+        if ($address) {
+            $email->from($address);
+        }
+
+        return $email;
+    }
+
+    /**
+     * Adds the given address as To address to the given email.
+     *
+     * @param Email  $email The email to be modified
+     * @param string $emailAddress The email address of the recipient
+     * @param string $emailName The recipient's name, defaults to an empty string
+     *
+     * @return Email The modified email object
+     */
+    private function setToAddress(Email $email, string $emailAddress, string $emailName = ''): Email
+    {
+        $address = $this->createAddress($emailAddress, $emailName);
+        if ($address) {
+            $email->to($address);
+        }
+
+        return $email;
+    }
+
+    /**
+     * Adds the given addresses as Reply to addresses to the given email.
+     *
+     * @param Email            $email The email object whose Reply to addresses shall be amended
+     * @param Address|string[] $emailAddresses List of Reply to addresses (Address objects or string-based email addresses)
+     *
+     * @return Email The modified email object
+     */
+    private function addReplyToAddresses(Email $email, array $emailAddresses): Email
+    {
+        foreach ($emailAddresses as $emailAddress) {
+            $address = $emailAddress instanceof Address ? $emailAddress : $this->createAddress($emailAddress);
+            if ($address) {
+                $email->addReplyTo($address);
+            }
+        }
+
+        return $email;
+    }
+
+    /**
+     * Adds the given addresses as Cc addresses to the given email.
+     *
+     * @param Email            $email The email object whose Cc addresses shall be amended
+     * @param Address|string[] $emailAddresses List of Cc addresses (Address objects or string-based email addresses)
+     *
+     * @return Email The modified email object
+     */
+    private function addCcAddresses(Email $email, array $emailAddresses): Email
+    {
+        foreach ($emailAddresses as $emailAddress) {
+            $address = $emailAddress instanceof Address ? $emailAddress : $this->createAddress($emailAddress);
+            if ($address) {
+                $email->addCc($address);
+            }
+        }
+
+        return $email;
+    }
+
+    /**
+     * For an email object's sender or recipient, creates an address object from the given
+     * email address and (optional) name.
+     *
+     * @param string $emailAddress The email address of the sender/recipient
+     * @param string $emailName The sender's/recipient's name, defaults to an empty string
+     *
+     * @return Address|null The newly created address object, or null if email validation failed
+     */
+    private function createAddress(string $emailAddress, string $emailName = ''): ?Address
+    {
+        $validator = new EmailValidator();
+        if (!$validator->isValid($emailAddress, new RFCValidation())) {
+            $logMessage = sprintf('Address cannot be generated due to RFC violation for email address "%s"', $emailAddress);
+            $logMessage .= !empty($emailName) ? sprintf(' ("%s").', $emailName) : '.';
+            $this->logger->warning($logMessage);
+
+            return null;
+        }
+
+        return new Address($emailAddress, $emailName);
     }
 }

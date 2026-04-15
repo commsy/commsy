@@ -60,11 +60,12 @@ class MailCest
             'language' => 'de',
         ]);
 
-        $status = $mailer->send($message, $invalid, 'fromSender');
-        $I->assertFalse($status);
+        $sendStatus = $mailer->send($message, $invalid, 'fromSender');
+        $I->assertFalse($sendStatus->isSuccess());
 
-        $status = $mailer->send($message, $valid, 'fromSender', ['invalidemail' => 'invalid']);
-        $I->assertFalse($status);
+        // any invalid Reply to address should just get ignored
+        $sendStatus = $mailer->send($message, $valid, 'fromSender', ['invalidemail']);
+        $I->assertTrue($sendStatus->isSuccess());
     }
 
     public function validEmail(UnitTester $I): void
@@ -87,8 +88,8 @@ class MailCest
             'language' => 'de',
         ]);
 
-        $status = $mailer->send($message, $valid, 'fromSender', ['validemail@test.de' => 'name']);
-        $I->assertTrue($status);
+        $sendStatus = $mailer->send($message, $valid, 'fromSender', ['validemail@test.de']);
+        $I->assertTrue($sendStatus->isSuccess());
     }
 
 

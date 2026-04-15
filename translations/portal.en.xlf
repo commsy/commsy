@@ -80,7 +80,7 @@
 
             <trans-unit id="Portal settings">
                 <source>settings</source>
-                <target>Portaleinstellungen</target>
+                <target>Portal settings</target>
             </trans-unit>
             <trans-unit id="Show">
                 <source>Show</source>

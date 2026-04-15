@@ -814,19 +814,14 @@ class UserService
         foreach ($userIds as $userId) {
             $user = $this->getUser($userId);
 
-            $userEmail = $user->getEmail();
-            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
-                $subject = $accountMail->generateSubject($action);
-                $body = $accountMail->generateBody($user, $action);
-
-                $success = $mailer->sendRaw(
-                    $subject,
-                    $body,
-                    RecipientFactory::createRecipient($user),
-                    $fromSender,
-                    $replyTo
-                );
-            }
+            // NOTE: Mailer will handle validation of user email addresses and ignore/log invalid ones
+            $mailer->sendRaw(
+                $accountMail->generateSubject($action),
+                $accountMail->generateBody($user, $action),
+                RecipientFactory::createRecipient($user),
+                $fromSender,
+                $replyTo
+            );
         }
     }
 

@@ -26,6 +26,8 @@ use App\Utils\UserService;
 use cs_environment;
 use cs_user_item;
 use DateTimeImmutable;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -251,8 +253,11 @@ class ContextController extends AbstractController
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                     $replyTo = [];
-                    if ('' != $modEmail && '' != $modFullName) {
-                        $replyTo[] = new Address($modEmail, $modFullName);
+                    $validator = new EmailValidator();
+                    if ($validator->isValid($modEmail, new RFCValidation())) {
+                        if ($contactModerator->isEmailVisible()) {
+                            $replyTo[] = new Address($modEmail, $modFullName);
+                        }
                     }
 
                     $mailer->sendRaw(

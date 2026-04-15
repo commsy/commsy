@@ -6,6 +6,14 @@
                 <source>Subject</source>
                 <target>Subject</target>
             </trans-unit>
+            <trans-unit id="mailFromPortal">
+                <source>This email has been sent by ... from portal ...</source>
+                <target>This email has been sent by {sender_name} from portal "{room_name}" to {recipients}.</target>
+            </trans-unit>
+            <trans-unit id="mailFromRoom">
+                <source>This email has been sent by ... from room ...</source>
+                <target>This email has been sent by {sender_name} from workspace "{room_name}" to {recipients}.</target>
+            </trans-unit>
             <trans-unit id="mailFromProjectRoom">
                 <source>This email has been sent by ... from project room ...</source>
                 <target>This email has been sent by {sender_name} from project workspace "{room_name}".</target>
@@ -79,8 +87,8 @@
                 <target>Send item</target>
             </trans-unit>
             <trans-unit id="mailSendBody">
-                <source>This email has been sent by sender to recipient</source>
-                <target>This email has been sent by {sender_name} to {recipient_name}.</target>
+                <source>This email has been sent by sender ... from room ... to recipient ...</source>
+                <target>This email has been sent by {sender_name} from workspace "{room_name}" to {recipient_name}.</target>
             </trans-unit>
             <trans-unit id="mailSendSuccess">
                 <source>Your email has been successfully sent.</source>
@@ -98,9 +106,13 @@
                 <source>This email has been sent to all users of this group</source>
                 <target>This email has been sent by {sender_name} to members of group "{group_name}" (workspace "{room_name}").</target>
             </trans-unit>
-            <trans-unit id="mailSendWarning">
-                <source>Your email may only have been partially sent.</source>
-                <target>Your email may only have been partially sent. We encountered some problems while sending.</target>
+            <trans-unit id="mailSendWarningPartialFailure">
+                <source>Your email was only partially sent.</source>
+                <target>Your email was only partially sent. We encountered problems delivering your email to these recipients:</target>
+            </trans-unit>
+            <trans-unit id="mailSendWarningTotalFailure">
+                <source>Your email could not be sent.</source>
+                <target>Your email could not be sent. We encountered problems delivering your email to these recipients:</target>
             </trans-unit>
             <trans-unit id="mailBackToEntry">
                 <source>Back to</source>
@@ -108,7 +120,7 @@
             </trans-unit>
             <trans-unit id="mailSendMail">
                 <source>Send mail</source>
-                <target>Send email</target>
+                <target>Send mail</target>
             </trans-unit>
             <trans-unit id="mail_subject_room_archived">
                 <source>{room_name} will be archived in {num_days} days.</source>

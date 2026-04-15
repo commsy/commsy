@@ -13,7 +13,6 @@
 
 namespace App\Utils;
 
-use App\Entity\Account;
 use App\Entity\Reader;
 use App\Enum\ReaderStatus;
 use App\Event\ReadStatusPreChangeEvent;
