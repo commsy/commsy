@@ -112,7 +112,7 @@ class RoomRepository extends ServiceEntityRepository
             ->andWhere('u.userId = :userId')
             ->andWhere('u.authSource = :authSource')
             ->andWhere($qb->expr()->in('r.type', $roomTypes))
-            ->setParameter(':contextId', $account->getContextId())
+            ->setParameter(':contextId', $account->getPortal()->getId())
             ->setParameter(':userId', $account->getUsername())
             ->setParameter(':authSource', $account->getAuthSource()->getId())
             ->getQuery()
