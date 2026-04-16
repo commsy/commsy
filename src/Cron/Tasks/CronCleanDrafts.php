@@ -13,17 +13,64 @@
 
 namespace App\Cron\Tasks;
 
+use App\Rubric\Discussion\DiscussionDeleter;
+use App\Rubric\Material\MaterialDeleter;
+use App\Rubric\RubricDeleter;
+use App\Rubric\RubricType;
+use App\Rubric\Todo\TodoDeleter;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use DateTimeImmutable;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
+/**
+ * Nightly cron that purges abandoned "draft" rows — items created by the
+ * "new entry" form flow but never persisted by the user (e.g. the user
+ * closed the tab after the draft was prepared but before saving).
+ *
+ * Historically this task delegated to the legacy `cs_item::delete()`
+ * cascade (which in turn soft-deletes the rubric-specific row and the
+ * `items` twin with `deleter_id = 0` because the cron has no authenticated
+ * user). As part of #5082 we replace that with a dispatch through the
+ * {@see RubricDeleter} implementations, preserving the exact same
+ * soft-delete semantics — the deleted drafts are eventually hard-deleted
+ * by the hard-delete cron, just like any other soft-deleted row.
+ *
+ * The legacy `$item->delete()` fallback is still used for rubric types
+ * that do not yet have a dedicated deleter (Group, Label) — those
+ * deleters land in #5082 Commit 6 and this fallback disappears with them.
+ */
 class CronCleanDrafts implements CronTaskInterface
 {
+    /**
+     * Sentinel deleter id used when no user is in session (cron context).
+     * Matches the legacy `cs_*_manager::delete()` convention of
+     * `$current_user->getItemID() ?: 0`.
+     */
+    private const SYSTEM_DELETER_ID = 0;
+
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    /**
+     * @var array<string, RubricDeleter>
+     */
+    private readonly array $deleterByRubricType;
+
+    /**
+     * @param iterable<RubricDeleter> $rubricDeleters
+     */
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        #[AutowireIterator('app.rubric.deleter')]
+        iterable $rubricDeleters,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+
+        $map = [];
+        foreach ($rubricDeleters as $deleter) {
+            $map[$deleter->rubricType()->value] = $deleter;
+        }
+        $this->deleterByRubricType = $map;
     }
 
     public function run(?DateTimeImmutable $lastRun): void
@@ -32,17 +79,91 @@ class CronCleanDrafts implements CronTaskInterface
         $drafts = $itemManager->getAllDraftItems();
 
         foreach ($drafts as $draft) {
-            $manager = $this->legacyEnvironment->getManager($draft['type']);
-            $item = $manager->getItem($draft['item_id']);
+            $itemId = (int) $draft['item_id'];
+            $type = (string) $draft['type'];
 
-            if ($item) {
-                $item->delete();
+            if ($this->deleteViaRubricDeleter($type, $itemId)) {
+                continue;
             }
+
+            if ($this->deleteViaSubEntryDeleter($type, $itemId)) {
+                continue;
+            }
+
+            // Legacy fallback for rubric types that don't have a dedicated
+            // deleter yet (Group, Label/Topic). Removed in #5082 Commit 6
+            // once GroupDeleter + LabelDeleter exist.
+            $manager = $this->legacyEnvironment->getManager($type);
+            $item = $manager->getItem($itemId);
+            $item?->delete();
         }
     }
 
     public function getSummary(): string
     {
         return 'Delete drafts';
+    }
+
+    /**
+     * Dispatches primary rubric-item types (announcement, annotation, date,
+     * discussion, material, todo) to their matching RubricDeleter.
+     */
+    private function deleteViaRubricDeleter(string $type, int $itemId): bool
+    {
+        $rubricType = RubricType::tryFromLegacyString($type);
+        if ($rubricType === null) {
+            return false;
+        }
+
+        $deleter = $this->deleterByRubricType[$rubricType->value] ?? null;
+        if ($deleter === null) {
+            return false;
+        }
+
+        $deleter->deleteItem($itemId, self::SYSTEM_DELETER_ID);
+
+        return true;
+    }
+
+    /**
+     * Dispatches sub-entry types (section, step, discarticle) to the
+     * sub-entry method on their parent rubric's deleter. Sub-entries have
+     * no RubricType case of their own because they are owned by the parent.
+     */
+    private function deleteViaSubEntryDeleter(string $type, int $itemId): bool
+    {
+        switch ($type) {
+            case 'section':
+                $deleter = $this->deleterByRubricType[RubricType::Material->value] ?? null;
+                if ($deleter instanceof MaterialDeleter) {
+                    $deleter->deleteSection($itemId, self::SYSTEM_DELETER_ID);
+
+                    return true;
+                }
+
+                return false;
+
+            case 'step':
+                $deleter = $this->deleterByRubricType[RubricType::Todo->value] ?? null;
+                if ($deleter instanceof TodoDeleter) {
+                    $deleter->deleteStep($itemId, self::SYSTEM_DELETER_ID);
+
+                    return true;
+                }
+
+                return false;
+
+            case 'discarticle':
+                $deleter = $this->deleterByRubricType[RubricType::Discussion->value] ?? null;
+                if ($deleter instanceof DiscussionDeleter) {
+                    $deleter->deleteArticle($itemId, self::SYSTEM_DELETER_ID);
+
+                    return true;
+                }
+
+                return false;
+        }
+
+        return false;
     }
 }
