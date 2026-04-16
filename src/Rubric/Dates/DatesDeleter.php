@@ -16,6 +16,7 @@ namespace App\Rubric\Dates;
 use App\Event\ItemDeletedEvent;
 use App\Rubric\ItemDeletionHelper;
 use App\Rubric\RubricDeleter;
+use App\Rubric\RubricType;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
@@ -44,9 +45,9 @@ class DatesDeleter implements RubricDeleter
         private readonly LegacyEnvironment $legacyEnvironment,
     ) {}
 
-    public function rubricKey(): string
+    public function rubricType(): RubricType
     {
-        return 'date';
+        return RubricType::Date;
     }
 
     public function findItemIdsCreatedBy(int $userId, int $contextId): array

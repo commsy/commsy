@@ -14,6 +14,7 @@
 namespace App\Action\Delete;
 
 use App\Rubric\RubricDeleter;
+use App\Rubric\RubricType;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use cs_environment;
@@ -25,8 +26,8 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  * Generic delete strategy used by all rubric controllers as the default.
  *
  * Dispatches deletion to the matching {@see RubricDeleter} (identified by
- * `rubricKey()` == `cs_item::getItemType()`) so that UI deletions go through
- * exactly the same code path as the user-footprint erasure flow
+ * `rubricType()->value` == `cs_item::getItemType()`) so that UI deletions go
+ * through exactly the same code path as the user-footprint erasure flow
  * ({@see \App\Rubric\UserContentDeleter}).
  *
  * Items without a registered `RubricDeleter` (e.g. topics, groups, users)
@@ -39,7 +40,7 @@ class DeleteGeneric implements DeleteInterface
 {
     protected cs_environment $legacyEnvironment;
 
-    /** @var array<string, RubricDeleter>|null Lazy index by rubricKey(). */
+    /** @var array<string, RubricDeleter>|null Lazy index by rubricType()->value. */
     private ?array $deleterMap = null;
 
     /**
@@ -56,10 +57,12 @@ class DeleteGeneric implements DeleteInterface
 
     public function delete(cs_item $item): void
     {
-        if ($item->getItemType() === 'material') {
+        $rubricType = RubricType::tryFromLegacyString($item->getItemType());
+
+        if ($rubricType === RubricType::Material) {
             /** @var cs_material_item $item */
             $item->deleteAllVersions();
-        } elseif (($deleter = $this->findDeleter($item->getItemType())) !== null) {
+        } elseif ($rubricType !== null && ($deleter = $this->findDeleter($rubricType)) !== null) {
             $deleterId = $this->legacyEnvironment->getCurrentUserItem()->getItemID();
             $deleter->deleteItem($item->getItemId(), $deleterId);
         } else {
@@ -74,15 +77,15 @@ class DeleteGeneric implements DeleteInterface
         return null;
     }
 
-    private function findDeleter(string $itemType): ?RubricDeleter
+    private function findDeleter(RubricType $type): ?RubricDeleter
     {
         if ($this->deleterMap === null) {
             $this->deleterMap = [];
             foreach ($this->rubricDeleters as $deleter) {
-                $this->deleterMap[$deleter->rubricKey()] = $deleter;
+                $this->deleterMap[$deleter->rubricType()->value] = $deleter;
             }
         }
 
-        return $this->deleterMap[$itemType] ?? null;
+        return $this->deleterMap[$type->value] ?? null;
     }
 }

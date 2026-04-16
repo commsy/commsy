@@ -17,6 +17,7 @@ use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
 use App\Rubric\ItemDeletionHelper;
 use App\Rubric\RubricDeleter;
+use App\Rubric\RubricType;
 use App\Utils\ItemService;
 use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -53,9 +54,9 @@ class MaterialDeleter implements RubricDeleter
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
-    public function rubricKey(): string
+    public function rubricType(): RubricType
     {
-        return 'material';
+        return RubricType::Material;
     }
 
     public function findItemIdsCreatedBy(int $userId, int $contextId): array

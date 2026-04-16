@@ -17,6 +17,7 @@ use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
 use App\Rubric\ItemDeletionHelper;
 use App\Rubric\RubricDeleter;
+use App\Rubric\RubricType;
 use App\Utils\ItemService;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
@@ -43,9 +44,9 @@ class TodoDeleter implements RubricDeleter
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
-    public function rubricKey(): string
+    public function rubricType(): RubricType
     {
-        return 'todo';
+        return RubricType::Todo;
     }
 
     public function findItemIdsCreatedBy(int $userId, int $contextId): array

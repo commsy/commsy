@@ -7,7 +7,13 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('app.rubric.deleter')]
 interface RubricDeleter
 {
-    public function rubricKey(): string;
+    /**
+     * The rubric type this deleter is responsible for. Used by the
+     * dispatching code in {@see \App\Action\Delete\DeleteGeneric} (and
+     * friends) to pick the right implementation based on
+     * `cs_item::getItemType()`.
+     */
+    public function rubricType(): RubricType;
 
     /**
      * Returns item IDs of items where $userId is the creator (not modifier!)
