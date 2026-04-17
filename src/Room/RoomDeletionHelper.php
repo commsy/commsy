@@ -207,6 +207,42 @@ class RoomDeletionHelper
     }
 
     /**
+     * Returns the ids of all live sub-rooms (`grouproom` / `userroom`) that
+     * belong to the given project room, identified by the `PROJECT_ROOM_ITEM_ID`
+     * extras entry on each sub-room's `room` row.
+     *
+     * Legacy parity: `cs_grouproom_manager::_buildQuery()` and
+     * `cs_userroom_manager::_buildQuery()` both filter precisely with a
+     * serialised-PHP `LIKE` against the same extras blob
+     * (`s:20:"PROJECT_ROOM_ITEM_ID";i:<projectId>;`). We replicate the
+     * pattern verbatim instead of parsing the blob, because the format is
+     * frozen legacy and the LIKE matches the same rows the legacy managers
+     * would — including rooms whose `context_id` column holds the portal
+     * id rather than the project id (userrooms go via the portal per
+     * {@see \App\Room\RoomManager::createRoom}).
+     *
+     * Deleted sub-rooms are filtered out so the idempotent guard inside
+     * the respective sub-room deleter stays consistent with what we
+     * already know to skip.
+     *
+     * @return int[]
+     */
+    public function findSubRoomsOfProject(int $projectRoomId, string $roomType): array
+    {
+        // Serialised-PHP LIKE pattern, identical to the one legacy's
+        // cs_grouproom_manager / cs_userroom_manager builds.
+        $pattern = '%s:20:"PROJECT_ROOM_ITEM_ID";i:' . $projectRoomId . ';%';
+
+        return array_map('intval', $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM room
+                WHERE type = :type
+                  AND deletion_date IS NULL
+                  AND extras LIKE :pattern',
+            ['type' => $roomType, 'pattern' => $pattern]
+        ));
+    }
+
+    /**
      * Removes `$projectRoomId` from the `PROJECT_ID_ARRAY` extras blob
      * of every community room that currently references it.
      *
