@@ -23,6 +23,8 @@ use App\Form\Type\Profile\RoomProfileAddressType;
 use App\Form\Type\Profile\RoomProfileContactType;
 use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileNotificationsType;
+use App\Room\RoomDeleterRegistry;
+use App\Room\RoomDeletionOptions;
 use App\Rubric\Label\LabelDeleter;
 use App\Services\LegacyEnvironment;
 use App\Utils\DiscService;
@@ -375,6 +377,7 @@ class ProfileController extends AbstractController
         GroupService $groupService,
         FormFactoryInterface $formFactory,
         LabelDeleter $labelDeleter,
+        RoomDeleterRegistry $roomDeleterRegistry,
         int $roomId
     ): Response {
         /** @var Account $account */
@@ -428,12 +431,19 @@ class ProfileController extends AbstractController
                 $membershipManager->leaveGroup($group, $account);
                 $membershipManager->leaveWorkspace($roomItem, $account);
                 $group = $groupService->getGroup($groupId);
-                $roomItem->delete();
-                // TODO(#5082): Route $roomItem through the upcoming RoomDeleter; the
-                //   surrounding block (guarded by ?groupId=<id>) is scheduled for
-                //   removal in a separate security ticket — see audit note in the
-                //   deletion-refactor plan for the authorization issue.
+                // TODO(#5082): The whole `?groupId=<id>` branch is scheduled
+                //   for removal in a separate security ticket — the caller
+                //   is not authorization-checked against the room type or
+                //   moderator status. We route $roomItem through the
+                //   registry here only to eliminate the last legacy
+                //   `->delete()` call; the block itself is expected to
+                //   disappear in that follow-up.
                 $deleterId = (int) ($currentUser?->getItemID() ?: 0);
+                $roomDeleterRegistry->softDeleteLegacyRoom(
+                    $roomItem,
+                    $deleterId,
+                    RoomDeletionOptions::forUserAction()
+                );
                 $labelDeleter->deleteItem((int) $group->getItemID(), $deleterId);
 
                 return $this->redirectToRoute('app_group_list', [
