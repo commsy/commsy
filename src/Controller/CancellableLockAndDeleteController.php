@@ -16,6 +16,8 @@ namespace App\Controller;
 use App\Form\Type\Room\CancellableDeleteType;
 use App\Form\Type\Room\CancellableLockType;
 use App\Repository\PortalRepository;
+use App\Room\RoomDeleterRegistry;
+use App\Room\RoomDeletionOptions;
 use App\Room\RoomStatus;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
@@ -41,6 +43,7 @@ class CancellableLockAndDeleteController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         PortalRepository $portalRepository,
+        RoomDeleterRegistry $roomDeleterRegistry,
         $itemId
     ): Response {
         $this->denyAccessUnlessGranted(new Expression(
@@ -101,8 +104,17 @@ class CancellableLockAndDeleteController extends AbstractController
             if ('cancel' === $buttonName) {
                 return $detailRedirectResponse;
             } elseif ('delete' === $buttonName) {
-                $roomItem->delete();
-                $roomItem->save();
+                // Cancellable-delete UI (project / community / group
+                // room, see type-dependent branches above). The concrete
+                // deleter behind the registry handles sub-room cascade
+                // and dispatches WorkspaceDeletedEvent.
+                $deleterId = (int) ($legacyEnvironment->getEnvironment()
+                    ->getCurrentUserItem()?->getItemID() ?? 0);
+                $roomDeleterRegistry->softDeleteLegacyRoom(
+                    $roomItem,
+                    $deleterId,
+                    RoomDeletionOptions::forUserAction()
+                );
 
                 // redirect back to hosting context/room/group
                 return $this->redirectToRoute($listRoute, [

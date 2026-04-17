@@ -36,6 +36,8 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
 use App\Repository\TermsRepository;
+use App\Room\RoomDeleterRegistry;
+use App\Room\RoomDeletionOptions;
 use App\Room\RoomStatus;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
@@ -464,7 +466,8 @@ class SettingsController extends AbstractController
         RoomService $roomService,
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
-        PortalRepository $portalRepository
+        PortalRepository $portalRepository,
+        RoomDeleterRegistry $roomDeleterRegistry
     ): Response {
         $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         $portalId = $portalItem->getItemId();
@@ -492,8 +495,17 @@ class SettingsController extends AbstractController
         $deleteForm->handleRequest($request);
         if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
             if ($deleteForm->get('delete')->isClicked()) {
-                $roomItem->delete();
-                $roomItem->save();
+                // Moderator-initiated room delete from the room-settings
+                // page. Type can be Project, Community, or GroupRoom —
+                // dispatched through the registry. Sub-room cascade +
+                // WorkspaceDeletedEvent fire from the concrete deleter.
+                $deleterId = (int) ($legacyEnvironment->getEnvironment()
+                    ->getCurrentUserItem()?->getItemID() ?? 0);
+                $roomDeleterRegistry->softDeleteLegacyRoom(
+                    $roomItem,
+                    $deleterId,
+                    RoomDeletionOptions::forUserAction()
+                );
 
                 // redirect back to all rooms
                 return $this->redirectToRoute('app_room_listall', [
