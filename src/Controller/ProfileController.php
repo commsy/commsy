@@ -23,6 +23,7 @@ use App\Form\Type\Profile\RoomProfileAddressType;
 use App\Form\Type\Profile\RoomProfileContactType;
 use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileNotificationsType;
+use App\Rubric\Label\LabelDeleter;
 use App\Services\LegacyEnvironment;
 use App\Utils\DiscService;
 use App\Utils\GroupService;
@@ -373,6 +374,7 @@ class ProfileController extends AbstractController
         MembershipManager $membershipManager,
         GroupService $groupService,
         FormFactoryInterface $formFactory,
+        LabelDeleter $labelDeleter,
         int $roomId
     ): Response {
         /** @var Account $account */
@@ -427,7 +429,12 @@ class ProfileController extends AbstractController
                 $membershipManager->leaveWorkspace($roomItem, $account);
                 $group = $groupService->getGroup($groupId);
                 $roomItem->delete();
-                $group->delete();
+                // TODO(#5082): Route $roomItem through the upcoming RoomDeleter; the
+                //   surrounding block (guarded by ?groupId=<id>) is scheduled for
+                //   removal in a separate security ticket — see audit note in the
+                //   deletion-refactor plan for the authorization issue.
+                $deleterId = (int) ($currentUser?->getItemID() ?: 0);
+                $labelDeleter->deleteItem((int) $group->getItemID(), $deleterId);
 
                 return $this->redirectToRoute('app_group_list', [
                     'roomId' => $roomEndId,

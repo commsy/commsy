@@ -33,6 +33,13 @@ enum RubricType: string
     case Annotation = 'annotation';
     case Date = 'date';
     case Discussion = 'discussion';
+    /**
+     * Covers the complete `cs_label_item` hierarchy (topic / hashtag /
+     * buzzword / timepulse / institution / group). The `items.type`
+     * column is `'label'` for all of them; the specific subtype is
+     * stored in the `labels.type` column and resolved per UI surface.
+     */
+    case Label = 'label';
     case Material = 'material';
     case Todo = 'todo';
 

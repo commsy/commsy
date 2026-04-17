@@ -31,14 +31,22 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  * Historically this task delegated to the legacy `cs_item::delete()`
  * cascade (which in turn soft-deletes the rubric-specific row and the
  * `items` twin with `deleter_id = 0` because the cron has no authenticated
- * user). As part of #5082 we replace that with a dispatch through the
- * {@see RubricDeleter} implementations, preserving the exact same
- * soft-delete semantics — the deleted drafts are eventually hard-deleted
- * by the hard-delete cron, just like any other soft-deleted row.
+ * user). As part of #5082 we dispatch through the {@see RubricDeleter}
+ * implementations instead, preserving the exact same soft-delete semantics
+ * — the deleted drafts are eventually hard-deleted by the hard-delete cron,
+ * just like any other soft-deleted row.
  *
- * The legacy `$item->delete()` fallback is still used for rubric types
- * that do not yet have a dedicated deleter (Group, Label) — those
- * deleters land in #5082 Commit 6 and this fallback disappears with them.
+ * Every draft-capable rubric now has a dedicated deleter:
+ * - `setDraftStatus(1)` is called for announcement, annotation, date,
+ *   discussion, discarticle, material, section, todo, step, label (incl.
+ *   group as a label subtype).
+ * - All of the above route through a `RubricDeleter` (primary types) or
+ *   through a sub-entry method on the parent deleter (section/step/
+ *   discarticle).
+ *
+ * The previously temporary legacy fallback has therefore been removed;
+ * any future rubric draft type is expected to register its own
+ * `RubricDeleter` before shipping.
  */
 class CronCleanDrafts implements CronTaskInterface
 {
@@ -86,16 +94,7 @@ class CronCleanDrafts implements CronTaskInterface
                 continue;
             }
 
-            if ($this->deleteViaSubEntryDeleter($type, $itemId)) {
-                continue;
-            }
-
-            // Legacy fallback for rubric types that don't have a dedicated
-            // deleter yet (Group, Label/Topic). Removed in #5082 Commit 6
-            // once GroupDeleter + LabelDeleter exist.
-            $manager = $this->legacyEnvironment->getManager($type);
-            $item = $manager->getItem($itemId);
-            $item?->delete();
+            $this->deleteViaSubEntryDeleter($type, $itemId);
         }
     }
 

@@ -30,11 +30,11 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  * through exactly the same code path as the user-footprint erasure flow
  * ({@see \App\Rubric\UserContentDeleter}).
  *
- * Items without a registered `RubricDeleter` (e.g. labels/topics/groups,
- * users) fall back to the legacy `cs_item::delete()` cascade — the list
- * shrinks as more rubrics migrate (annotation went through in #5082).
- * Material keeps its
- * multi-version fast path via `deleteAllVersions()` — this will move into
+ * Items without a registered `RubricDeleter` (at this point essentially
+ * `cs_user_item`; everything else is covered — labels/topics/groups went
+ * through the {@see \App\Rubric\Label\LabelDeleter} in #5082) fall back to
+ * the legacy `cs_item::delete()` cascade. Material keeps its multi-version
+ * fast path via `deleteAllVersions()` — this will move into
  * {@see \App\Rubric\Material\MaterialDeleter} once that deleter is migrated
  * away from legacy delegation.
  */
