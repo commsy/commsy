@@ -15,6 +15,7 @@ namespace App\Facade;
 
 use App\Entity\Account;
 use App\Event\UserLeftRoomEvent;
+use App\User\UserMembershipDeleter;
 use App\Utils\UserService;
 use cs_group_item;
 use cs_room_item;
@@ -24,7 +25,8 @@ class MembershipManager
 {
     public function __construct(
         private readonly UserService $userService,
-        private readonly EventDispatcherInterface $eventDispatcher
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly UserMembershipDeleter $membershipDeleter,
     ) {
     }
 
@@ -54,7 +56,13 @@ class MembershipManager
             return;
         }
 
-        $userInWorkspace->delete();
+        // The leaving user is also the audit-trail deleter — same as
+        // legacy `cs_user_item::delete()` reading the current user from
+        // environment when called by the leave-workspace controller.
+        $this->membershipDeleter->softDeleteMembership(
+            (int) $userInWorkspace->getItemID(),
+            (int) $userInWorkspace->getItemID()
+        );
 
         $event = new UserLeftRoomEvent($userInWorkspace, $room);
         $this->eventDispatcher->dispatch($event);
