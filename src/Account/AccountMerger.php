@@ -14,7 +14,10 @@
 namespace App\Account;
 
 use App\Entity\Account;
+use App\Room\PrivateRoomDeleter;
+use App\Room\RoomDeletionOptions;
 use App\Services\LegacyEnvironment;
+use App\User\UserMembershipDeleter;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
 use cs_environment;
@@ -33,7 +36,9 @@ class AccountMerger
         private readonly UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ReaderService $readerService
+        private readonly ReaderService $readerService,
+        private readonly UserMembershipDeleter $membershipDeleter,
+        private readonly PrivateRoomDeleter $privateRoomDeleter,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -178,7 +183,15 @@ class AccountMerger
             $manager->mergeAccounts($intoRoomUser->getItemID(), $fromRoomUser->getItemID());
         }
 
-        $fromRoomUser->delete();
+        // Soft-delete the from-account's membership row in this context.
+        // Legacy parity: the acting (current) user is the deleter. Note
+        // that when called for the portal context, the legacy delete
+        // cascaded into `getOwnRoom()->delete()`, which `rewritePrivateRoom`
+        // has already handled at this point — no cascade needed here.
+        $this->membershipDeleter->softDeleteMembership(
+            (int) $fromRoomUser->getItemID(),
+            $this->currentDeleterId()
+        );
     }
 
     private function rewritePrivateRoom(Account $from, Account $into): void
@@ -235,6 +248,20 @@ class AccountMerger
             $manager->refreshInDescLinks($intoPrivateRoom->getItemID(), $newIds);
         }
 
-        $fromPrivateRoom->delete();
+        $this->privateRoomDeleter->softDeleteRoom(
+            (int) $fromPrivateRoom->getItemID(),
+            $this->currentDeleterId(),
+            RoomDeletionOptions::forAccountMerge()
+        );
+    }
+
+    /**
+     * Returns the acting user's `cs_user_item.item_id` for audit stamping,
+     * mirroring what legacy `cs_*_item::delete()` read from the current
+     * environment. Falls back to 0 when no user is bound (CLI/merge jobs).
+     */
+    private function currentDeleterId(): int
+    {
+        return (int) ($this->legacyEnvironment->getCurrentUserItem()?->getItemID() ?? 0);
     }
 }
