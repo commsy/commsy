@@ -153,20 +153,6 @@ final class UserRoomDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('user', $bystanderMember->getItemId());
     }
 
-    #[WithStory(AccountStory::class)]
-    public function testSupportsMatchesUserRoomTypeOnly(): void
-    {
-        $userRoom = $this->createUserRoom();
-        $projectRoom = RoomFactory::createOne([
-            'contextId' => $this->account->getPortal()?->getId(),
-            'portal' => $this->account->getPortal(),
-            'type' => 'project',
-        ]);
-
-        self::assertTrue($this->deleter->supports($userRoom->getItemId()));
-        self::assertFalse($this->deleter->supports($projectRoom->getItemId()));
-    }
-
     public function testHardDeleteIsNotImplementedYet(): void
     {
         $this->expectException(LogicException::class);

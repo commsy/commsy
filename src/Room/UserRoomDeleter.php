@@ -64,16 +64,6 @@ class UserRoomDeleter implements RoomDeleter
         return RoomType::UserRoom;
     }
 
-    public function supports(int $roomId): bool
-    {
-        $type = $this->connection->fetchOne(
-            'SELECT type FROM items WHERE item_id = :id',
-            ['id' => $roomId]
-        );
-
-        return $type === RoomType::UserRoom->value;
-    }
-
     public function softDeleteRoom(int $roomId, int $deleterId, RoomDeletionOptions $opts): void
     {
         // Idempotent guard: a second call on an already soft-deleted room

@@ -22,20 +22,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 interface RoomDeleter
 {
     /**
-     * The room type this deleter is responsible for. Used by the
-     * dispatching code in {@see \App\Controller\CancellableLockAndDeleteController}
-     * and friends to pick the right implementation.
+     * The room type this deleter is responsible for. Dispatch sites
+     * ({@see \App\Controller\CancellableLockAndDeleteController} and
+     * friends) already know the type — either from the legacy room item
+     * (`$roomItem->getType()`) or from the `items.type` column they
+     * read anyway — and pick the matching deleter by comparing against
+     * this key. No per-deleter `supports()` probe is needed.
      */
     public function roomType(): RoomType;
-
-    /**
-     * Whether this deleter is responsible for the given room id.
-     *
-     * Implementations look at the `items.type` column (or equivalent
-     * legacy check) rather than loading the full legacy item, to keep
-     * the dispatch path cheap.
-     */
-    public function supports(int $roomId): bool;
 
     /**
      * Soft-deletes the room and, depending on {@see RoomDeletionOptions},
