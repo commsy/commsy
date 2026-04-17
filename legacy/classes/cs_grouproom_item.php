@@ -595,7 +595,12 @@ class cs_grouproom_item extends cs_room_item
         $this->_sendMailRoomDeleteToPortalModeration();
     }
 
-    private function _sendMailRoomDeleteToGroupModeration(): void
+    // Promoted to public (was private) so the modernised
+    // App\EventSubscriber\WorkspaceSubscriber can invoke it when
+    // dispatching WorkspaceDeletedEvent for a group room — same
+    // visibility as the sibling open/archive/lock mail hooks already
+    // used by the subscriber.
+    public function _sendMailRoomDeleteToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'delete');
     }
@@ -607,7 +612,8 @@ class cs_grouproom_item extends cs_room_item
         $this->_sendMailRoomUnDeleteToPortalModeration();
     }
 
-    private function _sendMailRoomUnDeleteToGroupModeration(): void
+    // Public for the same reason as _sendMailRoomDeleteToGroupModeration().
+    public function _sendMailRoomUnDeleteToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'undelete');
     }

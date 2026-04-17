@@ -177,12 +177,22 @@ class ElasticaSubscriber implements EventSubscriberInterface
     private function resolveIndexName(string $itemType): ?string
     {
         // Known indexed rubrics. Tasks and other types are not indexed in Elasticsearch.
+        //
+        // Room-type entries share a single `commsy_room` index — the legacy
+        // `cs_room_item::delete()` cascade resolved the persister on that
+        // index directly. Private rooms and user rooms are intentionally
+        // absent: legacy did not remove them from ES on delete (user rooms
+        // were never indexed at all; private rooms were indexed on save
+        // but never cleaned up on delete, and we preserve that parity).
         $indexed = [
             'announcement' => 'commsy_announcement',
+            'community'    => 'commsy_room',
             'date'         => 'commsy_date',
             'discussion'   => 'commsy_discussion',
+            'grouproom'    => 'commsy_room',
             'label'        => 'commsy_label',
             'material'     => 'commsy_material',
+            'project'      => 'commsy_room',
             'todo'         => 'commsy_todo',
             'user'         => 'commsy_user',
         ];
