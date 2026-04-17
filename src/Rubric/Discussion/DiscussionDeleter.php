@@ -66,6 +66,24 @@ class DiscussionDeleter implements RubricDeleter
     }
 
     /**
+     * Only top-level discussions are yielded; articles (stored in
+     * `discussionarticles`) are soft-deleted transitively by
+     * {@see deleteItem()} on the parent discussion.
+     */
+    public function findItemIdsInContext(int $contextId): array
+    {
+        $itemIds = $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM discussions
+                WHERE context_id = :contextId
+                  AND deleter_id IS NULL
+                  AND deletion_date IS NULL',
+            ['contextId' => $contextId]
+        );
+
+        return array_map('intval', $itemIds);
+    }
+
+    /**
      * Soft-deletes the discussion **and every article it contains** in one go.
      *
      * We intentionally skip the per-article overwrite-tombstone dance here —

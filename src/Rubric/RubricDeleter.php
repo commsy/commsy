@@ -24,6 +24,22 @@ interface RubricDeleter
     public function findItemIdsCreatedBy(int $userId, int $contextId): array;
 
     /**
+     * Returns item IDs of all still-alive top-level items of this rubric in
+     * $contextId (i.e. rows in the rubric's primary table with
+     * `deleter_id IS NULL AND deletion_date IS NULL`). Sub-entries (sections,
+     * steps, discussion articles) are NOT returned here — they are cleaned up
+     * transitively by their parent's {@see deleteItem()} call.
+     *
+     * Designed for the {@see \App\Rubric\Room\RoomContentDeleter} orchestrator
+     * which iterates an entire room's content. Symmetric to
+     * {@see findItemIdsCreatedBy()}; if room sizes ever make the full-array
+     * return a memory concern we can switch to keyset pagination at that point.
+     *
+     * @return int[]
+     */
+    public function findItemIdsInContext(int $contextId): array;
+
+    /**
      * Deletes a single item of this rubric in a self-contained way.
      *
      * Implementations are responsible for ALL cleanup associated with deleting

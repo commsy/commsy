@@ -64,6 +64,19 @@ class DatesDeleter implements RubricDeleter
         return array_map('intval', $itemIds);
     }
 
+    public function findItemIdsInContext(int $contextId): array
+    {
+        $itemIds = $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM dates
+                WHERE context_id = :contextId
+                  AND deleter_id IS NULL
+                  AND deletion_date IS NULL',
+            ['contextId' => $contextId]
+        );
+
+        return array_map('intval', $itemIds);
+    }
+
     /**
      * Soft-deletes a single date occurrence (series membership is not
      * considered here — use {@see deleteSeries()} to remove every occurrence

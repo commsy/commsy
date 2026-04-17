@@ -64,6 +64,23 @@ class TodoDeleter implements RubricDeleter
     }
 
     /**
+     * Only top-level todos are returned; steps (stored in `step`) are
+     * soft-deleted transitively by {@see deleteItem()} on the parent todo.
+     */
+    public function findItemIdsInContext(int $contextId): array
+    {
+        $itemIds = $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM todos
+                WHERE context_id = :contextId
+                  AND deleter_id IS NULL
+                  AND deletion_date IS NULL',
+            ['contextId' => $contextId]
+        );
+
+        return array_map('intval', $itemIds);
+    }
+
+    /**
      * Soft-deletes the todo **and every step it contains** in one go.
      *
      * Cascading the whole tree means we do not dispatch per-step events —

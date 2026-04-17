@@ -69,6 +69,19 @@ class AnnotationDeleter implements RubricDeleter
         return array_map('intval', $itemIds);
     }
 
+    public function findItemIdsInContext(int $contextId): array
+    {
+        $itemIds = $this->connection->fetchFirstColumn(
+            'SELECT item_id FROM annotations
+                WHERE context_id = :contextId
+                  AND deleter_id IS NULL
+                  AND deletion_date IS NULL',
+            ['contextId' => $contextId]
+        );
+
+        return array_map('intval', $itemIds);
+    }
+
     public function deleteItem(int $itemId, int $deleterId): void
     {
         // 1. Dispatch the deletion event (ES cleanup, mail notifications, …).

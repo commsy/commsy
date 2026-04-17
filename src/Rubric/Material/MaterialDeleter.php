@@ -74,6 +74,24 @@ class MaterialDeleter implements RubricDeleter
     }
 
     /**
+     * `SELECT DISTINCT` because materials are versioned (multiple rows per
+     * `item_id`, one per version). Sections are NOT returned — they are
+     * cleaned up transitively by {@see deleteItem()} on the parent material.
+     */
+    public function findItemIdsInContext(int $contextId): array
+    {
+        $itemIds = $this->connection->fetchFirstColumn(
+            'SELECT DISTINCT item_id FROM materials
+                WHERE context_id = :contextId
+                  AND deleter_id IS NULL
+                  AND deletion_date IS NULL',
+            ['contextId' => $contextId]
+        );
+
+        return array_map('intval', $itemIds);
+    }
+
+    /**
      * Soft-deletes the material **and every version + every section (all
      * versions) it contains**. Annotations (not versioned) die completely;
      * all versioned `item_link_file` rows are dropped.
