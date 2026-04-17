@@ -36,10 +36,10 @@ class CancellableLockType extends AbstractType
             ->add('confirm', TextType::class, [
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\IdenticalTo([
-                        'value' => mb_strtoupper((string) $options['confirm_string']),
-                        'message' => 'The input does not match {{ compared_value }}',
-                    ]),
+                    new Assert\IdenticalTo(
+                        value: mb_strtoupper((string) $options['confirm_string']),
+                        message: 'The input does not match {{ compared_value }}',
+                    ),
                 ],
                 'required' => true,
                 'mapped' => false,
