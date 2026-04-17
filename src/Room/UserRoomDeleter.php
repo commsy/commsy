@@ -15,7 +15,6 @@ namespace App\Room;
 
 use App\Rubric\ItemDeletionHelper;
 use Doctrine\DBAL\Connection;
-use LogicException;
 
 /**
  * Deletes a `userroom` (personal work area inside a project room) without
@@ -57,6 +56,7 @@ class UserRoomDeleter implements RoomDeleter
         private readonly ItemDeletionHelper $itemDeletionHelper,
         private readonly RoomDeletionHelper $roomDeletionHelper,
         private readonly RoomContentDeleter $roomContentDeleter,
+        private readonly RoomHardDeletionHelper $roomHardDeletionHelper,
     ) {}
 
     public function roomType(): RoomType
@@ -116,13 +116,15 @@ class UserRoomDeleter implements RoomDeleter
 
     public function hardDeleteRoom(int $roomId): void
     {
-        // The hard-delete primitives (bulk DELETE WHERE context_id, reader /
-        // hash purges, file-system directory removal) land with the
-        // RoomHardDeleter service in a later commit — keeping them out of
-        // this class for now avoids pre-committing to an implementation
-        // before the cross-room-type shape is fleshed out.
-        throw new LogicException(
-            'UserRoomDeleter::hardDeleteRoom() is not implemented yet — see RoomHardDeleter (upcoming).'
+        // User rooms have no type-specific hard-delete work: no mirrored
+        // label entity (unlike group rooms), no community back-links
+        // (unlike project rooms), no portal-extras cleanup. The shared
+        // helper does everything — FS wipe, reader / hash purge, the
+        // 20 per-rubric-table deletes, and the `room` row itself.
+        $contextId = (int) $this->connection->fetchOne(
+            'SELECT context_id FROM room WHERE item_id = :id',
+            ['id' => $roomId]
         );
+        $this->roomHardDeletionHelper->purgeRoomData($contextId, $roomId);
     }
 }

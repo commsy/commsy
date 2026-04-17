@@ -18,7 +18,6 @@ use App\Event\Workspace\WorkspaceDeletedEvent;
 use App\Rubric\ItemDeletionHelper;
 use App\Utils\ItemService;
 use Doctrine\DBAL\Connection;
-use LogicException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -97,6 +96,7 @@ class ProjectRoomDeleter implements RoomDeleter
         private readonly GroupRoomDeleter $groupRoomDeleter,
         private readonly UserRoomDeleter $userRoomDeleter,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly RoomHardDeletionHelper $roomHardDeletionHelper,
     ) {}
 
     public function roomType(): RoomType
@@ -188,9 +188,17 @@ class ProjectRoomDeleter implements RoomDeleter
 
     public function hardDeleteRoom(int $roomId): void
     {
-        // See UserRoomDeleter::hardDeleteRoom — lands with RoomHardDeleter.
-        throw new LogicException(
-            'ProjectRoomDeleter::hardDeleteRoom() is not implemented yet — see RoomHardDeleter (upcoming).'
+        // No recursion into sub-rooms here: grouprooms / userrooms of
+        // this project carry their own `deletion_date` from the soft-
+        // delete phase and are picked up independently by
+        // RoomHardDeleter::hardDeleteRoomsOlderThan(). The community
+        // back-links were already soft-deleted (see
+        // nullifyPortalProjectLinks in softDeleteRoom) so there is no
+        // extras-cleanup left to do either.
+        $contextId = (int) $this->connection->fetchOne(
+            'SELECT context_id FROM room WHERE item_id = :id',
+            ['id' => $roomId]
         );
+        $this->roomHardDeletionHelper->purgeRoomData($contextId, $roomId);
     }
 }

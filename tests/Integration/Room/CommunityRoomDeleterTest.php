@@ -25,7 +25,6 @@ use App\Room\RoomDeletionOptions;
 use App\Room\RoomType;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
-use LogicException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -232,15 +231,40 @@ final class CommunityRoomDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('user', $bystanderMember->getItemId());
     }
 
-    public function testHardDeleteIsNotImplementedYet(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->deleter->hardDeleteRoom(1);
-    }
-
     public function testRoomTypeIsCommunity(): void
     {
         self::assertSame(RoomType::Community, $this->deleter->roomType());
+    }
+
+    /**
+     * Happy-path hard-delete: soft-delete → hard-delete physically
+     * removes the `room` row, rubric content and membership row, while
+     * leaving a bystander room untouched.
+     */
+    #[WithStory(AccountStory::class)]
+    public function testHardDeleteRemovesRoomAndContentPhysically(): void
+    {
+        $target = $this->createCommunityRoom();
+        $member = $this->createMembership($target);
+        $announcement = AnnouncementFactory::createOne([
+            'room' => $target,
+            'creator' => $member,
+        ]);
+
+        $bystander = $this->createCommunityRoom();
+        $bystanderMember = $this->createMembership($bystander);
+
+        $this->deleter->softDeleteRoom($target->getItemId(), $this->deleterId, RoomDeletionOptions::forUserAction());
+        $this->deleter->hardDeleteRoom($target->getItemId());
+
+        $this->assertPhysicallyDeleted('room', $target->getItemId());
+        $this->assertPhysicallyDeleted('announcement', $announcement->getItemId());
+        $this->assertPhysicallyDeleted('items', $announcement->getItemId());
+        $this->assertPhysicallyDeleted('user', $member->getItemId());
+
+        $this->assertNotSoftDeleted('room', $bystander->getItemId());
+        $this->assertNotSoftDeleted('items', $bystander->getItemId());
+        $this->assertNotSoftDeleted('user', $bystanderMember->getItemId());
     }
 
     // ------------------------------------------------------------------
@@ -296,6 +320,15 @@ final class CommunityRoomDeleterTest extends KernelTestCase
             (int) $row['deleter_id'],
             sprintf('%s row %d must record the correct deleter_id', $table, $itemId)
         );
+    }
+
+    private function assertPhysicallyDeleted(string $table, int $itemId): void
+    {
+        $row = $this->connection->fetchAssociative(
+            sprintf('SELECT item_id FROM %s WHERE item_id = :id', $table),
+            ['id' => $itemId]
+        );
+        self::assertFalse($row, sprintf('%s row %d must be physically removed', $table, $itemId));
     }
 
     private function assertNotSoftDeleted(string $table, int $itemId): void

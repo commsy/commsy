@@ -25,7 +25,6 @@ use App\Room\RoomDeletionOptions;
 use App\Room\RoomType;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
-use LogicException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -265,15 +264,49 @@ final class ProjectRoomDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $bystanderGroupRoom->getItemId());
     }
 
-    public function testHardDeleteIsNotImplementedYet(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->deleter->hardDeleteRoom(1);
-    }
-
     public function testRoomTypeIsProject(): void
     {
         self::assertSame(RoomType::Project, $this->deleter->roomType());
+    }
+
+    /**
+     * Happy-path hard-delete of a project room: the project's own `room`
+     * row + rubric content + membership row are physically removed. Sub-
+     * rooms (grouproom / userroom) are **not** cascaded here — they carry
+     * their own `deletion_date` from the soft-delete phase and will be
+     * picked up by {@see \App\Room\RoomHardDeleter::hardDeleteRoomsOlderThan}
+     * on their own. The test leaves the sub-rooms soft-deleted and
+     * asserts they stay that way (no premature physical removal, no
+     * resurrection).
+     */
+    #[WithStory(AccountStory::class)]
+    public function testHardDeleteRemovesProjectContentAndLeavesSubRoomsSoftDeleted(): void
+    {
+        $project = $this->createProjectRoom();
+        $member = $this->createMembership($project);
+        $announcement = AnnouncementFactory::createOne([
+            'room' => $project,
+            'creator' => $member,
+        ]);
+        $groupRoom = $this->createGroupRoom($project);
+        $userRoom = $this->createUserRoom($project);
+
+        // Soft-delete cascades into sub-rooms (silent).
+        $this->deleter->softDeleteRoom($project->getItemId(), $this->deleterId, RoomDeletionOptions::forUserAction());
+
+        // Hard-delete only the project itself.
+        $this->deleter->hardDeleteRoom($project->getItemId());
+
+        // Project physically gone.
+        $this->assertPhysicallyDeleted('room', $project->getItemId());
+        $this->assertPhysicallyDeleted('announcement', $announcement->getItemId());
+        $this->assertPhysicallyDeleted('items', $announcement->getItemId());
+        $this->assertPhysicallyDeleted('user', $member->getItemId());
+
+        // Sub-rooms stay soft-deleted (their own hard-delete happens on
+        // the next RoomHardDeleter pass).
+        $this->assertSoftDeleted('room', $groupRoom->getItemId());
+        $this->assertSoftDeleted('room', $userRoom->getItemId());
     }
 
     // ------------------------------------------------------------------
@@ -349,6 +382,15 @@ final class ProjectRoomDeleterTest extends KernelTestCase
             (int) $row['deleter_id'],
             sprintf('%s row %d must record the correct deleter_id', $table, $itemId)
         );
+    }
+
+    private function assertPhysicallyDeleted(string $table, int $itemId): void
+    {
+        $row = $this->connection->fetchAssociative(
+            sprintf('SELECT item_id FROM %s WHERE item_id = :id', $table),
+            ['id' => $itemId]
+        );
+        self::assertFalse($row, sprintf('%s row %d must be physically removed', $table, $itemId));
     }
 
     private function assertNotSoftDeleted(string $table, int $itemId): void

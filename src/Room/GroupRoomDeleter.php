@@ -18,7 +18,6 @@ use App\Event\Workspace\WorkspaceDeletedEvent;
 use App\Rubric\ItemDeletionHelper;
 use App\Utils\ItemService;
 use Doctrine\DBAL\Connection;
-use LogicException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -66,6 +65,7 @@ class GroupRoomDeleter implements RoomDeleter
         private readonly RoomDeletionHelper $roomDeletionHelper,
         private readonly RoomContentDeleter $roomContentDeleter,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly RoomHardDeletionHelper $roomHardDeletionHelper,
     ) {}
 
     public function roomType(): RoomType
@@ -135,9 +135,16 @@ class GroupRoomDeleter implements RoomDeleter
 
     public function hardDeleteRoom(int $roomId): void
     {
-        // See UserRoomDeleter::hardDeleteRoom — lands with RoomHardDeleter.
-        throw new LogicException(
-            'GroupRoomDeleter::hardDeleteRoom() is not implemented yet — see RoomHardDeleter (upcoming).'
+        // The mirrored group-as-label entity was soft-deleted alongside
+        // the room (see softDeleteLinkedGroupEntity). Its physical purge
+        // happens automatically when the *parent project room* is hard-
+        // deleted: the label row sits in `labels` with context_id = the
+        // parent project, which the parent's shared-helper run removes.
+        // So the grouproom's own hard-delete does not need extra steps.
+        $contextId = (int) $this->connection->fetchOne(
+            'SELECT context_id FROM room WHERE item_id = :id',
+            ['id' => $roomId]
         );
+        $this->roomHardDeletionHelper->purgeRoomData($contextId, $roomId);
     }
 }
