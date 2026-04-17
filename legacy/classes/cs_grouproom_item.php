@@ -184,38 +184,6 @@ class cs_grouproom_item extends cs_room_item
         $this->updateElastic();
     }
 
-    /** delete project
-     * this method deletes the group room.
-     */
-    public function delete(bool $silent = false): void
-    {
-        parent::delete();
-
-        // delete associated tasks
-        foreach ($this->_getTaskList() as $task) {
-            /** @var cs_task_item $task */
-            $task->delete();
-        }
-
-        // send mail to moderation
-        if (!$silent) {
-            $this->_sendMailRoomDelete();
-        }
-
-        $manager = $this->_environment->getProjectManager();
-        $this->_delete($manager, $silent);
-
-        // delete linked group
-        $group = $this->getLinkedGroupItem();
-        $group?->delete(false);
-
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
-
     public function undelete()
     {
         $manager = $this->_environment->getProjectManager();
@@ -587,13 +555,6 @@ class cs_grouproom_item extends cs_room_item
     // - lock
     // - unlock
     // ###############################################################
-
-    private function _sendMailRoomDelete(): void
-    {
-        $this->_sendMailRoomDeleteToGroupModeration();
-        $this->_sendMailRoomDeleteToProjectModeration();
-        $this->_sendMailRoomDeleteToPortalModeration();
-    }
 
     // Promoted to public (was private) so the modernised
     // App\EventSubscriber\WorkspaceSubscriber can invoke it when

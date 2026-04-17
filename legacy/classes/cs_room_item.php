@@ -271,12 +271,6 @@ class cs_room_item extends cs_context_item
         parent::close();
     }
 
-    public function delete(bool $silent = false): void
-    {
-        // delete associated annotations
-        $this->deleteAssociatedAnnotations();
-    }
-
     /** get time of a room
      * this method returns a list of clock pulses which are linked to the room.
      *

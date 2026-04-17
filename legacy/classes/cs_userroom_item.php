@@ -80,16 +80,6 @@ class cs_userroom_item extends cs_room_item
         $this->updateElastic();
     }
 
-    public function delete(bool $silent = false): void
-    {
-        parent::delete();
-
-        $manager = $this->_environment->getProjectManager();
-        $this->_delete($manager);
-
-        $this->deleteFromElastic();
-    }
-
     public function getTimeSpread(): int
     {
         if ($this->_issetExtra('TIMESPREAD')) {
