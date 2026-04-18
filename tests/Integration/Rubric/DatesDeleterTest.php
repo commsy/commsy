@@ -259,6 +259,35 @@ final class DatesDeleterTest extends KernelTestCase
         self::assertContains($token, $stored['recurringExclude']);
     }
 
+    /**
+     * Hard-delete sweep: soft-deleted dates whose `deletion_date` is older
+     * than the grace window must be physically removed from the `dates`
+     * table. Recent soft-deletes remain, alive rows stay untouched. The
+     * `items` twin stays on the legacy CS_ITEM_TYPE sweep path.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testHardDeleteOlderThanPhysicallyRemovesExpiredRows(): void
+    {
+        $expired = $this->createDate();
+        $recent = $this->createDate();
+        $alive = $this->createDate();
+
+        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+
+        $this->connection->executeStatement(
+            'UPDATE dates SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',
+            ['id' => $expired->getItemId()]
+        );
+
+        $affected = $this->deleter->hardDeleteOlderThan(30);
+
+        self::assertGreaterThanOrEqual(1, $affected);
+        $this->assertPhysicallyDeleted('dates', $expired->getItemId());
+        $this->assertSoftDeleted('dates', $recent->getItemId());
+        $this->assertNotSoftDeleted('dates', $alive->getItemId());
+    }
+
     // ------------------------------------------------------------------
 
     protected function setUp(): void
@@ -330,6 +359,15 @@ final class DatesDeleterTest extends KernelTestCase
             (int) $row['deleter_id'],
             sprintf('%s row %d must record the correct deleter_id', $table, $itemId)
         );
+    }
+
+    private function assertPhysicallyDeleted(string $table, int $itemId): void
+    {
+        $row = $this->connection->fetchAssociative(
+            sprintf('SELECT item_id FROM %s WHERE item_id = :id', $table),
+            ['id' => $itemId]
+        );
+        self::assertFalse($row, sprintf('%s row %d must be physically removed', $table, $itemId));
     }
 
     private function assertNotSoftDeleted(string $table, int $itemId): void

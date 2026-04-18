@@ -242,4 +242,32 @@ class DiscussionDeleter implements RubricDeleter
             ['userId' => $userId, 'contextId' => $contextId]
         );
     }
+
+    /**
+     * Sweeps both `discussions` (top-level) and `discussionarticles`
+     * (sub-entries) — legacy CronHardDelete only covered `discussion` via
+     * CS_DISCUSSION_TYPE, leaving expired articles orphaned. We close that
+     * gap here: the sub-entry rows are owned by the parent deleter, so
+     * their hard-delete lives in the same sweep.
+     */
+    public function hardDeleteOlderThan(int $days): int
+    {
+        $count = 0;
+
+        $count += (int) $this->connection->executeStatement(
+            'DELETE FROM discussionarticles
+                WHERE deletion_date IS NOT NULL
+                  AND deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)',
+            ['days' => $days]
+        );
+
+        $count += (int) $this->connection->executeStatement(
+            'DELETE FROM discussions
+                WHERE deletion_date IS NOT NULL
+                  AND deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)',
+            ['days' => $days]
+        );
+
+        return $count;
+    }
 }

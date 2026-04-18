@@ -248,6 +248,42 @@ final class DiscussionDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('discussions', $bystander->getItemId());
     }
 
+    /**
+     * Hard-delete sweep covers both rubric-owned tables: top-level
+     * `discussions` **and** `discussionarticles`. Closes the legacy gap
+     * where CronHardDelete only iterated CS_DISCUSSION_TYPE, leaving
+     * expired articles orphaned. Recent soft-deletes stay; alive rows
+     * remain untouched.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testHardDeleteOlderThanPhysicallyRemovesExpiredRowsIncludingArticles(): void
+    {
+        $expired = $this->createDiscussion();
+        $expiredArticle = $this->createArticle($expired, ['position' => '1']);
+        $recent = $this->createDiscussion();
+        $alive = $this->createDiscussion();
+
+        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+
+        $this->connection->executeStatement(
+            'UPDATE discussions SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',
+            ['id' => $expired->getItemId()]
+        );
+        $this->connection->executeStatement(
+            'UPDATE discussionarticles SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',
+            ['id' => $expiredArticle->getItemId()]
+        );
+
+        $affected = $this->deleter->hardDeleteOlderThan(30);
+
+        self::assertGreaterThanOrEqual(2, $affected);
+        $this->assertPhysicallyDeleted('discussions', $expired->getItemId());
+        $this->assertPhysicallyDeleted('discussionarticles', $expiredArticle->getItemId());
+        $this->assertSoftDeleted('discussions', $recent->getItemId());
+        $this->assertNotSoftDeleted('discussions', $alive->getItemId());
+    }
+
     // ------------------------------------------------------------------
 
     protected function setUp(): void
@@ -317,6 +353,15 @@ final class DiscussionDeleterTest extends KernelTestCase
             (int) $row['deleter_id'],
             sprintf('%s row %d must record the correct deleter_id', $table, $itemId)
         );
+    }
+
+    private function assertPhysicallyDeleted(string $table, int $itemId): void
+    {
+        $row = $this->connection->fetchAssociative(
+            sprintf('SELECT item_id FROM %s WHERE item_id = :id', $table),
+            ['id' => $itemId]
+        );
+        self::assertFalse($row, sprintf('%s row %d must be physically removed', $table, $itemId));
     }
 
     private function assertNotSoftDeleted(string $table, int $itemId): void

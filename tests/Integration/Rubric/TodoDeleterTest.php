@@ -238,6 +238,41 @@ final class TodoDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('todos', $bystander->getItemId());
     }
 
+    /**
+     * Hard-delete sweep covers both rubric-owned tables: `todos`
+     * (top-level) and `step` (sub-entries). Legacy CronHardDelete only
+     * iterated CS_TODO_TYPE, leaving expired steps orphaned — gap closed
+     * here.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testHardDeleteOlderThanPhysicallyRemovesExpiredRowsIncludingSteps(): void
+    {
+        $expired = $this->createTodo();
+        $expiredStep = $this->createStep($expired);
+        $recent = $this->createTodo();
+        $alive = $this->createTodo();
+
+        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+
+        $this->connection->executeStatement(
+            'UPDATE todos SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',
+            ['id' => $expired->getItemId()]
+        );
+        $this->connection->executeStatement(
+            'UPDATE step SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',
+            ['id' => $expiredStep->getItemId()]
+        );
+
+        $affected = $this->deleter->hardDeleteOlderThan(30);
+
+        self::assertGreaterThanOrEqual(2, $affected);
+        $this->assertPhysicallyDeleted('todos', $expired->getItemId());
+        $this->assertPhysicallyDeleted('step', $expiredStep->getItemId());
+        $this->assertSoftDeleted('todos', $recent->getItemId());
+        $this->assertNotSoftDeleted('todos', $alive->getItemId());
+    }
+
     // ------------------------------------------------------------------
 
     protected function setUp(): void
@@ -307,6 +342,15 @@ final class TodoDeleterTest extends KernelTestCase
             (int) $row['deleter_id'],
             sprintf('%s row %d must record the correct deleter_id', $table, $itemId)
         );
+    }
+
+    private function assertPhysicallyDeleted(string $table, int $itemId): void
+    {
+        $row = $this->connection->fetchAssociative(
+            sprintf('SELECT item_id FROM %s WHERE item_id = :id', $table),
+            ['id' => $itemId]
+        );
+        self::assertFalse($row, sprintf('%s row %d must be physically removed', $table, $itemId));
     }
 
     private function assertNotSoftDeleted(string $table, int $itemId): void

@@ -14,6 +14,7 @@
 namespace App\Cron\Tasks;
 
 use App\Room\RoomHardDeleter;
+use App\Rubric\RubricHardDeleter;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use DateTimeImmutable;
@@ -27,47 +28,46 @@ readonly class CronHardDelete implements CronTaskInterface
         LegacyEnvironment $legacyEnvironment,
         private ParameterBagInterface $parameterBag,
         private RoomHardDeleter $roomHardDeleter,
+        private RubricHardDeleter $rubricHardDeleter,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        // Rubric-level item types — these are independent of any
-        // containing room (orphaned items past threshold, legacy cleanup
-        // for rows that were never reached via a room hard-delete) and
-        // are still handled by the legacy per-manager `deleteReallyOlderThan`.
+        // Auxiliary tables that do not have a registered RubricDeleter yet
+        // — shared `items` twin rows, `links` / `link_items`, tag pivots,
+        // `task` (room-scope, not a rubric), plus the two file tables with
+        // non-standard physical-cleanup needs (`files` has filesystem
+        // side effects, `item_link_file` is a pure join table). These
+        // still go through `cs_*_manager::deleteReallyOlderThan()` for
+        // now; future commits will migrate them as dedicated hard-delete
+        // services (FileHardDeleter, etc.) land.
         //
-        // CS_ROOM_TYPE was previously in this list but has moved to the
-        // dedicated RoomHardDeleter path below — it runs a single
-        // bookkeeping cascade (file system, reader, hashes, 20 rubric
-        // tables, room row) per soft-deleted room via the registered
-        // RoomDeleter implementations instead of an undifferentiated
-        // room-manager pass.
-        $itemTypes = [];
-        $itemTypes[] = CS_ANNOTATION_TYPE;
-        $itemTypes[] = CS_ANNOUNCEMENT_TYPE;
-        $itemTypes[] = CS_DATE_TYPE;
-        $itemTypes[] = CS_DISCUSSION_TYPE;
-        $itemTypes[] = CS_LINKITEMFILE_TYPE;
-        $itemTypes[] = CS_FILE_TYPE;
-        $itemTypes[] = CS_ITEM_TYPE;
-        $itemTypes[] = CS_LABEL_TYPE;
-        $itemTypes[] = CS_LINK_TYPE;
-        $itemTypes[] = CS_LINKITEM_TYPE;
-        $itemTypes[] = CS_MATERIAL_TYPE;
-        $itemTypes[] = CS_SECTION_TYPE;
-        $itemTypes[] = CS_TAG_TYPE;
-        $itemTypes[] = CS_TAG2TAG_TYPE;
-        $itemTypes[] = CS_TASK_TYPE;
-        $itemTypes[] = CS_TODO_TYPE;
+        // Rubric-primary types (Announcement, Annotation, Date,
+        // Discussion, Label, Material, Todo) have moved to the
+        // RubricHardDeleter path below — it iterates the registered
+        // `app.rubric.deleter` services so each rubric owns its own
+        // physical-cleanup SQL, including sub-entry tables
+        // (`section` / `step` / `discussionarticles`).
+        //
+        // CS_ROOM_TYPE sits on its own RoomHardDeleter path further down.
+        $legacyItemTypes = [];
+        $legacyItemTypes[] = CS_LINKITEMFILE_TYPE;
+        $legacyItemTypes[] = CS_FILE_TYPE;
+        $legacyItemTypes[] = CS_ITEM_TYPE;
+        $legacyItemTypes[] = CS_LINK_TYPE;
+        $legacyItemTypes[] = CS_LINKITEM_TYPE;
+        $legacyItemTypes[] = CS_TAG_TYPE;
+        $legacyItemTypes[] = CS_TAG2TAG_TYPE;
+        $legacyItemTypes[] = CS_TASK_TYPE;
 
         // CS_USER_TYPE is intentionally excluded here. User items are hard-deleted via two paths:
         // 1. AccountDeleter proactively removes user items during account deletion
         // 2. RoomHardDeleter cascades user deletion when a room is finally removed
         //    (via the legacy cs_user_manager::deleteFromDb() call inside RoomHardDeletionHelper)
         // Activating CS_USER_TYPE here would hit orphaned user records without proper FK cleanup.
-        // $itemTypes[] = CS_USER_TYPE;
+        // $legacyItemTypes[] = CS_USER_TYPE;
 
         $deleteDays = $this->parameterBag->get('commsy.settings.delete_days');
         if (empty($deleteDays) || !is_numeric($deleteDays)) {
@@ -75,9 +75,12 @@ readonly class CronHardDelete implements CronTaskInterface
         }
         $deleteDays = (int) $deleteDays;
 
-        // Rubric items first — deletes orphan rubric rows that outlived
-        // their room without going through the room hard-delete path.
-        foreach ($itemTypes as $itemType) {
+        // Rubric primary types: each registered RubricDeleter sweeps its
+        // own tables (including owned sub-entries).
+        $this->rubricHardDeleter->hardDeleteOlderThan($deleteDays);
+
+        // Auxiliary / not-yet-migrated tables — legacy manager sweep.
+        foreach ($legacyItemTypes as $itemType) {
             $manager = $this->legacyEnvironment->getManager($itemType);
             $manager->deleteReallyOlderThan($deleteDays);
         }

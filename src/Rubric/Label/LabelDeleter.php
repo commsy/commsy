@@ -153,4 +153,14 @@ class LabelDeleter implements RubricDeleter
             ['userId' => $userId, 'contextId' => $contextId]
         );
     }
+
+    public function hardDeleteOlderThan(int $days): int
+    {
+        return (int) $this->connection->executeStatement(
+            'DELETE FROM labels
+                WHERE deletion_date IS NOT NULL
+                  AND deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)',
+            ['days' => $days]
+        );
+    }
 }

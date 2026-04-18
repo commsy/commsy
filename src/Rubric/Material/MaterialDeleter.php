@@ -288,4 +288,31 @@ class MaterialDeleter implements RubricDeleter
             ['userId' => $userId, 'contextId' => $contextId]
         );
     }
+
+    /**
+     * Sweeps `materials` (all versions) and `section` (all versions, any
+     * parent material). Both rubric-owned tables end up in one call so the
+     * orchestrator doesn't need to know about material's versioning or
+     * sub-entry structure.
+     */
+    public function hardDeleteOlderThan(int $days): int
+    {
+        $count = 0;
+
+        $count += (int) $this->connection->executeStatement(
+            'DELETE FROM section
+                WHERE deletion_date IS NOT NULL
+                  AND deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)',
+            ['days' => $days]
+        );
+
+        $count += (int) $this->connection->executeStatement(
+            'DELETE FROM materials
+                WHERE deletion_date IS NOT NULL
+                  AND deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)',
+            ['days' => $days]
+        );
+
+        return $count;
+    }
 }

@@ -196,6 +196,39 @@ final class AnnouncementDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
     }
 
+    /**
+     * Hard-delete sweep: soft-deleted announcements whose `deletion_date`
+     * is older than the configured grace window must be physically removed
+     * from the `announcement` table. Rows inside the grace window stay
+     * soft-deleted, alive rows remain fully intact.
+     *
+     * The `items` twin row is intentionally NOT touched by this sweep —
+     * the central `items` cleanup stays on the legacy
+     * `cs_manager::deleteReallyOlderThan()` path in CronHardDelete.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testHardDeleteOlderThanPhysicallyRemovesExpiredRows(): void
+    {
+        $expired = $this->createAnnouncement();
+        $recent = $this->createAnnouncement();
+        $alive = $this->createAnnouncement();
+
+        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+
+        $this->connection->executeStatement(
+            'UPDATE announcement SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',
+            ['id' => $expired->getItemId()]
+        );
+
+        $affected = $this->deleter->hardDeleteOlderThan(30);
+
+        self::assertGreaterThanOrEqual(1, $affected);
+        $this->assertPhysicallyDeleted('announcement', $expired->getItemId());
+        $this->assertSoftDeleted('announcement', $recent->getItemId());
+        $this->assertNotSoftDeleted('announcement', $alive->getItemId());
+    }
+
     // ------------------------------------------------------------------
 
     protected function setUp(): void
@@ -267,6 +300,15 @@ final class AnnouncementDeleterTest extends KernelTestCase
             (int) $row['deleter_id'],
             sprintf('%s row %d must record the correct deleter_id', $table, $itemId)
         );
+    }
+
+    private function assertPhysicallyDeleted(string $table, int $itemId): void
+    {
+        $row = $this->connection->fetchAssociative(
+            sprintf('SELECT item_id FROM %s WHERE item_id = :id', $table),
+            ['id' => $itemId]
+        );
+        self::assertFalse($row, sprintf('%s row %d must be physically removed', $table, $itemId));
     }
 
     private function assertNotSoftDeleted(string $table, int $itemId): void

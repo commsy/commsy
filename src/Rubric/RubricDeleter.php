@@ -69,4 +69,21 @@ interface RubricDeleter
      * in items of this rubric within $contextId.
      */
     public function nullifyReferencesInContext(int $userId, int $contextId): void;
+
+    /**
+     * Physically removes all rows in this rubric's own table(s) whose
+     * `deletion_date` is older than $days. Mirrors the legacy
+     * `cs_*_manager::deleteReallyOlderThan()` semantics: the `items`-twin
+     * row is NOT touched here — it falls out as part of the orchestrator's
+     * common items sweep (see {@see \App\Rubric\RubricHardDeleter}).
+     *
+     * Implementations also cover sub-entry tables owned by this rubric
+     * (e.g. MaterialDeleter sweeps `section`, TodoDeleter sweeps `step`,
+     * DiscussionDeleter sweeps `discarticle`).
+     *
+     * Called from {@see \App\Cron\Tasks\CronHardDelete} once the soft-delete
+     * grace period has elapsed. Returns the number of rows physically
+     * removed (for logging / test assertions).
+     */
+    public function hardDeleteOlderThan(int $days): int;
 }

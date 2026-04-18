@@ -191,4 +191,31 @@ class TodoDeleter implements RubricDeleter
             ['userId' => $userId, 'contextId' => $contextId]
         );
     }
+
+    /**
+     * Sweeps both `todos` (top-level) and `step` (sub-entries). Legacy's
+     * CronHardDelete only covered `todos` via CS_TODO_TYPE (step was not
+     * in the legacy item-types list at all), leaving expired steps
+     * orphaned. Closing that gap here.
+     */
+    public function hardDeleteOlderThan(int $days): int
+    {
+        $count = 0;
+
+        $count += (int) $this->connection->executeStatement(
+            'DELETE FROM step
+                WHERE deletion_date IS NOT NULL
+                  AND deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)',
+            ['days' => $days]
+        );
+
+        $count += (int) $this->connection->executeStatement(
+            'DELETE FROM todos
+                WHERE deletion_date IS NOT NULL
+                  AND deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)',
+            ['days' => $days]
+        );
+
+        return $count;
+    }
 }
