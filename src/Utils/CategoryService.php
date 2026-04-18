@@ -15,11 +15,18 @@ namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
 use cs_tag_item;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
 
 class CategoryService
 {
-    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
-    {
+    private readonly Connection $connection;
+
+    public function __construct(
+        private readonly LegacyEnvironment $legacyEnvironment,
+        EntityManagerInterface $entityManager,
+    ) {
+        $this->connection = $entityManager->getConnection();
     }
 
     public function getTag($tagId)
@@ -88,13 +95,78 @@ class CategoryService
         return $tagItem;
     }
 
+    /**
+     * Soft-deletes the tag (and, recursively, every descendant tag in the
+     * `tag2tag` tree), along with its `items` twin, its `link_items`
+     * references and the `tag2tag` pivot rows in both directions.
+     *
+     * Replaces the legacy `cs_tag_manager::delete()` cascade:
+     *   1. UPDATE `tag`          SET deletion_date/deleter_id WHERE item_id
+     *   2. UPDATE `link_items`   (first_item_id | second_item_id)
+     *   3. UPDATE `tag2tag`      (from_item_id  | to_item_id)
+     *   4. recurse into children
+     *   5. UPDATE `items`        SET deletion_date/deleter_id
+     *
+     * Executed via DBAL so we can retire `cs_tag_manager::delete()` and the
+     * base `cs_manager::delete()` / `cs_tag2tag_manager::deleteTagLinksForTag()`
+     * helpers it depends on.
+     */
     public function removeTag($tagId, $roomId): void
     {
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);
 
-        $tagManager = $environment->getTagManager();
-        $tagManager->delete($tagId);
+        $deleterId = (int) ($environment->getCurrentUserItem()?->getItemID() ?: 0);
+
+        $this->softDeleteTagRecursively((int) $tagId, $deleterId);
+    }
+
+    private function softDeleteTagRecursively(int $tagId, int $deleterId): void
+    {
+        // Collect child tag ids before we soft-delete the pivot rows that
+        // identify them — the deletion_date filter in the lookup query
+        // protects us from revisiting already-soft-deleted subtrees.
+        $childIds = array_map('intval', $this->connection->fetchFirstColumn(
+            'SELECT to_item_id FROM tag2tag
+                WHERE from_item_id = :tagId
+                  AND deletion_date IS NULL',
+            ['tagId' => $tagId]
+        ));
+
+        // 1. Soft-delete the tag row itself.
+        $this->connection->executeStatement(
+            'UPDATE tag SET deletion_date = NOW(), deleter_id = :deleterId WHERE item_id = :tagId',
+            ['deleterId' => $deleterId, 'tagId' => $tagId]
+        );
+
+        // 2. Soft-delete link_items referencing this tag.
+        $this->connection->executeStatement(
+            'UPDATE link_items
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE first_item_id = :tagId OR second_item_id = :tagId',
+            ['deleterId' => $deleterId, 'tagId' => $tagId]
+        );
+
+        // 3. Soft-delete tag2tag pivot rows in both directions.
+        $this->connection->executeStatement(
+            'UPDATE tag2tag
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE from_item_id = :tagId OR to_item_id = :tagId',
+            ['deleterId' => $deleterId, 'tagId' => $tagId]
+        );
+
+        // 4. Recurse into children (legacy behaviour — implicit cascade
+        // through tag2tag_manager::deleteTagLinksForTag).
+        foreach ($childIds as $childId) {
+            $this->softDeleteTagRecursively($childId, $deleterId);
+        }
+
+        // 5. Soft-delete the shared `items` twin row (legacy
+        // parent::delete()).
+        $this->connection->executeStatement(
+            'UPDATE items SET deletion_date = NOW(), deleter_id = :deleterId WHERE item_id = :tagId',
+            ['deleterId' => $deleterId, 'tagId' => $tagId]
+        );
     }
 
     public function updateStructure($structure, $roomId): void
