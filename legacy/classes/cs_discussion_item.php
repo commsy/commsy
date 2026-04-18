@@ -16,6 +16,7 @@
 
 use App\Entity\Discussions;
 use App\Event\ItemDeletedEvent;
+use App\Legacy\LegacySoftDeleteBridge;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a discussion
@@ -342,7 +343,9 @@ class cs_discussion_item extends cs_item
                $copy->setErrorArray($error_array_sum);
            }
            if ($article->isDeleted()) {
-               $arcticle_copy->delete();
+               $this->_environment->getSymfonyContainer()
+                   ->get(LegacySoftDeleteBridge::class)
+                   ->softDeleteDiscussionArticle((int) $arcticle_copy->getItemID());
            }
            $article = $article_list->getNext();
        }

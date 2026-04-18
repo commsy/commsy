@@ -33,6 +33,7 @@
 //    along with CommSy.
 
 use App\Entity\Todos;
+use App\Legacy\LegacySoftDeleteBridge;
 
 /** class for a todo
  * this class implements a todo item.
@@ -296,12 +297,13 @@ class cs_todo_item extends cs_item
 
     public function removeProcessor($user)
     {
+        $bridge = $this->_environment->getSymfonyContainer()->get(LegacySoftDeleteBridge::class);
         $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
         $link_member_item = $link_member_list->getFirst();
         while ($link_member_item) {
             $linked_user_id = $link_member_item->getLinkedItemID($this);
             if ($user->getItemID() == $linked_user_id) {
-                $link_member_item->delete();
+                $bridge->softDeleteLinkItem((int) $link_member_item->getItemID());
             }
             $link_member_item = $link_member_list->getNext();
         }
@@ -457,7 +459,9 @@ class cs_todo_item extends cs_item
                 $copy->setErrorArray($error_array_sum);
             }
             if ($step_item->isDeleted()) {
-                $step_item_copy->delete();
+                $this->_environment->getSymfonyContainer()
+                    ->get(LegacySoftDeleteBridge::class)
+                    ->softDeleteStep((int) $step_item_copy->getItemID());
             }
             $step_item = $step_list->getNext();
         }

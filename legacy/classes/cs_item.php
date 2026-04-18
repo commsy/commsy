@@ -12,6 +12,7 @@
  */
 
 use App\Files\FileDeleter;
+use App\Legacy\LegacySoftDeleteBridge;
 use App\Proxy\PortalProxy;
 use App\Repository\ItemLinkFileRepository;
 use App\Repository\MaterialsRepository;
@@ -1212,9 +1213,10 @@ class cs_item
             $link_item->save();
             $changed_key_item = $create_key_item_list->getNext();
         }
+        $bridge = $this->_environment->getSymfonyContainer()->get(LegacySoftDeleteBridge::class);
         $delete_link_item = $delete_link_item_list->getFirst();
         while ($delete_link_item) {
-            $delete_link_item->delete();
+            $bridge->softDeleteLinkItem((int) $delete_link_item->getItemID());
             $delete_link_item = $delete_link_item_list->getNext();
         }
     }
@@ -1284,6 +1286,7 @@ class cs_item
             $link_item->setSecondLinkedItem($item);
             $link_item->save();
         }
+        $bridge = $this->_environment->getSymfonyContainer()->get(LegacySoftDeleteBridge::class);
         $delete_link_item = $delete_link_item_list->getFirst();
         while ($delete_link_item) {
             if ($change_all_items_in_community_room) {
@@ -1292,7 +1295,7 @@ class cs_item
                 $link_manager = $this->_environment->getLinkItemManager();
                 $link_manager->deleteAllLinkItemsInCommunityRoom($item_id, $context_id);
             }
-            $delete_link_item->delete();
+            $bridge->softDeleteLinkItem((int) $delete_link_item->getItemID());
             $delete_link_item = $delete_link_item_list->getNext();
         }
     }
