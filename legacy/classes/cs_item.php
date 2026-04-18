@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-use App\Files\FileManager;
+use App\Files\FileDeleter;
 use App\Proxy\PortalProxy;
 use App\Repository\ItemLinkFileRepository;
 use App\Repository\MaterialsRepository;
@@ -1938,8 +1938,8 @@ class cs_item
     {
         $container = $this->_environment->getSymfonyContainer();
 
-        /** @var FileManager $fileManager */
-        $fileManager = $container->get(FileManager::class);
+        /** @var FileDeleter $fileDeleter */
+        $fileDeleter = $container->get(FileDeleter::class);
 
         /** @var ItemLinkFileRepository $itemLinkFileRepository */
         $itemLinkFileRepository = $container->get(ItemLinkFileRepository::class);
@@ -1951,7 +1951,7 @@ class cs_item
             $link_manager = $this->_environment->getLinkManager();
             $file_id_array = $this->getFileIDArray();
             if (empty($file_id_array)) {
-                $fileManager->softDeleteFileLink($this->getItemID(), $this->getVersionID());
+                $fileDeleter->softDeleteFileLink($this->getItemID(), $this->getVersionID());
             } else {
                 $linkedIds = $itemLinkFileRepository->getLinkedFileIds($this->getItemID(), $this->getVersionID());
                 $keep_links = [];
@@ -1959,7 +1959,7 @@ class cs_item
                     if (in_array($linkedId, $file_id_array)) {
                         $keep_links[] = $linkedId;
                     } else {
-                        $fileManager->softDeleteFileLink(
+                        $fileDeleter->softDeleteFileLink(
                             $this->getItemID(),
                             $this->getVersionID(),
                             $linkedId

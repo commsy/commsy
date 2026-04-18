@@ -17,7 +17,7 @@ namespace Tests\Integration\Files;
 
 use App\Entity\Room;
 use App\Entity\User;
-use App\Files\FileManager;
+use App\Files\FileDeleter;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -26,7 +26,7 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Integration coverage for {@see FileManager::softDeleteFile()} — the
+ * Integration coverage for {@see FileDeleter::softDeleteFile()} — the
  * replacement for the legacy `cs_file_item::delete()` cascade used by the
  * FileList live component.
  *
@@ -39,10 +39,10 @@ use Zenstruck\Foundry\Attribute\WithStory;
  * Physical removal (`files` row + disk file) is out of scope: that will
  * land with the FileHardDeleter, tracked as a separate ticket.
  */
-final class FileManagerTest extends KernelTestCase
+final class FileDeleterTest extends KernelTestCase
 {
     private Connection $connection;
-    private FileManager $fileManager;
+    private FileDeleter $fileDeleter;
     private Room $room;
     private User $roomUser;
     private int $deleterId;
@@ -52,7 +52,7 @@ final class FileManagerTest extends KernelTestCase
     {
         $fileId = $this->createFile();
 
-        $this->fileManager->softDeleteFile($fileId, $this->deleterId);
+        $this->fileDeleter->softDeleteFile($fileId, $this->deleterId);
 
         $row = $this->connection->fetchAssociative(
             'SELECT deletion_date, deleter_id FROM files WHERE files_id = :id',
@@ -73,7 +73,7 @@ final class FileManagerTest extends KernelTestCase
         $this->createItemLinkFile($fileId, itemId: 1001, versionId: 2);
         $this->createItemLinkFile($otherFileId, itemId: 1001, versionId: 1);
 
-        $this->fileManager->softDeleteFile($fileId, $this->deleterId);
+        $this->fileDeleter->softDeleteFile($fileId, $this->deleterId);
 
         $this->assertItemLinkFileSoftDeleted($fileId, itemId: 1001, versionId: 1);
         $this->assertItemLinkFileSoftDeleted($fileId, itemId: 1001, versionId: 2);
@@ -86,7 +86,7 @@ final class FileManagerTest extends KernelTestCase
         $target = $this->createFile();
         $bystander = $this->createFile();
 
-        $this->fileManager->softDeleteFile($target, $this->deleterId);
+        $this->fileDeleter->softDeleteFile($target, $this->deleterId);
 
         $row = $this->connection->fetchAssociative(
             'SELECT deletion_date, deleter_id FROM files WHERE files_id = :id',
@@ -106,7 +106,7 @@ final class FileManagerTest extends KernelTestCase
         $this->connection = self::getContainer()
             ->get(EntityManagerInterface::class)
             ->getConnection();
-        $this->fileManager = self::getContainer()->get(FileManager::class);
+        $this->fileDeleter = self::getContainer()->get(FileDeleter::class);
 
         $this->room = RoomWithMemberStory::get('room');
         $this->roomUser = RoomWithMemberStory::get('roomUser');

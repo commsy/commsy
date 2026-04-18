@@ -13,7 +13,7 @@
 
 namespace App\Rubric;
 
-use App\Files\FileManager;
+use App\Files\FileDeleter;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 
@@ -28,7 +28,7 @@ class ItemDeletionHelper
 {
     public function __construct(
         private readonly Connection $connection,
-        private readonly FileManager $fileManager,
+        private readonly FileDeleter $fileDeleter,
     ) {}
 
     /**
@@ -129,7 +129,7 @@ class ItemDeletionHelper
     /**
      * Soft-deletes `item_link_file` rows attached to the given item.
      *
-     * Delegates to the existing FileManager service. Note that the legacy
+     * Delegates to the existing FileDeleter service. Note that the legacy
      * `delete()` methods only cleaned up file links for Material items — this
      * refactoring applies the cleanup uniformly across all rubrics, since any
      * cs_item can carry file attachments.
@@ -137,7 +137,7 @@ class ItemDeletionHelper
     public function softDeleteFileLinks(int $itemId, ?int $versionId = null): void
     {
         // When versionId is not given, treat it as "all versions" (0).
-        $this->fileManager->softDeleteFileLink($itemId, $versionId ?? 0);
+        $this->fileDeleter->softDeleteFileLink($itemId, $versionId ?? 0);
     }
 
     /**
@@ -208,7 +208,7 @@ class ItemDeletionHelper
 
     /**
      * Soft-deletes **every version** of `item_link_file` rows for the given
-     * item. Needed for versioned rubrics (Material, Section): the FileManager
+     * item. Needed for versioned rubrics (Material, Section): the FileDeleter
      * variant filters on an exact `version_id` match, so it cannot purge
      * attachments from older versions in one go.
      *
@@ -304,9 +304,9 @@ class ItemDeletionHelper
                 ['ids' => ArrayParameterType::INTEGER]
             );
         } else {
-            // Non-versioned rubrics: delegate to FileManager item-by-item.
+            // Non-versioned rubrics: delegate to FileDeleter item-by-item.
             foreach ($ids as $id) {
-                $this->fileManager->softDeleteFileLink($id, 0);
+                $this->fileDeleter->softDeleteFileLink($id, 0);
             }
         }
 

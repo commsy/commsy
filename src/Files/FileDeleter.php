@@ -22,7 +22,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Parameter;
 
-class FileManager
+class FileDeleter
 {
     private cs_environment $legacyEnvironment;
 
