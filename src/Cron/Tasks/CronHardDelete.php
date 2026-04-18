@@ -13,61 +13,52 @@
 
 namespace App\Cron\Tasks;
 
+use App\Files\FileDeleter;
+use App\Legacy\LegacyAuxHardDeleter;
 use App\Room\RoomHardDeleter;
 use App\Rubric\RubricHardDeleter;
-use App\Services\LegacyEnvironment;
-use cs_environment;
 use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 readonly class CronHardDelete implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
         private ParameterBagInterface $parameterBag,
         private RoomHardDeleter $roomHardDeleter,
         private RubricHardDeleter $rubricHardDeleter,
+        private LegacyAuxHardDeleter $legacyAuxHardDeleter,
+        private FileDeleter $fileDeleter,
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        // Auxiliary tables that do not have a registered RubricDeleter yet
-        // — shared `items` twin rows, `links` / `link_items`, tag pivots,
-        // `task` (room-scope, not a rubric), plus the two file tables with
-        // non-standard physical-cleanup needs (`files` has filesystem
-        // side effects, `item_link_file` is a pure join table). These
-        // still go through `cs_*_manager::deleteReallyOlderThan()` for
-        // now; future commits will migrate them as dedicated hard-delete
-        // services (FileHardDeleter, etc.) land.
+        // Auxiliary tables that no RubricDeleter / RoomDeleter owns:
+        // shared `items` twin rows, `link_items` (covers both legacy
+        // CS_LINK_TYPE + CS_LINKITEM_TYPE, same table), tag pivots,
+        // `tasks` (room-scope, not a rubric). These are handled by
+        // {@see \App\Legacy\LegacyAuxHardDeleter}.
+        //
+        // Files are special: `files` + `item_link_file` carry filesystem
+        // side effects and FK cleanup, so they get their own path via
+        // {@see \App\Files\FileDeleter::hardDeleteExpiredFiles()}.
         //
         // Rubric-primary types (Announcement, Annotation, Date,
-        // Discussion, Label, Material, Todo) have moved to the
-        // RubricHardDeleter path below — it iterates the registered
+        // Discussion, Label, Material, Todo) go through
+        // {@see RubricHardDeleter} — it iterates the registered
         // `app.rubric.deleter` services so each rubric owns its own
         // physical-cleanup SQL, including sub-entry tables
         // (`section` / `step` / `discussionarticles`).
         //
-        // CS_ROOM_TYPE sits on its own RoomHardDeleter path further down.
-        $legacyItemTypes = [];
-        $legacyItemTypes[] = CS_LINKITEMFILE_TYPE;
-        $legacyItemTypes[] = CS_FILE_TYPE;
-        $legacyItemTypes[] = CS_ITEM_TYPE;
-        $legacyItemTypes[] = CS_LINK_TYPE;
-        $legacyItemTypes[] = CS_LINKITEM_TYPE;
-        $legacyItemTypes[] = CS_TAG_TYPE;
-        $legacyItemTypes[] = CS_TAG2TAG_TYPE;
-        $legacyItemTypes[] = CS_TASK_TYPE;
-
-        // CS_USER_TYPE is intentionally excluded here. User items are hard-deleted via two paths:
-        // 1. AccountDeleter proactively removes user items during account deletion
-        // 2. RoomHardDeleter cascades user deletion when a room is finally removed
-        //    (via the legacy cs_user_manager::deleteFromDb() call inside RoomHardDeletionHelper)
-        // Activating CS_USER_TYPE here would hit orphaned user records without proper FK cleanup.
-        // $legacyItemTypes[] = CS_USER_TYPE;
+        // CS_ROOM_TYPE / CS_PORTAL_TYPE sit on their own RoomHardDeleter
+        // paths further down.
+        //
+        // CS_USER_TYPE stays off this path: user items are hard-deleted
+        // either proactively by {@see \App\Account\AccountDeleter} or as
+        // part of the room cascade inside {@see RoomHardDeleter}. See
+        // {@see LegacyAuxHardDeleter::hardDeleteItemsRows()} for the
+        // accompanying `type != 'user'` safety filter on the shared
+        // `items` sweep.
 
         $deleteDays = $this->parameterBag->get('commsy.settings.delete_days');
         if (empty($deleteDays) || !is_numeric($deleteDays)) {
@@ -79,11 +70,23 @@ readonly class CronHardDelete implements CronTaskInterface
         // own tables (including owned sub-entries).
         $this->rubricHardDeleter->hardDeleteOlderThan($deleteDays);
 
-        // Auxiliary / not-yet-migrated tables — legacy manager sweep.
-        foreach ($legacyItemTypes as $itemType) {
-            $manager = $this->legacyEnvironment->getManager($itemType);
-            $manager->deleteReallyOlderThan($deleteDays);
-        }
+        // Files first — FK constraint: item_link_file references files,
+        // and the filesystem cleanup needs the row data. The legacy loop
+        // did link_item_file before files for the same reason; this
+        // method folds both halves into a single transaction-friendly
+        // sweep.
+        $this->fileDeleter->hardDeleteExpiredFiles($deleteDays);
+
+        // Remaining aux tables (items / link_items / tag / tag2tag /
+        // tasks) — pure SQL DELETE against the soft-delete cutoff.
+        $this->legacyAuxHardDeleter->hardDeleteLinkItemRows($deleteDays);
+        $this->legacyAuxHardDeleter->hardDeleteTagRows($deleteDays);
+        $this->legacyAuxHardDeleter->hardDeleteTag2TagPivotRows($deleteDays);
+        $this->legacyAuxHardDeleter->hardDeleteTaskRows($deleteDays);
+        // `items` last: its rows are referenced by every rubric row above
+        // (the shared twin), so sweep it after everything that might
+        // still need a lookup-by-item_id has already drained.
+        $this->legacyAuxHardDeleter->hardDeleteItemsRows($deleteDays);
 
         // Rooms: one cascade per soft-deleted room, dispatched by type
         // through the RoomDeleter registry.
