@@ -58,4 +58,37 @@ class FileManager
 
         $qb->getQuery()->execute();
     }
+
+    /**
+     * Soft-deletes a file entry: marks the `files` row as deleted and
+     * soft-deletes every `item_link_file` row that references it.
+     *
+     * Replaces the legacy `cs_file_item::delete()` cascade (inherited from
+     * `cs_item::delete()` → `cs_file_manager::delete()` →
+     * `cs_link_item_file_manager::deleteByFileID()`). Legacy also invoked
+     * `cs_link_item_manager::deleteLinksBecauseItemIsDeleted($fileId)`,
+     * but files have no `items`-twin row, so that call is effectively a
+     * no-op and is intentionally not reproduced here.
+     *
+     * The physical file on disk and the `files` row itself are only
+     * removed by hard-delete (cron sweep, out of scope of this method).
+     */
+    public function softDeleteFile(int $fileId, int $deleterId): void
+    {
+        $connection = $this->entityManager->getConnection();
+
+        $connection->executeStatement(
+            'UPDATE files
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE files_id = :fileId',
+            ['deleterId' => $deleterId, 'fileId' => $fileId]
+        );
+
+        $connection->executeStatement(
+            'UPDATE item_link_file
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE file_id = :fileId',
+            ['deleterId' => $deleterId, 'fileId' => $fileId]
+        );
+    }
 }
