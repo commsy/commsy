@@ -20,6 +20,7 @@ use App\Services\MarkedService;
 use App\User\UserMembershipDeleter;
 use cs_environment;
 use cs_item;
+use LogicException;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
@@ -33,13 +34,17 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  * `cs_user_item` (room-membership rows) is routed through the dedicated
  * {@see UserMembershipDeleter} — it is not a rubric and has no
  * `RubricDeleter`, but the same soft-delete + cascade contract applies.
- * Everything else without a registered deleter falls back to the legacy
- * `cs_item::delete()` cascade. Labels / topics / groups are already
- * covered by {@see \App\Rubric\Label\LabelDeleter}, and Material —
- * despite being versioned with its own `deleteAllVersions()` fast path
- * in Legacy — is no longer special-cased here: {@see \App\Rubric\Material\MaterialDeleter::deleteItem()}
- * already implements the CS_ALL semantic (wipes every version plus
- * every section version), so the generic dispatch below covers it.
+ * Everything else is a bug: every type reaching this strategy is either
+ * a rubric (covered by a {@see RubricDeleter}) or a room membership
+ * (covered by {@see UserMembershipDeleter}). Labels / topics / groups are
+ * already covered by {@see \App\Rubric\Label\LabelDeleter}, and Material —
+ * despite being versioned with its own `deleteAllVersions()` fast path in
+ * Legacy — is no longer special-cased here: {@see \App\Rubric\Material\MaterialDeleter::deleteItem()}
+ * already implements the CS_ALL semantic (wipes every version plus every
+ * section version), so the generic dispatch below covers it. Anything
+ * unexpected raises a {@see LogicException} so we surface the gap in a
+ * test rather than silently fall back to the legacy `cs_item::delete()`
+ * cascade (which is on the chopping block).
  */
 class DeleteGeneric implements DeleteInterface
 {
@@ -72,7 +77,13 @@ class DeleteGeneric implements DeleteInterface
             $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()->getItemID();
             $this->userMembershipDeleter->softDeleteMembership($item->getItemId(), $deleterId);
         } else {
-            $item->delete();
+            throw new LogicException(sprintf(
+                'DeleteGeneric has no deletion strategy for item type "%s" (id %d). '
+                . 'Every rubric must be covered by a RubricDeleter; cs_user_item is routed through UserMembershipDeleter. '
+                . 'If you hit this, register a deleter for the new type instead of re-introducing the legacy cs_item::delete() fallback.',
+                $item->getItemType(),
+                $item->getItemId()
+            ));
         }
 
         $this->markedService->removeItemFromClipboard($item->getItemId());
