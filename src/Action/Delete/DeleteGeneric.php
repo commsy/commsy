@@ -17,6 +17,7 @@ use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
+use App\User\UserMembershipDeleter;
 use cs_environment;
 use cs_item;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -29,12 +30,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  * through exactly the same code path as the user-footprint erasure flow
  * ({@see \App\Rubric\UserContentDeleter}).
  *
- * Items without a registered `RubricDeleter` (at this point essentially
- * `cs_user_item`; everything else is covered — labels/topics/groups went
- * through the {@see \App\Rubric\Label\LabelDeleter} in #5082) fall back to
- * the legacy `cs_item::delete()` cascade. Material — despite being a
- * versioned rubric with its own `deleteAllVersions()` fast path in
- * Legacy — is no longer special-cased here: {@see \App\Rubric\Material\MaterialDeleter::deleteItem()}
+ * `cs_user_item` (room-membership rows) is routed through the dedicated
+ * {@see UserMembershipDeleter} — it is not a rubric and has no
+ * `RubricDeleter`, but the same soft-delete + cascade contract applies.
+ * Everything else without a registered deleter falls back to the legacy
+ * `cs_item::delete()` cascade. Labels / topics / groups are already
+ * covered by {@see \App\Rubric\Label\LabelDeleter}, and Material —
+ * despite being versioned with its own `deleteAllVersions()` fast path
+ * in Legacy — is no longer special-cased here: {@see \App\Rubric\Material\MaterialDeleter::deleteItem()}
  * already implements the CS_ALL semantic (wipes every version plus
  * every section version), so the generic dispatch below covers it.
  */
@@ -51,6 +54,7 @@ class DeleteGeneric implements DeleteInterface
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         protected MarkedService $markedService,
+        private readonly UserMembershipDeleter $userMembershipDeleter,
         #[AutowireIterator('app.rubric.deleter')]
         private readonly iterable $rubricDeleters,
     ) {
@@ -62,8 +66,11 @@ class DeleteGeneric implements DeleteInterface
         $rubricType = RubricType::tryFromLegacyString($item->getItemType());
 
         if ($rubricType !== null && ($deleter = $this->findDeleter($rubricType)) !== null) {
-            $deleterId = $this->legacyEnvironment->getCurrentUserItem()->getItemID();
+            $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()->getItemID();
             $deleter->deleteItem($item->getItemId(), $deleterId);
+        } elseif ($item->getItemType() === CS_USER_TYPE) {
+            $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()->getItemID();
+            $this->userMembershipDeleter->softDeleteMembership($item->getItemId(), $deleterId);
         } else {
             $item->delete();
         }
