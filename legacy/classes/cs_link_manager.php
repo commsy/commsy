@@ -723,29 +723,6 @@ class cs_link_manager extends cs_manager
         }
     }
 
-      /** delete a link_item.
-       */
-      public function delete(int $itemId, bool $silent = false): void
-      {
-          $current_datetime = getCurrentDateTimeInMySQL();
-          $current_user = $this->_environment->getCurrentUserItem();
-          $user_id = $current_user->getItemID() ?: 0;
-          $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-              'deletion_date="'.$current_datetime.'",'.
-              'deleter_id="'.encode(AS_DB, $user_id).'"'.
-              ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-          $result = $this->_db_connector->performQuery($query);
-          if (!isset($result) or !$result) {
-              trigger_error('Problems deleting link_items from query: "'.$query.'"', E_USER_WARNING);
-          } else {
-              // delete item from table 'items'
-              parent::delete($itemId);
-          }
-
-          // reset cache
-          $this->_resetCache();
-      }
-
       public function deleteAllLinkItemsInCommunityRoom($item_id, $context_id)
       {
           $current_user = $this->_environment->getCurrentUserItem();
@@ -979,102 +956,6 @@ class cs_link_manager extends cs_manager
                      trigger_error('Problems saveing sorting place at table '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
                  }
              }
-         }
-     }
-
-     public function saveLinkItemsMaterialToItem($new_array, $item)
-     {
-         $type = CS_MATERIAL_TYPE;
-         $this->setTypeLimit($type);
-         $this->setLinkedItemLimit($item);
-         $this->select(false);
-         $result_list = $this->get();
-         $insert_array = [];
-         $nothing_array = [];
-         $delete_array = [];
-         if ($result_list->isNotEmpty()) {
-             $link_item = $result_list->getFirst();
-             while ($link_item) {
-                 if ($link_item->getFirstLinkedItemType() == $type
-                      and !in_array($link_item->getFirstLinkedItemID(), $new_array)
-                 ) {
-                     $delete_array[] = $link_item->getItemID();
-                 } elseif ($link_item->getSecondLinkedItemType() == $type
-                      and !in_array($link_item->getSecondeLinkedItemID(), $new_array)
-                 ) {
-                     $delete_array[] = $link_item->getItemID();
-                 } else {
-                     if ($link_item->getFirstLinkedItemType() == $type) {
-                         $nothing_array[] = $link_item->getFirstLinkedItemID();
-                     } else {
-                         $nothing_array[] = $link_item->getSecondLinkedItemID();
-                     }
-                 }
-                 $link_item = $result_list->getNext();
-             }
-         }
-         unset($result_list);
-         $insert_array = array_diff($new_array, $nothing_array);
-         foreach ($delete_array as $item_id) {
-             $this->delete($item_id);
-         }
-         foreach ($insert_array as $item_id) {
-             $new_link_item = $this->getNewItem();
-             $new_link_item->setFirstLinkedItemID($item_id);
-             $new_link_item->setFirstLinkedItemType($type);
-             $new_link_item->setSecondLinkedItemID($item->getItemID());
-             $new_link_item->setSecondLinkedItemType($item->getType());
-             $new_link_item->setContextID($this->_environment->getCurrentContextID());
-             $new_link_item->setCreatorItem($this->_environment->getCurrentUserItem());
-             $new_link_item->save();
-         }
-     }
-
-     public function saveLinkItemsRubricToItem($new_array, $item, $rubric)
-     {
-         $type = $rubric;
-         $this->setTypeLimit($type);
-         $this->setLinkedItemLimit($item);
-         $this->select(false);
-         $result_list = $this->get();
-         $insert_array = [];
-         $nothing_array = [];
-         $delete_array = [];
-         if ($result_list->isNotEmpty()) {
-             $link_item = $result_list->getFirst();
-             while ($link_item) {
-                 if ($link_item->getFirstLinkedItemType() == $type
-                      and !in_array($link_item->getFirstLinkedItemID(), $new_array)
-                 ) {
-                     $delete_array[] = $link_item->getItemID();
-                 } elseif ($link_item->getSecondLinkedItemType() == $type
-                      and !in_array($link_item->getSecondeLinkedItemID(), $new_array)
-                 ) {
-                     $delete_array[] = $link_item->getItemID();
-                 } else {
-                     if ($link_item->getFirstLinkedItemType() == $type) {
-                         $nothing_array[] = $link_item->getFirstLinkedItemID();
-                     } else {
-                         $nothing_array[] = $link_item->getSecondLinkedItemID();
-                     }
-                 }
-                 $link_item = $result_list->getNext();
-             }
-         }
-         unset($result_list);
-         $insert_array = array_diff($new_array, $nothing_array);
-         foreach ($delete_array as $item_id) {
-             $this->delete($item_id);
-         }
-         foreach ($insert_array as $item_id) {
-             $new_link_item = $this->getNewItem();
-             $new_link_item->setFirstLinkedItemID($item_id);
-             $new_link_item->setFirstLinkedItemType($type);
-             $new_link_item->setSecondLinkedItemID($item->getItemID());
-             $new_link_item->setSecondLinkedItemType($item->getType());
-             $new_link_item->setContextID($this->_environment->getCurrentContextID());
-             $new_link_item->setCreatorItem($this->_environment->getCurrentUserItem());
-             $new_link_item->save();
          }
      }
 

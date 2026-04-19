@@ -251,18 +251,6 @@ class cs_tag_item extends cs_item
         }
     }
 
-    public function saveMaterialLinkItemsByIDArray($array)
-    {
-        $link_manager = $this->_environment->getLinkItemManager();
-        $link_manager->saveLinkItemsMaterialToItem($array, $this);
-    }
-
-    public function saveRubricLinkItemsByIDArray($array, $rubric)
-    {
-        $link_manager = $this->_environment->getLinkItemManager();
-        $link_manager->saveLinkItemsRubricToItem($array, $this, $rubric);
-    }
-
     public function setSavePositionWithoutChange($value)
     {
         $this->_save_position_without_change = $value;

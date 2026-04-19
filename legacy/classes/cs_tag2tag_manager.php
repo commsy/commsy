@@ -196,26 +196,6 @@ class cs_tag2tag_manager extends cs_manager
         }
     }
 
-    public function deleteTagLinks($link_id)
-    {
-        $link_item = $this->_getItemTo($link_id);
-        $father_id = $link_item->getFatherItemID();
-
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $user_id = $this->_current_user->getItemID() ?: 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                 'deletion_date="'.$current_datetime.'",'.
-                 'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE from_item_id="'.encode(AS_DB, $link_id).'" OR to_item_id="'.encode(AS_DB, $link_id).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            $this->_cleanSortingPlaces($father_id);
-        }
-        unset($link_item);
-    }
-
      public function deleteTagLinksFromToItemID($item_id)
      {
          $father_id = $this->getFatherItemID($item_id);
@@ -231,32 +211,6 @@ class cs_tag2tag_manager extends cs_manager
              trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
          } else {
              $this->_cleanSortingPlaces($father_id);
-         }
-     }
-
-     public function deleteTagLinksForTag($item_id)
-     {
-         $father_id = $this->getFatherItemID($item_id);
-         $children_array = $this->getChildrenItemIDArray($item_id);
-
-         $current_datetime = getCurrentDateTimeInMySQL();
-         $user_id = $this->_current_user->getItemID() ?: 0;
-         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                  'deletion_date="'.$current_datetime.'",'.
-                  'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                  ' WHERE from_item_id="'.encode(AS_DB, $item_id).'" OR to_item_id="'.encode(AS_DB, $item_id).'"';
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result) or !$result) {
-             trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
-         } else {
-             $this->_cleanSortingPlaces($father_id);
-             if (!empty($children_array)) {
-                 $tag_manager = $this->_environment->getTagManager();
-                 foreach ($children_array as $child_id) {
-                     $tag_manager->delete($child_id);
-                 }
-                 unset($tag_manager);
-             }
          }
      }
 
@@ -470,77 +424,6 @@ class cs_tag2tag_manager extends cs_manager
      {
          $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB, $place).' WHERE to_item_id='.encode(AS_DB, $item_id).';';
          $result = $this->_db_connector->performQuery($update);
-     }
-
-     /**
-      * Combines two categories to one.
-      *
-      * @param $item_id_1 first item id
-      * @param $item_id_2 second item id
-      * @param $father_id father id under which the combined categorie will be inserted
-      */
-     public function combine($item_id_1, $item_id_2, $father_id)
-     {
-         // get children of both items
-         $childrenIdArrayItem_1 = $this->getChildrenItemIDArray($item_id_1);
-         $childrenIdArrayItem_2 = $this->getChildrenItemIDArray($item_id_2);
-
-         // get item titles
-         $tag_manager = $this->_environment->getTagManager();
-         $item_1 = $tag_manager->getItem($item_id_1);
-         $item_title_1 = $item_1->getTitle();
-         $item_2 = $tag_manager->getItem($item_id_2);
-         $item_title_2 = $item_2->getTitle();
-
-         // get all linked items
-         $linkedIDsItem_1 = $item_1->getAllLinkedItemIDArray();
-         $linkedIDsItem_2 = $item_2->getAllLinkedItemIDArray();
-
-         // delete tags, but keep children alive
-         if ($this->isASuccessorOfB($item_id_1, $item_id_2)) {
-             $tag_manager->delete($item_id_1, false);
-             $tag_manager->delete($item_id_2, false);
-         } else {
-             $tag_manager->delete($item_id_2, false);
-             $tag_manager->delete($item_id_1, false);
-         }
-
-         unset($item_1);
-         unset($item_2);
-
-         // create new tag and set linked items
-         $mergedLinkedIDs = array_unique(array_merge($linkedIDsItem_1, $linkedIDsItem_2));
-
-         $new = $tag_manager->getNewItem();
-         $new->setTitle($item_title_1.'/'.$item_title_2);
-         $new->setContextID($this->_environment->getCurrentContextID());
-         $new->setCreatorItem($this->_environment->getCurrentUserItem());
-         $new->setCreationDate(getCurrentDateTimeInMySQL());
-         $new->setLinkedItemsByIDArray($mergedLinkedIDs);
-
-         // set position
-         $new->setPosition($father_id, $this->countChildren($father_id));
-
-         // save
-         $new->save();
-
-         // link old childrens to new tag
-         $new_id = $new->getItemID();
-         $count = 1;
-         foreach (array_merge($childrenIdArrayItem_1, $childrenIdArrayItem_2) as $item_id) {
-             // get item
-             $item = $tag_manager->getItem($item_id);
-
-             // set position
-             $item->setPosition($new_id, $count);
-             $item->save();
-
-             unset($item);
-             ++$count;
-         }
-
-         unset($tag_manager);
-         unset($new);
      }
 
      public function isASuccessorOfB($itemIdA, $itemIdB)

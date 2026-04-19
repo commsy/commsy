@@ -249,12 +249,6 @@ class cs_section_item extends cs_item
         $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
     }
 
-    public function deleteVersion()
-    {
-        $section_manager = $this->_environment->getSectionManager();
-        $section_manager->delete($this->getItemID(), $this->getVersionID());
-    }
-
     /** Checks and sets the data of the section_item.
      *
      * @param $data_array

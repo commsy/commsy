@@ -169,6 +169,124 @@ class CategoryService
         );
     }
 
+    /**
+     * Combines two tags into a new merged tag, preserving parity with the
+     * retired legacy `cs_tag2tag_manager::combine()`.
+     *
+     * Behaviour:
+     *   1. Decide the delete order via `tag2tag_manager::isASuccessorOfB` (the
+     *      successor is soft-deleted first so its pivot row is gone before we
+     *      read the ancestor's father).
+     *   2. Read both tag titles and their linked item ids.
+     *   3. Collect children of both tags (for re-parenting under the new tag).
+     *   4. Non-recursive DBAL soft-delete of both old tag rows (parity with
+     *      legacy `tag_manager->delete($id, false)`): tag + link_items +
+     *      tag2tag (both directions) + items twin. Children stay alive so they
+     *      can be re-parented under the merged tag.
+     *   5. Create the new merged tag (title = "t1/t2", context, creator,
+     *      creation_date, linked items = union of both) under the father of
+     *      the first tag (after the swap).
+     *   6. Re-parent all children of both old tags under the new merged tag.
+     *
+     * Replaces `cs_tag2tag_manager::combine($id1, $id2, $fatherId)` plus the
+     * non-recursive `cs_tag_manager::delete($id, false)` path it relied on.
+     */
+    public function combineTags(int $tagIdOne, int $tagIdTwo, int $roomId): void
+    {
+        $environment = $this->legacyEnvironment->getEnvironment();
+        $environment->setCurrentContextID($roomId);
+
+        $tagManager = $environment->getTagManager();
+        $tag2tagManager = $environment->getTag2TagManager();
+
+        // Mirror the legacy controller: if tag one is a successor of tag two,
+        // swap them so the father-id lookup below walks up from the deeper
+        // tag's parent.
+        if ($tag2tagManager->isASuccessorOfB($tagIdOne, $tagIdTwo)) {
+            [$tagIdOne, $tagIdTwo] = [$tagIdTwo, $tagIdOne];
+        }
+
+        $fatherId = (int) $tag2tagManager->getFatherItemID($tagIdOne);
+
+        $itemOne = $tagManager->getItem($tagIdOne);
+        $itemTwo = $tagManager->getItem($tagIdTwo);
+
+        $titleOne = $itemOne->getTitle();
+        $titleTwo = $itemTwo->getTitle();
+
+        $linkedIdsOne = $itemOne->getAllLinkedItemIDArray();
+        $linkedIdsTwo = $itemTwo->getAllLinkedItemIDArray();
+
+        $childrenIdsOne = $tag2tagManager->getChildrenItemIDArray($tagIdOne);
+        $childrenIdsTwo = $tag2tagManager->getChildrenItemIDArray($tagIdTwo);
+
+        $deleterId = (int) ($environment->getCurrentUserItem()?->getItemID() ?: 0);
+
+        // Non-recursive soft-delete of both old tags (legacy parity with
+        // tag_manager->delete($id, false)). Children rows survive so we can
+        // re-parent them under the new merged tag below.
+        $this->softDeleteTagNonRecursively($tagIdOne, $deleterId);
+        $this->softDeleteTagNonRecursively($tagIdTwo, $deleterId);
+
+        unset($itemOne, $itemTwo);
+
+        // Create the new merged tag.
+        $mergedLinkedIds = array_unique(array_merge($linkedIdsOne, $linkedIdsTwo));
+
+        $newTag = $tagManager->getNewItem();
+        $newTag->setTitle($titleOne.'/'.$titleTwo);
+        $newTag->setContextID($environment->getCurrentContextID());
+        $newTag->setCreatorItem($environment->getCurrentUserItem());
+        $newTag->setCreationDate(getCurrentDateTimeInMySQL());
+        $newTag->setLinkedItemsByIDArray($mergedLinkedIds);
+        $newTag->setPosition($fatherId, $tag2tagManager->countChildren($fatherId));
+        $newTag->save();
+
+        // Re-parent children of both old tags under the new merged tag.
+        $newId = (int) $newTag->getItemID();
+        $count = 1;
+        foreach (array_merge($childrenIdsOne, $childrenIdsTwo) as $childId) {
+            $child = $tagManager->getItem($childId);
+            $child->setPosition($newId, $count);
+            $child->save();
+            unset($child);
+            ++$count;
+        }
+    }
+
+    /**
+     * Non-recursive soft-delete of a single tag (tag row, link_items it is
+     * referenced by, tag2tag pivots in both directions, and the items twin).
+     * Mirrors the legacy `cs_tag_manager::delete($id, false)` path used by
+     * `cs_tag2tag_manager::combine()`.
+     */
+    private function softDeleteTagNonRecursively(int $tagId, int $deleterId): void
+    {
+        $this->connection->executeStatement(
+            'UPDATE tag SET deletion_date = NOW(), deleter_id = :deleterId WHERE item_id = :tagId',
+            ['deleterId' => $deleterId, 'tagId' => $tagId]
+        );
+
+        $this->connection->executeStatement(
+            'UPDATE link_items
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE first_item_id = :tagId OR second_item_id = :tagId',
+            ['deleterId' => $deleterId, 'tagId' => $tagId]
+        );
+
+        $this->connection->executeStatement(
+            'UPDATE tag2tag
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE from_item_id = :tagId OR to_item_id = :tagId',
+            ['deleterId' => $deleterId, 'tagId' => $tagId]
+        );
+
+        $this->connection->executeStatement(
+            'UPDATE items SET deletion_date = NOW(), deleter_id = :deleterId WHERE item_id = :tagId',
+            ['deleterId' => $deleterId, 'tagId' => $tagId]
+        );
+    }
+
     public function updateStructure($structure, $roomId): void
     {
         $environment = $this->legacyEnvironment->getEnvironment();

@@ -229,12 +229,6 @@ class cs_step_item extends cs_item
         $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
     }
 
-    public function deleteVersion()
-    {
-        $step_manager = $this->_environment->getStepManager();
-        $step_manager->delete($this->getItemID());
-    }
-
     /** Checks and sets the data of the step_item.
      *
      * @param $data_array

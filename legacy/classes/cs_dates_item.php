@@ -521,7 +521,9 @@ class cs_dates_item extends cs_item
         while ($link_member_item) {
             $linked_user_id = $link_member_item->getLinkedItemID($this);
             if ($user->getItemID() == $linked_user_id) {
-                $link_member_item->delete();
+                $this->_environment->getSymfonyContainer()
+                    ->get(\App\Legacy\LegacySoftDeleteBridge::class)
+                    ->softDeleteLinkItem((int) $link_member_item->getItemID());
             }
             $link_member_item = $link_member_list->getNext();
         }

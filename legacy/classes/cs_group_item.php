@@ -269,7 +269,9 @@ class cs_group_item extends cs_label_item
         foreach ($linkedMemberList as $linkedMemberItem) {
             $linkedUserId = $linkedMemberItem->getLinkedItemID($this);
             if ($user->getItemID() == $linkedUserId) {
-                $linkedMemberItem->delete();
+                $this->_environment->getSymfonyContainer()
+                    ->get(\App\Legacy\LegacySoftDeleteBridge::class)
+                    ->softDeleteLinkItem((int) $linkedMemberItem->getItemID());
             }
         }
     }

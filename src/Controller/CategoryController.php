@@ -97,7 +97,6 @@ class CategoryController extends AbstractController
         Request $request,
         RoomService $roomService,
         CategoryService $categoryService,
-        LegacyEnvironment $legacyEnvironment,
         ManagerRegistry $doctrine,
         int $roomId,
         ?int $categoryId = null
@@ -180,23 +179,10 @@ class CategoryController extends AbstractController
         $mergeForm->handleRequest($request);
         if ($mergeForm->isSubmitted() && $mergeForm->isValid()) {
             $mergeData = $mergeForm->getData();
-            $tagIdOne = $mergeData['first']->getItemId();
-            $tagIdTwo = $mergeData['second']->getItemId();
+            $tagIdOne = (int) $mergeData['first']->getItemId();
+            $tagIdTwo = (int) $mergeData['second']->getItemId();
 
-            $legacyEnvironment = $legacyEnvironment->getEnvironment();
-            $tag2TagManager = $legacyEnvironment->getTag2TagManager();
-
-            if ($tag2TagManager->isASuccessorOfB($tagIdOne, $tagIdTwo)) {
-                $tagIdOneTemp = $tagIdOne;
-                $tagIdOne = $tagIdTwo;
-                $tagIdTwo = $tagIdOneTemp;
-            }
-
-            // we put the combined tag under the parent of the first one
-            $putId = $tag2TagManager->getFatherItemId($tagIdOne);
-
-            // merge them
-            $tag2TagManager->combine($tagIdOne, $tagIdTwo, $putId);
+            $categoryService->combineTags($tagIdOne, $tagIdTwo, (int) $roomId);
 
             return $this->redirectToRoute('app_category_edit', [
                 'roomId' => $roomId,
