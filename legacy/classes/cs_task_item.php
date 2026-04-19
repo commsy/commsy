@@ -171,15 +171,4 @@ class cs_task_item extends cs_item
         $this->_save($task_manager);
     }
 
-    /** delete task
-     * this method deletes the task.
-     */
-    public function delete(bool $silent = false): void
-    {
-        $task_manager = $this->_environment->getTaskManager();
-        $this->_delete($task_manager);
-
-        // delete associated annotations
-        $this->deleteAssociatedAnnotations();
-    }
 }

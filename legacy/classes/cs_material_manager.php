@@ -988,32 +988,6 @@ class cs_material_manager extends cs_manager
       unset($material_item);
   }
 
-  public function delete(int $itemId, $version_id = null, bool $silent = false): void
-  {
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $current_user = $this->_environment->getCurrentUserItem();
-      $user_id = $current_user->getItemID() ?: 0;
-      if (!isset($current_user)) {
-          trigger_error('Problems deleting material: Deleter is not set', E_USER_ERROR);
-      } else {
-          $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET '.
-                   'deletion_date="'.$current_datetime.'",'.
-                   'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                   ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-          if ($version_id) {
-              $query .= ' AND version_id="'.encode(AS_DB, $version_id).'"';
-          }
-          $result = $this->_db_connector->performQuery($query);
-          if (!isset($result) or !$result) {
-              trigger_error('Problems deleting material: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
-          } else {
-              if (is_null($version_id)) {
-                  parent::delete($itemId);
-              }
-          }
-      }
-  }
-
     /**
      * checks if label type is supported in the current context
      * so far only groups are checked within contexts, since they can be "switched off".

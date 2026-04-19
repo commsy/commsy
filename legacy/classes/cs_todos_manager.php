@@ -496,25 +496,6 @@ class cs_todos_manager extends cs_manager
          }
      }
 
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $user_id = $current_user->getItemID() ?: 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix('todos').' SET '.
-                'deletion_date="'.$current_datetime.'",'.
-                'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting todos from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            $link_manager = $this->_environment->getLinkManager();
-            $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
-            parent::delete($itemId);
-        }
-    }
-
      /**
       * @param int[] $contextIds List of context ids
       * @param array Limits for buzzwords / categories

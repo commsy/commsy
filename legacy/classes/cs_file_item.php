@@ -229,17 +229,6 @@ class cs_file_item extends cs_item
         return $itemCollection;
     }
 
-    protected function _delete(cs_manager $manager, bool $silent = false): void
-    {
-        $manager->delete($this->getFileID());
-    }
-
-    public function deleteReally()
-    {
-        $manager = $this->_environment->getFileManager();
-        $manager->deleteReally($this);
-    }
-
     /**
      * Returns true if the user represented by the given user item is allowed to edit the file,
      * otherwise returns false.

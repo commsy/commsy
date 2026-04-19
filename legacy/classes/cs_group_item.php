@@ -222,22 +222,6 @@ class cs_group_item extends cs_label_item
         $this->updateElastic();
     }
 
-    /** delete group item
-     * this methode delete the group item
-     * with the group room.
-     */
-    public function delete(bool $deleteGrouproom = true, bool $silent = false): void
-    {
-        if ($deleteGrouproom) {
-            $room = $this->getGroupRoomItem();
-            if (isset($room)) {
-                $room->delete();
-            }
-        }
-
-        parent::delete();
-    }
-
     /** returns whether the given user may edit the group item or not
      * for CommSy 9: only the moderators or groups creator may edit
      * the group item.

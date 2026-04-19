@@ -196,22 +196,6 @@ class cs_tag2tag_manager extends cs_manager
         }
     }
 
-    public function delete($father_id, $child_id = null, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $user_id = $this->_current_user->getItemID() ?: 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                 'deletion_date="'.$current_datetime.'",'.
-                 'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE from_item_id="'.encode(AS_DB, $father_id).'" AND to_item_id="'.encode(AS_DB, $child_id).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            $this->_cleanSortingPlaces($father_id);
-        }
-    }
-
     public function deleteTagLinks($link_id)
     {
         $link_item = $this->_getItemTo($link_id);

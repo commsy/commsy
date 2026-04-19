@@ -653,26 +653,6 @@ class cs_context_manager extends cs_manager
        $this->_db_connector->performQuery($query);
    }
 
-    /** delete a project
-     * this method deletes a project.
-     */
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $currentDateTime = getCurrentDateTimeInMySQL();
-        $currentUser = $this->_environment->getCurrentUserItem();
-        $deleterId = (0 !== $currentUser->getItemID()) ? $currentUser->getItemID() : 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-            ' deletion_date="'.$currentDateTime.'",'.
-            ' deleter_id="'.encode(AS_DB, $deleterId).'"'.
-            ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting '.$this->_db_table.'.', E_USER_WARNING);
-        } else {
-            parent::delete($itemId);
-        }
-    }
-
    public function undelete($item_id)
    {
        $current_datetime = getCurrentDateTimeInMySQL();

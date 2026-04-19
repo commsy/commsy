@@ -229,38 +229,6 @@ class cs_step_item extends cs_item
         $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
     }
 
-    public function delete($version = '', bool $silent = false): void
-    {
-        $step_manager = $this->_environment->getStepManager();
-        if (!empty($version) and 'current' == $version) {
-            $step_manager->delete($this->getItemID());
-        } elseif (isset($version)
-                   and CS_ALL != $version
-                   and is_int((int) $version)
-        ) {
-            $step_manager->delete($this->getItemID());
-        } else {
-            $step_manager->delete($this->getItemID());
-        }
-
-        // delete links
-        $link_manager = $this->_environment->getLinkItemManager();
-        $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
-
-        // delete links to files
-        $link_manager = $this->_environment->getLinkItemFileManager();
-        if (!empty($version) and 'current' == $version) {
-            $link_manager->deleteByItem($this->getItemID(), $this->getVersionID());
-        } elseif (isset($version)
-                   and CS_ALL != $version
-                   and is_int((int) $version)
-        ) {
-            $link_manager->deleteByItem($this->getItemID(), $version);
-        } else {
-            $link_manager->deleteByItem($this->getItemID());
-        }
-    }
-
     public function deleteVersion()
     {
         $step_manager = $this->_environment->getStepManager();

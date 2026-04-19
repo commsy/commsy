@@ -197,34 +197,6 @@ class cs_discussionarticle_item extends cs_item
         $readerService->markItemAsRead($this);
     }
 
-    /**
-     * Deletes the discussion article (or overwrites its content if the article has children).
-     * When a discussion article has child article(s) we won't delete it but instead only indicate (by setting
-     * `public = -2`) that its content should get overwritten. This will keep the discussion hierarchy intact.
-     */
-    public function delete(bool $silent = false): void
-    {
-        $discussionManager = $this->_environment->getDiscussionArticlesManager();
-        $children = $discussionManager->getChildrenForDiscArticle($this);
-
-        if ($children->isNotEmpty()) {
-            $discussionManager->overwriteContent($this->getItemID());
-
-            return;
-        }
-
-        $this->_delete($discussionManager);
-
-        // if this article has a parent article with `public = -2` that has no children (anymore), delete the parent as well
-        $parentArticle = $discussionManager->getParentForDiscArticle($this);
-        if ($parentArticle && $parentArticle->getHasOverwrittenContent()) {
-            $parentArticleChildren = $discussionManager->getChildrenForDiscArticle($parentArticle);
-            if ($parentArticleChildren->isEmpty()) {
-                $parentArticle->delete();
-            }
-        }
-    }
-
     public function saveWithoutChangingModificationInformation(): void
     {
         $manager = $this->_environment->getManager($this->_type);

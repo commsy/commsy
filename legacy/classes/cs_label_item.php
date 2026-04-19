@@ -428,24 +428,6 @@ class cs_label_item extends cs_item
          $this->replaceElasticItem($objectPersister, $repository);
      }
 
-    /** delete label item
-     * this methode delete the label item.
-     *
-     * @author CommSy Development Group
-     */
-    public function delete(bool $silent = false): void
-    {
-        $manager = $this->_environment->getLabelManager();
-        $this->_delete($manager);
-
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_label');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Labels::class);
-
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
-
     /** set picture filename of the label (used for groups)
      * this method sets the picture filename of the label.
      *

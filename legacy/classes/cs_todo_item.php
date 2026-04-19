@@ -350,34 +350,6 @@ class cs_todo_item extends cs_item
          $this->replaceElasticItem($objectPersister, $repository);
      }
 
-    /** delete todo item
-     * this methode delete the todo item.
-     *
-     * @author CommSy Development Group
-     */
-    public function delete(bool $silent = false): void
-    {
-        $todo_manager = $this->_environment->getTodosManager();
-        $this->_delete($todo_manager);
-
-        // delete steps
-        $step_item_list = $this->getStepItemList();
-        if ($step_item_list->isNotEmpty()) {
-            $step_item = $step_item_list->getFirst();
-            while ($step_item) {
-                $step_item->delete();
-                $step_item = $step_item_list->getNext();
-            }
-        }
-
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_todo');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Todos::class);
-
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
-
     /** Checks and sets the data of the todo_item.
      *
      * @param $data_array

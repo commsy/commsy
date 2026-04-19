@@ -16,11 +16,9 @@
 
 use App\Entity\License;
 use App\Entity\Materials;
-use App\Event\ItemDeletedEvent;
 use App\Repository\ItemLinkFileRepository;
 use App\Repository\LicenseRepository;
 use App\Utils\ReaderService;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a material
  * this class implements a material item.
@@ -977,81 +975,6 @@ class cs_material_item extends cs_item
             }
         }
     }
-
-     /** delete material
-      * this method deletes the material.
-      */
-     public function delete($version = 'current', bool $silent = false): void
-     {
-         global $symfonyContainer;
-
-         /** @var EventDispatcher $eventDispatcher */
-         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
-
-         $itemDeletedEvent = new ItemDeletedEvent($this);
-         $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
-
-         // delete associated tasks
-         $task_list = $this->_getTaskList();
-         if (isset($task_list)) {
-             $current_task = $task_list->getFirst();
-             while ($current_task) {
-                 $current_task->delete();
-                 $current_task = $task_list->getNext();
-             }
-         }
-
-         // delete sections
-         $section_list = $this->getSectionList();
-         if ($section_list->isNotEmpty()) {
-             $section_item = $section_list->getFirst();
-             while ($section_item) {
-                 if ('current' == $version) {
-                     $section_item->delete($this->getVersionID());
-                 } elseif (CS_ALL == $version) {
-                     $section_item->delete($version); // CS_ALL -> delete all versions of the section
-                 } else {
-                     $section_item->delete();
-                 }
-                 $section_item = $section_list->getNext();
-             }
-         }
-
-         // delete material with versions
-         $material_manager = $this->_environment->getMaterialManager();
-         if ('current' == $version) {
-             $material_manager->delete($this->getItemID(), $this->getVersionID());
-         } else { // delete all versions of the material
-             $material_manager->delete($this->getItemID());
-         }
-
-         // delete links
-         $link_manager = $this->_environment->getLinkItemManager();
-         $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
-
-         // delete links to files
-         $link_manager = $this->_environment->getLinkItemFileManager();
-         $link_manager->deleteByItem($this->getItemID(), $this->getVersionID());
-
-         // delete associated annotations
-         $this->deleteAssociatedAnnotations();
-
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_material');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Materials::class);
-
-         $this->deleteElasticItem($objectPersister, $repository);
-     }
-
-     /** deletes all versions of a material
-      * this method deletes all versions of a material.
-      *
-      * @author CommSy Development Group
-      */
-     public function deleteAllVersions()
-     {
-         $this->delete(CS_ALL);
-     }
 
 // ########################## COPYING AND CLONING
 

@@ -15,12 +15,9 @@ use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
-use App\Event\AccountDeletedEvent;
-use App\Repository\HashRepository;
 use App\Room\RoomStatus;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for database connection to the database table "user"
  * this class implements a database manager for the table "user".
@@ -939,126 +936,6 @@ class cs_user_manager extends cs_manager
             $queryBuilder->executeStatement();
         } catch (\Doctrine\DBAL\Exception $e) {
             trigger_error('Problems insert new user item.', E_USER_WARNING);
-        }
-    }
-
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $user_item = $this->getItem($itemId);
-        if ($this->_environment->inPortal()) {
-            if (!empty($user_item) && $user_item->getContextID() == $this->_environment->getCurrentContextID()) {
-                // fire an AccountDeletedEvent (which will e.g. trigger deletion of the user's saved searches)
-                /** @var EventDispatcher $eventDispatcher */
-                $eventDispatcher = $this->_environment->getSymfonyContainer()->get('event_dispatcher');
-
-                $accountDeletedEvent = new AccountDeletedEvent($user_item);
-                $eventDispatcher->dispatch($accountDeletedEvent, AccountDeletedEvent::class);
-
-                // delete private room - part I
-                $private_room_manager = $this->_environment->getPrivateRoomManager();
-                $own_room = $private_room_manager->getRelatedOwnRoomForUser($user_item, $this->_environment->getCurrentPortalID());
-                if (isset($own_room) and !empty($own_room)) {
-                    $room_id = $own_room->getItemID();
-                    if (!empty($room_id)) {
-                        $delete_own_room = true;
-                    } else {
-                        $delete_own_room = false;
-                    }
-                }
-
-                // delete related user in project rooms and community rooms and private room
-                $user_list = $user_item->getRelatedUserList();
-                if (!$user_list->isEmpty()) {
-                    foreach ($user_list as $u_item) {
-                        $u_item->delete();
-                    }
-                }
-
-                // delete private room - part II
-                if (isset($delete_own_room) and $delete_own_room) {
-                    $own_room->delete();
-                }
-            }
-        } elseif ($this->_environment->inProjectRoom()) {
-            if (isset($user_item)
-                and !empty($user_item)
-                and $user_item->getContextID() == $this->_environment->getCurrentContextID()
-            ) {
-                // delete related user in group rooms
-                if ($this->_environment->getCurrentPortalItem()->withGrouproomFunctions()) {
-                    // get all grouprooms of this user
-                    $grouproom_manager = $this->_environment->getGroupRoomManager();
-                    $grouproom_list = $grouproom_manager->getUserRelatedGroupListForUser($user_item);
-
-                    if (!$grouproom_list->isEmpty()) {
-                        $grouproom_ids = [];
-                        $grouproom = $grouproom_list->getFirst();
-                        while ($grouproom) {
-                            // is a group room of this project room?
-                            $project_room = $grouproom->getLinkedProjectItem();
-                            if (!empty($project_room)) {
-                                $project_room_id = $project_room->getItemID();
-                                if ($this->_environment->getCurrentContextID() == $project_room_id) {
-                                    // add grouproom id to array of ids
-                                    $grouproom_ids[] = $grouproom->getItemID();
-                                }
-                            }
-                            $grouproom = $grouproom_list->getNext();
-                        }
-
-                        // delete related users
-                        if (!empty($grouproom_ids)) {
-                            $user_manager = $this->_environment->getUserManager();
-                            $user_manager->resetLimits();
-                            $user_manager->setContextArrayLimit($grouproom_ids);
-                            $user_manager->setUserIDLimit($user_item->getUserID());
-                            $user_manager->setAuthSourceLimit($user_item->getAuthSource());
-                            $user_manager->select();
-                            $users = $user_manager->get();
-
-                            foreach ($users as $user) {
-                                $user->delete();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // delete hash values
-        /** @var HashRepository $hashRepository */
-        $hashRepository = $this->_environment->getSymfonyContainer()->get(HashRepository::class);
-        $hash = $hashRepository->findByUserId($itemId);
-        if (!empty($hash)) {
-            $hashRepository->deleteHash($hash);
-        }
-
-        // delete all related items
-        $user_item->deleteAllEntriesOfUser();
-
-        // delete the user item itself
-        $currentDatetime = getCurrentDateTimeInMySQL();
-        $currentUser = $this->_environment->getCurrentUserItem();
-        $deleterId = (0 !== $currentUser->getItemID()) ? $currentUser->getItemID() : 0;
-
-        $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
-
-        $queryBuilder
-            ->update($this->addDatabasePrefix('user'))
-            ->set('deletion_date', ':deletionDate')
-            ->set('deleter_id', ':deleterId')
-            ->set('account_id', ':accountId')
-            ->where('item_id = :itemId')
-            ->setParameter('deletionDate', $currentDatetime)
-            ->setParameter('deleterId', $deleterId)
-            ->setParameter('accountId', null)
-            ->setParameter('itemId', $itemId);
-
-        try {
-            $queryBuilder->executeStatement();
-            parent::delete($itemId);
-        } catch (\Doctrine\DBAL\Exception $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
         }
     }
 

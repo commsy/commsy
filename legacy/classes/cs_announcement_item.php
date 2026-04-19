@@ -15,8 +15,6 @@
  */
 
 use App\Entity\Announcement;
-use App\Event\ItemDeletedEvent;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a announcement
  * this class implements a announcement item.
@@ -178,32 +176,6 @@ class cs_announcement_item extends cs_item
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
-
-     /** delete announcement
-      * this method deletes the announcement.
-      */
-     public function delete(bool $silent = false): void
-     {
-         global $symfonyContainer;
-
-         /** @var EventDispatcher $eventDispatcher */
-         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
-
-         $itemDeletedEvent = new ItemDeletedEvent($this);
-         $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
-
-         $manager = $this->_environment->getAnnouncementManager();
-         $this->_delete($manager);
-
-         // delete associated annotations
-         $this->deleteAssociatedAnnotations();
-
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_announcement');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Announcement::class);
-
-         $this->deleteElasticItem($objectPersister, $repository);
-     }
 
     /** asks if item is editable by everybody or just creator.
      *

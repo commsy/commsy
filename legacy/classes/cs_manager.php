@@ -1243,19 +1243,6 @@ class cs_manager
        return $retour;
    }
 
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function deleteReallyOlderThan(int $days): void
-   {
-       $qb = $this->_db_connector->getConnection()->createQueryBuilder();
-       $qb
-           ->delete($this->_db_table)
-           ->where('deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)')
-           ->setParameter('days', $days, ParameterType::INTEGER)
-           ->executeStatement();
-   }
-
    public function getLastQuery()
    {
        return $this->_last_query;

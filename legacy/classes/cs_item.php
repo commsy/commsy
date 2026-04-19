@@ -1402,16 +1402,6 @@ class cs_item
      *
      * @author CommSy Development Group
      */
-    protected function _delete(cs_manager $manager, bool $silent = false): void
-    {
-        $manager->delete($this->getItemID(), $silent);
-        $link_manager = $this->_environment->getLinkItemManager();
-        $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
-
-        $this->setDeletionDate(getCurrentDateTimeInMySQL());
-        $this->setDeleterID($this->_environment->getCurrentUserItem()->getItemID());
-    }
-
     public function _undelete($manager)
     {
         $manager->undelete($this->getItemID());
@@ -1828,27 +1818,6 @@ class cs_item
     {
         $manager = $this->_environment->getManager($this->getItemType());
         $manager->undeleteItemByItemID($this->getItemID());
-    }
-
-     /** delete item
-      * this method deletes an item.
-      */
-     public function delete(bool $silent = false): void
-     {
-         $manager = $this->_environment->getManager($this->getItemType());
-         $this->_delete($manager);
-     }
-
-    public function deleteAssociatedAnnotations()
-    {
-        $item_manager = $this->_environment->getItemManager();
-        $item = $item_manager->getItem($this->getItemID());
-
-        $annotation_list = $item->getAnnotationList();
-        foreach ($annotation_list as $annotation) {
-            /** @var cs_annotation_item $annotation */
-            $annotation->delete();
-        }
     }
 
     // ################# file handling ############################
