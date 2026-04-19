@@ -14,7 +14,7 @@
 namespace App\Rubric\Dates;
 
 use App\Event\ItemDeletedEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Services\CalendarsService;
@@ -39,7 +39,7 @@ class DatesDeleter implements RubricDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly CalendarsService $calendarsService,
         private readonly LegacyEnvironment $legacyEnvironment,
@@ -102,20 +102,20 @@ class DatesDeleter implements RubricDeleter
         // 3. Soft-delete every `links` row referencing this date (all types,
         //    both directions). Matches the legacy cs_dates_manager behaviour
         //    which did the same via deleteLinksBecauseItemIsDeleted().
-        $this->itemDeletionHelper->softDeleteLinks($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
 
         // 4. Soft-delete `link_items` rows referencing this date.
-        $this->itemDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
 
         // 5. Soft-delete annotations attached to this date.
-        $this->itemDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
 
         // 6. Soft-delete file-link attachments.
-        $this->itemDeletionHelper->softDeleteFileLinks($itemId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
 
         // 7. Soft-delete the shared `items` row — single source of truth for
         //    what it means to delete a date, both from UI and user-footprint.
-        $this->itemDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
 
         // 8. Bump the CalDAV sync token so external clients notice the change.
         //    Mirrors legacy DeleteDate::delete() which called this once per

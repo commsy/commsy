@@ -15,7 +15,7 @@ namespace App\Room;
 
 use App\Event\ItemDeletedEvent;
 use App\Event\Workspace\WorkspaceDeletedEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Utils\ItemService;
 use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -40,7 +40,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  *    *not* re-checked — orphaned projects are tolerated as a legacy
  *    quirk. Reattaching them (if the admin cares) is a manual follow-up.
  *
- * `link_items` cleanup falls out of {@see ItemDeletionHelper::softDeleteLinkItems()},
+ * `link_items` cleanup falls out of {@see RubricDeletionHelper::softDeleteLinkItems()},
  * which soft-deletes every row where `$roomId` appears on either side —
  * functionally identical to legacy's `LinkItemManager::deleteLinksBecauseItemIsDeleted()`.
  *
@@ -67,7 +67,7 @@ class CommunityRoomDeleter implements RoomDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly RoomDeletionHelper $roomDeletionHelper,
         private readonly RoomContentDeleter $roomContentDeleter,
         private readonly EventDispatcherInterface $eventDispatcher,
@@ -110,9 +110,9 @@ class CommunityRoomDeleter implements RoomDeleter
         //    the legacy LinkItemManager::deleteLinksBecauseItemIsDeleted
         //    behaviour. The linked project rooms themselves are left
         //    alive — community delete does not cascade into projects.
-        $this->itemDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinks($roomId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
 
         // 4. Soft-delete the `room` row itself. The `PROJECT_ID_ARRAY`
         //    extras blob is intentionally left intact on the soft-deleted
@@ -125,7 +125,7 @@ class CommunityRoomDeleter implements RoomDeleter
         );
 
         // 5. And the shared `items` twin row.
-        $this->itemDeletionHelper->softDeleteItemsRow($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($roomId, $deleterId);
 
         // 6. ES cleanup for the `commsy_room` document.
         if ($typedItem !== null) {

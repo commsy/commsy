@@ -15,7 +15,7 @@ namespace App\Rubric\Todo;
 
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Utils\ItemService;
@@ -40,7 +40,7 @@ class TodoDeleter implements RubricDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -118,7 +118,7 @@ class TodoDeleter implements RubricDeleter
                 ['ids' => ArrayParameterType::INTEGER]
             );
 
-            $this->itemDeletionHelper->softDeleteAuxiliaryRowsForItems($stepIds, $deleterId);
+            $this->rubricDeletionHelper->softDeleteAuxiliaryRowsForItems($stepIds, $deleterId);
         }
 
         // 4. Soft-delete the `todos` row itself.
@@ -131,10 +131,10 @@ class TodoDeleter implements RubricDeleter
 
         // 5. Auxiliary cleanup for the todo. No annotations: todos don't carry
         //    annotations in the legacy model (same as discussions).
-        $this->itemDeletionHelper->softDeleteLinks($itemId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-        $this->itemDeletionHelper->softDeleteFileLinks($itemId);
-        $this->itemDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
     /**
@@ -165,10 +165,10 @@ class TodoDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'id' => $stepId]
         );
 
-        $this->itemDeletionHelper->softDeleteLinks($stepId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinkItems($stepId, $deleterId);
-        $this->itemDeletionHelper->softDeleteFileLinks($stepId);
-        $this->itemDeletionHelper->softDeleteItemsRow($stepId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($stepId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($stepId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($stepId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($stepId, $deleterId);
 
         // Re-index the parent todo so the removed step disappears from its
         // embedded `steps` field. ElasticaSubscriber::onItemReindex picks

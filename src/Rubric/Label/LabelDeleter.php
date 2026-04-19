@@ -14,7 +14,7 @@
 namespace App\Rubric\Label;
 
 use App\Event\ItemDeletedEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Utils\ItemService;
@@ -65,7 +65,7 @@ class LabelDeleter implements RubricDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -123,20 +123,20 @@ class LabelDeleter implements RubricDeleter
         // 3. Soft-delete `links` rows referencing this label (Legacy parity
         //    with `cs_link_manager::deleteLinksBecauseItemIsDeleted`; buzzword
         //    assignments, `member_of`, `material_for`, etc. live in `links`).
-        $this->itemDeletionHelper->softDeleteLinks($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
 
         // 4. Soft-delete `link_items` rows referencing this label. Legacy
         //    labels_manager did not touch link_items, but groups use
         //    link_items for user membership (`cs_group_item::addMember`),
         //    so we clean those up for consistency across all rubrics.
-        $this->itemDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
 
         // 5. Soft-delete file-link attachments — labels rarely have them,
         //    but the base class allows it.
-        $this->itemDeletionHelper->softDeleteFileLinks($itemId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
 
         // 6. Soft-delete the shared `items` table row.
-        $this->itemDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
     public function nullifyReferencesInContext(int $userId, int $contextId): void

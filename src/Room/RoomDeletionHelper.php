@@ -13,7 +13,7 @@
 
 namespace App\Room;
 
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
 use cs_environment;
@@ -24,7 +24,7 @@ use Doctrine\DBAL\Connection;
  * Shared low-level deletion primitives for *room-wide* data that has no
  * `RubricDeleter` of its own.
  *
- * Complements {@see ItemDeletionHelper}: that helper operates on a
+ * Complements {@see RubricDeletionHelper}: that helper operates on a
  * single item (link_items, links, annotations, file_links, items-row),
  * while this one operates on everything keyed by `context_id = $roomId`
  * — tasks, labels (topics / buzzwords / groups / institutions), user
@@ -43,7 +43,7 @@ class RoomDeletionHelper
 
     public function __construct(
         private readonly Connection $connection,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         LegacyEnvironment $legacyEnvironment,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -55,7 +55,7 @@ class RoomDeletionHelper
      * file_links, items twin). Task rows are flipped to `status = 'CLOSED'`
      * so moderator UIs that list open requests never show ghost rows.
      *
-     * Room-wide counterpart to {@see ItemDeletionHelper::deleteUserTasks}
+     * Room-wide counterpart to {@see \App\User\UserDeletionHelper::deleteUserTasks}
      * (which is user-wide). Legacy equivalent:
      * `foreach ($room->_getTaskList() as $task) { $task->delete(); }`.
      */
@@ -81,10 +81,10 @@ class RoomDeletionHelper
         );
 
         foreach ($taskIds as $taskId) {
-            $this->itemDeletionHelper->softDeleteAnnotations($taskId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteAnnotations($taskId, $deleterId);
         }
 
-        $this->itemDeletionHelper->softDeleteAuxiliaryRowsForItems($taskIds, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAuxiliaryRowsForItems($taskIds, $deleterId);
     }
 
     /**
@@ -118,7 +118,7 @@ class RoomDeletionHelper
             ['ids' => ArrayParameterType::INTEGER]
         );
 
-        $this->itemDeletionHelper->softDeleteAuxiliaryRowsForItems($labelIds, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAuxiliaryRowsForItems($labelIds, $deleterId);
     }
 
     /**
@@ -150,7 +150,7 @@ class RoomDeletionHelper
             ['ids' => ArrayParameterType::INTEGER]
         );
 
-        $this->itemDeletionHelper->softDeleteAuxiliaryRowsForItems($userIds, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAuxiliaryRowsForItems($userIds, $deleterId);
     }
 
     /**
@@ -166,6 +166,10 @@ class RoomDeletionHelper
      *
      * Legacy analogue: `cs_grouproom_item::delete()` calls
      * `$this->getLinkedGroupItem()?->delete(false)`.
+     *
+     * **Legacy-Boundary Layer**: isolates the `cs_grouproom_item` extras-
+     * blob access to a single call site. Will go away when Ticket G
+     * (Storage-Abstraktion / extras-blob aus Legacy ziehen) lands.
      */
     public function softDeleteLinkedGroupEntity(int $groupRoomId, int $deleterId): void
     {
@@ -201,9 +205,9 @@ class RoomDeletionHelper
             ['deleterId' => $deleterId, 'id' => $linkedGroupId]
         );
 
-        $this->itemDeletionHelper->softDeleteLinkItems($linkedGroupId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinks($linkedGroupId, $deleterId);
-        $this->itemDeletionHelper->softDeleteItemsRow($linkedGroupId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($linkedGroupId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($linkedGroupId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($linkedGroupId, $deleterId);
     }
 
     /**
@@ -258,6 +262,11 @@ class RoomDeletionHelper
      *
      * Legacy analogue: the community-list loop inside
      * `cs_project_item::delete()`.
+     *
+     * **Legacy-Boundary Layer**: isolates the `cs_community_item` extras-
+     * blob mutation (`PROJECT_ID_ARRAY`) to a single call site. Will go
+     * away when Ticket G (Storage-Abstraktion) replaces the serialised-
+     * PHP extras blob with a proper schema.
      */
     public function nullifyPortalProjectLinks(int $projectRoomId): void
     {

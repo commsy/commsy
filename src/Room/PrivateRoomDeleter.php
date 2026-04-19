@@ -13,7 +13,7 @@
 
 namespace App\Room;
 
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -54,7 +54,7 @@ class PrivateRoomDeleter implements RoomDeleter
 {
     public function __construct(
         private readonly Connection $connection,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly RoomDeletionHelper $roomDeletionHelper,
         private readonly RoomContentDeleter $roomContentDeleter,
         private readonly RoomHardDeletionHelper $roomHardDeletionHelper,
@@ -95,9 +95,9 @@ class PrivateRoomDeleter implements RoomDeleter
 
         // 3. Auxiliary rows attached to the room entity itself. Order
         //    mirrors the per-item cleanup in every RubricDeleter.
-        $this->itemDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinks($roomId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
 
         // 4. Soft-delete the `room` row itself. No per-type extras blob
         //    cleanup — private rooms carry only newsletter / display
@@ -111,7 +111,7 @@ class PrivateRoomDeleter implements RoomDeleter
         );
 
         // 5. Finally the shared `items` twin row.
-        $this->itemDeletionHelper->softDeleteItemsRow($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($roomId, $deleterId);
     }
 
     public function hardDeleteRoom(int $roomId): void

@@ -15,7 +15,7 @@ namespace App\Rubric\Discussion;
 
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Utils\ItemService;
@@ -42,7 +42,7 @@ class DiscussionDeleter implements RubricDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -121,7 +121,7 @@ class DiscussionDeleter implements RubricDeleter
 
             // 4. And wipe their auxiliary rows (link_items, links, file_links,
             //    items) in batched statements.
-            $this->itemDeletionHelper->softDeleteAuxiliaryRowsForItems($articleIds, $deleterId);
+            $this->rubricDeletionHelper->softDeleteAuxiliaryRowsForItems($articleIds, $deleterId);
         }
 
         // 5. Soft-delete the `discussions` row itself.
@@ -133,10 +133,10 @@ class DiscussionDeleter implements RubricDeleter
         );
 
         // 6. And the auxiliary cleanup for the discussion itself.
-        $this->itemDeletionHelper->softDeleteLinks($itemId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-        $this->itemDeletionHelper->softDeleteFileLinks($itemId);
-        $this->itemDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
     /**
@@ -202,9 +202,9 @@ class DiscussionDeleter implements RubricDeleter
 
             // Links / link_items / file_links can go even though the row
             // itself stays — they don't participate in the thread hierarchy.
-            $this->itemDeletionHelper->softDeleteLinks($articleId, $deleterId);
-            $this->itemDeletionHelper->softDeleteLinkItems($articleId, $deleterId);
-            $this->itemDeletionHelper->softDeleteFileLinks($articleId);
+            $this->rubricDeletionHelper->softDeleteLinks($articleId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteLinkItems($articleId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteFileLinks($articleId);
         } else {
             $this->connection->executeStatement(
                 'UPDATE discussionarticles
@@ -213,10 +213,10 @@ class DiscussionDeleter implements RubricDeleter
                 ['deleterId' => $deleterId, 'id' => $articleId]
             );
 
-            $this->itemDeletionHelper->softDeleteLinks($articleId, $deleterId);
-            $this->itemDeletionHelper->softDeleteLinkItems($articleId, $deleterId);
-            $this->itemDeletionHelper->softDeleteFileLinks($articleId);
-            $this->itemDeletionHelper->softDeleteItemsRow($articleId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteLinks($articleId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteLinkItems($articleId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteFileLinks($articleId);
+            $this->rubricDeletionHelper->softDeleteItemsRow($articleId, $deleterId);
         }
 
         // Re-index the parent discussion so removed article content

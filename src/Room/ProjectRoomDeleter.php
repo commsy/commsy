@@ -15,7 +15,7 @@ namespace App\Room;
 
 use App\Event\ItemDeletedEvent;
 use App\Event\Workspace\WorkspaceDeletedEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Utils\ItemService;
 use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -64,7 +64,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  *     so ES / mail / etherpad cleanup runs per item.
  *
  *  6. **Aux rows on the project entity itself** (annotations, links,
- *     link_items) — via {@see ItemDeletionHelper}.
+ *     link_items) — via {@see RubricDeletionHelper}.
  *
  *  7. **The `room` and `items` twin rows** get their audit stamps last.
  *
@@ -90,7 +90,7 @@ class ProjectRoomDeleter implements RoomDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly RoomDeletionHelper $roomDeletionHelper,
         private readonly RoomContentDeleter $roomContentDeleter,
         private readonly GroupRoomDeleter $groupRoomDeleter,
@@ -154,9 +154,9 @@ class ProjectRoomDeleter implements RoomDeleter
         $this->roomDeletionHelper->softDeleteRoomMemberships($roomId, $deleterId);
 
         // 5. Auxiliary rows on the project entity itself.
-        $this->itemDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinks($roomId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
 
         // 6. Remove this project from the `PROJECT_ID_ARRAY` extras of
         //    every community that currently lists it. Only step that
@@ -172,7 +172,7 @@ class ProjectRoomDeleter implements RoomDeleter
         );
 
         // 8. And the shared `items` twin row.
-        $this->itemDeletionHelper->softDeleteItemsRow($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($roomId, $deleterId);
 
         // 9. ES cleanup for the `commsy_room` document.
         if ($typedItem !== null) {

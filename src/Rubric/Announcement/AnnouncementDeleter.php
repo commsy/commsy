@@ -3,7 +3,7 @@
 namespace App\Rubric\Announcement;
 
 use App\Event\ItemDeletedEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Utils\ItemService;
@@ -24,7 +24,7 @@ class AnnouncementDeleter implements RubricDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -78,26 +78,26 @@ class AnnouncementDeleter implements RubricDeleter
         //    (all link types, both directions). Legacy cs_announcement_manager
         //    only hard-deleted `relevant_for` — we unify this across all rubrics
         //    as a soft-delete so restore / audit use cases keep working.
-        $this->itemDeletionHelper->softDeleteLinks($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
 
         // 4. Soft-delete `link_items` rows referencing this announcement.
-        $this->itemDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
 
         // 5. Soft-delete any annotations attached to this announcement (plus their
         //    items-twin rows and link_items references).
-        $this->itemDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
 
         // 6. Soft-delete file-link attachments. Announcements can technically carry
         //    file attachments (cs_item::getFileList() is on the base class), but the
         //    legacy delete cascade forgot to clean these up — we do it here for
         //    consistency across all rubrics.
-        $this->itemDeletionHelper->softDeleteFileLinks($itemId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
 
         // 7. Soft-delete the shared `items` table row. Keeping this inside the
         //    deleter makes `deleteItem()` the single source of truth for what it
         //    means to delete an announcement — both the UI delete action and the
         //    user-footprint erasure flow go through the same path.
-        $this->itemDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
     public function nullifyReferencesInContext(int $userId, int $contextId): void

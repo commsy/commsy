@@ -40,7 +40,7 @@ use Zenstruck\Foundry\Attribute\WithStory;
  * per-annotation deletion path used by the UI when a user explicitly
  * deletes their own comment (parent item stays alive). Deletion of an
  * annotation as part of a cascade (parent item is being removed) is
- * covered by {@see ItemDeletionHelper::softDeleteAnnotations()} tests
+ * covered by {@see RubricDeletionHelper::softDeleteAnnotations()} tests
  * on each parent rubric.
  */
 final class AnnotationDeleterTest extends KernelTestCase
@@ -315,7 +315,7 @@ final class AnnotationDeleterTest extends KernelTestCase
 
         // cs_link_manager::_create() writes a twin row into `items`
         // (type = 'link_item') to allocate the AUTO_INCREMENT id before
-        // inserting into `link_items`. ItemDeletionHelper must soft-delete
+        // inserting into `link_items`. RubricDeletionHelper must soft-delete
         // both sides so the two tables stay in sync.
         $twin = $this->connection->fetchAssociative(
             'SELECT deletion_date, deleter_id FROM items WHERE item_id = :id',

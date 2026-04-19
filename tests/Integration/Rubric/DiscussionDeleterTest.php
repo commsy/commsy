@@ -391,7 +391,7 @@ final class DiscussionDeleterTest extends KernelTestCase
 
         // cs_link_manager::_create() writes a twin row into `items`
         // (type = 'link_item') to allocate the AUTO_INCREMENT id before
-        // inserting into `link_items`. ItemDeletionHelper must soft-delete
+        // inserting into `link_items`. RubricDeletionHelper must soft-delete
         // both sides so the two tables stay in sync.
         $twin = $this->connection->fetchAssociative(
             'SELECT deletion_date, deleter_id FROM items WHERE item_id = :id',

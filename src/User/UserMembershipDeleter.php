@@ -17,7 +17,7 @@ use App\Event\ItemDeletedEvent;
 use App\Message\RefreshRoomContactPersonsMessage;
 use App\Room\RoomDeletionOptions;
 use App\Room\UserRoomDeleter;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
@@ -39,7 +39,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  *
  * Legacy parity (`cs_user_item::delete`):
  *  - Delete the user's tasks in the same context. Done via
- *    {@see ItemDeletionHelper::deleteUserTasks()}.
+ *    {@see UserDeletionHelper::deleteUserTasks()}.
  *  - Delete the linked user room when the membership lives in a
  *    project context (the user room is "this user's private corner of
  *    the project"). Done via {@see UserRoomDeleter} in silent mode so
@@ -70,7 +70,8 @@ class UserMembershipDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly UserDeletionHelper $userDeletionHelper,
         private readonly UserRoomDeleter $userRoomDeleter,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly MessageBusInterface $messageBus,
@@ -100,7 +101,7 @@ class UserMembershipDeleter
         $typedItem = $this->itemService->getTypedItem($userItemId);
 
         // 1. Tasks owned by this user in this context.
-        $this->itemDeletionHelper->deleteUserTasks($userItemId, $contextId, $deleterId);
+        $this->userDeletionHelper->deleteUserTasks($userItemId, $contextId, $deleterId);
 
         // 2. Linked user room (only ever set on project memberships).
         //    Cascaded silently so the project-level moderation mail is
@@ -123,7 +124,7 @@ class UserMembershipDeleter
         );
 
         // 4. Aux rows (link_items, links, file_links, items twin).
-        $this->itemDeletionHelper->softDeleteAuxiliaryRowsForItems([$userItemId], $deleterId);
+        $this->rubricDeletionHelper->softDeleteAuxiliaryRowsForItems([$userItemId], $deleterId);
 
         // 5. ES cleanup for the `commsy_user` document.
         if ($typedItem !== null) {

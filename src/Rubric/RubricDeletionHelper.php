@@ -18,13 +18,29 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 
 /**
- * Shared low-level deletion primitives used by RubricDeleter implementations.
+ * Shared low-level soft-delete primitives for a **single rubric item** and
+ * its auxiliary rows (`link_items`, `links`, `annotations`, `item_link_file`,
+ * `items` twin).
  *
- * Mirrors the soft-delete behaviour of the legacy `cs_item::_delete()` cascade
- * (link_items, links, annotations, items row) but exposes it as explicit
- * DBAL operations so each RubricDeleter can compose only what it needs.
+ * Composed by every {@see RubricDeleter} implementation — each deleter picks
+ * only the primitives it needs for its rubric's cascade shape. Mirrors the
+ * soft-delete behaviour of the legacy `cs_item::_delete()` cascade, but as
+ * explicit DBAL operations instead of a monolithic method.
+ *
+ * Scope-boundary: this class contains **only rubric-item-scoped primitives**.
+ * User-scoped cleanup (task ownership, membership artefacts) lives in
+ * {@see \App\User\UserDeletionHelper} — a separate bounded context, intentionally
+ * not mixed in here, so the class stays small and its name keeps telling the
+ * truth as the delete landscape grows.
+ *
+ * Naming: mirrors {@see \App\Room\RoomDeletionHelper} — same `…DeletionHelper`
+ * suffix signals "primitives consumed by the leaf deleters of this aggregate",
+ * never the leaf-delete interface itself.
+ *
+ * (Was previously `App\Rubric\ItemDeletionHelper`; split in the post-#5082
+ * consolidation pass to disentangle rubric- and user-scoped operations.)
  */
-class ItemDeletionHelper
+class RubricDeletionHelper
 {
     public function __construct(
         private readonly Connection $connection,
@@ -138,72 +154,6 @@ class ItemDeletionHelper
     {
         // When versionId is not given, treat it as "all versions" (0).
         $this->fileDeleter->softDeleteFileLink($itemId, $versionId ?? 0);
-    }
-
-    /**
-     * Soft-deletes every task created by `$userId` in `$contextId`, along
-     * with the task's annotations and auxiliary rows (link_items, links,
-     * file_links, items twin).
-     *
-     * Tasks are **not a rubric** — they are a system workflow artefact
-     * (TASK_USER_REQUEST on moderated-room applications and similar legacy
-     * entries). Instead of modelling them as a `RubricDeleter` they are
-     * handled here as an auxiliary table the way link_items, annotations
-     * and file_links are handled: as supporting data that needs cleaning
-     * up around the edges of the real deletion work.
-     *
-     * Mirrors the legacy `cs_task_item::delete()` behaviour including the
-     * `status = 'CLOSED'` flip (so moderator UIs that still look at open
-     * requests never surface ghost rows of deleted users).
-     *
-     * @todo Prüfen, ob die `tasks`-Tabelle perspektivisch entsorgt werden
-     *       kann — der User-Request-Workflow ließe sich auch ohne eigene
-     *       Tabelle modellieren. Solange sie bleibt, ist das hier der
-     *       einzige aktive Löschpfad in der neuen Architektur.
-     */
-    public function deleteUserTasks(int $userId, int $contextId, int $deleterId): void
-    {
-        $taskIds = array_map('intval', $this->connection->fetchFirstColumn(
-            'SELECT item_id FROM tasks
-                WHERE creator_id = :userId
-                  AND context_id = :contextId
-                  AND deleter_id IS NULL
-                  AND deletion_date IS NULL',
-            ['userId' => $userId, 'contextId' => $contextId]
-        ));
-        if (empty($taskIds)) {
-            return;
-        }
-
-        $this->connection->executeStatement(
-            "UPDATE tasks
-                SET deletion_date = NOW(), deleter_id = :deleterId, status = 'CLOSED'
-                WHERE item_id IN (:ids)",
-            ['deleterId' => $deleterId, 'ids' => $taskIds],
-            ['ids' => ArrayParameterType::INTEGER]
-        );
-
-        foreach ($taskIds as $taskId) {
-            $this->softDeleteAnnotations($taskId, $deleterId);
-        }
-
-        $this->softDeleteAuxiliaryRowsForItems($taskIds, $deleterId);
-    }
-
-    /**
-     * NULLifies `tasks.creator_id` references to `$userId` within `$contextId`.
-     * Called unconditionally (both CASCADE_ITEMS and KEEP_ITEMS strategies)
-     * so surviving tasks of the deleted user become author-less. The `tasks`
-     * table has no `modifier_id` column (see initial.sql), so creator is the
-     * only reference to clean.
-     */
-    public function nullifyUserTaskReferences(int $userId, int $contextId): void
-    {
-        $this->connection->executeStatement(
-            'UPDATE tasks SET creator_id = NULL
-                WHERE creator_id = :userId AND context_id = :contextId',
-            ['userId' => $userId, 'contextId' => $contextId]
-        );
     }
 
     /**

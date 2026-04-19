@@ -56,7 +56,7 @@ interface RubricDeleter
      *
      * Deleters still delegating to the legacy `cs_item::delete()` cascade get
      * the items-row cleanup transitively via the legacy base manager; once
-     * migrated, they must call {@see ItemDeletionHelper::softDeleteItemsRow}
+     * migrated, they must call {@see RubricDeletionHelper::softDeleteItemsRow}
      * explicitly.
      *
      * @param int $itemId    the id of the item to delete

@@ -15,7 +15,7 @@ namespace App\Room;
 
 use App\Event\ItemDeletedEvent;
 use App\Event\Workspace\WorkspaceDeletedEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Utils\ItemService;
 use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -61,7 +61,7 @@ class GroupRoomDeleter implements RoomDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly RoomDeletionHelper $roomDeletionHelper,
         private readonly RoomContentDeleter $roomContentDeleter,
         private readonly EventDispatcherInterface $eventDispatcher,
@@ -100,9 +100,9 @@ class GroupRoomDeleter implements RoomDeleter
         $this->roomDeletionHelper->softDeleteRoomMemberships($roomId, $deleterId);
 
         // 3. Auxiliary rows attached to the room entity itself.
-        $this->itemDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinks($roomId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
 
         // 4. Mirrored group entity in the `labels` table — must die with
         //    the room so the group list in the parent project is cleaned.
@@ -117,7 +117,7 @@ class GroupRoomDeleter implements RoomDeleter
         );
 
         // 6. And the shared `items` twin row.
-        $this->itemDeletionHelper->softDeleteItemsRow($roomId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($roomId, $deleterId);
 
         // 7. ES cleanup for the `commsy_room` document.
         if ($typedItem !== null) {

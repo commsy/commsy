@@ -5,6 +5,7 @@ namespace App\Rubric;
 use App\Account\AccountSetting;
 use App\Account\AccountSettingsManager;
 use App\Entity\Account;
+use App\User\UserDeletionHelper;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
@@ -19,7 +20,7 @@ class UserContentDeleter
         private iterable $subEntryRedactors,
         private AccountSettingsManager $accountSettingsManager,
         private Connection $connection,
-        private ItemDeletionHelper $itemDeletionHelper,
+        private UserDeletionHelper $userDeletionHelper,
     ) {}
 
     /**
@@ -53,9 +54,9 @@ class UserContentDeleter
         //     created (so moderator UIs don't see ghost REQUESTs), then
         //     always nullify any creator references left behind.
         if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
-            $this->itemDeletionHelper->deleteUserTasks($userId, $contextId, $userId);
+            $this->userDeletionHelper->deleteUserTasks($userId, $contextId, $userId);
         }
-        $this->itemDeletionHelper->nullifyUserTaskReferences($userId, $contextId);
+        $this->userDeletionHelper->nullifyUserTaskReferences($userId, $contextId);
 
         // 2. Sub-entries: never deleted, but redacted (CASCADE) and references nullified (always)
         foreach ($this->subEntryRedactors as $redactor) {

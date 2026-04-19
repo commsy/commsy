@@ -15,7 +15,7 @@ namespace App\Rubric\Material;
 
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
-use App\Rubric\ItemDeletionHelper;
+use App\Rubric\RubricDeletionHelper;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Utils\ItemService;
@@ -50,7 +50,7 @@ class MaterialDeleter implements RubricDeleter
     public function __construct(
         private readonly Connection $connection,
         private readonly ItemService $itemService,
-        private readonly ItemDeletionHelper $itemDeletionHelper,
+        private readonly RubricDeletionHelper $rubricDeletionHelper,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -133,7 +133,7 @@ class MaterialDeleter implements RubricDeleter
                 ['deleterId' => $deleterId, 'materialId' => $itemId]
             );
 
-            $this->itemDeletionHelper->softDeleteAuxiliaryRowsForItems(
+            $this->rubricDeletionHelper->softDeleteAuxiliaryRowsForItems(
                 $sectionIds,
                 $deleterId,
                 allFileLinkVersions: true,
@@ -149,11 +149,11 @@ class MaterialDeleter implements RubricDeleter
         );
 
         // 5. Auxiliary cleanup for the material itself.
-        $this->itemDeletionHelper->softDeleteLinks($itemId, $deleterId);
-        $this->itemDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-        $this->itemDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
-        $this->itemDeletionHelper->softDeleteAllFileLinkVersions($itemId, $deleterId);
-        $this->itemDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteAllFileLinkVersions($itemId, $deleterId);
+        $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
     /**
@@ -262,10 +262,10 @@ class MaterialDeleter implements RubricDeleter
                 ['deleterId' => $deleterId, 'id' => $sectionId]
             );
 
-            $this->itemDeletionHelper->softDeleteLinks($sectionId, $deleterId);
-            $this->itemDeletionHelper->softDeleteLinkItems($sectionId, $deleterId);
-            $this->itemDeletionHelper->softDeleteAllFileLinkVersions($sectionId, $deleterId);
-            $this->itemDeletionHelper->softDeleteItemsRow($sectionId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteLinks($sectionId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteLinkItems($sectionId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteAllFileLinkVersions($sectionId, $deleterId);
+            $this->rubricDeletionHelper->softDeleteItemsRow($sectionId, $deleterId);
         }
 
         // Reindex the parent material so the (now deleted) section disappears
