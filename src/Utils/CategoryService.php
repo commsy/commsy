@@ -14,19 +14,15 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use App\Tag\TagDeleter;
 use cs_tag_item;
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManagerInterface;
 
 class CategoryService
 {
-    private readonly Connection $connection;
-
     public function __construct(
         private readonly LegacyEnvironment $legacyEnvironment,
-        EntityManagerInterface $entityManager,
+        private readonly TagDeleter $tagDeleter,
     ) {
-        $this->connection = $entityManager->getConnection();
     }
 
     public function getTag($tagId)
@@ -97,19 +93,12 @@ class CategoryService
 
     /**
      * Soft-deletes the tag (and, recursively, every descendant tag in the
-     * `tag2tag` tree), along with its `items` twin, its `link_items`
-     * references and the `tag2tag` pivot rows in both directions.
+     * `tag2tag` tree).
      *
-     * Replaces the legacy `cs_tag_manager::delete()` cascade:
-     *   1. UPDATE `tag`          SET deletion_date/deleter_id WHERE item_id
-     *   2. UPDATE `link_items`   (first_item_id | second_item_id)
-     *   3. UPDATE `tag2tag`      (from_item_id  | to_item_id)
-     *   4. recurse into children
-     *   5. UPDATE `items`        SET deletion_date/deleter_id
-     *
-     * Executed via DBAL so we can retire `cs_tag_manager::delete()` and the
-     * base `cs_manager::delete()` / `cs_tag2tag_manager::deleteTagLinksForTag()`
-     * helpers it depends on.
+     * Thin wrapper: the actual cascade (tag + link_items + tag2tag + items
+     * twin, recursive) lives in {@see TagDeleter::softDelete()}. This
+     * method only resolves the deleter id from the legacy environment and
+     * hands off.
      */
     public function removeTag($tagId, $roomId): void
     {
@@ -118,55 +107,7 @@ class CategoryService
 
         $deleterId = (int) ($environment->getCurrentUserItem()?->getItemID() ?: 0);
 
-        $this->softDeleteTagRecursively((int) $tagId, $deleterId);
-    }
-
-    private function softDeleteTagRecursively(int $tagId, int $deleterId): void
-    {
-        // Collect child tag ids before we soft-delete the pivot rows that
-        // identify them — the deletion_date filter in the lookup query
-        // protects us from revisiting already-soft-deleted subtrees.
-        $childIds = array_map('intval', $this->connection->fetchFirstColumn(
-            'SELECT to_item_id FROM tag2tag
-                WHERE from_item_id = :tagId
-                  AND deletion_date IS NULL',
-            ['tagId' => $tagId]
-        ));
-
-        // 1. Soft-delete the tag row itself.
-        $this->connection->executeStatement(
-            'UPDATE tag SET deletion_date = NOW(), deleter_id = :deleterId WHERE item_id = :tagId',
-            ['deleterId' => $deleterId, 'tagId' => $tagId]
-        );
-
-        // 2. Soft-delete link_items referencing this tag.
-        $this->connection->executeStatement(
-            'UPDATE link_items
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE first_item_id = :tagId OR second_item_id = :tagId',
-            ['deleterId' => $deleterId, 'tagId' => $tagId]
-        );
-
-        // 3. Soft-delete tag2tag pivot rows in both directions.
-        $this->connection->executeStatement(
-            'UPDATE tag2tag
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE from_item_id = :tagId OR to_item_id = :tagId',
-            ['deleterId' => $deleterId, 'tagId' => $tagId]
-        );
-
-        // 4. Recurse into children (legacy behaviour — implicit cascade
-        // through tag2tag_manager::deleteTagLinksForTag).
-        foreach ($childIds as $childId) {
-            $this->softDeleteTagRecursively($childId, $deleterId);
-        }
-
-        // 5. Soft-delete the shared `items` twin row (legacy
-        // parent::delete()).
-        $this->connection->executeStatement(
-            'UPDATE items SET deletion_date = NOW(), deleter_id = :deleterId WHERE item_id = :tagId',
-            ['deleterId' => $deleterId, 'tagId' => $tagId]
-        );
+        $this->tagDeleter->softDelete((int) $tagId, $deleterId);
     }
 
     /**
@@ -179,10 +120,10 @@ class CategoryService
      *      read the ancestor's father).
      *   2. Read both tag titles and their linked item ids.
      *   3. Collect children of both tags (for re-parenting under the new tag).
-     *   4. Non-recursive DBAL soft-delete of both old tag rows (parity with
-     *      legacy `tag_manager->delete($id, false)`): tag + link_items +
-     *      tag2tag (both directions) + items twin. Children stay alive so they
-     *      can be re-parented under the merged tag.
+     *   4. Non-recursive soft-delete of both old tag rows via
+     *      {@see TagDeleter::softDeleteWithoutChildren()} — parity with the
+     *      legacy `tag_manager->delete($id, false)` path. Children stay alive
+     *      so they can be re-parented under the merged tag.
      *   5. Create the new merged tag (title = "t1/t2", context, creator,
      *      creation_date, linked items = union of both) under the father of
      *      the first tag (after the swap).
@@ -225,8 +166,8 @@ class CategoryService
         // Non-recursive soft-delete of both old tags (legacy parity with
         // tag_manager->delete($id, false)). Children rows survive so we can
         // re-parent them under the new merged tag below.
-        $this->softDeleteTagNonRecursively($tagIdOne, $deleterId);
-        $this->softDeleteTagNonRecursively($tagIdTwo, $deleterId);
+        $this->tagDeleter->softDeleteWithoutChildren($tagIdOne, $deleterId);
+        $this->tagDeleter->softDeleteWithoutChildren($tagIdTwo, $deleterId);
 
         unset($itemOne, $itemTwo);
 
@@ -252,39 +193,6 @@ class CategoryService
             unset($child);
             ++$count;
         }
-    }
-
-    /**
-     * Non-recursive soft-delete of a single tag (tag row, link_items it is
-     * referenced by, tag2tag pivots in both directions, and the items twin).
-     * Mirrors the legacy `cs_tag_manager::delete($id, false)` path used by
-     * `cs_tag2tag_manager::combine()`.
-     */
-    private function softDeleteTagNonRecursively(int $tagId, int $deleterId): void
-    {
-        $this->connection->executeStatement(
-            'UPDATE tag SET deletion_date = NOW(), deleter_id = :deleterId WHERE item_id = :tagId',
-            ['deleterId' => $deleterId, 'tagId' => $tagId]
-        );
-
-        $this->connection->executeStatement(
-            'UPDATE link_items
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE first_item_id = :tagId OR second_item_id = :tagId',
-            ['deleterId' => $deleterId, 'tagId' => $tagId]
-        );
-
-        $this->connection->executeStatement(
-            'UPDATE tag2tag
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE from_item_id = :tagId OR to_item_id = :tagId',
-            ['deleterId' => $deleterId, 'tagId' => $tagId]
-        );
-
-        $this->connection->executeStatement(
-            'UPDATE items SET deletion_date = NOW(), deleter_id = :deleterId WHERE item_id = :tagId',
-            ['deleterId' => $deleterId, 'tagId' => $tagId]
-        );
     }
 
     public function updateStructure($structure, $roomId): void
