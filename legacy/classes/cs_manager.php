@@ -815,7 +815,7 @@ class cs_manager
         }
     }
 
-   public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '')
+   public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '', $newRoomType = '')
    {
        $retour = [];
        $current_date = getCurrentDateTimeInMySQL();
@@ -829,12 +829,16 @@ class cs_manager
            $query .= ' AND to_item_id != "-2"';
        }
 
-       // not group all, is allready in the new room
+       // not group ALL, which is already in the new room
        if (CS_LABEL_TYPE == DBTable2Type($this->_db_table)) {
            $query .= ' AND name != "ALL"';
+           // for user rooms, don't copy any groups
+           if ($newRoomType === cs_userroom_item::ROOM_TYPE_USER) {
+               $query .= ' AND type != "group"';
+           }
        }
 
-       // not root tag, is allready in the new room
+       // not root tag, which is already in the new room
        if (CS_TAG_TYPE == DBTable2Type($this->_db_table)) {
            $query .= ' AND title != "CS_TAG_ROOT"';
        }

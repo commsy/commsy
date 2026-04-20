@@ -47,7 +47,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
         $this->_limit_file_id = null;
     }
 
-    public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '')
+    public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '', $newRoomType = '')
     {
         $retour = [];
         $current_date = getCurrentDateTimeInMySQL();
