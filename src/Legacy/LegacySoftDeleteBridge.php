@@ -20,7 +20,7 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Thin soft-delete primitives for the few legacy save/copy call sites that
  * still need to remove a single child row (link_item, discussion article,
- * step, tag2tag pivot) while we finish #5082.
+ * step, tag2tag pivot) after #5082.
  *
  * The legacy code reaches these primitives via
  * `$this->_environment->getSymfonyContainer()->get(LegacySoftDeleteBridge::class)`,
@@ -28,20 +28,45 @@ use Doctrine\ORM\EntityManagerInterface;
  * to move the delete logic out of the legacy item and manager classes without
  * re-introducing delete behaviour into the legacy managers themselves.
  *
- * Parity targets (the legacy code being replaced):
- *  - `cs_link_manager::delete()`           — `softDeleteLinkItem()`
- *  - `cs_discussionarticles_manager::delete()` — `softDeleteDiscussionArticle()`
- *  - `cs_step_manager::delete()`           — `softDeleteStep()`
- *  - `cs_tag2tag_manager::delete()`        — `softDeleteTag2TagPivot()` +
- *                                             `_cleanSortingPlaces()`
+ * ## Aufrufer-Matrix (Stand: 2026-04)
  *
- * These methods are intentionally **not** registered as RubricDeleters: the
+ *  - `softDeleteLinkItem()`         — called by `cs_item::_setObjectLinkItems()`,
+ *                                     `cs_item::_setIDLinkItems()`,
+ *                                     `cs_todo_item::removeProcessor()`,
+ *                                     `cs_dates_item::removeParticipant()`,
+ *                                     `cs_group_item::removeMember()`.
+ *  - `softDeleteDiscussionArticle()` — called by `cs_discussion_item::copy()`.
+ *  - `softDeleteStep()`              — called by `cs_todo_item::copy()`.
+ *  - `softDeleteTag2TagPivot()`      — called by `cs_tag_item::savePositions()`.
+ *
+ * ## Parity targets (legacy code being replaced)
+ *
+ *  - `cs_link_manager::delete()`               — `softDeleteLinkItem()`
+ *  - `cs_discussionarticles_manager::delete()` — `softDeleteDiscussionArticle()`
+ *  - `cs_step_manager::delete()`               — `softDeleteStep()`
+ *  - `cs_tag2tag_manager::delete()` +
+ *    private `_cleanSortingPlaces()`           — `softDeleteTag2TagPivot()`
+ *    (Note: the original `cs_tag2tag_manager` class itself is already gone;
+ *    parity is documented against its historical behaviour. The hard-delete
+ *    pendant for the tag2tag table now lives in
+ *    {@see LegacyAuxHardDeleter::hardDeleteTag2TagPivotRows()}.)
+ *
+ * ## Intentional design points
+ *
+ * These methods are deliberately **not** registered as `RubricDeleter`: the
  * call sites are internal (inside save/copy flows) and delete a single child
- * row, not a top-level rubric item. They are also not expected to dispatch
- * ItemDeletedEvent / touch ES — the surrounding save/copy flow is responsible
- * for consistency of the aggregate. Follow-up refactoring will fold these
- * into the proper service landscape once the legacy save/copy flow itself is
- * extracted out of the item classes (separate ticket).
+ * row, not a top-level rubric item. They are also **not** expected to dispatch
+ * `ItemDeletedEvent` / touch ES — the surrounding save/copy flow is
+ * responsible for the consistency of the aggregate.
+ *
+ * ## Interim status — dissolved by separate ticket
+ *
+ * This class is a temporary Legacy→App bridge. It disappears once the legacy
+ * save/copy flow in `cs_item` / `cs_todo_item` / `cs_discussion_item` /
+ * `cs_tag_item` is extracted out of the legacy item classes (Ticket E in the
+ * post-#5082 roadmap). Until then: **no new methods here** — any new soft-
+ * delete need either belongs in a proper `*Deleter` service or blocks on
+ * Ticket E.
  */
 class LegacySoftDeleteBridge
 {
