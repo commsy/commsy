@@ -255,5 +255,13 @@ class ItemService
 
         $item?->setDraftStatus(0);
         $item?->saveAsItem();
+
+        // Trigger elastic indexing after undraft: during save(), updateElastic() is skipped
+        // because the item is still in draft status at that point. Now that the draft flag
+        // has been lifted, we index the item here for the first time.
+        if ($typedItem !== null && method_exists($typedItem, 'updateElastic')) {
+            $typedItem->setDraftStatus(0);
+            $typedItem->updateElastic();
+        }
     }
 }
