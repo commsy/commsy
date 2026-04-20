@@ -4,6 +4,7 @@ namespace App\Rubric;
 
 use App\Account\AccountSetting;
 use App\Account\AccountSettingsManager;
+use App\Assessment\AssessmentDeleter;
 use App\Entity\Account;
 use App\User\UserDeletionHelper;
 use Doctrine\DBAL\Connection;
@@ -21,6 +22,7 @@ class UserContentDeleter
         private AccountSettingsManager $accountSettingsManager,
         private Connection $connection,
         private UserDeletionHelper $userDeletionHelper,
+        private AssessmentDeleter $assessmentDeleter,
     ) {}
 
     /**
@@ -57,6 +59,17 @@ class UserContentDeleter
             $this->userDeletionHelper->deleteUserTasks($userId, $contextId, $userId);
         }
         $this->userDeletionHelper->nullifyUserTaskReferences($userId, $contextId);
+
+        // 1c. Assessments — also not a rubric (auxiliary per-user rating on
+        //     another item; no UI, no ES, no attachments). Same shape as the
+        //     tasks block above: CASCADE cleans the user's own ratings so
+        //     they don't linger under a NULL author; KEEP preserves the
+        //     numeric value in the rated item's average but erases
+        //     authorship.
+        if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
+            $this->assessmentDeleter->softDeleteAssessmentsByUser($userId, $contextId, $userId);
+        }
+        $this->assessmentDeleter->nullifyReferencesInContext($userId, $contextId);
 
         // 2. Sub-entries: never deleted, but redacted (CASCADE) and references nullified (always)
         foreach ($this->subEntryRedactors as $redactor) {

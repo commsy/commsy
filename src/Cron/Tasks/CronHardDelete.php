@@ -13,6 +13,7 @@
 
 namespace App\Cron\Tasks;
 
+use App\Assessment\AssessmentDeleter;
 use App\Files\FileDeleter;
 use App\Legacy\LegacyAuxHardDeleter;
 use App\Room\RoomHardDeleter;
@@ -28,6 +29,7 @@ readonly class CronHardDelete implements CronTaskInterface
         private RubricHardDeleter $rubricHardDeleter,
         private LegacyAuxHardDeleter $legacyAuxHardDeleter,
         private FileDeleter $fileDeleter,
+        private AssessmentDeleter $assessmentDeleter,
     ) {
     }
 
@@ -78,11 +80,19 @@ readonly class CronHardDelete implements CronTaskInterface
         $this->fileDeleter->hardDeleteExpiredFiles($deleteDays);
 
         // Remaining aux tables (items / link_items / tag / tag2tag /
-        // tasks) — pure SQL DELETE against the soft-delete cutoff.
+        // tasks / assessments) — pure SQL DELETE against the soft-delete
+        // cutoff.
         $this->legacyAuxHardDeleter->hardDeleteLinkItemRows($deleteDays);
         $this->legacyAuxHardDeleter->hardDeleteTagRows($deleteDays);
         $this->legacyAuxHardDeleter->hardDeleteTag2TagPivotRows($deleteDays);
         $this->legacyAuxHardDeleter->hardDeleteTaskRows($deleteDays);
+        // Assessments: per-user ratings attached to rubric items, not a
+        // rubric on their own. The legacy cascade had no
+        // `deleteReallyOlderThan` on `cs_assessments_manager`, so
+        // soft-deleted rows accumulated forever — this call closes that
+        // gap. The shared `items` twin falls out in the common items
+        // sweep below.
+        $this->assessmentDeleter->hardDeleteOlderThan($deleteDays);
         // `items` last: its rows are referenced by every rubric row above
         // (the shared twin), so sweep it after everything that might
         // still need a lookup-by-item_id has already drained.

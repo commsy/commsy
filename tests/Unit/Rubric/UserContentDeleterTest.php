@@ -4,6 +4,7 @@ namespace Tests\Unit\Rubric;
 
 use App\Account\AccountSetting;
 use App\Account\AccountSettingsManager;
+use App\Assessment\AssessmentDeleter;
 use App\Entity\Account;
 use App\Entity\Portal;
 use App\Rubric\DeletionStrategy;
@@ -28,6 +29,7 @@ class UserContentDeleterTest extends TestCase
             $this->settingsManager,
             $connection,
             $this->createMock(UserDeletionHelper::class),
+            $this->createMock(AssessmentDeleter::class),
         );
     }
 
