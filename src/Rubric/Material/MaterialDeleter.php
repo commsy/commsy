@@ -30,7 +30,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  * edit creates a new row with an incremented `version_id`. This deleter
  * exposes three distinct entry points to match the three user flows:
  *
- *  - {@see deleteItem()}           — CS_ALL semantic (wipe every version).
+ *  - {@see softDeleteItem()}           — CS_ALL semantic (wipe every version).
  *                                     Used by the `RubricDeleter` contract
  *                                     (Account-Delete) and the generic UI
  *                                     delete ("Material wegwerfen").
@@ -76,7 +76,7 @@ class MaterialDeleter implements RubricDeleter
     /**
      * `SELECT DISTINCT` because materials are versioned (multiple rows per
      * `item_id`, one per version). Sections are NOT returned — they are
-     * cleaned up transitively by {@see deleteItem()} on the parent material.
+     * cleaned up transitively by {@see softDeleteItem()} on the parent material.
      */
     public function findItemIdsInContext(int $contextId): array
     {
@@ -104,7 +104,7 @@ class MaterialDeleter implements RubricDeleter
      * (no worse than the legacy state, where they disappeared from the UI
      * but nothing else referenced them).
      */
-    public function deleteItem(int $itemId, int $deleterId): void
+    public function softDeleteItem(int $itemId, int $deleterId): void
     {
         // 1. Event — ElasticaSubscriber removes the material document from
         //    `commsy_material`. Section data embedded in that document dies

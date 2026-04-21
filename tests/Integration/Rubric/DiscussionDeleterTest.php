@@ -36,7 +36,7 @@ use Zenstruck\Foundry\Attribute\WithStory;
 /**
  * Database-level integration tests for {@see DiscussionDeleter}.
  *
- * Covers the generic `deleteItem()` path (whole discussion incl. articles)
+ * Covers the generic `softDeleteItem()` path (whole discussion incl. articles)
  * as well as the discussion-specific `deleteArticle()` path with its two
  * sub-cases (leaf vs. article-with-answers).
  */
@@ -57,7 +57,7 @@ final class DiscussionDeleterTest extends KernelTestCase
     {
         $discussion = $this->createDiscussion();
 
-        $this->deleter->deleteItem($discussion->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($discussion->getItemId(), $this->deleterId);
 
         $this->assertSoftDeleted('discussions', $discussion->getItemId());
         $this->assertSoftDeleted('items', $discussion->getItemId());
@@ -76,7 +76,7 @@ final class DiscussionDeleterTest extends KernelTestCase
         $b = $this->createArticle($discussion);
         $c = $this->createArticle($discussion);
 
-        $this->deleter->deleteItem($discussion->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($discussion->getItemId(), $this->deleterId);
 
         foreach ([$a, $b, $c] as $article) {
             $this->assertSoftDeleted('discussionarticles', $article->getItemId());
@@ -100,7 +100,7 @@ final class DiscussionDeleterTest extends KernelTestCase
         $this->createLink($discussion->getItemId(), $other->getItemId(), 'buzzword_for');
         $this->createLink($article->getItemId(), $other->getItemId(), 'label_for');
 
-        $this->deleter->deleteItem($discussion->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($discussion->getItemId(), $this->deleterId);
 
         foreach ([$discussion->getItemId(), $article->getItemId()] as $sourceId) {
             $alive = (int) $this->connection->fetchOne(
@@ -130,7 +130,7 @@ final class DiscussionDeleterTest extends KernelTestCase
         $linkOnDiscussion = $this->createLinkItem($discussion->getItemId(), $other->getItemId());
         $linkOnArticle = $this->createLinkItem($other->getItemId(), $article->getItemId());
 
-        $this->deleter->deleteItem($discussion->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($discussion->getItemId(), $this->deleterId);
 
         $this->assertLinkItemSoftDeleted($linkOnDiscussion);
         $this->assertLinkItemSoftDeleted($linkOnArticle);
@@ -151,7 +151,7 @@ final class DiscussionDeleterTest extends KernelTestCase
         self::assertInstanceOf(TraceableEventDispatcher::class, $dispatcher);
         $dispatcher->reset();
 
-        $this->deleter->deleteItem($discussion->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($discussion->getItemId(), $this->deleterId);
 
         $dispatched = array_filter(
             $dispatcher->getCalledListeners(),
@@ -174,7 +174,7 @@ final class DiscussionDeleterTest extends KernelTestCase
         $target = $this->createDiscussion();
         $bystander = $this->createDiscussion();
 
-        $this->deleter->deleteItem($target->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($target->getItemId(), $this->deleterId);
 
         $this->assertNotSoftDeleted('discussions', $bystander->getItemId());
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
@@ -263,8 +263,8 @@ final class DiscussionDeleterTest extends KernelTestCase
         $recent = $this->createDiscussion();
         $alive = $this->createDiscussion();
 
-        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
-        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($recent->getItemId(), $this->deleterId);
 
         $this->connection->executeStatement(
             'UPDATE discussions SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',

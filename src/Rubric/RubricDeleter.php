@@ -28,7 +28,7 @@ interface RubricDeleter
      * $contextId (i.e. rows in the rubric's primary table with
      * `deleter_id IS NULL AND deletion_date IS NULL`). Sub-entries (sections,
      * steps, discussion articles) are NOT returned here — they are cleaned up
-     * transitively by their parent's {@see deleteItem()} call.
+     * transitively by their parent's {@see softDeleteItem()} call.
      *
      * Designed for the {@see \App\Rubric\Room\RoomContentDeleter} orchestrator
      * which iterates an entire room's content. Symmetric to
@@ -48,7 +48,7 @@ interface RubricDeleter
      * the shared `items` row, and `ItemDeletedEvent` dispatch (which triggers
      * ES removal, mail notifications, etc.).
      *
-     * This makes `deleteItem()` the single source of truth for "how is an item
+     * This makes `softDeleteItem()` the single source of truth for "how is an item
      * of this rubric deleted". Both the UI delete action
      * ({@see \App\Action\Delete\DeleteAction}) and the user-footprint erasure
      * flow ({@see UserContentDeleter}) invoke this method without adding any
@@ -62,7 +62,7 @@ interface RubricDeleter
      * @param int $itemId    the id of the item to delete
      * @param int $deleterId the id of the user performing the deletion
      */
-    public function deleteItem(int $itemId, int $deleterId): void;
+    public function softDeleteItem(int $itemId, int $deleterId): void;
 
     /**
      * NULLifies creator_id/modifier_id references to $userId

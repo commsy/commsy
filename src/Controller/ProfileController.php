@@ -444,7 +444,7 @@ class ProfileController extends AbstractController
                     $deleterId,
                     RoomDeletionOptions::forUserAction()
                 );
-                $labelDeleter->deleteItem((int) $group->getItemID(), $deleterId);
+                $labelDeleter->softDeleteItem((int) $group->getItemID(), $deleterId);
 
                 return $this->redirectToRoute('app_group_list', [
                     'roomId' => $roomEndId,

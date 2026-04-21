@@ -414,7 +414,7 @@ readonly class CalendarsService
             foreach ($this->dateService->getListDates($roomId, null, null, null) as $date) {
                 if ($date->getCalendarId() == $calendar->getId()) {
                     if (!in_array($date->getUid(), $uids)) {
-                        $this->datesDeleter->deleteItem((int) $date->getItemID(), $cleanupDeleterId);
+                        $this->datesDeleter->softDeleteItem((int) $date->getItemID(), $cleanupDeleterId);
                     }
                 }
             }

@@ -65,7 +65,7 @@ final class AnnouncementDeleterTest extends KernelTestCase
     {
         $announcement = $this->createAnnouncement();
 
-        $this->deleter->deleteItem($announcement->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($announcement->getItemId(), $this->deleterId);
 
         $this->assertSoftDeleted('announcement', $announcement->getItemId());
         $this->assertSoftDeleted('items', $announcement->getItemId());
@@ -86,7 +86,7 @@ final class AnnouncementDeleterTest extends KernelTestCase
         $linkAsFirst = $this->createLinkItem($source->getItemId(), $target->getItemId());
         $linkAsSecond = $this->createLinkItem($target->getItemId(), $source->getItemId());
 
-        $this->deleter->deleteItem($source->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($source->getItemId(), $this->deleterId);
 
         $this->assertLinkItemSoftDeleted($linkAsFirst);
         $this->assertLinkItemSoftDeleted($linkAsSecond);
@@ -110,7 +110,7 @@ final class AnnouncementDeleterTest extends KernelTestCase
         $this->createLink($source->getItemId(), $target->getItemId(), 'buzzword_for');
         $this->createLink($target->getItemId(), $source->getItemId(), 'label_for');
 
-        $this->deleter->deleteItem($source->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($source->getItemId(), $this->deleterId);
 
         $aliveCount = (int) $this->connection->fetchOne(
             'SELECT COUNT(*) FROM links
@@ -144,7 +144,7 @@ final class AnnouncementDeleterTest extends KernelTestCase
         $announcement = $this->createAnnouncement();
         $annotationId = $this->createAnnotation($announcement->getItemId());
 
-        $this->deleter->deleteItem($announcement->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($announcement->getItemId(), $this->deleterId);
 
         $this->assertSoftDeleted('annotations', $annotationId);
         $this->assertSoftDeleted('items', $annotationId);
@@ -166,7 +166,7 @@ final class AnnouncementDeleterTest extends KernelTestCase
         self::assertInstanceOf(TraceableEventDispatcher::class, $dispatcher);
         $dispatcher->reset();
 
-        $this->deleter->deleteItem($announcement->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($announcement->getItemId(), $this->deleterId);
 
         $dispatched = array_filter(
             $dispatcher->getCalledListeners(),
@@ -190,7 +190,7 @@ final class AnnouncementDeleterTest extends KernelTestCase
         $target = $this->createAnnouncement();
         $bystander = $this->createAnnouncement();
 
-        $this->deleter->deleteItem($target->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($target->getItemId(), $this->deleterId);
 
         $this->assertNotSoftDeleted('announcement', $bystander->getItemId());
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
@@ -213,8 +213,8 @@ final class AnnouncementDeleterTest extends KernelTestCase
         $recent = $this->createAnnouncement();
         $alive = $this->createAnnouncement();
 
-        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
-        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($recent->getItemId(), $this->deleterId);
 
         $this->connection->executeStatement(
             'UPDATE announcement SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',

@@ -83,7 +83,7 @@ class DatesDeleter implements RubricDeleter
      * of a recurrence, or {@see excludeOccurrenceFromSeries()} to keep
      * siblings but suppress this one in the RRULE).
      */
-    public function deleteItem(int $itemId, int $deleterId): void
+    public function softDeleteItem(int $itemId, int $deleterId): void
     {
         // 1. Dispatch the deletion event so ES/mail/etherpad subscribers fire.
         $typedItem = $this->itemService->getTypedItem($itemId);
@@ -132,7 +132,7 @@ class DatesDeleter implements RubricDeleter
      * Soft-deletes every occurrence that shares the given recurrence id.
      *
      * Mirrors the `$recurring === true` branch in legacy DeleteDate::delete().
-     * updateSynctoken() is invoked per occurrence (via {@see deleteItem()}),
+     * updateSynctoken() is invoked per occurrence (via {@see softDeleteItem()}),
      * matching legacy behaviour — the CalDAV sync cost stays the same.
      */
     public function deleteSeries(int $recurrenceId, int $deleterId): void
@@ -146,7 +146,7 @@ class DatesDeleter implements RubricDeleter
         );
 
         foreach ($itemIds as $itemId) {
-            $this->deleteItem((int) $itemId, $deleterId);
+            $this->softDeleteItem((int) $itemId, $deleterId);
         }
     }
 
@@ -169,7 +169,7 @@ class DatesDeleter implements RubricDeleter
         $recurrenceId = (int) $typedItem->getRecurrenceId();
         if ($recurrenceId <= 0) {
             // Not part of a series — fall back to a plain delete.
-            $this->deleteItem($itemId, $deleterId);
+            $this->softDeleteItem($itemId, $deleterId);
             return;
         }
 
@@ -202,7 +202,7 @@ class DatesDeleter implements RubricDeleter
         }
 
         // Finally soft-delete the occurrence itself.
-        $this->deleteItem($itemId, $deleterId);
+        $this->softDeleteItem($itemId, $deleterId);
     }
 
     public function nullifyReferencesInContext(int $userId, int $contextId): void

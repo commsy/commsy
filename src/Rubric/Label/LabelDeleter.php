@@ -101,7 +101,7 @@ class LabelDeleter implements RubricDeleter
         return array_map('intval', $itemIds);
     }
 
-    public function deleteItem(int $itemId, int $deleterId): void
+    public function softDeleteItem(int $itemId, int $deleterId): void
     {
         // 1. Dispatch the deletion event (triggers ES removal from the
         //    `commsy_label` index via ElasticaSubscriber). The typed item is

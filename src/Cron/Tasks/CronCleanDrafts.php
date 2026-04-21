@@ -119,7 +119,7 @@ class CronCleanDrafts implements CronTaskInterface
             return false;
         }
 
-        $deleter->deleteItem($itemId, self::SYSTEM_DELETER_ID);
+        $deleter->softDeleteItem($itemId, self::SYSTEM_DELETER_ID);
 
         return true;
     }

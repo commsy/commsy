@@ -62,7 +62,7 @@ final class AnnotationDeleterTest extends KernelTestCase
         $parent = $this->createAnnouncement();
         $annotationId = $this->createAnnotation($parent->getItemId());
 
-        $this->deleter->deleteItem($annotationId, $this->deleterId);
+        $this->deleter->softDeleteItem($annotationId, $this->deleterId);
 
         $this->assertSoftDeleted('annotations', $annotationId);
         $this->assertSoftDeleted('items', $annotationId);
@@ -88,7 +88,7 @@ final class AnnotationDeleterTest extends KernelTestCase
         $linkAsFirst = $this->createLinkItem($annotationId, $other->getItemId());
         $linkAsSecond = $this->createLinkItem($other->getItemId(), $annotationId);
 
-        $this->deleter->deleteItem($annotationId, $this->deleterId);
+        $this->deleter->softDeleteItem($annotationId, $this->deleterId);
 
         $this->assertLinkItemSoftDeleted($linkAsFirst);
         $this->assertLinkItemSoftDeleted($linkAsSecond);
@@ -109,7 +109,7 @@ final class AnnotationDeleterTest extends KernelTestCase
         $this->createLink($annotationId, $other->getItemId(), 'relevant_for');
         $this->createLink($other->getItemId(), $annotationId, 'label_for');
 
-        $this->deleter->deleteItem($annotationId, $this->deleterId);
+        $this->deleter->softDeleteItem($annotationId, $this->deleterId);
 
         $aliveCount = (int) $this->connection->fetchOne(
             'SELECT COUNT(*) FROM links
@@ -145,7 +145,7 @@ final class AnnotationDeleterTest extends KernelTestCase
         self::assertInstanceOf(TraceableEventDispatcher::class, $dispatcher);
         $dispatcher->reset();
 
-        $this->deleter->deleteItem($annotationId, $this->deleterId);
+        $this->deleter->softDeleteItem($annotationId, $this->deleterId);
 
         $dispatched = array_filter(
             $dispatcher->getCalledListeners(),
@@ -169,7 +169,7 @@ final class AnnotationDeleterTest extends KernelTestCase
         $target = $this->createAnnotation($parent->getItemId());
         $bystander = $this->createAnnotation($parent->getItemId());
 
-        $this->deleter->deleteItem($target, $this->deleterId);
+        $this->deleter->softDeleteItem($target, $this->deleterId);
 
         $this->assertNotSoftDeleted('annotations', $bystander);
         $this->assertNotSoftDeleted('items', $bystander);
@@ -189,8 +189,8 @@ final class AnnotationDeleterTest extends KernelTestCase
         $recent = $this->createAnnotation($parent->getItemId());
         $alive = $this->createAnnotation($parent->getItemId());
 
-        $this->deleter->deleteItem($expired, $this->deleterId);
-        $this->deleter->deleteItem($recent, $this->deleterId);
+        $this->deleter->softDeleteItem($expired, $this->deleterId);
+        $this->deleter->softDeleteItem($recent, $this->deleterId);
 
         $this->connection->executeStatement(
             'UPDATE annotations SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',

@@ -39,7 +39,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  * (covered by {@see UserMembershipDeleter}). Labels / topics / groups are
  * already covered by {@see \App\Rubric\Label\LabelDeleter}, and Material —
  * despite being versioned with its own `deleteAllVersions()` fast path in
- * Legacy — is no longer special-cased here: {@see \App\Rubric\Material\MaterialDeleter::deleteItem()}
+ * Legacy — is no longer special-cased here: {@see \App\Rubric\Material\MaterialDeleter::softDeleteItem()}
  * already implements the CS_ALL semantic (wipes every version plus every
  * section version), so the generic dispatch below covers it. Anything
  * unexpected raises a {@see LogicException} so we surface the gap in a
@@ -72,7 +72,7 @@ class DeleteGeneric implements DeleteInterface
 
         if ($rubricType !== null && ($deleter = $this->findDeleter($rubricType)) !== null) {
             $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()->getItemID();
-            $deleter->deleteItem($item->getItemId(), $deleterId);
+            $deleter->softDeleteItem($item->getItemId(), $deleterId);
         } elseif ($item->getItemType() === CS_USER_TYPE) {
             $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()->getItemID();
             $this->userMembershipDeleter->softDeleteMembership($item->getItemId(), $deleterId);

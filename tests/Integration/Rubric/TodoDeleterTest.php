@@ -37,7 +37,7 @@ use Zenstruck\Foundry\Attribute\WithStory;
 /**
  * Database-level integration tests for {@see TodoDeleter}.
  *
- * Covers the generic `deleteItem()` path (whole todo incl. steps) as well
+ * Covers the generic `softDeleteItem()` path (whole todo incl. steps) as well
  * as the todo-specific `deleteStep()` path for the single-step UI flow.
  */
 final class TodoDeleterTest extends KernelTestCase
@@ -57,7 +57,7 @@ final class TodoDeleterTest extends KernelTestCase
     {
         $todo = $this->createTodo();
 
-        $this->deleter->deleteItem($todo->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($todo->getItemId(), $this->deleterId);
 
         $this->assertSoftDeleted('todos', $todo->getItemId());
         $this->assertSoftDeleted('items', $todo->getItemId());
@@ -75,7 +75,7 @@ final class TodoDeleterTest extends KernelTestCase
         $b = $this->createStep($todo);
         $c = $this->createStep($todo);
 
-        $this->deleter->deleteItem($todo->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($todo->getItemId(), $this->deleterId);
 
         foreach ([$a, $b, $c] as $step) {
             $this->assertSoftDeleted('step', $step->getItemId());
@@ -99,7 +99,7 @@ final class TodoDeleterTest extends KernelTestCase
         $this->createLink($todo->getItemId(), $other->getItemId(), 'buzzword_for');
         $this->createLink($step->getItemId(), $other->getItemId(), 'label_for');
 
-        $this->deleter->deleteItem($todo->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($todo->getItemId(), $this->deleterId);
 
         foreach ([$todo->getItemId(), $step->getItemId()] as $sourceId) {
             $alive = (int) $this->connection->fetchOne(
@@ -129,7 +129,7 @@ final class TodoDeleterTest extends KernelTestCase
         $linkOnTodo = $this->createLinkItem($todo->getItemId(), $other->getItemId());
         $linkOnStep = $this->createLinkItem($other->getItemId(), $step->getItemId());
 
-        $this->deleter->deleteItem($todo->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($todo->getItemId(), $this->deleterId);
 
         $this->assertLinkItemSoftDeleted($linkOnTodo);
         $this->assertLinkItemSoftDeleted($linkOnStep);
@@ -150,7 +150,7 @@ final class TodoDeleterTest extends KernelTestCase
         self::assertInstanceOf(TraceableEventDispatcher::class, $dispatcher);
         $dispatcher->reset();
 
-        $this->deleter->deleteItem($todo->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($todo->getItemId(), $this->deleterId);
 
         $dispatched = array_filter(
             $dispatcher->getCalledListeners(),
@@ -172,7 +172,7 @@ final class TodoDeleterTest extends KernelTestCase
         $target = $this->createTodo();
         $bystander = $this->createTodo();
 
-        $this->deleter->deleteItem($target->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($target->getItemId(), $this->deleterId);
 
         $this->assertNotSoftDeleted('todos', $bystander->getItemId());
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
@@ -252,8 +252,8 @@ final class TodoDeleterTest extends KernelTestCase
         $recent = $this->createTodo();
         $alive = $this->createTodo();
 
-        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
-        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($recent->getItemId(), $this->deleterId);
 
         $this->connection->executeStatement(
             'UPDATE todos SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',

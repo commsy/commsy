@@ -38,7 +38,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  *   2. Tasks (room-wide, not a rubric) via {@see RoomDeletionHelper}.
  *
  * Iteration is per-item rather than bulk-UPDATE on purpose: each
- * `RubricDeleter::deleteItem()` dispatches an `ItemDeletedEvent` so
+ * `RubricDeleter::softDeleteItem()` dispatches an `ItemDeletedEvent` so
  * ElasticaSubscriber can remove the document from ES, moderation mails
  * fire, etherpad cleanup runs, …. Collapsing it into a bulk UPDATE would
  * leave those side-effects unperformed and desync the search index.
@@ -69,7 +69,7 @@ class RoomContentDeleter
     {
         foreach ($this->deleters as $deleter) {
             foreach ($deleter->findItemIdsInContext($roomId) as $itemId) {
-                $deleter->deleteItem($itemId, $deleterId);
+                $deleter->softDeleteItem($itemId, $deleterId);
             }
         }
 

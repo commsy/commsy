@@ -38,7 +38,7 @@ use Zenstruck\Foundry\Attribute\WithStory;
  * Database-level integration tests for {@see MaterialDeleter}.
  *
  * Covers the three public entry points:
- *  - `deleteItem()`           — CS_ALL, whole material + every section
+ *  - `softDeleteItem()`           — CS_ALL, whole material + every section
  *                                version + versioned file links
  *  - `deleteCurrentVersion()` — only the latest version is dropped, items
  *                                row survives, parent gets reindexed
@@ -58,7 +58,7 @@ final class MaterialDeleterTest extends KernelTestCase
     {
         $material = $this->createMaterial();
 
-        $this->deleter->deleteItem($material->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($material->getItemId(), $this->deleterId);
 
         $this->assertSoftDeleted('materials', $material->getItemId());
         $this->assertSoftDeleted('items', $material->getItemId());
@@ -75,7 +75,7 @@ final class MaterialDeleterTest extends KernelTestCase
         $b = $this->createSection($material);
         $c = $this->createSection($material);
 
-        $this->deleter->deleteItem($material->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($material->getItemId(), $this->deleterId);
 
         foreach ([$a, $b, $c] as $section) {
             $this->assertSoftDeleted('section', $section->getItemId());
@@ -98,7 +98,7 @@ final class MaterialDeleterTest extends KernelTestCase
         $this->createLink($material->getItemId(), $other->getItemId(), 'buzzword_for');
         $this->createLink($section->getItemId(), $other->getItemId(), 'label_for');
 
-        $this->deleter->deleteItem($material->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($material->getItemId(), $this->deleterId);
 
         foreach ([$material->getItemId(), $section->getItemId()] as $sourceId) {
             $alive = (int) $this->connection->fetchOne(
@@ -122,7 +122,7 @@ final class MaterialDeleterTest extends KernelTestCase
         $linkOnMaterial = $this->createLinkItem($material->getItemId(), $other->getItemId());
         $linkOnSection = $this->createLinkItem($other->getItemId(), $section->getItemId());
 
-        $this->deleter->deleteItem($material->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($material->getItemId(), $this->deleterId);
 
         $this->assertLinkItemSoftDeleted($linkOnMaterial);
         $this->assertLinkItemSoftDeleted($linkOnSection);
@@ -137,7 +137,7 @@ final class MaterialDeleterTest extends KernelTestCase
         self::assertInstanceOf(TraceableEventDispatcher::class, $dispatcher);
         $dispatcher->reset();
 
-        $this->deleter->deleteItem($material->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($material->getItemId(), $this->deleterId);
 
         $dispatched = array_filter(
             $dispatcher->getCalledListeners(),
@@ -152,7 +152,7 @@ final class MaterialDeleterTest extends KernelTestCase
         $target = $this->createMaterial();
         $bystander = $this->createMaterial();
 
-        $this->deleter->deleteItem($target->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($target->getItemId(), $this->deleterId);
 
         $this->assertNotSoftDeleted('materials', $bystander->getItemId());
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
@@ -239,8 +239,8 @@ final class MaterialDeleterTest extends KernelTestCase
         $recent = $this->createMaterial();
         $alive = $this->createMaterial();
 
-        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
-        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($recent->getItemId(), $this->deleterId);
 
         $this->connection->executeStatement(
             'UPDATE materials SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',

@@ -241,7 +241,7 @@ class TimePulsesService
                             $clock_pulse_pos = $temp_clock_pulse_array[1];
                             if ($clock_pulse_pos > $count) {
                                 if (!$time_label->isDeleted()) {
-                                    $this->labelDeleter->deleteItem((int) $time_label->getItemID(), $deleterId);
+                                    $this->labelDeleter->softDeleteItem((int) $time_label->getItemID(), $deleterId);
                                 }
                             } else {
                                 if ($time_label->isDeleted()) {
@@ -251,11 +251,11 @@ class TimePulsesService
                             }
                         } elseif ($time_label->getTitle() > $last_new_clock_pulse) {
                             if (!$time_label->isDeleted()) {
-                                $this->labelDeleter->deleteItem((int) $time_label->getItemID(), $deleterId);
+                                $this->labelDeleter->softDeleteItem((int) $time_label->getItemID(), $deleterId);
                             }
                         } else {
                             if (!$time_label->isDeleted()) {
-                                $this->labelDeleter->deleteItem((int) $time_label->getItemID(), $deleterId);
+                                $this->labelDeleter->softDeleteItem((int) $time_label->getItemID(), $deleterId);
                             }
                         }
                     } else {
@@ -288,7 +288,7 @@ class TimePulsesService
             if ($time_list->isNotEmpty()) {
                 $time_label = $time_list->getFirst();
                 while ($time_label) {
-                    $this->labelDeleter->deleteItem((int) $time_label->getItemID(), $deleterId);
+                    $this->labelDeleter->softDeleteItem((int) $time_label->getItemID(), $deleterId);
                     $time_label = $time_list->getNext();
                 }
             }

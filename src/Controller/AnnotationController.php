@@ -176,7 +176,7 @@ class AnnotationController extends AbstractController
         int $roomId
     ): JsonResponse {
         $deleterId = (int) $legacyEnvironment->getEnvironment()->getCurrentUserItem()?->getItemID();
-        $annotationDeleter->deleteItem($itemId, $deleterId);
+        $annotationDeleter->softDeleteItem($itemId, $deleterId);
 
         $response = new JsonResponse();
         $response->setData([

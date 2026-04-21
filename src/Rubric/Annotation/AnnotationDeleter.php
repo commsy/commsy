@@ -82,7 +82,7 @@ class AnnotationDeleter implements RubricDeleter
         return array_map('intval', $itemIds);
     }
 
-    public function deleteItem(int $itemId, int $deleterId): void
+    public function softDeleteItem(int $itemId, int $deleterId): void
     {
         // 1. Dispatch the deletion event (ES cleanup, mail notifications, …).
         $typedItem = $this->itemService->getTypedItem($itemId);

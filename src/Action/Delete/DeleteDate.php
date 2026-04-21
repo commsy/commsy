@@ -68,7 +68,7 @@ class DeleteDate implements DeleteInterface
         } elseif ($recurrenceId > 0) {
             $this->datesDeleter->excludeOccurrenceFromSeries($itemId, $deleterId);
         } else {
-            $this->datesDeleter->deleteItem($itemId, $deleterId);
+            $this->datesDeleter->softDeleteItem($itemId, $deleterId);
         }
 
         // UI-specific side effect: drop the item from every user's clipboard.

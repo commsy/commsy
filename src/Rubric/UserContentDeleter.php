@@ -44,7 +44,7 @@ class UserContentDeleter
         foreach ($this->deleters as $deleter) {
             if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
                 foreach ($deleter->findItemIdsCreatedBy($userId, $contextId) as $itemId) {
-                    $deleter->deleteItem($itemId, $userId);
+                    $deleter->softDeleteItem($itemId, $userId);
                 }
             }
 

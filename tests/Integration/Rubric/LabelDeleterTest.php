@@ -61,7 +61,7 @@ final class LabelDeleterTest extends KernelTestCase
     {
         $label = $this->createLabel();
 
-        $this->deleter->deleteItem($label->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($label->getItemId(), $this->deleterId);
 
         $this->assertSoftDeleted('labels', $label->getItemId());
         $this->assertSoftDeleted('items', $label->getItemId());
@@ -81,7 +81,7 @@ final class LabelDeleterTest extends KernelTestCase
         $this->createLink($label->getItemId(), $other->getItemId(), 'buzzword_for');
         $this->createLink($other->getItemId(), $label->getItemId(), 'label_for');
 
-        $this->deleter->deleteItem($label->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($label->getItemId(), $this->deleterId);
 
         $aliveCount = (int) $this->connection->fetchOne(
             'SELECT COUNT(*) FROM links
@@ -109,7 +109,7 @@ final class LabelDeleterTest extends KernelTestCase
         $linkAsFirst = $this->createLinkItem($label->getItemId(), $other->getItemId());
         $linkAsSecond = $this->createLinkItem($other->getItemId(), $label->getItemId());
 
-        $this->deleter->deleteItem($label->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($label->getItemId(), $this->deleterId);
 
         $this->assertLinkItemSoftDeleted($linkAsFirst);
         $this->assertLinkItemSoftDeleted($linkAsSecond);
@@ -129,7 +129,7 @@ final class LabelDeleterTest extends KernelTestCase
         self::assertInstanceOf(TraceableEventDispatcher::class, $dispatcher);
         $dispatcher->reset();
 
-        $this->deleter->deleteItem($label->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($label->getItemId(), $this->deleterId);
 
         $dispatched = array_filter(
             $dispatcher->getCalledListeners(),
@@ -151,7 +151,7 @@ final class LabelDeleterTest extends KernelTestCase
         $target = $this->createLabel();
         $bystander = $this->createLabel();
 
-        $this->deleter->deleteItem($target->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($target->getItemId(), $this->deleterId);
 
         $this->assertNotSoftDeleted('labels', $bystander->getItemId());
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
@@ -170,8 +170,8 @@ final class LabelDeleterTest extends KernelTestCase
         $recent = $this->createLabel();
         $alive = $this->createLabel();
 
-        $this->deleter->deleteItem($expired->getItemId(), $this->deleterId);
-        $this->deleter->deleteItem($recent->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($expired->getItemId(), $this->deleterId);
+        $this->deleter->softDeleteItem($recent->getItemId(), $this->deleterId);
 
         $this->connection->executeStatement(
             'UPDATE labels SET deletion_date = DATE_SUB(NOW(), INTERVAL 40 DAY) WHERE item_id = :id',

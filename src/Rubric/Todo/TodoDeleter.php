@@ -65,7 +65,7 @@ class TodoDeleter implements RubricDeleter
 
     /**
      * Only top-level todos are returned; steps (stored in `step`) are
-     * soft-deleted transitively by {@see deleteItem()} on the parent todo.
+     * soft-deleted transitively by {@see softDeleteItem()} on the parent todo.
      */
     public function findItemIdsInContext(int $contextId): array
     {
@@ -87,7 +87,7 @@ class TodoDeleter implements RubricDeleter
      * steps have no own ES index and the parent todo is removed via
      * `ItemDeletedEvent` anyway.
      */
-    public function deleteItem(int $itemId, int $deleterId): void
+    public function softDeleteItem(int $itemId, int $deleterId): void
     {
         // 1. Dispatch the deletion event. ElasticaSubscriber removes the todo
         //    document from `commsy_todo`; the step data it embedded dies with it.

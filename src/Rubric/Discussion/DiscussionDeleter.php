@@ -68,7 +68,7 @@ class DiscussionDeleter implements RubricDeleter
     /**
      * Only top-level discussions are yielded; articles (stored in
      * `discussionarticles`) are soft-deleted transitively by
-     * {@see deleteItem()} on the parent discussion.
+     * {@see softDeleteItem()} on the parent discussion.
      */
     public function findItemIdsInContext(int $contextId): array
     {
@@ -90,7 +90,7 @@ class DiscussionDeleter implements RubricDeleter
      * the whole thread is gone, so keeping a zombie hierarchy would be
      * pointless (and would only leak content that should be removed).
      */
-    public function deleteItem(int $itemId, int $deleterId): void
+    public function softDeleteItem(int $itemId, int $deleterId): void
     {
         // 1. Dispatch the deletion event — ElasticaSubscriber removes the
         //    discussion document from its index in response. Article-level ES

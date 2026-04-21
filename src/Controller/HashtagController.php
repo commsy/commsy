@@ -154,7 +154,7 @@ class HashtagController extends AbstractController
 
             if ($editForm->has('delete') && $editForm->get('delete')->isClicked()) {
                 $deleterId = (int) ($legacyEnvironment->getCurrentUserItem()?->getItemID() ?: 0);
-                $labelDeleter->deleteItem((int) $hashtag->getItemId(), $deleterId);
+                $labelDeleter->softDeleteItem((int) $hashtag->getItemId(), $deleterId);
             }
 
             if ($editForm->has('new') && $editForm->get('new')->isClicked()) {
@@ -220,7 +220,7 @@ class HashtagController extends AbstractController
                 $managerLink->save($link_array);
             }
             $deleterId = (int) ($legacyEnvironment->getCurrentUserItem()?->getItemID() ?: 0);
-            $labelDeleter->deleteItem((int) $buzzwordItemTwo->getItemID(), $deleterId);
+            $labelDeleter->softDeleteItem((int) $buzzwordItemTwo->getItemID(), $deleterId);
 
             return $this->redirectToRoute('app_hashtag_edit', [
                 'roomId' => $roomId,

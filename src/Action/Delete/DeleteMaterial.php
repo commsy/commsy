@@ -20,7 +20,7 @@ use cs_environment;
 use cs_item;
 
 /**
- * Thin wrapper around {@see MaterialDeleter::deleteItem()} — the generic
+ * Thin wrapper around {@see MaterialDeleter::softDeleteItem()} — the generic
  * "Material wegwerfen" UI path drops every version of the material
  * (CS_ALL-Semantik), including all section versions and versioned file
  * attachments. A dedicated "delete only the latest version" action may be
@@ -42,7 +42,7 @@ class DeleteMaterial implements DeleteInterface
     public function delete(cs_item $item): void
     {
         $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
-        $this->materialDeleter->deleteItem((int) $item->getItemId(), $deleterId);
+        $this->materialDeleter->softDeleteItem((int) $item->getItemId(), $deleterId);
 
         $this->markedService->removeItemFromClipboard($item->getItemId());
     }

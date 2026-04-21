@@ -56,7 +56,7 @@ class AnnouncementDeleter implements RubricDeleter
         return array_map('intval', $itemIds);
     }
 
-    public function deleteItem(int $itemId, int $deleterId): void
+    public function softDeleteItem(int $itemId, int $deleterId): void
     {
         // 1. Dispatch the deletion event (triggers ES removal via ElasticaSubscriber,
         //    moderator mails via ItemSubscriber, etherpad cleanup, …). The typed item
@@ -94,7 +94,7 @@ class AnnouncementDeleter implements RubricDeleter
         $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
 
         // 7. Soft-delete the shared `items` table row. Keeping this inside the
-        //    deleter makes `deleteItem()` the single source of truth for what it
+        //    deleter makes `softDeleteItem()` the single source of truth for what it
         //    means to delete an announcement — both the UI delete action and the
         //    user-footprint erasure flow go through the same path.
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
