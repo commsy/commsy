@@ -56,9 +56,7 @@ class MembershipManager
             return;
         }
 
-        // The leaving user is also the audit-trail deleter — same as
-        // legacy `cs_user_item::delete()` reading the current user from
-        // environment when called by the leave-workspace controller.
+        // The leaving user is also the audit-trail deleter (legacy parity).
         $this->membershipDeleter->softDeleteMembership(
             (int) $userInWorkspace->getItemID(),
             (int) $userInWorkspace->getItemID()

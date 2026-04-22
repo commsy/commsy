@@ -19,29 +19,9 @@ use App\Utils\ReaderService;
 use cs_environment;
 
 /**
- * Encapsulates the per-room *hard*-delete cascade — the physical `DELETE`
- * wave that runs after the configured soft-delete grace period elapses.
- *
- * This helper centralises what used to live inline in
- * {@see \cs_room_manager::deleteReallyOlderThan()}: one room-directory
- * wipe, one reader purge, one hash purge, and 20 per-table
- * `DELETE WHERE context_id = :roomId` calls routed through the matching
- * legacy manager's `deleteFromDb()` method.
- *
- * Scope for commit 19: this remains a thin wrapper over the existing
- * legacy `deleteFromDb()` chain. The per-manager implementations vary in
- * complexity (most do straight `DELETE WHERE context_id`; some — e.g.
- * {@see \cs_user_manager::deleteFromDb()} — null out FK references before
- * the delete, and {@see \cs_link_modifier_item_manager::deleteFromDb()}
- * scopes via `modifier_id IN (user_ids)` instead of `context_id`). The
- * plan (see `/Users/cschoenf/.claude/plans/temporal-baking-pillow.md`,
- * "Fallstricke") explicitly calls out reviewing each of the 20 steps
- * individually before porting to raw DBAL — so the naive "replace with
- * bulk `DELETE FROM <table> WHERE context_id`" is *not* a safe drop-in
- * and is deferred.
- *
- * Invoked exclusively by {@see RoomHardDeleter} and the per-type
- * `RoomDeleter::hardDeleteRoom()` adapters.
+ * Per-room hard-delete cascade: FS wipe, reader/hash purge, and the 20
+ * per-table deletes routed through legacy `deleteFromDb()`. Replaces the
+ * inline body of `cs_room_manager::deleteReallyOlderThan()`.
  */
 readonly class RoomHardDeletionHelper
 {
@@ -56,43 +36,27 @@ readonly class RoomHardDeletionHelper
     }
 
     /**
-     * Physically removes everything belonging to `$roomId` across the
-     * 20 per-rubric tables, plus the room's files directory on disk,
-     * all reader rows, and all password-hash rows for users that lived
-     * in the room.
+     * Physically removes everything belonging to `$roomId`: files directory,
+     * reader rows, password hashes, the 20 per-table deletes, and finally
+     * the `room` row itself. Callers MUST ensure content is already soft-
+     * deleted; this helper dispatches no events.
      *
-     * Callers MUST have ensured the room (and its rubric content) is
-     * already soft-deleted — this helper does not dispatch lifecycle
-     * events. `$contextId` is the legacy `contextId` of the room item
-     * (= the portal id for top-level rooms, or the parent room id for
-     * userrooms / grouprooms); it is only used by
-     * {@see \cs_disc_manager::removeRoomDir()} to locate the on-disk
-     * `files/<portalId>/<roomId>/` directory.
+     * `$contextId` is only used to locate the on-disk files directory.
      */
     public function purgeRoomData(int $contextId, int $roomId): void
     {
-        // 1. File-system directory — removed first so that even if a
-        //    subsequent step fails we do not leave orphaned files behind
-        //    on disk. `removeRoomDir()` is itself a best-effort rm-rf and
-        //    tolerates a missing directory.
+        // FS first so a later failure doesn't leave orphaned files.
         $discManager = $this->legacyEnvironment->getDiscManager();
         $discManager->removeRoomDir($contextId, $roomId);
 
-        // 2. Reader rows (per-user "seen" markers for every item in the
-        //    room) — bulk-deleted via `App\Entity\Reader` DQL.
         $this->readerService->deleteAllEntriesInWorkspace($roomId);
 
-        // 3. Password hashes for users that lived in the room. Runs
-        //    before the user table delete because it looks users up via
-        //    the room's user_manager.
+        // Hashes before users — the lookup goes via the room's user_manager.
         $this->hashManager->deleteHashesInContext($roomId);
 
-        // 4. Per-table bulk deletes — routed through the legacy manager
-        //    methods to preserve their individual quirks (FK null-outs
-        //    in cs_user_manager, modifier_id scoping in
-        //    cs_link_modifier_item_manager, file-id resolution in
-        //    cs_link_item_file_manager). Order mirrors legacy's
-        //    `cs_room_manager::deleteReallyOlderThan()`.
+        // Per-table deletes via legacy managers to preserve per-manager quirks
+        // (FK null-outs, modifier_id scoping, file-id resolution). Order mirrors
+        // legacy `cs_room_manager::deleteReallyOlderThan()`.
         $env = $this->legacyEnvironment;
         $env->getLinkModifierItemManager()->deleteFromDb($roomId);
         $env->getLinkItemFileManager()->deleteFromDb($roomId);
@@ -115,8 +79,7 @@ readonly class RoomHardDeletionHelper
         $env->getTodosManager()->deleteFromDb($roomId);
         $env->getUserManager()->deleteFromDb($roomId);
 
-        // 5. Finally the `room` row itself — ORM remove so the
-        //    `room_slug` orphan-removal cascade fires (legacy parity).
+        // ORM remove so the `room_slug` orphan-removal cascade fires.
         $env->getRoomManager()->deleteFromDb($roomId);
     }
 }

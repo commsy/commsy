@@ -23,42 +23,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Deletes items of the complete `cs_label_item` hierarchy (topic / hashtag /
- * buzzword / timepulse / institution / group) without delegating to the legacy
+ * buzzword / timepulse / institution / group). Replaces the legacy
  * `cs_label_item::delete()` / `cs_labels_manager::delete()` cascade.
  *
- * Legacy structure that this mirrors:
- * - `cs_label_item` holds the shared state; every subtype (`cs_topic_item`,
- *   `cs_buzzword_item`, `cs_group_item`, …) inherits it and only differs in
- *   the `labels.type` column, the `items.type` column is always `'label'`.
- * - `cs_group_manager extends cs_labels_manager` (etc.) — none of the
- *   subtype-specific managers override `delete()`, so a single deleter
- *   covers the whole tree, matching the legacy inheritance chain.
- *
- * The one subtype-specific Legacy extension — `cs_group_item::delete($deleteGrouproom=true)`
- * triggering a cascade into the linked grouproom — is intentionally **not**
- * reproduced here. All current call sites handle the grouproom either out-of-band
- * (drafts have no grouproom yet, because `GroupController::create` calls
- * `save(false)`) or explicitly before reaching this deleter
- * (`ProfileController::deleteRoomProfile` deletes the grouproom separately
- * on the preceding line). Grouproom deletion will move to the room-level
- * deleter infrastructure introduced later in #5082.
- *
- * Legacy parity otherwise:
- * - Soft-deletes the `labels` row.
- * - Soft-deletes `links` rows referencing the label (legacy did this via
- *   `cs_link_manager::deleteLinksBecauseItemIsDeleted`).
- * - Soft-deletes the `items` twin row.
- *
- * Behaviour added on top of Legacy (fixes for uniform cleanup — cf. the same
- * pattern in every other `RubricDeleter`):
- * - Soft-deletes `link_items` rows. Legacy labels_manager did not — groups
- *   use `link_items` for membership, so leaving those rows dangling against
- *   a deleted group was a latent inconsistency.
- * - Soft-deletes `item_link_file` attachments. Labels rarely carry files,
- *   but `cs_label_item extends cs_item` so it is technically possible.
- * - Dispatches `ItemDeletedEvent` so `ElasticaSubscriber::onItemDeleted`
- *   removes the document from the `commsy_label` index. Legacy did this
- *   via `cs_label_item::deleteElasticItem(...)`.
+ * Grouproom cascade on `cs_group_item` deletion is not reproduced — all
+ * current call sites handle the grouproom out-of-band.
  */
 class LabelDeleter implements RubricDeleter
 {
@@ -103,16 +72,12 @@ class LabelDeleter implements RubricDeleter
 
     public function softDeleteItem(int $itemId, int $deleterId): void
     {
-        // 1. Dispatch the deletion event (triggers ES removal from the
-        //    `commsy_label` index via ElasticaSubscriber). The typed item is
-        //    loaded lazily — if it no longer exists we silently skip.
         $typedItem = $this->itemService->getTypedItem($itemId);
         if ($typedItem !== null) {
             $this->eventDispatcher->dispatch(new ItemDeletedEvent($typedItem), ItemDeletedEvent::NAME);
         }
 
-        // 2. Soft-delete the row in the `labels` table (covers every subtype
-        //    — the subtype is stored in `labels.type`, not in a separate table).
+        // Single labels table covers every subtype (stored in labels.type).
         $this->connection->executeStatement(
             'UPDATE labels
                 SET deletion_date = NOW(), deleter_id = :deleterId
@@ -120,22 +85,9 @@ class LabelDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'itemId' => $itemId]
         );
 
-        // 3. Soft-delete `links` rows referencing this label (Legacy parity
-        //    with `cs_link_manager::deleteLinksBecauseItemIsDeleted`; buzzword
-        //    assignments, `member_of`, `material_for`, etc. live in `links`).
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
-
-        // 4. Soft-delete `link_items` rows referencing this label. Legacy
-        //    labels_manager did not touch link_items, but groups use
-        //    link_items for user membership (`cs_group_item::addMember`),
-        //    so we clean those up for consistency across all rubrics.
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-
-        // 5. Soft-delete file-link attachments — labels rarely have them,
-        //    but the base class allows it.
         $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
-
-        // 6. Soft-delete the shared `items` table row.
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 

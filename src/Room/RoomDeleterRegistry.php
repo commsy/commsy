@@ -18,22 +18,9 @@ use LogicException;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
- * Central dispatcher that routes a room-delete call to the concrete
- * {@see RoomDeleter} implementation registered for the room's type.
- *
- * Call sites that already know the exact type (e.g.
- * {@see \App\Utils\UserroomService} always dealing with user rooms)
- * keep depending on the concrete deleter directly. The registry exists
- * for the few generic call paths where the room type is only known at
- * runtime — the auto-abandon subscriber, the profile-delete controller,
- * the cancellable-lock-and-delete controller — so these can express
- * "soft-delete whatever room this is" without a switch statement per
- * caller.
- *
- * All registered `RoomDeleter`s are indexed by their {@see RoomDeleter::roomType()}
- * at construction. Looking up an unknown type throws — the registry is
- * meant to catch configuration drift early, not silently swallow a room
- * type the pipeline does not own (portals, `myroom`, `server`).
+ * Dispatches a room-delete call to the {@see RoomDeleter} registered for
+ * the room's type. Used by generic call paths where the room type is only
+ * known at runtime. Unknown types throw.
  */
 readonly class RoomDeleterRegistry
 {
@@ -53,9 +40,7 @@ readonly class RoomDeleterRegistry
     }
 
     /**
-     * Returns the deleter responsible for {@see $type}. Throws when no
-     * deleter is registered for the type so that misrouted calls fail
-     * loudly instead of leaving a room undeleted.
+     * Returns the deleter for the given type. Throws if none is registered.
      */
     public function forType(RoomType $type): RoomDeleter
     {
@@ -70,8 +55,7 @@ readonly class RoomDeleterRegistry
     }
 
     /**
-     * Convenience entry for callers that already hold a legacy room
-     * item — reads the type off the item and dispatches in one step.
+     * Convenience entry for callers that already hold a legacy room item.
      */
     public function softDeleteLegacyRoom(
         cs_room_item $room,

@@ -33,16 +33,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see DatesDeleter}.
- *
- * Same assertion shape as {@see AnnouncementDeleterTest} — soft-delete of the
- * rubric row plus items twin, cleanup of link_items, links (all types),
- * annotations; event dispatch; no collateral damage on bystanders — and adds
- * Dates-specific scenarios:
- *  - Whole-series deletion via {@see DatesDeleter::deleteSeries()}
- *  - Single-occurrence exclusion via
- *    {@see DatesDeleter::excludeOccurrenceFromSeries()} (siblings get a
- *    `recurringExclude` entry in their RRULE, but are not themselves deleted)
+ * Pins the DatesDeleter soft-delete contract plus the two series-specific
+ * paths: `deleteSeries()` (whole series) and `excludeOccurrenceFromSeries()`
+ * (sibling RRULEs get a `recurringExclude` token).
  */
 final class DatesDeleterTest extends KernelTestCase
 {
@@ -52,10 +45,6 @@ final class DatesDeleterTest extends KernelTestCase
     private User $roomUser;
     private int $deleterId;
 
-    /**
-     * Core contract: after deletion the `dates` row and its matching `items`
-     * twin are soft-deleted (deletion_date set, deleter_id pointing at caller).
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesDatesAndItemsRows(): void
     {
@@ -67,11 +56,6 @@ final class DatesDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $date->getItemId());
     }
 
-    /**
-     * `link_items` must be soft-deleted in both directions (first_item_id /
-     * second_item_id). Guards against dangling UI cross-links into the
-     * deleted date.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesLinkItems(): void
     {
@@ -87,13 +71,6 @@ final class DatesDeleterTest extends KernelTestCase
         $this->assertLinkItemSoftDeleted($linkAsSecond);
     }
 
-    /**
-     * Rows in the `links` table (buzzword_for, in_time, label_for) must be
-     * soft-deleted in both directions when a date is removed. Dates already
-     * did this in the legacy cascade — pinned down here so the refactored
-     * deleter keeps that contract while also unifying behaviour with the
-     * other rubrics (see AnnouncementDeleterTest for the counterpart).
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesAllLinks(): void
     {
@@ -125,11 +102,6 @@ final class DatesDeleterTest extends KernelTestCase
         self::assertSame(3, $softDeletedCount, 'all three link types must carry the soft-delete marker');
     }
 
-    /**
-     * Annotations attached to the date must be soft-deleted in both the
-     * `annotations` rubric table and in `items`. Otherwise comments would
-     * stay alive as zombie entries in search/feed output.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesAnnotations(): void
     {
@@ -142,11 +114,6 @@ final class DatesDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $annotationId);
     }
 
-    /**
-     * The deleter must dispatch an {@see ItemDeletedEvent} so side-effectful
-     * subscribers (Elasticsearch cleanup, moderator mails, etherpad removal)
-     * can hook in — none of which are observable in the database.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDispatchesItemDeletedEvent(): void
     {
@@ -168,11 +135,6 @@ final class DatesDeleterTest extends KernelTestCase
         );
     }
 
-    /**
-     * Regression safety net: deleting a single date must not touch unrelated
-     * dates in the same room. Guards against missing WHERE clauses or
-     * context-wide UPDATEs.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDoesNotAffectOtherDates(): void
     {
@@ -185,11 +147,6 @@ final class DatesDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
     }
 
-    /**
-     * `deleteSeries()` must soft-delete every occurrence sharing the given
-     * recurrence_id — and only those. Dates in other series (or none) must
-     * stay alive.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSeriesRemovesAllMembers(): void
     {
@@ -210,12 +167,6 @@ final class DatesDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('dates', $bystander->getItemId());
     }
 
-    /**
-     * `excludeOccurrenceFromSeries()` soft-deletes the given occurrence and
-     * patches every sibling's recurrence_pattern with a `recurringExclude`
-     * token — so CalDAV/RRULE consumers skip the removed slot while the rest
-     * of the series stays intact.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testExcludeOccurrenceFromSeriesPatchesSiblings(): void
     {
@@ -259,12 +210,6 @@ final class DatesDeleterTest extends KernelTestCase
         self::assertContains($token, $stored['recurringExclude']);
     }
 
-    /**
-     * Hard-delete sweep: soft-deleted dates whose `deletion_date` is older
-     * than the grace window must be physically removed from the `dates`
-     * table. Recent soft-deletes remain, alive rows stay untouched. The
-     * `items` twin stays on the legacy CS_ITEM_TYPE sweep path.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRows(): void
     {

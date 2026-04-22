@@ -24,37 +24,14 @@ use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
- * Nightly cron that purges abandoned "draft" rows — items created by the
- * "new entry" form flow but never persisted by the user (e.g. the user
- * closed the tab after the draft was prepared but before saving).
- *
- * Historically this task delegated to the legacy `cs_item::delete()`
- * cascade (which in turn soft-deletes the rubric-specific row and the
- * `items` twin with `deleter_id = 0` because the cron has no authenticated
- * user). As part of #5082 we dispatch through the {@see RubricDeleter}
- * implementations instead, preserving the exact same soft-delete semantics
- * — the deleted drafts are eventually hard-deleted by the hard-delete cron,
- * just like any other soft-deleted row.
- *
- * Every draft-capable rubric now has a dedicated deleter:
- * - `setDraftStatus(1)` is called for announcement, annotation, date,
- *   discussion, discarticle, material, section, todo, step, label (incl.
- *   group as a label subtype).
- * - All of the above route through a `RubricDeleter` (primary types) or
- *   through a sub-entry method on the parent deleter (section/step/
- *   discarticle).
- *
- * The previously temporary legacy fallback has therefore been removed;
- * any future rubric draft type is expected to register its own
- * `RubricDeleter` before shipping.
+ * Nightly cron that soft-deletes abandoned draft rows (items created by the
+ * "new entry" form flow but never persisted). Dispatches through the
+ * registered {@see RubricDeleter} implementations; hard-delete happens
+ * later via the regular hard-delete cron.
  */
 class CronCleanDrafts implements CronTaskInterface
 {
-    /**
-     * Sentinel deleter id used when no user is in session (cron context).
-     * Matches the legacy `cs_*_manager::delete()` convention of
-     * `$current_user->getItemID() ?: 0`.
-     */
+    /** Legacy parity: deleter_id = 0 when no user is bound (cron context). */
     private const SYSTEM_DELETER_ID = 0;
 
     private readonly cs_environment $legacyEnvironment;
@@ -104,8 +81,7 @@ class CronCleanDrafts implements CronTaskInterface
     }
 
     /**
-     * Dispatches primary rubric-item types (announcement, annotation, date,
-     * discussion, material, todo) to their matching RubricDeleter.
+     * Dispatches primary rubric-item types to their matching RubricDeleter.
      */
     private function deleteViaRubricDeleter(string $type, int $itemId): bool
     {
@@ -126,8 +102,7 @@ class CronCleanDrafts implements CronTaskInterface
 
     /**
      * Dispatches sub-entry types (section, step, discarticle) to the
-     * sub-entry method on their parent rubric's deleter. Sub-entries have
-     * no RubricType case of their own because they are owned by the parent.
+     * sub-entry method on their parent rubric's deleter.
      */
     private function deleteViaSubEntryDeleter(string $type, int $itemId): bool
     {

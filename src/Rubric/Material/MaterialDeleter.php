@@ -23,27 +23,13 @@ use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Deletes Material items without delegating to the legacy
- * `cs_material_item::delete()` / `cs_section_item::delete()` cascade.
+ * Deletes Material items. Replaces the legacy `cs_material_item::delete()`
+ * / `cs_section_item::delete()` cascade.
  *
- * Materials (and their sections + file attachments) are **versioned**: each
- * edit creates a new row with an incremented `version_id`. This deleter
- * exposes three distinct entry points to match the three user flows:
- *
- *  - {@see softDeleteItem()}           — CS_ALL semantic (wipe every version).
- *                                     Used by the `RubricDeleter` contract
- *                                     (Account-Delete) and the generic UI
- *                                     delete ("Material wegwerfen").
- *  - {@see deleteCurrentVersion()} — drop only the latest version; the
- *                                     previous version becomes the new
- *                                     current one. `items` row stays alive.
- *  - {@see deleteSection()}        — drop a section within one material
- *                                     version; reindexes the parent material.
- *
- * Unlike the legacy cascade this implementation cleans up *all* versioned
- * `item_link_file` rows when dropping the whole item (the legacy
- * `deleteByItem()` call passed the current version id even in CS_ALL mode —
- * a bug that left attachments of older versions behind).
+ * Materials (and their sections + file attachments) are versioned. Three
+ * entry points: {@see softDeleteItem()} wipes every version,
+ * {@see deleteCurrentVersion()} drops only the latest, {@see deleteSection()}
+ * drops a single section within one version.
  */
 class MaterialDeleter implements RubricDeleter
 {
@@ -74,9 +60,8 @@ class MaterialDeleter implements RubricDeleter
     }
 
     /**
-     * `SELECT DISTINCT` because materials are versioned (multiple rows per
-     * `item_id`, one per version). Sections are NOT returned — they are
-     * cleaned up transitively by {@see softDeleteItem()} on the parent material.
+     * `SELECT DISTINCT` because materials are versioned. Sections are not
+     * returned — they are cleaned up transitively by {@see softDeleteItem()}.
      */
     public function findItemIdsInContext(int $contextId): array
     {
@@ -92,29 +77,18 @@ class MaterialDeleter implements RubricDeleter
     }
 
     /**
-     * Soft-deletes the material **and every version + every section (all
-     * versions) it contains**. Annotations (not versioned) die completely;
+     * Soft-deletes the material and every version + every section (all
+     * versions) it contains. Annotations (not versioned) die completely;
      * all versioned `item_link_file` rows are dropped.
-     *
-     * Task cascade is **not yet** performed here. Todo-tasks ("Aufgabe an
-     * Material") are modelled as a separate rubric with their own deleter,
-     * but whether that rubric should really exist as an independent
-     * `RubricDeleter` or be folded into Material is still open. Until that
-     * is clarified, tasks linked to the deleted material remain orphaned
-     * (no worse than the legacy state, where they disappeared from the UI
-     * but nothing else referenced them).
      */
     public function softDeleteItem(int $itemId, int $deleterId): void
     {
-        // 1. Event — ElasticaSubscriber removes the material document from
-        //    `commsy_material`. Section data embedded in that document dies
-        //    with it; no per-section events needed.
         $typedItem = $this->itemService->getTypedItem($itemId);
         if ($typedItem !== null) {
             $this->eventDispatcher->dispatch(new ItemDeletedEvent($typedItem), ItemDeletedEvent::NAME);
         }
 
-        // 2. Collect distinct section ids across all versions of this material.
+        // Collect distinct section ids across all versions.
         $sectionIds = array_map('intval', $this->connection->fetchFirstColumn(
             'SELECT DISTINCT item_id FROM section
                 WHERE material_item_id = :materialId
@@ -123,8 +97,6 @@ class MaterialDeleter implements RubricDeleter
             ['materialId' => $itemId]
         ));
 
-        // 3. Soft-delete *every* section row (all versions) in a single UPDATE,
-        //    then batch-clean their auxiliary rows incl. versioned file_links.
         if (!empty($sectionIds)) {
             $this->connection->executeStatement(
                 'UPDATE section
@@ -140,7 +112,7 @@ class MaterialDeleter implements RubricDeleter
             );
         }
 
-        // 4. Soft-delete *every* version of the `materials` row.
+        // Soft-delete every version of the `materials` row.
         $this->connection->executeStatement(
             'UPDATE materials
                 SET deletion_date = NOW(), deleter_id = :deleterId
@@ -148,7 +120,6 @@ class MaterialDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'itemId' => $itemId]
         );
 
-        // 5. Auxiliary cleanup for the material itself.
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
@@ -157,14 +128,9 @@ class MaterialDeleter implements RubricDeleter
     }
 
     /**
-     * Drops only the **current (latest)** version of the material. The
-     * previous version remains intact and becomes the new current one; the
-     * `items` row stays alive.
-     *
-     * Section rows created for the dropped version are soft-deleted on a
-     * per-version basis, along with the versioned `item_link_file` rows.
-     * Links / link_items / annotations are *not* touched — they are
-     * version-agnostic and remain valid for the prior material version.
+     * Drops only the current (latest) version of the material. The previous
+     * version becomes the new current one; the `items` row stays alive.
+     * Links / link_items / annotations are version-agnostic and not touched.
      */
     public function deleteCurrentVersion(int $itemId, int $deleterId): void
     {
@@ -180,9 +146,8 @@ class MaterialDeleter implements RubricDeleter
         }
         $currentVersionId = (int) $row;
 
-        // Resolve the typed item *before* the version is soft-deleted — once
-        // the only alive version is gone the legacy manager returns null and
-        // we would lose the handle needed to dispatch the reindex event.
+        // Resolve typed item before soft-delete: once the only alive version
+        // is gone the legacy manager returns null.
         $typedItem = $this->itemService->getTypedItem($itemId);
 
         $this->connection->executeStatement(
@@ -192,7 +157,6 @@ class MaterialDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'itemId' => $itemId, 'versionId' => $currentVersionId]
         );
 
-        // Sections for exactly this material version.
         $this->connection->executeStatement(
             'UPDATE section
                 SET deletion_date = NOW(), deleter_id = :deleterId
@@ -200,7 +164,6 @@ class MaterialDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'materialId' => $itemId, 'versionId' => $currentVersionId]
         );
 
-        // Versioned file_links belonging to that material version.
         $this->connection->executeStatement(
             'UPDATE item_link_file
                 SET deletion_date = NOW(), deleter_id = :deleterId
@@ -208,8 +171,7 @@ class MaterialDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'itemId' => $itemId, 'versionId' => $currentVersionId]
         );
 
-        // Reindex so the new "current" version surfaces in ES. No items-row
-        // touch here — the material as an entity still exists.
+        // Reindex so the new current version surfaces in ES.
         if ($typedItem !== null) {
             $this->eventDispatcher->dispatch(new ItemReindexEvent($typedItem), ItemReindexEvent::class);
         }
@@ -217,13 +179,8 @@ class MaterialDeleter implements RubricDeleter
 
     /**
      * Drops a single section row (per material version) and reindexes the
-     * parent material so the removed section disappears from its embedded
-     * `sections` field. Sections have no own ES index.
-     *
-     * If `$materialVersionId` is null, every version of the section is
-     * soft-deleted. The legacy UI path always passes the material's current
-     * version — matching that behaviour keeps older material versions'
-     * section lists intact.
+     * parent material. If `$materialVersionId` is null, every version of
+     * the section is soft-deleted.
      */
     public function deleteSection(int $sectionId, int $deleterId, ?int $materialVersionId = null): void
     {
@@ -268,8 +225,8 @@ class MaterialDeleter implements RubricDeleter
             $this->rubricDeletionHelper->softDeleteItemsRow($sectionId, $deleterId);
         }
 
-        // Reindex the parent material so the (now deleted) section disappears
-        // from its embedded `sections` field.
+        // Reindex parent material so the deleted section disappears from
+        // its embedded `sections` field.
         $typedMaterial = $this->itemService->getTypedItem($materialId);
         if ($typedMaterial !== null) {
             $this->eventDispatcher->dispatch(new ItemReindexEvent($typedMaterial), ItemReindexEvent::class);
@@ -290,10 +247,7 @@ class MaterialDeleter implements RubricDeleter
     }
 
     /**
-     * Sweeps `materials` (all versions) and `section` (all versions, any
-     * parent material). Both rubric-owned tables end up in one call so the
-     * orchestrator doesn't need to know about material's versioning or
-     * sub-entry structure.
+     * Sweeps `materials` (all versions) and `section` (all versions).
      */
     public function hardDeleteOlderThan(int $days): int
     {

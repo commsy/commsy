@@ -27,20 +27,10 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
- * End-to-end smoke test for {@see CronHardDelete::run()}.
- *
- * The goal is not to re-verify every sub-deleter's behaviour (those have
- * their own integration tests) but to pin that the **composition** works:
- * a single cron run with a known cutoff must physically remove soft-deleted
- * rows across every table the cron is supposed to touch — `assessments`,
- * `link_items`, `tag`, `tag2tag`, `tasks`, `items` — and must leave
- * alive rows intact.
- *
- * A real service container is used so the test catches wiring regressions
- * (missing constructor argument, wrong tag iteration, swapped order against
- * FK dependencies, etc.). The `commsy.settings.delete_days` parameter is
- * bypassed in favour of a local `ParameterBag` so the fixture can stay
- * close to NOW() without fighting the production grace window.
+ * End-to-end smoke test for {@see CronHardDelete::run()}: pins that the
+ * composition wires up correctly and sweeps every expected aux table. A
+ * local ParameterBag overrides `commsy.settings.delete_days` so the fixture
+ * can stay near NOW() without fighting the production grace window.
  */
 final class CronHardDeleteTest extends KernelTestCase
 {
@@ -54,8 +44,6 @@ final class CronHardDeleteTest extends KernelTestCase
         $container = self::getContainer();
         $this->connection = $container->get(EntityManagerInterface::class)->getConnection();
 
-        // Build the cron task with a local ParameterBag so we can use a
-        // 30-day cutoff in the fixture without touching production config.
         $parameterBag = $this->createMock(ParameterBagInterface::class);
         $parameterBag->method('get')->with('commsy.settings.delete_days')->willReturn(30);
 

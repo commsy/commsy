@@ -21,21 +21,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Integration coverage for {@see LegacyAuxHardDeleter} — the bulk-SQL
- * repository that physically removes soft-deleted rows from auxiliary tables
- * (`items`, `link_items`, `tag`, `tag2tag`, `tasks`).
- *
- * For every entry point, the test inserts:
- *  - an expired row (deletion_date past the cutoff),
- *  - a recent soft-delete (inside the grace window),
- *  - an alive row (no deletion_date).
- *
- * and asserts the sweep removes only the expired row.
- *
- * Additionally pins the legacy `type != 'user'` filter on
- * {@see LegacyAuxHardDeleter::hardDeleteItemsRows()}: soft-deleted user items
- * must survive because membership-leave does not yet nullify all creator /
- * modifier / assignee references.
+ * Pins the bulk-SQL sweep on {@see LegacyAuxHardDeleter} across `items`,
+ * `link_items`, `tag`, `tag2tag`, `tasks`: expired rows go, grace-window and
+ * alive rows stay. Also pins the `type != 'user'` carve-out — soft-deleted
+ * user items must survive until membership-leave nullifies authorship refs.
  */
 final class LegacyAuxHardDeleterTest extends KernelTestCase
 {

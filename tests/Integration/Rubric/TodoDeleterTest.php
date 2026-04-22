@@ -35,10 +35,8 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see TodoDeleter}.
- *
- * Covers the generic `softDeleteItem()` path (whole todo incl. steps) as well
- * as the todo-specific `deleteStep()` path for the single-step UI flow.
+ * Pins the TodoDeleter contract: generic `softDeleteItem()` (whole todo incl.
+ * steps) and `deleteStep()` (single-step UI flow).
  */
 final class TodoDeleterTest extends KernelTestCase
 {
@@ -48,10 +46,6 @@ final class TodoDeleterTest extends KernelTestCase
     private User $roomUser;
     private int $deleterId;
 
-    /**
-     * Basis-Kontrakt: die `todos`-Zeile und der zugehörige `items`-Twin
-     * sind nach dem Löschen soft-deleted.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesTodoAndItemsRows(): void
     {
@@ -63,10 +57,6 @@ final class TodoDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $todo->getItemId());
     }
 
-    /**
-     * Beim Löschen eines Todos werden alle zugehörigen Steps in einem
-     * Rutsch mit soft-deleted (inkl. ihrer `items`-Zeilen).
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteCascadesToAllSteps(): void
     {
@@ -83,12 +73,6 @@ final class TodoDeleterTest extends KernelTestCase
         }
     }
 
-    /**
-     * Links (buzzword_for, label_for, …) auf dem Todo selbst **und** auf
-     * den kaskadiert gelöschten Steps werden soft-deleted. Fixt die
-     * Legacy-Inkonsistenz, dass `cs_step_manager::delete()` gar keine
-     * `links`-Bereinigung ausführte.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesAllLinks(): void
     {
@@ -113,12 +97,6 @@ final class TodoDeleterTest extends KernelTestCase
         }
     }
 
-    /**
-     * `link_items` referenzieren Items quer über Rubriken hinweg. Beim
-     * Todo-Delete müssen Verknüpfungen in beiden Richtungen
-     * (first_item_id / second_item_id) verschwinden — sowohl für das
-     * Todo als auch für dessen Steps.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesLinkItems(): void
     {
@@ -136,10 +114,8 @@ final class TodoDeleterTest extends KernelTestCase
     }
 
     /**
-     * Ein {@see ItemDeletedEvent} wird für das Todo dispatcht (triggert
-     * ES-Cleanup etc.). Für die kaskadiert gelöschten Steps wird bewusst
-     * **kein** eigenes Event dispatcht — Steps haben keinen eigenen
-     * ES-Index, sie werden als Teil des Todos indiziert.
+     * Cascaded steps deliberately get no own event — they are indexed as
+     * part of the parent todo's ES document.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDispatchesItemDeletedEvent(): void
@@ -162,10 +138,6 @@ final class TodoDeleterTest extends KernelTestCase
         );
     }
 
-    /**
-     * Regressionsschutz: andere Todos im selben Raum dürfen nicht
-     * mit-soft-deleted werden.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDoesNotAffectOtherTodos(): void
     {
@@ -178,11 +150,6 @@ final class TodoDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
     }
 
-    /**
-     * `deleteStep()` auf einem Step = regulärer Soft-Delete in `step` und
-     * `items`. Steps sind flach — anders als Diskussionsbeiträge gibt es
-     * keine Hierarchie, daher auch keinen DSGVO-Purge-Pfad.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteStepSoftDeletesRow(): void
     {
@@ -195,11 +162,6 @@ final class TodoDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $step->getItemId());
     }
 
-    /**
-     * Beim Einzel-Step-Delete wird das Parent-Todo re-indiziert
-     * (via {@see ItemReindexEvent}) — Steps haben keinen eigenen Index,
-     * sie leben im `steps`-Feld des Todo-Dokuments.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteStepDispatchesReindexEventForParentTodo(): void
     {
@@ -222,9 +184,6 @@ final class TodoDeleterTest extends KernelTestCase
         );
     }
 
-    /**
-     * Das Parent-Todo bleibt beim Einzel-Step-Delete unangetastet.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteStepDoesNotAffectParentOrOtherTodos(): void
     {
@@ -239,10 +198,8 @@ final class TodoDeleterTest extends KernelTestCase
     }
 
     /**
-     * Hard-delete sweep covers both rubric-owned tables: `todos`
-     * (top-level) and `step` (sub-entries). Legacy CronHardDelete only
-     * iterated CS_TODO_TYPE, leaving expired steps orphaned — gap closed
-     * here.
+     * Hard-delete covers both `todos` and `step` — closes the legacy gap
+     * where CronHardDelete only swept CS_TODO_TYPE.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRowsIncludingSteps(): void

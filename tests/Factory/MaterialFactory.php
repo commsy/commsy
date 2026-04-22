@@ -27,14 +27,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Materials>
- *
- * Creates a material through the **legacy** manager chain
- * (`cs_material_manager::getNewItem()` + `save()`), mirroring the path a
- * controller takes when a user creates a new material.
- *
- * Required inputs:
- *  - `room`    App\Entity\Room — the containing context
- *  - `creator` App\Entity\User — priming the legacy current-user slot
  */
 final class MaterialFactory extends PersistentObjectFactory
 {

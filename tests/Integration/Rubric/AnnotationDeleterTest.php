@@ -34,14 +34,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see AnnotationDeleter}.
- *
- * Mirrors the AnnouncementDeleterTest contract — but scoped to the
- * per-annotation deletion path used by the UI when a user explicitly
- * deletes their own comment (parent item stays alive). Deletion of an
- * annotation as part of a cascade (parent item is being removed) is
- * covered by {@see RubricDeletionHelper::softDeleteAnnotations()} tests
- * on each parent rubric.
+ * Pins the per-annotation deletion path used when a user explicitly
+ * removes their own comment (parent item stays alive). Cascade deletion
+ * is covered on each parent rubric's test.
  */
 final class AnnotationDeleterTest extends KernelTestCase
 {
@@ -51,11 +46,6 @@ final class AnnotationDeleterTest extends KernelTestCase
     private User $roomUser;
     private int $deleterId;
 
-    /**
-     * Core contract: after the call, both the `annotations` row and its
-     * `items` twin must be soft-deleted (deletion_date + deleter_id set),
-     * while the parent item stays untouched.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesAnnotationAndItemsRows(): void
     {
@@ -67,17 +57,10 @@ final class AnnotationDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('annotations', $annotationId);
         $this->assertSoftDeleted('items', $annotationId);
 
-        // Parent survives.
         $this->assertNotSoftDeleted('announcement', $parent->getItemId());
         $this->assertNotSoftDeleted('items', $parent->getItemId());
     }
 
-    /**
-     * `link_items` referencing the annotation must be soft-deleted in both
-     * directions (first_item_id / second_item_id) along with their `items`
-     * twin rows — mirrors the uniform behaviour established for every
-     * rubric deleter.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesLinkItems(): void
     {
@@ -94,11 +77,6 @@ final class AnnotationDeleterTest extends KernelTestCase
         $this->assertLinkItemSoftDeleted($linkAsSecond);
     }
 
-    /**
-     * All `links` rows referencing the annotation must be soft-deleted
-     * regardless of link type / direction. Legacy cs_annotations_manager
-     * did not clean `links` up; the new deleter fixes this gap.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesAllLinks(): void
     {
@@ -130,11 +108,6 @@ final class AnnotationDeleterTest extends KernelTestCase
         self::assertSame(2, $softDeletedCount, 'both link types must carry the soft-delete marker with the correct deleter_id');
     }
 
-    /**
-     * The deleter must dispatch {@see ItemDeletedEvent} so downstream
-     * subscribers (ElasticaSubscriber for ES cleanup, ItemSubscriber for
-     * moderator mails, etc.) can hook in.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDispatchesItemDeletedEvent(): void
     {
@@ -157,11 +130,6 @@ final class AnnotationDeleterTest extends KernelTestCase
         );
     }
 
-    /**
-     * Regression safety net: deleting one annotation must not affect other
-     * annotations on the same parent — guards against missing WHERE clauses
-     * / context-wide UPDATEs.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDoesNotAffectOtherAnnotations(): void
     {
@@ -175,12 +143,6 @@ final class AnnotationDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $bystander);
     }
 
-    /**
-     * Hard-delete sweep: soft-deleted annotations whose `deletion_date` is
-     * older than the grace window must be physically removed from the
-     * `annotations` table. Recent soft-deletes remain, alive rows untouched.
-     * The `items` twin stays on the legacy CS_ITEM_TYPE sweep path.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRows(): void
     {

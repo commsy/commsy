@@ -32,16 +32,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see LabelDeleter}.
- *
- * One deleter covers the whole cs_label_item hierarchy (topic / hashtag /
- * buzzword / timepulse / institution / group) because every subtype lives
- * in the shared `labels` table distinguished only by `labels.type`. These
- * tests use the `buzzword` subtype — the simplest one (no grouproom
- * mirror, not indexed by `cs_label_item::save()`) — to exercise the
- * deleter's generic path. Subtype-specific concerns (grouproom cascade
- * for `group`) are intentionally out of scope: they sit in the room-deleter
- * layer.
+ * Pins LabelDeleter's generic path using the `buzzword` subtype (simplest
+ * of the shared `labels` hierarchy). Group-subtype cascade concerns live
+ * in the room-deleter layer.
  */
 final class LabelDeleterTest extends KernelTestCase
 {
@@ -51,11 +44,6 @@ final class LabelDeleterTest extends KernelTestCase
     private User $roomUser;
     private int $deleterId;
 
-    /**
-     * Core contract: after the call, the `labels` row and its `items`
-     * twin are soft-deleted. No hard-delete — rows survive for restore /
-     * audit use cases.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesLabelAndItemsRows(): void
     {
@@ -67,11 +55,6 @@ final class LabelDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $label->getItemId());
     }
 
-    /**
-     * `links` rows referencing the label (buzzword_for, label_for, …) must
-     * be soft-deleted in both directions. Legacy parity with
-     * cs_link_manager::deleteLinksBecauseItemIsDeleted.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesAllLinks(): void
     {
@@ -94,11 +77,8 @@ final class LabelDeleterTest extends KernelTestCase
     }
 
     /**
-     * `link_items` rows must be soft-deleted too. Legacy labels_manager
-     * did not touch `link_items`, but group-subtype labels use it for
-     * user memberships (cs_group_item::addMember) — leaving those
-     * dangling against a deleted group was a latent inconsistency that
-     * LabelDeleter fixes.
+     * Group-subtype labels use link_items for user memberships; legacy
+     * labels_manager left those dangling against a deleted group.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesLinkItems(): void
@@ -115,11 +95,6 @@ final class LabelDeleterTest extends KernelTestCase
         $this->assertLinkItemSoftDeleted($linkAsSecond);
     }
 
-    /**
-     * {@see ItemDeletedEvent} is dispatched so ElasticaSubscriber removes
-     * the label document from `commsy_label` (legacy parity with
-     * cs_label_item::deleteElasticItem).
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDispatchesItemDeletedEvent(): void
     {
@@ -141,10 +116,6 @@ final class LabelDeleterTest extends KernelTestCase
         );
     }
 
-    /**
-     * Regression safety: deleting one label must not affect other labels
-     * in the same room. Catches SQL mistakes like a missing WHERE clause.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDoesNotAffectOtherLabels(): void
     {
@@ -157,12 +128,6 @@ final class LabelDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
     }
 
-    /**
-     * Hard-delete sweep: soft-deleted labels whose `deletion_date` is
-     * older than the grace window are physically removed from `labels`.
-     * Recent soft-deletes remain; alive rows stay untouched. The `items`
-     * twin stays on the legacy CS_ITEM_TYPE sweep path.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRows(): void
     {

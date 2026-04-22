@@ -20,12 +20,8 @@ use cs_environment;
 use cs_item;
 
 /**
- * Thin wrapper around {@see MaterialDeleter::softDeleteItem()} — the generic
- * "Material wegwerfen" UI path drops every version of the material
- * (CS_ALL-Semantik), including all section versions and versioned file
- * attachments. A dedicated "delete only the latest version" action may be
- * added later; for now `MaterialDeleter::deleteCurrentVersion()` exists but
- * is not wired to a UI trigger.
+ * Thin wrapper around {@see MaterialDeleter::softDeleteItem()} — drops
+ * every version of the material (CS_ALL semantic).
  */
 class DeleteMaterial implements DeleteInterface
 {

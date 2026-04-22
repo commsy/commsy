@@ -25,18 +25,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
- * Integration coverage for {@see LegacySoftDeleteBridge} — the narrow set of
- * soft-delete primitives that legacy save/copy call sites still reach for
- * while #5082 finishes.
- *
- * Each public method is pinned against the DB with the three columns the
- * legacy `parent::delete()` would have written: `deletion_date`,
- * `deleter_id`, plus the primary-table row itself. The tag2tag sibling
- * renumber is verified separately — it replaces `_cleanSortingPlaces()`.
- *
- * We swap in a real {@see Connection} and a mocked {@see LegacyEnvironment}
- * so the `currentDeleterId()` fallback is reproducible (legacy returned
- * `?: 0` when no user was set; we pin that sentinel explicitly).
+ * Pins the soft-delete primitives on {@see LegacySoftDeleteBridge} that legacy
+ * save/copy call sites still reach for while #5082 finishes. The mocked
+ * {@see LegacyEnvironment} returns no current user so deleter_id falls back
+ * to the legacy `?: 0` sentinel.
  */
 final class LegacySoftDeleteBridgeTest extends KernelTestCase
 {
@@ -99,10 +91,8 @@ final class LegacySoftDeleteBridgeTest extends KernelTestCase
     }
 
     /**
-     * `softDeleteTag2TagPivot` soft-deletes one parent/child row and then
-     * renumbers the remaining siblings so `sorting_place` stays a dense
-     * 1..N range — parity with the legacy `_cleanSortingPlaces()` that sat
-     * inside `cs_tag2tag_manager::delete()`.
+     * Renumbering siblings to dense 1..N is parity with legacy
+     * `_cleanSortingPlaces()` inside `cs_tag2tag_manager::delete()`.
      */
     public function testSoftDeleteTag2TagPivotSoftDeletesAndRenumbersSiblings(): void
     {
@@ -117,7 +107,6 @@ final class LegacySoftDeleteBridgeTest extends KernelTestCase
 
         self::assertTrue($this->tag2TagPivotSoftDeleted($parentId, 200));
 
-        // Remaining siblings renumbered 1..3 in original order:
         self::assertSame(1, $this->tag2TagSortingPlace($parentId, 100));
         self::assertSame(2, $this->tag2TagSortingPlace($parentId, 300));
         self::assertSame(3, $this->tag2TagSortingPlace($parentId, 400));
@@ -161,7 +150,6 @@ final class LegacySoftDeleteBridgeTest extends KernelTestCase
 
     private function insertDiscussionArticle(): int
     {
-        // Parent discussion (FK target).
         $this->connection->executeStatement(
             'INSERT INTO items (type, modification_date) VALUES (:type, NOW())',
             ['type' => 'discussion']

@@ -35,15 +35,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see MaterialDeleter}.
- *
- * Covers the three public entry points:
- *  - `softDeleteItem()`           — CS_ALL, whole material + every section
- *                                version + versioned file links
- *  - `deleteCurrentVersion()` — only the latest version is dropped, items
- *                                row survives, parent gets reindexed
- *  - `deleteSection()`        — single section within a specific material
- *                                version, parent material reindexed
+ * Pins the three MaterialDeleter entry points: `softDeleteItem()` (whole
+ * material incl. all section versions), `deleteCurrentVersion()` (drop only
+ * the latest version, items row survives), and `deleteSection()`.
  */
 final class MaterialDeleterTest extends KernelTestCase
 {
@@ -64,9 +58,6 @@ final class MaterialDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $material->getItemId());
     }
 
-    /**
-     * CS_ALL: every section (all versions) of the material disappears.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteCascadesToAllSections(): void
     {
@@ -83,11 +74,6 @@ final class MaterialDeleterTest extends KernelTestCase
         }
     }
 
-    /**
-     * Links on the material *and* on cascading sections must be
-     * soft-deleted — the legacy `cs_section_item::delete()` already pulled
-     * the `links` rows, we keep parity here and also cover the material.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesAllLinks(): void
     {
@@ -158,10 +144,6 @@ final class MaterialDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
     }
 
-    /**
-     * `deleteSection()` without version filter removes the section
-     * across all versions and dispatches a reindex for the parent material.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSectionSoftDeletesSectionAndReindexesMaterial(): void
     {
@@ -189,9 +171,8 @@ final class MaterialDeleterTest extends KernelTestCase
     }
 
     /**
-     * `deleteCurrentVersion()` on a material with only one version drops
-     * that version but leaves the `items` row alive so the material entity
-     * itself keeps existing for UI rollback scenarios.
+     * `deleteCurrentVersion()` drops the version row but leaves `items`
+     * alive so the entity survives for UI rollback.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteCurrentVersionKeepsItemsRowAlive(): void
@@ -226,10 +207,7 @@ final class MaterialDeleterTest extends KernelTestCase
     }
 
     /**
-     * Hard-delete sweep covers both rubric-owned tables: `materials`
-     * (all versions) and `section` (all versions, any parent). The
-     * orchestrator no longer needs to know about Material's versioning
-     * or sub-entry structure — the deleter owns that concern.
+     * Hard-delete covers both `materials` (all versions) and `section`.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRowsIncludingSections(): void

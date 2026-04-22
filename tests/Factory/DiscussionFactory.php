@@ -27,14 +27,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Discussions>
- *
- * Creates a discussion through the **legacy** manager chain
- * (`cs_discussion_manager::getNewItem()` + `save()`), mirroring the path a
- * controller takes when a user opens a new discussion.
- *
- * Required inputs:
- *  - `room`    App\Entity\Room — the containing context
- *  - `creator` App\Entity\User — priming the legacy current-user slot
  */
 final class DiscussionFactory extends PersistentObjectFactory
 {

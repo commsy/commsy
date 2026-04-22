@@ -34,11 +34,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see DiscussionDeleter}.
- *
- * Covers the generic `softDeleteItem()` path (whole discussion incl. articles)
- * as well as the discussion-specific `deleteArticle()` path with its two
- * sub-cases (leaf vs. article-with-answers).
+ * Pins the DiscussionDeleter contract: generic `softDeleteItem()` (whole
+ * discussion incl. articles) and `deleteArticle()` (leaf vs. article-with-
+ * answers GDPR purge).
  */
 final class DiscussionDeleterTest extends KernelTestCase
 {
@@ -48,10 +46,6 @@ final class DiscussionDeleterTest extends KernelTestCase
     private User $roomUser;
     private int $deleterId;
 
-    /**
-     * Basis-Kontrakt: die `discussions`-Zeile und der zugehörige `items`-Twin
-     * sind nach dem Löschen soft-deleted.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesDiscussionAndItemsRows(): void
     {
@@ -63,11 +57,6 @@ final class DiscussionDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $discussion->getItemId());
     }
 
-    /**
-     * Beim Löschen einer Diskussion werden alle zugehörigen Beiträge in einem
-     * Rutsch mit soft-deleted (inkl. ihrer `items`-Zeilen). Es entstehen keine
-     * Tombstones — der ganze Thread stirbt.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteCascadesToAllArticles(): void
     {
@@ -84,12 +73,6 @@ final class DiscussionDeleterTest extends KernelTestCase
         }
     }
 
-    /**
-     * Links (buzzword_for, label_for, …) auf der Diskussion selbst **und** auf
-     * den kaskadiert gelöschten Beiträgen werden soft-deleted. Fixt die
-     * Legacy-Inkonsistenz, dass `cs_discussion_manager::delete()` gar keine
-     * `links`-Bereinigung ausführte.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesAllLinks(): void
     {
@@ -114,12 +97,6 @@ final class DiscussionDeleterTest extends KernelTestCase
         }
     }
 
-    /**
-     * `link_items` referenzieren Items quer über Rubriken hinweg. Beim
-     * Diskussion-Delete müssen Verknüpfungen in beiden Richtungen
-     * (first_item_id / second_item_id) verschwinden — sowohl für die
-     * Diskussion als auch für deren Beiträge.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteSoftDeletesLinkItems(): void
     {
@@ -137,10 +114,8 @@ final class DiscussionDeleterTest extends KernelTestCase
     }
 
     /**
-     * Ein {@see ItemDeletedEvent} wird für die Diskussion dispatcht
-     * (triggert ES-Cleanup etc.). Für die kaskadiert gelöschten Beiträge
-     * wird bewusst **kein** eigenes Event dispatcht — Beiträge haben keinen
-     * eigenen ES-Index, sie werden als Teil der Diskussion indiziert.
+     * Cascaded articles deliberately get no own event — they are indexed as
+     * part of the parent discussion's ES document.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDispatchesItemDeletedEvent(): void
@@ -163,11 +138,6 @@ final class DiscussionDeleterTest extends KernelTestCase
         );
     }
 
-    /**
-     * Regressionsschutz: Diskussionen in anderen Kontexten/Räumen (bzw.
-     * parallele Diskussionen im selben Raum) dürfen nicht mit-soft-deleted
-     * werden.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteDoesNotAffectOtherDiscussions(): void
     {
@@ -180,10 +150,6 @@ final class DiscussionDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
     }
 
-    /**
-     * `deleteArticle()` auf einem Blatt-Beitrag (ohne Antworten) = regulärer
-     * Soft-Delete in `discussionarticles` und `items`.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteArticleLeafSoftDeletesRow(): void
     {
@@ -197,10 +163,9 @@ final class DiscussionDeleterTest extends KernelTestCase
     }
 
     /**
-     * Datenschutz-Pfad: hat ein Beitrag Antworten, bleibt die Zeile zwar
-     * erhalten (sonst zerbricht die Thread-Hierarchie), aber Inhalt und Autor
-     * werden physisch gepurged: description + subject leer, creator_id +
-     * modifier_id NULL, public = -2 als UI-Marker für den Platzhaltertext.
+     * GDPR path: articles with answers stay alive (thread hierarchy) but
+     * content + author references are physically purged; public = -2 is the
+     * UI placeholder marker.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteArticleWithChildrenPurgesContent(): void
@@ -211,7 +176,6 @@ final class DiscussionDeleterTest extends KernelTestCase
 
         $this->deleter->deleteArticle($parent->getItemId(), $this->deleterId);
 
-        // Parent-Beitrag bleibt alive — sonst verschwände der Antwortzweig.
         $row = $this->connection->fetchAssociative(
             'SELECT description, creator_id, modifier_id, public, deletion_date, deleter_id
                 FROM discussionarticles WHERE item_id = :id',
@@ -225,16 +189,9 @@ final class DiscussionDeleterTest extends KernelTestCase
         self::assertNull($row['modifier_id'], 'modifier_id must be NULLed for anonymisation');
         self::assertSame(-2, (int) $row['public'], 'public = -2 keeps the legacy UI placeholder working');
 
-        // Kind bleibt unangetastet.
         $this->assertNotSoftDeleted('discussionarticles', $child->getItemId());
     }
 
-    /**
-     * Beim Einzelbeitrag-Löschen wird die Parent-Diskussion re-indiziert
-     * (via legacy `updateElastic`) — Beiträge haben keinen eigenen Index.
-     * Hier nicht beobachtbar ohne ES, aber wir stellen sicher, dass der
-     * Code-Pfad nicht wirft.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeleteArticleDoesNotAffectOtherDiscussions(): void
     {
@@ -249,11 +206,8 @@ final class DiscussionDeleterTest extends KernelTestCase
     }
 
     /**
-     * Hard-delete sweep covers both rubric-owned tables: top-level
-     * `discussions` **and** `discussionarticles`. Closes the legacy gap
-     * where CronHardDelete only iterated CS_DISCUSSION_TYPE, leaving
-     * expired articles orphaned. Recent soft-deletes stay; alive rows
-     * remain untouched.
+     * Hard-delete covers both `discussions` and `discussionarticles` —
+     * closes the legacy gap where CronHardDelete only swept CS_DISCUSSION_TYPE.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRowsIncludingArticles(): void

@@ -27,17 +27,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Annotations>
- *
- * Creates an annotation through the legacy manager chain
- * (`cs_annotations_manager::getNewItem()` + `save()`), mirroring real runtime
- * behaviour. Same pattern as {@see AnnouncementFactory}: we run the legacy
- * save inside `afterInstantiate()` and copy the generated id back onto the
- * draft via reflection (no setter — `#[GeneratedValue]`).
- *
- * Required factory inputs:
- *  - `room`       App\Entity\Room — the containing context
- *  - `creator`    App\Entity\User — priming the legacy current-user slot
- *  - `linkedItemId` int           — id of the item the annotation hangs on
  */
 final class AnnotationFactory extends PersistentObjectFactory
 {
@@ -96,7 +85,7 @@ final class AnnotationFactory extends PersistentObjectFactory
                     $item->setDescription($description);
                 }
 
-                // Promote the legacy swallowed trigger_error into a real failure.
+                // Promote legacy trigger_error into a real failure.
                 set_error_handler(function(int $errno, string $errstr): bool {
                     throw new LogicException(sprintf('Legacy save() warning: %s', $errstr));
                 }, E_USER_WARNING);

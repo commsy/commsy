@@ -25,15 +25,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see TagDeleter}.
- *
- * Tags have no factory (they are a classification structure, not a rubric
- * item), so rows are inserted through DBAL. The tests pin the four-table
- * sweep (tag / link_items / tag2tag / items twin) for both soft-delete modes:
- *
- *  - {@see TagDeleter::softDelete()} — recursive subtree cascade.
- *  - {@see TagDeleter::softDeleteWithoutChildren()} — single-tag sweep used by
- *    the `combineTags` merge path.
+ * Pins {@see TagDeleter}'s four-table sweep (tag / link_items / tag2tag /
+ * items twin) for the recursive `softDelete()` and the single-tag
+ * `softDeleteWithoutChildren()` used by the `combineTags` merge path.
  */
 final class TagDeleterTest extends KernelTestCase
 {
@@ -60,10 +54,6 @@ final class TagDeleterTest extends KernelTestCase
         $this->assertLinkItemSoftDeleted($linkItemId);
     }
 
-    /**
-     * Recursive mode: descendants must be swept alongside the parent —
-     * grandchildren included.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testSoftDeleteCascadesIntoDescendants(): void
     {
@@ -85,9 +75,8 @@ final class TagDeleterTest extends KernelTestCase
     }
 
     /**
-     * Non-recursive mode (used by `combineTags`): the tag row itself is
-     * swept, but any children survive so the merge step can re-parent them
-     * under the merged tag.
+     * `combineTags` re-parents children under the merged tag, so the
+     * non-recursive sweep must leave them alive.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testSoftDeleteWithoutChildrenLeavesChildrenAlive(): void
@@ -105,10 +94,6 @@ final class TagDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('items', $child);
     }
 
-    /**
-     * Regression guard: deleting one tag must not ripple into unrelated tags
-     * in the same room.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testSoftDeleteDoesNotAffectUnrelatedTags(): void
     {

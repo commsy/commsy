@@ -22,24 +22,10 @@ use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Deletes a single Annotation item without delegating to the legacy
+ * Deletes a single Annotation item. Replaces the legacy
  * `cs_annotation_item::delete()` / `cs_annotations_manager::delete()`
- * cascade.
- *
- * Note the distinction from {@see RubricDeletionHelper::softDeleteAnnotations()}:
- * that helper is keyed by the *parent* item (soft-deletes every annotation
- * whose `linked_item_id` matches), and is called from the parent rubric's
- * deleter while the parent is being removed. This class operates per
- * annotation id — it is what the UI uses when the user explicitly deletes
- * their own comment on an otherwise-alive parent item, and what
- * {@see \App\Action\Delete\DeleteGeneric} dispatches to when it encounters
- * a free-standing annotation.
- *
- * Legacy parity: `cs_annotations_manager::delete()` soft-deletes the
- * `annotations` row and calls `parent::delete()` to soft-delete the
- * `items` twin; nothing else. Annotations technically extend `cs_item`,
- * so they can carry link_items / links / file attachments in theory —
- * we clean those up for consistency with every other rubric deleter.
+ * cascade. Unlike {@see RubricDeletionHelper::softDeleteAnnotations()}
+ * (keyed by parent item), this operates on a single annotation id.
  */
 class AnnotationDeleter implements RubricDeleter
 {
@@ -84,13 +70,11 @@ class AnnotationDeleter implements RubricDeleter
 
     public function softDeleteItem(int $itemId, int $deleterId): void
     {
-        // 1. Dispatch the deletion event (ES cleanup, mail notifications, …).
         $typedItem = $this->itemService->getTypedItem($itemId);
         if ($typedItem !== null) {
             $this->eventDispatcher->dispatch(new ItemDeletedEvent($typedItem), ItemDeletedEvent::NAME);
         }
 
-        // 2. Soft-delete the `annotations` row.
         $this->connection->executeStatement(
             'UPDATE annotations
                 SET deletion_date = NOW(), deleter_id = :deleterId
@@ -98,21 +82,9 @@ class AnnotationDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'itemId' => $itemId]
         );
 
-        // 3. Soft-delete any `links` row referencing this annotation. Legacy
-        //    cs_annotations_manager did not clean `links` up; we do it here
-        //    for uniform behaviour across all rubrics.
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
-
-        // 4. Soft-delete `link_items` rows referencing this annotation (plus
-        //    their `items` twin rows, see RubricDeletionHelper).
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-
-        // 5. Soft-delete file-link attachments. Annotations can technically
-        //    carry files via the base class; legacy cascade did not clean
-        //    these up — we do, matching every other rubric deleter.
         $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
-
-        // 6. Soft-delete the shared `items` table row.
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 

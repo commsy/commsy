@@ -21,10 +21,7 @@ use cs_step_item;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Thin wrapper around {@see TodoDeleter::deleteStep()}. Steps are flat, so
- * the deleter performs a regular soft-delete and re-indexes the parent
- * todo via `ItemReindexEvent` (the embedded `steps` field in the
- * `commsy_todo` index needs refreshing).
+ * Thin wrapper around {@see TodoDeleter::deleteStep()}.
  */
 class DeleteStep implements DeleteInterface
 {

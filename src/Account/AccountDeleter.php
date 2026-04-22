@@ -64,25 +64,12 @@ class AccountDeleter
             ->withPrivateRoomUser()
             ->getList();
 
-        // Audit stamp: the portal user's own item id mirrors legacy
-        // `cs_user_item::delete()` when the account deletes itself. Falls
-        // back to 0 when the portal user is unresolvable (data-fix paths).
+        // Audit stamp: portal user's own item id (parity with cs_user_item::delete()).
         $deleterId = (int) ($portalUser?->getItemID() ?? 0);
 
-        // Resolve the account's private room up front — the actual
-        // PrivateRoomDeleter call happens at the bottom of this method,
-        // after all memberships are soft-deleted. It has to be resolved
-        // *here* because `PrivateRoomManager::getRelatedOwnRoomForUser()`
-        // inner-joins on `user.deletion_date IS NULL`: once any of the
-        // account's user rows are stamped (the private-room user row in
-        // the loop below, or the portal user row after it), the lookup
-        // would no longer find the room and it would silently orphan.
-        //
-        // Legacy parity: `cs_user_item::delete()` cascaded into
-        // `getOwnRoom()->delete()` when the deleted row was the
-        // portal-level user. `UserMembershipDeleter` keeps its scope
-        // to a single membership row, so we replicate that cascade
-        // explicitly via `PrivateRoomDeleter` at the end of this method.
+        // Resolve the private room BEFORE stamping any user rows —
+        // getRelatedOwnRoomForUser() inner-joins on user.deletion_date IS NULL,
+        // so once the user rows are stamped the lookup would silently orphan.
         $privateRoomId = null;
         if ($portalUser !== null) {
             $privateRoom = $this->legacyEnvironment
@@ -93,9 +80,7 @@ class AccountDeleter
             }
         }
 
-        // Erase user footprint in each context, then soft-delete the
-        // membership row via the new deleter (handles tasks, linked
-        // userroom, aux rows, ES, and contact-persons refresh).
+        // Erase footprint per context, then soft-delete the membership row.
         foreach ($userList as $user) {
             /** @var cs_user_item $user */
             $this->userContentDeleter->eraseUserFootprint(

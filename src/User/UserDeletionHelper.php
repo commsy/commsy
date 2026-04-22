@@ -18,36 +18,9 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 
 /**
- * User-scoped soft-delete primitives — complementary to
- * {@see \App\Rubric\RubricDeletionHelper}.
- *
- * Where `RubricDeletionHelper` operates on a single rubric item and its
- * auxiliary rows, this class deals with artefacts that hang off a **user**
- * identity inside a room context: the `tasks` table (user-request workflow)
- * and related reference nullifications triggered when a user leaves a room
- * (see {@see UserMembershipDeleter}) or is wiped by KEEP_ITEMS strategy.
- *
- * Tasks are deliberately not modelled as a rubric — they are a system workflow
- * artefact (TASK_USER_REQUEST on moderated-room applications and similar
- * legacy entries). Keeping them here, next to other user-scoped cleanup,
- * makes the bounded context explicit.
- *
- * Naming: mirrors {@see \App\Rubric\RubricDeletionHelper} and
- * {@see \App\Room\RoomDeletionHelper}. Same `…DeletionHelper` suffix, same
- * role: primitives consumed by leaf deleters, never the delete interface
- * itself.
- *
- * Composition with `RubricDeletionHelper`: this class does not re-implement
- * the aux-row cascade for the task rows it soft-deletes. It delegates to
- * `RubricDeletionHelper::softDeleteAnnotations()` + `…softDeleteAuxiliary
- * RowsForItems()` — a task has annotations and link_items / items-twin rows
- * just like any other item, and the rubric helper is the canonical place
- * for that cleanup. Keeping the two classes coupled by composition (not
- * inheritance, not a shared trait) keeps the bounded contexts explicit
- * while reusing the primitives.
- *
- * (Split from `App\Rubric\ItemDeletionHelper` in the post-#5082 consolidation
- * pass so rubric- and user-scoped primitives live in separate classes.)
+ * User-scoped soft-delete primitives — tasks and related reference
+ * nullifications. Complements {@see \App\Rubric\RubricDeletionHelper}
+ * (item-scoped) and {@see \App\Room\RoomDeletionHelper} (room-scoped).
  */
 class UserDeletionHelper
 {
@@ -57,18 +30,13 @@ class UserDeletionHelper
     ) {}
 
     /**
-     * Soft-deletes every task created by `$userId` in `$contextId`, along
-     * with the task's annotations and auxiliary rows (link_items, links,
-     * file_links, items twin).
-     *
-     * Mirrors the legacy `cs_task_item::delete()` behaviour including the
-     * `status = 'CLOSED'` flip (so moderator UIs that still look at open
-     * requests never surface ghost rows of deleted users).
+     * Soft-deletes every task created by `$userId` in `$contextId`, plus
+     * the task's annotations and aux rows. Flips `status = 'CLOSED'` so
+     * moderator UIs don't surface ghost rows. Parity with `cs_task_item::delete()`.
      *
      * @todo Prüfen, ob die `tasks`-Tabelle perspektivisch entsorgt werden
      *       kann — der User-Request-Workflow ließe sich auch ohne eigene
-     *       Tabelle modellieren. Solange sie bleibt, ist das hier der
-     *       einzige aktive Löschpfad in der neuen Architektur.
+     *       Tabelle modellieren.
      */
     public function deleteUserTasks(int $userId, int $contextId, int $deleterId): void
     {
@@ -101,10 +69,8 @@ class UserDeletionHelper
 
     /**
      * NULLifies `tasks.creator_id` references to `$userId` within `$contextId`.
-     * Called unconditionally (both CASCADE_ITEMS and KEEP_ITEMS strategies)
-     * so surviving tasks of the deleted user become author-less. The `tasks`
-     * table has no `modifier_id` column (see initial.sql), so creator is the
-     * only reference to clean.
+     * Called on both CASCADE_ITEMS and KEEP_ITEMS so surviving tasks become
+     * author-less. The `tasks` table has no `modifier_id` column.
      */
     public function nullifyUserTaskReferences(int $userId, int $contextId): void
     {

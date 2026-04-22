@@ -92,13 +92,8 @@ class CategoryService
     }
 
     /**
-     * Soft-deletes the tag (and, recursively, every descendant tag in the
-     * `tag2tag` tree).
-     *
-     * Thin wrapper: the actual cascade (tag + link_items + tag2tag + items
-     * twin, recursive) lives in {@see TagDeleter::softDelete()}. This
-     * method only resolves the deleter id from the legacy environment and
-     * hands off.
+     * Soft-deletes the tag and, recursively, every descendant in the
+     * `tag2tag` tree. Cascade lives in {@see TagDeleter::softDelete()}.
      */
     public function removeTag($tagId, $roomId): void
     {
@@ -111,26 +106,11 @@ class CategoryService
     }
 
     /**
-     * Combines two tags into a new merged tag, preserving parity with the
-     * retired legacy `cs_tag2tag_manager::combine()`.
+     * Combines two tags into a new merged tag (title "t1/t2", union of linked
+     * items, children of both re-parented under it).
      *
-     * Behaviour:
-     *   1. Decide the delete order via `tag2tag_manager::isASuccessorOfB` (the
-     *      successor is soft-deleted first so its pivot row is gone before we
-     *      read the ancestor's father).
-     *   2. Read both tag titles and their linked item ids.
-     *   3. Collect children of both tags (for re-parenting under the new tag).
-     *   4. Non-recursive soft-delete of both old tag rows via
-     *      {@see TagDeleter::softDeleteWithoutChildren()} — parity with the
-     *      legacy `tag_manager->delete($id, false)` path. Children stay alive
-     *      so they can be re-parented under the merged tag.
-     *   5. Create the new merged tag (title = "t1/t2", context, creator,
-     *      creation_date, linked items = union of both) under the father of
-     *      the first tag (after the swap).
-     *   6. Re-parent all children of both old tags under the new merged tag.
-     *
-     * Replaces `cs_tag2tag_manager::combine($id1, $id2, $fatherId)` plus the
-     * non-recursive `cs_tag_manager::delete($id, false)` path it relied on.
+     * Parity: cs_tag2tag_manager::combine() + non-recursive
+     * cs_tag_manager::delete($id, false).
      */
     public function combineTags(int $tagIdOne, int $tagIdTwo, int $roomId): void
     {
@@ -140,9 +120,8 @@ class CategoryService
         $tagManager = $environment->getTagManager();
         $tag2tagManager = $environment->getTag2TagManager();
 
-        // Mirror the legacy controller: if tag one is a successor of tag two,
-        // swap them so the father-id lookup below walks up from the deeper
-        // tag's parent.
+        // If tag one is a successor of tag two, swap so the father-id lookup
+        // walks up from the deeper tag's parent (legacy parity).
         if ($tag2tagManager->isASuccessorOfB($tagIdOne, $tagIdTwo)) {
             [$tagIdOne, $tagIdTwo] = [$tagIdTwo, $tagIdOne];
         }
@@ -163,15 +142,13 @@ class CategoryService
 
         $deleterId = (int) ($environment->getCurrentUserItem()?->getItemID() ?: 0);
 
-        // Non-recursive soft-delete of both old tags (legacy parity with
-        // tag_manager->delete($id, false)). Children rows survive so we can
-        // re-parent them under the new merged tag below.
+        // Non-recursive: children survive to be re-parented below.
+        // Parity: tag_manager->delete($id, false).
         $this->tagDeleter->softDeleteWithoutChildren($tagIdOne, $deleterId);
         $this->tagDeleter->softDeleteWithoutChildren($tagIdTwo, $deleterId);
 
         unset($itemOne, $itemTwo);
 
-        // Create the new merged tag.
         $mergedLinkedIds = array_unique(array_merge($linkedIdsOne, $linkedIdsTwo));
 
         $newTag = $tagManager->getNewItem();

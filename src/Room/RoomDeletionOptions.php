@@ -3,34 +3,17 @@
 namespace App\Room;
 
 /**
- * Immutable options controlling a soft-delete of a room.
- *
- * Defaults match the behaviour of a user-triggered UI delete: moderation
- * mails are sent, sub-rooms cascade. Callers like the auto-abandon
- * subscriber or the account-merge flow flip {@see $silent} and/or
- * {@see $cascadeSubRooms} accordingly.
+ * Immutable options controlling a room soft-delete. Defaults match a
+ * user-triggered UI delete (mails sent, sub-rooms cascade).
  */
 final readonly class RoomDeletionOptions
 {
     public function __construct(
-        /**
-         * Suppresses {@see \App\Event\Workspace\WorkspaceDeletedEvent} dispatch.
-         * Use when the user is not the one intentionally deleting the room
-         * (cascading sub-room deletion, auto-abandon, account merge).
-         */
+        /** Suppresses WorkspaceDeletedEvent dispatch. */
         public bool $silent = false,
-
-        /**
-         * Whether to recurse into sub-rooms (group rooms of a project room,
-         * user rooms of a group room). Turning this off is primarily useful
-         * for tests and for surgical DB-fix scripts.
-         */
+        /** Recurse into sub-rooms. */
         public bool $cascadeSubRooms = true,
-
-        /**
-         * Why the deletion is happening. Informational — does not change
-         * the structural cascade.
-         */
+        /** Informational — does not change the structural cascade. */
         public RoomDeletionReason $reason = RoomDeletionReason::UserAction,
     ) {}
 
@@ -60,9 +43,8 @@ final readonly class RoomDeletionOptions
     }
 
     /**
-     * Returns a copy with {@see $silent} set to true — used internally
-     * when a parent room cascades into its sub-rooms so we do not fan out
-     * one moderation mail per cascaded room.
+     * Returns a silent copy — used by parent-room cascades to avoid one
+     * moderation mail per cascaded sub-room.
      */
     public function asSilent(): self
     {

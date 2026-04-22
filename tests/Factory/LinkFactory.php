@@ -27,16 +27,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Links>
- *
- * Creates a hard link row in the `links` table through the legacy manager
- * (`cs_links_manager::save()`). Used for typed relations like `relevant_for`.
- *
- * Required factory inputs:
- *  - `room`        App\Entity\Room — the containing context
- *  - `creator`     App\Entity\User — priming the legacy current-user slot
- *  - `fromItemId`  int
- *  - `toItemId`    int
- *  - `linkType`    string
  */
 final class LinkFactory extends PersistentObjectFactory
 {
@@ -112,7 +102,6 @@ final class LinkFactory extends PersistentObjectFactory
                     restore_error_handler();
                 }
 
-                // Mirror the inputs onto the draft so consumers can read them.
                 $map = [
                     'fromItemId' => $fromItemId,
                     'fromVersionId' => 0,

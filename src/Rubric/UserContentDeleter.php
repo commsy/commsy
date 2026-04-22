@@ -28,19 +28,15 @@ class UserContentDeleter
     /**
      * Erases the footprint of a user in a given context.
      *
-     * Depending on the resolved strategy:
-     * - CASCADE_ITEMS: Main entries are deleted (via legacy cascade), sub-entries
-     *   in surviving parent items are redacted, all references are nullified.
-     * - KEEP_ITEMS: Nothing is deleted, only references are nullified.
+     * - CASCADE_ITEMS: main entries deleted, sub-entries in surviving parent
+     *   items redacted, references nullified.
+     * - KEEP_ITEMS: nothing deleted, only references nullified.
      */
     public function eraseUserFootprint(int $userId, int $contextId, ?Account $account): void
     {
         $strategy = $this->resolveStrategy($account);
 
-        // 1. Main entries via RubricDeleters. Each deleter is self-contained and
-        //    handles its entire cleanup (rubric table, sub-entries, links,
-        //    annotations, file links, items row, event dispatch) — identical to
-        //    the path taken by the UI delete action.
+        // 1. Main entries via RubricDeleters.
         foreach ($this->deleters as $deleter) {
             if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
                 foreach ($deleter->findItemIdsCreatedBy($userId, $contextId) as $itemId) {
@@ -51,21 +47,14 @@ class UserContentDeleter
             $deleter->nullifyReferencesInContext($userId, $contextId);
         }
 
-        // 1b. Tasks — not a rubric, handled as an auxiliary table alongside
-        //     link_items / annotations. Cascade-delete the ones the user
-        //     created (so moderator UIs don't see ghost REQUESTs), then
-        //     always nullify any creator references left behind.
+        // 1b. Tasks — auxiliary, not a rubric.
         if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
             $this->userDeletionHelper->deleteUserTasks($userId, $contextId, $userId);
         }
         $this->userDeletionHelper->nullifyUserTaskReferences($userId, $contextId);
 
-        // 1c. Assessments — also not a rubric (auxiliary per-user rating on
-        //     another item; no UI, no ES, no attachments). Same shape as the
-        //     tasks block above: CASCADE cleans the user's own ratings so
-        //     they don't linger under a NULL author; KEEP preserves the
-        //     numeric value in the rated item's average but erases
-        //     authorship.
+        // 1c. Assessments — auxiliary per-user ratings. KEEP preserves the
+        //     numeric value in the rated item's average but erases authorship.
         if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
             $this->assessmentDeleter->softDeleteAssessmentsByUser($userId, $contextId, $userId);
         }
@@ -86,12 +75,9 @@ class UserContentDeleter
 
     /**
      * Cleans up references in tables shared across all rubrics:
-     * - files (creator_id)
-     * - link_modifier_item (modifier references)
-     *
-     * Note: the `items` table itself has no `modifier_id` / `creator_id`
-     * columns (see initial.sql) — modifier history lives in
-     * `link_modifier_item` and is purged below.
+     * `files.creator_id` and `link_modifier_item`. The `items` table has no
+     * `modifier_id` / `creator_id` — modifier history lives in
+     * `link_modifier_item`.
      */
     private function cleanupSharedReferences(int $userId, int $contextId): void
     {
@@ -117,7 +103,6 @@ class UserContentDeleter
             return DeletionStrategy::KEEP_ITEMS;
         }
 
-        // If the portal allows user-defined strategies, check the user's preference
         if ($portal->isAllowUserDefinedDeletionStrategy()) {
             $setting = $this->accountSettingsManager->getSetting(
                 $account,
@@ -129,7 +114,6 @@ class UserContentDeleter
                 : DeletionStrategy::KEEP_ITEMS;
         }
 
-        // Otherwise use the portal-wide default
         return $portal->isCascadingUserDeletionStrategy()
             ? DeletionStrategy::CASCADE_ITEMS
             : DeletionStrategy::KEEP_ITEMS;

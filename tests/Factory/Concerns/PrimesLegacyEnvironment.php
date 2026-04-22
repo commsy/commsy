@@ -23,28 +23,16 @@ use cs_user_item;
 use LogicException;
 
 /**
- * Bootstraps the legacy `cs_environment` so that a legacy manager's
- * `getNewItem()->save()` chain can run correctly from within tests.
- *
- * The legacy save logic (see `cs_manager::saveItem()`) depends on three
- * pieces of request-scoped state being set:
- *
- *  - the current portal id (scopes permissions and queries)
- *  - the current context id (becomes `context_id` in the rubric tables)
- *  - the current `cs_user_item` (becomes `creator_id`/`modifier_id`)
- *
- * Production code picks these up from the HTTP request / security token.
- * In tests we have a persisted {@see Room} plus {@see User} from a Foundry
- * story, and translate them into the legacy world here — once, in one place,
- * so individual factories stay focused on their own data.
+ * Bootstraps the legacy `cs_environment` so `getNewItem()->save()` chains work
+ * in tests. Legacy saves require request-scoped state (current portal id,
+ * context id, `cs_user_item`) which production pulls from the HTTP request —
+ * this trait translates a Foundry-created Room + User into the legacy slots.
+ * Without priming, factory-created items are invisible to `getItem()`-based
+ * code under test.
  */
 trait PrimesLegacyEnvironment
 {
     /**
-     * Prepares the legacy environment so that subsequent manager calls
-     * (`$env->getAnnouncementManager()->getNewItem()->save()` and friends)
-     * pick up the expected creator, modifier and context.
-     *
      * Idempotent: safe to call multiple times in the same test.
      */
     protected function primeLegacyEnvironment(Room $room, User $actor): cs_environment
@@ -67,18 +55,8 @@ trait PrimesLegacyEnvironment
         return $env;
     }
 
-    /**
-     * Returns the LegacyEnvironment service. Individual factories inject the
-     * service themselves; this method provides the single access point the
-     * trait relies on.
-     */
     abstract protected function getLegacyEnvironmentService(): LegacyEnvironment;
 
-    /**
-     * Translates a Doctrine {@see User} into its legacy `cs_user_item`
-     * counterpart by querying the legacy user manager for the user's item id
-     * inside the given room context.
-     */
     private function resolveLegacyUserItem(cs_environment $env, Room $room, User $actor): cs_user_item
     {
         $itemId = $actor->getItemId();

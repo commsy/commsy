@@ -24,16 +24,9 @@ use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Deletes Todo items without delegating to the legacy
- * `cs_todo_item::delete()` / `cs_step_item::delete()` cascade.
- *
- * In addition to the generic `RubricDeleter` contract (ganzes Todo inkl.
- * aller Steps) this class exposes {@see deleteStep()} for the UI
- * delete-single-step flow. Steps are flat (no hierarchy like
- * discussionarticles) — a step is always a leaf, so we never need the
- * DSGVO-purge path that exists for discussion articles. A single-step
- * delete re-indexes the parent todo so the removed step disappears from
- * its embedded `steps` field in the `commsy_todo` index.
+ * Deletes Todo items. Replaces the legacy `cs_todo_item::delete()` /
+ * `cs_step_item::delete()` cascade. Beyond the generic `RubricDeleter`
+ * contract, exposes {@see deleteStep()} for the UI delete-single-step flow.
  */
 class TodoDeleter implements RubricDeleter
 {
@@ -64,8 +57,8 @@ class TodoDeleter implements RubricDeleter
     }
 
     /**
-     * Only top-level todos are returned; steps (stored in `step`) are
-     * soft-deleted transitively by {@see softDeleteItem()} on the parent todo.
+     * Only top-level todos; steps are soft-deleted transitively by
+     * {@see softDeleteItem()}.
      */
     public function findItemIdsInContext(int $contextId): array
     {
@@ -81,22 +74,15 @@ class TodoDeleter implements RubricDeleter
     }
 
     /**
-     * Soft-deletes the todo **and every step it contains** in one go.
-     *
-     * Cascading the whole tree means we do not dispatch per-step events —
-     * steps have no own ES index and the parent todo is removed via
-     * `ItemDeletedEvent` anyway.
+     * Soft-deletes the todo and every step it contains in one go.
      */
     public function softDeleteItem(int $itemId, int $deleterId): void
     {
-        // 1. Dispatch the deletion event. ElasticaSubscriber removes the todo
-        //    document from `commsy_todo`; the step data it embedded dies with it.
         $typedItem = $this->itemService->getTypedItem($itemId);
         if ($typedItem !== null) {
             $this->eventDispatcher->dispatch(new ItemDeletedEvent($typedItem), ItemDeletedEvent::NAME);
         }
 
-        // 2. Collect all alive step ids that belong to this todo.
         $stepIds = array_map('intval', $this->connection->fetchFirstColumn(
             'SELECT item_id FROM step
                 WHERE todo_item_id = :todoId
@@ -105,10 +91,6 @@ class TodoDeleter implements RubricDeleter
             ['todoId' => $itemId]
         ));
 
-        // 3. Soft-delete every step row in a single UPDATE + batch-clean aux rows.
-        //    Fixes a legacy inconsistency: cs_step_manager::delete() cleaned
-        //    link_items but not `links` — softDeleteAuxiliaryRowsForItems()
-        //    handles both uniformly.
         if (!empty($stepIds)) {
             $this->connection->executeStatement(
                 'UPDATE step
@@ -121,7 +103,6 @@ class TodoDeleter implements RubricDeleter
             $this->rubricDeletionHelper->softDeleteAuxiliaryRowsForItems($stepIds, $deleterId);
         }
 
-        // 4. Soft-delete the `todos` row itself.
         $this->connection->executeStatement(
             'UPDATE todos
                 SET deletion_date = NOW(), deleter_id = :deleterId
@@ -129,8 +110,7 @@ class TodoDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'itemId' => $itemId]
         );
 
-        // 5. Auxiliary cleanup for the todo. No annotations: todos don't carry
-        //    annotations in the legacy model (same as discussions).
+        // Todos don't carry annotations (same as discussions).
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
@@ -138,12 +118,9 @@ class TodoDeleter implements RubricDeleter
     }
 
     /**
-     * Deletes a single step.
-     *
-     * Steps are flat, so this is always a regular soft-delete (unlike
-     * discussion articles, there is no "with children"-purge-path). After
-     * the step is gone, the parent todo gets a re-index event so the
-     * removed step disappears from its embedded `steps` field.
+     * Deletes a single step. Steps are flat, so always a regular
+     * soft-delete. After the step is gone, the parent todo gets a re-index
+     * event so the removed step disappears from its embedded `steps` field.
      */
     public function deleteStep(int $stepId, int $deleterId): void
     {
@@ -170,9 +147,8 @@ class TodoDeleter implements RubricDeleter
         $this->rubricDeletionHelper->softDeleteFileLinks($stepId);
         $this->rubricDeletionHelper->softDeleteItemsRow($stepId, $deleterId);
 
-        // Re-index the parent todo so the removed step disappears from its
-        // embedded `steps` field. ElasticaSubscriber::onItemReindex picks
-        // this up; ReadStatusSubscriber invalidates the read-status cache.
+        // Re-index parent todo so the removed step disappears from its
+        // embedded `steps` field.
         $todo = $this->itemService->getTypedItem($todoId);
         if ($todo !== null) {
             $this->eventDispatcher->dispatch(new ItemReindexEvent($todo), ItemReindexEvent::class);
@@ -193,10 +169,8 @@ class TodoDeleter implements RubricDeleter
     }
 
     /**
-     * Sweeps both `todos` (top-level) and `step` (sub-entries). Legacy's
-     * CronHardDelete only covered `todos` via CS_TODO_TYPE (step was not
-     * in the legacy item-types list at all), leaving expired steps
-     * orphaned. Closing that gap here.
+     * Sweeps both `todos` and `step`. Legacy only covered `todos`, leaving
+     * expired steps orphaned — gap closed here.
      */
     public function hardDeleteOlderThan(int $days): int
     {

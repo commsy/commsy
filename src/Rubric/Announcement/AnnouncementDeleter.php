@@ -11,13 +11,8 @@ use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Deletes Announcement items without delegating to the legacy
+ * Deletes Announcement items. Replaces the legacy
  * `cs_announcement_item::delete()` cascade.
- *
- * Serves as the proof of concept for the Strangler Fig refactoring towards
- * self-contained deletion logic in `src/Rubric/`. Equivalent to the legacy
- * behaviour except that file-link cleanup is applied uniformly (the legacy
- * announcement delete did not clean up `item_link_file` — a latent bug).
  */
 class AnnouncementDeleter implements RubricDeleter
 {
@@ -58,15 +53,11 @@ class AnnouncementDeleter implements RubricDeleter
 
     public function softDeleteItem(int $itemId, int $deleterId): void
     {
-        // 1. Dispatch the deletion event (triggers ES removal via ElasticaSubscriber,
-        //    moderator mails via ItemSubscriber, etherpad cleanup, …). The typed item
-        //    is loaded lazily — if it no longer exists we silently skip the event.
         $typedItem = $this->itemService->getTypedItem($itemId);
         if ($typedItem !== null) {
             $this->eventDispatcher->dispatch(new ItemDeletedEvent($typedItem), ItemDeletedEvent::NAME);
         }
 
-        // 2. Soft-delete the row in the rubric-specific `announcement` table.
         $this->connection->executeStatement(
             'UPDATE announcement
                 SET deletion_date = NOW(), deleter_id = :deleterId
@@ -74,29 +65,10 @@ class AnnouncementDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'itemId' => $itemId]
         );
 
-        // 3. Soft-delete rows in the `links` table referencing this announcement
-        //    (all link types, both directions). Legacy cs_announcement_manager
-        //    only hard-deleted `relevant_for` — we unify this across all rubrics
-        //    as a soft-delete so restore / audit use cases keep working.
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
-
-        // 4. Soft-delete `link_items` rows referencing this announcement.
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-
-        // 5. Soft-delete any annotations attached to this announcement (plus their
-        //    items-twin rows and link_items references).
         $this->rubricDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
-
-        // 6. Soft-delete file-link attachments. Announcements can technically carry
-        //    file attachments (cs_item::getFileList() is on the base class), but the
-        //    legacy delete cascade forgot to clean these up — we do it here for
-        //    consistency across all rubrics.
         $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
-
-        // 7. Soft-delete the shared `items` table row. Keeping this inside the
-        //    deleter makes `softDeleteItem()` the single source of truth for what it
-        //    means to delete an announcement — both the UI delete action and the
-        //    user-footprint erasure flow go through the same path.
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 

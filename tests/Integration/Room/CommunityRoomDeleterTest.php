@@ -36,13 +36,9 @@ use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see CommunityRoomDeleter}.
- *
- * Beyond the shared RoomDeleter contract the community-specific assertions
- * cover the project-room linkage: deleting a community must soft-delete
- * the bidirectional `link_items` rows but leave the linked project rooms
- * themselves alive — matching legacy semantics where a community could
- * be deleted regardless of how many projects still referenced it.
+ * Pins CommunityRoomDeleter on top of the shared RoomDeleter contract,
+ * plus the community-specific rule that linked project rooms survive
+ * (only the community↔project link_item dies).
  */
 final class CommunityRoomDeleterTest extends KernelTestCase
 {
@@ -92,12 +88,6 @@ final class CommunityRoomDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $member->getItemId());
     }
 
-    /**
-     * Legacy semantics: a community can be deleted while it still has
-     * linked project rooms. Only the bidirectional `link_items` row dies;
-     * the project room keeps living, just without the community on its
-     * `getCommunityList()`.
-     */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteDropsCommunityProjectLinkButKeepsProjectAlive(): void
     {
@@ -120,13 +110,8 @@ final class CommunityRoomDeleterTest extends KernelTestCase
 
         $this->deleter->softDeleteRoom($community->getItemId(), $this->deleterId, RoomDeletionOptions::forUserAction());
 
-        // community itself is gone …
         $this->assertSoftDeleted('room', $community->getItemId());
-
-        // … the link_item row between community and project is gone …
         $this->assertSoftDeleted('link_items', $linkItem->getItemId());
-
-        // … but the project room and its membership survive untouched.
         $this->assertNotSoftDeleted('room', $project->getItemId());
         $this->assertNotSoftDeleted('items', $project->getItemId());
         $this->assertNotSoftDeleted('user', $projectMember->getItemId());
@@ -236,11 +221,6 @@ final class CommunityRoomDeleterTest extends KernelTestCase
         self::assertSame(RoomType::Community, $this->deleter->roomType());
     }
 
-    /**
-     * Happy-path hard-delete: soft-delete → hard-delete physically
-     * removes the `room` row, rubric content and membership row, while
-     * leaving a bystander room untouched.
-     */
     #[WithStory(AccountStory::class)]
     public function testHardDeleteRemovesRoomAndContentPhysically(): void
     {

@@ -28,18 +28,8 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 /**
  * @extends PersistentObjectFactory<Labels>
  *
- * Creates a label through the **legacy** manager chain (`cs_labels_manager`
- * shared between topic/hashtag/buzzword/timepulse/institution/group — the
- * subtype is stored in `labels.type`). This mirrors how HashtagController,
- * LabelService::getNewHashtag, and the other label call sites create rows.
- *
- * `type` defaults to `buzzword` because it is the simplest subtype — no ES
- * indexing (see `cs_label_item::save()`), no grouproom mirror, no activation
- * window. Tests that need another subtype can pass `type: 'topic'` etc.
- *
- * Required factory inputs:
- *  - `room`    App\Entity\Room — the containing context
- *  - `creator` App\Entity\User — priming the legacy current-user slot
+ * `type` defaults to `buzzword` — simplest subtype (no ES indexing, no
+ * grouproom mirror, no activation window). Pass `type: 'topic'` etc. as needed.
  */
 final class LabelFactory extends PersistentObjectFactory
 {

@@ -26,13 +26,11 @@ use Doctrine\DBAL\Connection;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Deletes Dates items without delegating to the legacy
- * `cs_dates_item::delete()` / `cs_dates_manager::delete()` cascade.
+ * Deletes Dates items. Replaces the legacy `cs_dates_item::delete()` /
+ * `cs_dates_manager::delete()` cascade.
  *
- * In addition to the generic RubricDeleter contract (single item delete), this
- * class exposes two Dates-specific operations that the UI `DeleteDate` action
- * needs — series deletion and "exclude occurrence from series" — so the action
- * can stay a thin wrapper around the deleter.
+ * Beyond the generic RubricDeleter contract, exposes {@see deleteSeries()}
+ * and {@see excludeOccurrenceFromSeries()} for the UI `DeleteDate` action.
  */
 class DatesDeleter implements RubricDeleter
 {
@@ -78,20 +76,17 @@ class DatesDeleter implements RubricDeleter
     }
 
     /**
-     * Soft-deletes a single date occurrence (series membership is not
-     * considered here — use {@see deleteSeries()} to remove every occurrence
-     * of a recurrence, or {@see excludeOccurrenceFromSeries()} to keep
-     * siblings but suppress this one in the RRULE).
+     * Soft-deletes a single date occurrence. Use {@see deleteSeries()} to
+     * remove every occurrence, or {@see excludeOccurrenceFromSeries()} to
+     * keep siblings but suppress this one in the RRULE.
      */
     public function softDeleteItem(int $itemId, int $deleterId): void
     {
-        // 1. Dispatch the deletion event so ES/mail/etherpad subscribers fire.
         $typedItem = $this->itemService->getTypedItem($itemId);
         if ($typedItem !== null) {
             $this->eventDispatcher->dispatch(new ItemDeletedEvent($typedItem), ItemDeletedEvent::NAME);
         }
 
-        // 2. Soft-delete the rubric-specific `dates` row.
         $this->connection->executeStatement(
             'UPDATE dates
                 SET deletion_date = NOW(), deleter_id = :deleterId
@@ -99,27 +94,13 @@ class DatesDeleter implements RubricDeleter
             ['deleterId' => $deleterId, 'itemId' => $itemId]
         );
 
-        // 3. Soft-delete every `links` row referencing this date (all types,
-        //    both directions). Matches the legacy cs_dates_manager behaviour
-        //    which did the same via deleteLinksBecauseItemIsDeleted().
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
-
-        // 4. Soft-delete `link_items` rows referencing this date.
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-
-        // 5. Soft-delete annotations attached to this date.
         $this->rubricDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
-
-        // 6. Soft-delete file-link attachments.
         $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
-
-        // 7. Soft-delete the shared `items` row — single source of truth for
-        //    what it means to delete a date, both from UI and user-footprint.
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
 
-        // 8. Bump the CalDAV sync token so external clients notice the change.
-        //    Mirrors legacy DeleteDate::delete() which called this once per
-        //    deletion. Typed item may be null if the row was already gone.
+        // Bump the CalDAV sync token so external clients notice the change.
         if ($typedItem instanceof cs_dates_item) {
             $calendarId = $typedItem->getCalendarId();
             if (!empty($calendarId)) {
@@ -130,10 +111,6 @@ class DatesDeleter implements RubricDeleter
 
     /**
      * Soft-deletes every occurrence that shares the given recurrence id.
-     *
-     * Mirrors the `$recurring === true` branch in legacy DeleteDate::delete().
-     * updateSynctoken() is invoked per occurrence (via {@see softDeleteItem()}),
-     * matching legacy behaviour — the CalDAV sync cost stays the same.
      */
     public function deleteSeries(int $recurrenceId, int $deleterId): void
     {
@@ -151,13 +128,10 @@ class DatesDeleter implements RubricDeleter
     }
 
     /**
-     * Removes a single occurrence from an otherwise-intact series.
-     *
-     * The occurrence itself is soft-deleted as usual; additionally, each
-     * remaining sibling's recurrence_pattern is patched with a
-     * `recurringExclude` entry so CalDAV/RRULE consumers skip the slot.
-     *
-     * Mirrors the `else` branch in legacy DeleteDate::delete().
+     * Removes a single occurrence from an otherwise-intact series. The
+     * occurrence is soft-deleted; each sibling's recurrence_pattern is
+     * patched with a `recurringExclude` entry so CalDAV/RRULE consumers
+     * skip the slot.
      */
     public function excludeOccurrenceFromSeries(int $itemId, int $deleterId): void
     {
@@ -176,9 +150,8 @@ class DatesDeleter implements RubricDeleter
         $excludeDate = new DateTime($typedItem->getDateTime_start());
         $excludeToken = $excludeDate->format('Ymd\THis');
 
-        // Patch siblings via the legacy manager — recurrence_pattern is stored
-        // serialized, so we reuse its get/set accessors rather than hand-rolling
-        // the serialization here.
+        // Reuse legacy manager accessors since recurrence_pattern is stored
+        // serialized.
         $datesManager = $this->legacyEnvironment->getEnvironment()->getDatesManager();
         $datesManager->resetLimits();
         $datesManager->setRecurrenceLimit((string) $recurrenceId);
@@ -201,7 +174,6 @@ class DatesDeleter implements RubricDeleter
             $sibling = $list->getNext();
         }
 
-        // Finally soft-delete the occurrence itself.
         $this->softDeleteItem($itemId, $deleterId);
     }
 

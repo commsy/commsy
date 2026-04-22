@@ -19,23 +19,10 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Throwable;
 
 /**
- * Orchestrator for the post-grace-period physical removal of soft-deleted
- * rubric items. Replaces the per-manager `cs_*_manager::deleteReallyOlderThan()`
- * calls that {@see \App\Cron\Tasks\CronHardDelete} used to make in a loop
- * over legacy item-type constants.
- *
- * The orchestrator is deliberately thin — each {@see RubricDeleter} knows
- * which tables are rubric-owned (primary table plus any sub-entry table
- * like `section` / `step` / `discussionarticles`) and does the bulk DELETE
- * itself. This keeps rubric-specific concerns out of the central cron
- * task and mirrors the shape of {@see \App\Room\RoomHardDeleter}.
- *
- * Auxiliary tables that are not owned by any single rubric (shared
- * `items` twin rows, `links`, `link_items`, `tag`, `tag2tag`) and the two
- * tables with non-standard hard-delete semantics (`files` needs FS
- * cleanup, `item_link_file` is a pure join table) stay on the legacy
- * {@see \cs_manager::deleteReallyOlderThan()} path for now — see the
- * kept-legacy list in {@see \App\Cron\Tasks\CronHardDelete}.
+ * Orchestrator for post-grace-period physical removal of soft-deleted
+ * rubric items. Iterates every registered {@see RubricDeleter} and
+ * delegates the bulk DELETE to each; shared auxiliary tables are handled
+ * elsewhere (see {@see \App\Cron\Tasks\CronHardDelete}).
  */
 readonly class RubricHardDeleter
 {
@@ -49,12 +36,9 @@ readonly class RubricHardDeleter
     ) {}
 
     /**
-     * Runs every registered rubric deleter's {@see RubricDeleter::hardDeleteOlderThan()}
-     * and returns the total number of rows physically removed across all
-     * rubrics — useful for cron summary logging.
-     *
-     * A failing deleter is logged and skipped so one rubric's failure does
-     * not starve the others out of their cleanup pass.
+     * Runs every registered rubric deleter and returns the total number of
+     * rows physically removed. A failing deleter is logged and skipped so
+     * one rubric's failure does not starve the others.
      */
     public function hardDeleteOlderThan(int $days): int
     {

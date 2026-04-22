@@ -27,14 +27,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Todos>
- *
- * Creates a todo through the **legacy** manager chain
- * (`cs_todos_manager::getNewItem()` + `save()`), mirroring the path a
- * controller takes when a user opens a new todo.
- *
- * Required inputs:
- *  - `room`    App\Entity\Room — the containing context
- *  - `creator` App\Entity\User — priming the legacy current-user slot
  */
 final class TodoFactory extends PersistentObjectFactory
 {

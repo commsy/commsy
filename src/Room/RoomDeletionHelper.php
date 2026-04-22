@@ -21,21 +21,9 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 
 /**
- * Shared low-level deletion primitives for *room-wide* data that has no
- * `RubricDeleter` of its own.
- *
- * Complements {@see RubricDeletionHelper}: that helper operates on a
- * single item (link_items, links, annotations, file_links, items-row),
- * while this one operates on everything keyed by `context_id = $roomId`
- * — tasks, labels (topics / buzzwords / groups / institutions), user
- * memberships — as well as the two genuinely room-specific edge cases:
- * the `cs_community_item` extras blob that tracks linked project rooms,
- * and the `cs_group_item` label row mirrored onto every group room.
- *
- * Hard-delete primitives (removing the room directory, purging reader /
- * hash rows, bulk `DELETE WHERE context_id`) are intentionally *not*
- * part of this helper yet — they land with the {@see RoomHardDeleter}
- * service in a later commit.
+ * Shared low-level soft-delete primitives for room-wide data that has no
+ * dedicated `RubricDeleter` — tasks, labels, memberships, plus the
+ * room-specific extras-blob edge cases. Complements {@see RubricDeletionHelper}.
  */
 class RoomDeletionHelper
 {
@@ -50,14 +38,8 @@ class RoomDeletionHelper
     }
 
     /**
-     * Soft-deletes every task in `$roomId` regardless of creator, plus
-     * each task's annotations and auxiliary rows (link_items, links,
-     * file_links, items twin). Task rows are flipped to `status = 'CLOSED'`
-     * so moderator UIs that list open requests never show ghost rows.
-     *
-     * Room-wide counterpart to {@see \App\User\UserDeletionHelper::deleteUserTasks}
-     * (which is user-wide). Legacy equivalent:
-     * `foreach ($room->_getTaskList() as $task) { $task->delete(); }`.
+     * Soft-deletes every task in the room plus their aux rows, and flips
+     * `status = 'CLOSED'` so moderator UIs stop surfacing ghost rows.
      */
     public function softDeleteRoomTasks(int $roomId, int $deleterId): void
     {
@@ -88,16 +70,10 @@ class RoomDeletionHelper
     }
 
     /**
-     * Soft-deletes every label (topic, buzzword, group, institution, tag …)
-     * in `$roomId`, along with their link_items / links / file_links /
-     * items twin rows.
-     *
-     * Legacy analogue: the `labels` rows are cleaned up by
-     * `cs_labels_manager::deleteFromDb()` during hard-delete; on soft-delete
-     * the legacy cascade relied on the room item's own cascade not
-     * touching them (they stayed around until the room was really gone).
-     * We apply the cleanup on soft-delete too, so ES documents and the
-     * `labels` table stay consistent with the room's lifecycle.
+     * Soft-deletes every label (topic, buzzword, group, institution, tag)
+     * in the room, along with their aux rows. Unlike legacy — which only
+     * cleaned them on hard-delete — we apply cleanup on soft-delete too,
+     * to keep ES and the labels table consistent with the room lifecycle.
      */
     public function softDeleteLabelsInContext(int $roomId, int $deleterId): void
     {
@@ -122,14 +98,8 @@ class RoomDeletionHelper
     }
 
     /**
-     * Soft-deletes every `cs_user_item` row whose `context_id = $roomId`
-     * — i.e. every user membership *in this room*, not the globally-scoped
-     * account rows (those live in context 99).
-     *
-     * Legacy analogue in `cs_project_item::delete()`:
-     * `foreach ($this->getUserList() as $user) { $user->delete(); }`.
-     * Aux rows (tasks, annotations, file attachments of user profile
-     * pages) are cleaned via the shared batch primitive.
+     * Soft-deletes every membership row in the room (not the portal-scoped
+     * account rows) plus their aux rows.
      */
     public function softDeleteRoomMemberships(int $roomId, int $deleterId): void
     {
@@ -154,22 +124,11 @@ class RoomDeletionHelper
     }
 
     /**
-     * Soft-deletes the `cs_group_item` label row mirrored onto a group
-     * room via the legacy `GROUP_ITEM_ID` extras entry.
+     * Soft-deletes the group-as-label row mirrored onto a group room via
+     * the `GROUP_ITEM_ID` extras entry.
      *
-     * The link between a group room and its matching group-as-label row
-     * is stored as a serialised-PHP extras blob on the group room's
-     * `items` row. Rather than re-implementing the serialisation parsing
-     * in DBAL, we peek at the legacy loader just long enough to discover
-     * the id, then soft-delete the label row with the same primitives
-     * used for every other label.
-     *
-     * Legacy analogue: `cs_grouproom_item::delete()` calls
-     * `$this->getLinkedGroupItem()?->delete(false)`.
-     *
-     * **Legacy-Boundary Layer**: isolates the `cs_grouproom_item` extras-
-     * blob access to a single call site. Will go away when Ticket G
-     * (Storage-Abstraktion / extras-blob aus Legacy ziehen) lands.
+     * Legacy-Boundary: isolates cs_grouproom_item extras-blob access;
+     * dissolves with the storage-abstraction ticket.
      */
     public function softDeleteLinkedGroupEntity(int $groupRoomId, int $deleterId): void
     {
@@ -188,7 +147,6 @@ class RoomDeletionHelper
             return;
         }
 
-        // Already soft-deleted? (labels table is shared with groups.)
         $alreadyDeleted = (bool) $this->connection->fetchOne(
             'SELECT 1 FROM labels
                 WHERE item_id = :id AND deletion_date IS NOT NULL',
@@ -211,30 +169,15 @@ class RoomDeletionHelper
     }
 
     /**
-     * Returns the ids of all live sub-rooms (`grouproom` / `userroom`) that
-     * belong to the given project room, identified by the `PROJECT_ROOM_ITEM_ID`
-     * extras entry on each sub-room's `room` row.
-     *
-     * Legacy parity: `cs_grouproom_manager::_buildQuery()` and
-     * `cs_userroom_manager::_buildQuery()` both filter precisely with a
-     * serialised-PHP `LIKE` against the same extras blob
-     * (`s:20:"PROJECT_ROOM_ITEM_ID";i:<projectId>;`). We replicate the
-     * pattern verbatim instead of parsing the blob, because the format is
-     * frozen legacy and the LIKE matches the same rows the legacy managers
-     * would — including rooms whose `context_id` column holds the portal
-     * id rather than the project id (userrooms go via the portal per
-     * {@see \App\Room\RoomManager::createRoom}).
-     *
-     * Deleted sub-rooms are filtered out so the idempotent guard inside
-     * the respective sub-room deleter stays consistent with what we
-     * already know to skip.
+     * Returns ids of all live sub-rooms (grouproom / userroom) of the given
+     * project, matched via the serialised-PHP `PROJECT_ROOM_ITEM_ID` extras
+     * entry. Parity with legacy `cs_grouproom_manager`/`cs_userroom_manager`
+     * `_buildQuery()`.
      *
      * @return int[]
      */
     public function findSubRoomsOfProject(int $projectRoomId, string $roomType): array
     {
-        // Serialised-PHP LIKE pattern, identical to the one legacy's
-        // cs_grouproom_manager / cs_userroom_manager builds.
         $pattern = '%s:20:"PROJECT_ROOM_ITEM_ID";i:' . $projectRoomId . ';%';
 
         return array_map('intval', $this->connection->fetchFirstColumn(
@@ -247,26 +190,12 @@ class RoomDeletionHelper
     }
 
     /**
-     * Removes `$projectRoomId` from the `PROJECT_ID_ARRAY` extras blob
-     * of every community room that currently references it.
+     * Removes the project id from the `PROJECT_ID_ARRAY` extras blob on
+     * every community room that references it. Delegates to the legacy
+     * API since raw SQL would have to rebuild the serialised-PHP blob.
      *
-     * The relationship between a community and its "internal" project
-     * rooms lives in a serialised-PHP array on the community item's
-     * extras column (see `cs_community_item::addProjectID2InternalProjectIDArray`
-     * / `removeProjectID2InternalProjectIDArray`). Rebuilding the
-     * serialisation in raw SQL is fragile — and touching the extras
-     * blob also has to go through the community's `saveWithoutChanging
-     * ModificationInformation()` so the modification timestamp is not
-     * bumped. So we delegate to the legacy API, which is narrow enough
-     * to stay stable even while the rest of the cascade is modernised.
-     *
-     * Legacy analogue: the community-list loop inside
-     * `cs_project_item::delete()`.
-     *
-     * **Legacy-Boundary Layer**: isolates the `cs_community_item` extras-
-     * blob mutation (`PROJECT_ID_ARRAY`) to a single call site. Will go
-     * away when Ticket G (Storage-Abstraktion) replaces the serialised-
-     * PHP extras blob with a proper schema.
+     * Legacy-Boundary: isolates cs_community_item extras-blob mutation;
+     * dissolves with the storage-abstraction ticket.
      */
     public function nullifyPortalProjectLinks(int $projectRoomId): void
     {

@@ -31,13 +31,8 @@ use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see PrivateRoomDeleter}.
- *
- * Structurally private rooms are a twin of user rooms (no sub-rooms, no
- * portal / community links, no moderation mails, not indexed in ES), so
- * the assertion suite mirrors {@see UserRoomDeleterTest}. Keeping the
- * tests separate rather than parameterised makes the type-specific
- * behaviour (`supports()`, `roomType()`) self-documenting.
+ * Pins PrivateRoomDeleter — structurally a twin of UserRoomDeleter (no
+ * sub-rooms, no portal/community links, no moderation mails, not in ES).
  */
 final class PrivateRoomDeleterTest extends KernelTestCase
 {
@@ -59,9 +54,8 @@ final class PrivateRoomDeleterTest extends KernelTestCase
     }
 
     /**
-     * Regular call sites (AccountMerger) drain the private room first,
-     * but DB-fix scripts and tests can hand over a non-empty room — the
-     * orchestrator must still cascade into rubric content in that case.
+     * AccountMerger drains the private room first, but DB-fix scripts can
+     * hand over a non-empty room — cascade must still run.
      */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteCascadesIntoRubricContent(): void
@@ -80,11 +74,6 @@ final class PrivateRoomDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $announcement->getItemId());
     }
 
-    /**
-     * The owner's `cs_user_item` row inside the private room must be
-     * soft-deleted. The portal-level account on the `accounts` table
-     * must stay untouched — account lifecycle is the caller's concern.
-     */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteSoftDeletesRoomMemberships(): void
     {
@@ -98,9 +87,8 @@ final class PrivateRoomDeleterTest extends KernelTestCase
     }
 
     /**
-     * Idempotency matters most here: AccountMerger and AccountDeleter
-     * can both reach the same private room in quick succession when an
-     * account is merged and then cleaned up.
+     * AccountMerger and AccountDeleter can both reach the same private
+     * room in quick succession.
      */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteIsIdempotent(): void
@@ -114,8 +102,6 @@ final class PrivateRoomDeleterTest extends KernelTestCase
             ['id' => $room->getItemId()]
         );
 
-        // Intentionally call with a different deleter id — if the second run
-        // were to slip through, the stored deleter_id would change.
         $this->deleter->softDeleteRoom($room->getItemId(), 999999, RoomDeletionOptions::forUserAction());
 
         $row = $this->connection->fetchAssociative(
@@ -146,13 +132,6 @@ final class PrivateRoomDeleterTest extends KernelTestCase
         self::assertSame(RoomType::PrivateRoom, $this->deleter->roomType());
     }
 
-    /**
-     * Happy-path hard-delete: soft-delete → hard-delete physically
-     * removes the `room` row, rubric content and membership row, while
-     * leaving a bystander room untouched. See the same test in
-     * {@see UserRoomDeleterTest} for the rationale around FS coverage
-     * and the orchestrator scope boundary.
-     */
     #[WithStory(AccountStory::class)]
     public function testHardDeleteRemovesRoomAndContentPhysically(): void
     {

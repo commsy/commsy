@@ -26,18 +26,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see AssessmentDeleter}.
- *
- * Assessments are per-user ratings attached to rubric items, not a rubric on
- * their own — they have no factory, so rows are inserted via DBAL. The rated
- * item (an Announcement) is created through the existing factory so the
- * `item_link_id` side of the relation is realistic.
- *
- * Covers the four entry points on the deleter:
- *  - {@see AssessmentDeleter::softDelete()}
- *  - {@see AssessmentDeleter::softDeleteAssessmentsByUser()}
- *  - {@see AssessmentDeleter::nullifyReferencesInContext()}
- *  - {@see AssessmentDeleter::hardDeleteOlderThan()}
+ * Pins {@see AssessmentDeleter}'s four entry points at the DB level.
+ * Assessments have no factory (they're per-user ratings, not a rubric), so
+ * rows are inserted via DBAL; the rated Announcement comes from the factory.
  */
 final class AssessmentDeleterTest extends KernelTestCase
 {
@@ -59,10 +50,6 @@ final class AssessmentDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $itemId);
     }
 
-    /**
-     * Regression guard: soft-deleting one rating must not affect other alive
-     * assessments for the same parent item.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testSoftDeleteDoesNotAffectBystanderAssessments(): void
     {
@@ -77,9 +64,7 @@ final class AssessmentDeleterTest extends KernelTestCase
     }
 
     /**
-     * CASCADE_ITEMS mode in {@see \App\Rubric\UserContentDeleter}: every alive
-     * rating the given user created in the context must be soft-deleted;
-     * other users' ratings stay alive, already soft-deleted rows are skipped.
+     * CASCADE_ITEMS mode in {@see \App\Rubric\UserContentDeleter}.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testSoftDeleteAssessmentsByUserSweepsAllAliveAssessments(): void
@@ -100,9 +85,8 @@ final class AssessmentDeleterTest extends KernelTestCase
     }
 
     /**
-     * KEEP_ITEMS mode: numeric rating values survive (they still contribute to
-     * the item's average), but authorship is erased on every row the user
-     * authored in the context — alive or already soft-deleted.
+     * KEEP_ITEMS mode: rating values survive (they still feed the item's
+     * average), authorship is erased on every row — alive or soft-deleted.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testNullifyReferencesInContextClearsCreatorOnAllRows(): void
@@ -126,10 +110,6 @@ final class AssessmentDeleterTest extends KernelTestCase
         self::assertSame($userId + 1, $this->fetchCreatorId($otherUser), 'other users\' assessments must stay intact');
     }
 
-    /**
-     * Hard-delete sweep: rows past the cutoff vanish physically; rows inside
-     * the grace window stay soft-deleted; alive rows remain fully intact.
-     */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRows(): void
     {

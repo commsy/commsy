@@ -17,35 +17,10 @@ use App\Rubric\RubricDeleter;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
- * Orchestrates soft-deletion of *all* rubric content inside a room.
- *
- * Counterpart to {@see \App\Rubric\UserContentDeleter} which erases a single
- * user's footprint. Where the user-footprint path iterates items created by
- * one particular user, this orchestrator iterates *every* still-alive item
- * in a given room — including items whose creator already left the room
- * and therefore never triggered an `AccountDeletedEvent`-based cleanup.
- *
- * The concrete per-room-type cleanup (sub-rooms, memberships, linked
- * group entities, portal-links, `items`-row of the room itself, event
- * dispatch) lives in the matching {@see RoomDeleter} implementation;
- * this class is content-only.
- *
- * Order of cleanup inside a room (all soft-delete):
- *   1. Every rubric's top-level items via its registered `RubricDeleter`.
- *      `LabelDeleter` is included here — it covers the full `cs_label_item`
- *      hierarchy (topic / hashtag / buzzword / timepulse / institution /
- *      group), so room-wide label cleanup falls out of the generic loop.
- *   2. Tasks (room-wide, not a rubric) via {@see RoomDeletionHelper}.
- *
- * Iteration is per-item rather than bulk-UPDATE on purpose: each
- * `RubricDeleter::softDeleteItem()` dispatches an `ItemDeletedEvent` so
- * ElasticaSubscriber can remove the document from ES, moderation mails
- * fire, etherpad cleanup runs, …. Collapsing it into a bulk UPDATE would
- * leave those side-effects unperformed and desync the search index.
- *
- * Rooms with tens of thousands of items therefore pay a linear cost;
- * that was already true under the legacy per-user cascade and is noted
- * in the top-level plan as an out-of-scope candidate for an async queue.
+ * Orchestrates soft-deletion of all rubric content inside a room. Room-wide
+ * counterpart to {@see \App\Rubric\UserContentDeleter}. Iterates per item
+ * (rather than bulk UPDATE) so each `RubricDeleter` can dispatch its own
+ * ItemDeletedEvent for ES / mail / etherpad cleanup.
  */
 class RoomContentDeleter
 {
@@ -57,10 +32,8 @@ class RoomContentDeleter
     ) {}
 
     /**
-     * Soft-deletes every rubric item in `$roomId` plus the room-wide task
-     * list. Safe to call on a room that is being hard-deleted next: items
-     * already soft-deleted are idempotently skipped by the per-rubric
-     * `findItemIdsInContext()` filters (`deletion_date IS NULL`).
+     * Soft-deletes every rubric item in the room plus the room-wide task
+     * list. Idempotent.
      *
      * @param int $roomId    context id of the room whose content is removed
      * @param int $deleterId user id stamped on all `deleter_id` columns
@@ -73,9 +46,7 @@ class RoomContentDeleter
             }
         }
 
-        // Tasks are auxiliary, not a rubric — clean them up separately.
-        // (The room-wide primitive also flips `status = 'CLOSED'` so
-        // moderator UIs stop surfacing them.)
+        // Tasks are not a rubric — clean them up separately.
         $this->roomDeletionHelper->softDeleteRoomTasks($roomId, $deleterId);
     }
 }

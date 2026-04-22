@@ -32,16 +32,9 @@ use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see UserRoomDeleter}.
- *
- * User rooms are the simplest room flavour — no sub-rooms, no portal or
- * community-link bookkeeping, no moderation mails — so the assertion suite
- * stays focused on the core contract shared by every RoomDeleter:
- *   - the room row and its items twin are soft-deleted,
- *   - rubric content inside the room is soft-deleted (orchestrated via
- *     {@see \App\Room\RoomContentDeleter}),
- *   - user memberships in the room are soft-deleted,
- *   - idempotent and isolated from rooms that happen to share a portal.
+ * Pins UserRoomDeleter against the shared RoomDeleter contract. User rooms
+ * have no sub-rooms, no portal/community-link bookkeeping and no moderation
+ * mails, so this is the baseline shape reused by the other room deleters.
  */
 final class UserRoomDeleterTest extends KernelTestCase
 {
@@ -63,10 +56,8 @@ final class UserRoomDeleterTest extends KernelTestCase
     }
 
     /**
-     * Every rubric item inside the user room must end up soft-deleted too,
-     * driven by {@see \App\Room\RoomContentDeleter}. This is the key
-     * difference to the legacy cascade: items whose creator is *not* a
-     * member of the room at delete-time would previously stay orphaned.
+     * Legacy gap: items whose creator was not a member at delete-time
+     * used to stay orphaned. RoomContentDeleter now sweeps them too.
      */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteCascadesIntoRubricContent(): void
@@ -85,11 +76,6 @@ final class UserRoomDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $announcement->getItemId());
     }
 
-    /**
-     * Memberships (cs_user_item rows whose `context_id` = the room) must be
-     * soft-deleted. This is the room-scope user row, not the portal-level
-     * account — deleting the user room must not touch the account itself.
-     */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteSoftDeletesRoomMemberships(): void
     {
@@ -103,10 +89,8 @@ final class UserRoomDeleterTest extends KernelTestCase
     }
 
     /**
-     * Calling the deleter twice must be a no-op on the second run — the
-     * auto-abandon subscriber in particular can fire on a room mid-delete.
-     * Pinning this down protects against double-counted deletion_date
-     * bumps / duplicate event dispatches once that path is live.
+     * Idempotency matters: the auto-abandon subscriber can fire on a
+     * room mid-delete.
      */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteIsIdempotent(): void
@@ -120,8 +104,6 @@ final class UserRoomDeleterTest extends KernelTestCase
             ['id' => $room->getItemId()]
         );
 
-        // Intentionally call with a different deleter id — if the second run
-        // were to slip through, the stored deleter_id would change.
         $this->deleter->softDeleteRoom($room->getItemId(), 999999, RoomDeletionOptions::forUserAction());
 
         $row = $this->connection->fetchAssociative(
@@ -132,11 +114,6 @@ final class UserRoomDeleterTest extends KernelTestCase
         self::assertSame($this->deleterId, (int) $row['deleter_id'], 'deleter_id must stay pinned to the first caller');
     }
 
-    /**
-     * Regression safety net: deleting one user room must not affect another
-     * room in the same portal. Guards against a missing WHERE clause or a
-     * context-wide UPDATE that would only surface in production.
-     */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteDoesNotAffectOtherRooms(): void
     {
@@ -158,16 +135,9 @@ final class UserRoomDeleterTest extends KernelTestCase
     }
 
     /**
-     * Happy-path hard-delete: following the realistic production flow
-     * (soft-delete → wait out grace period → hard-delete), the `room`
-     * row and its rubric content must be physically removed, while a
-     * bystander room in the same portal must remain entirely untouched.
-     *
-     * Filesystem removal via {@see \cs_disc_manager::removeRoomDir()} is
-     * exercised by the call graph but not asserted on — `removeRoomDir`
-     * no-ops on a missing directory (the test fixtures create no files),
-     * so there is nothing to check on disk. Dedicated FS coverage lives
-     * in {@see \Tests\Unit\Database\FixPhysicalFilesTest}.
+     * FS removal via `cs_disc_manager::removeRoomDir()` is not asserted —
+     * it no-ops on a missing dir. Dedicated FS coverage lives in
+     * {@see \Tests\Unit\Database\FixPhysicalFilesTest}.
      */
     #[WithStory(AccountStory::class)]
     public function testHardDeleteRemovesRoomAndContentPhysically(): void
@@ -182,24 +152,14 @@ final class UserRoomDeleterTest extends KernelTestCase
         $bystander = $this->createUserRoom();
         $bystanderMember = $this->createMembership($bystander);
 
-        // Soft-delete first so the room actually sits in the post-grace
-        // state that a real hard-delete pass would encounter. Calling
-        // hardDeleteRoom() directly here (rather than via
-        // RoomHardDeleter::hardDeleteRoomsOlderThan) keeps the assertion
-        // scope on the per-type cascade — the orchestrator's threshold
-        // query is trivial DBAL and does not need integration coverage.
         $this->deleter->softDeleteRoom($target->getItemId(), $this->deleterId, RoomDeletionOptions::forUserAction());
         $this->deleter->hardDeleteRoom($target->getItemId());
 
-        // Target physically gone: `room` row + the rubric content row +
-        // its items-twin + the membership row.
         $this->assertPhysicallyDeleted('room', $target->getItemId());
         $this->assertPhysicallyDeleted('announcement', $announcement->getItemId());
         $this->assertPhysicallyDeleted('items', $announcement->getItemId());
         $this->assertPhysicallyDeleted('user', $member->getItemId());
 
-        // Bystander must still be alive — catches a missing WHERE clause
-        // or a context-wide DELETE hitting rows outside the target room.
         $this->assertNotSoftDeleted('room', $bystander->getItemId());
         $this->assertNotSoftDeleted('items', $bystander->getItemId());
         $this->assertNotSoftDeleted('user', $bystanderMember->getItemId());

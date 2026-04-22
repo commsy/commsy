@@ -29,19 +29,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Dates>
- *
- * Creates a dates item through the **legacy** manager chain
- * (`cs_dates_manager::getNewItem()` + `save()`) — the same path controllers
- * take when a user creates an appointment. Keeps test fixtures faithful to
- * production so the deletion tests exercise the real schema state.
- *
- * Required inputs:
- *  - `room`    App\Entity\Room — the containing context
- *  - `creator` App\Entity\User — priming the legacy current-user slot
- *
- * Optional inputs (for series tests):
- *  - `recurrenceId`      int    — share a value across instances to form a series
- *  - `recurrencePattern` array  — RRULE-like pattern (stored serialized by legacy)
  */
 final class DatesFactory extends PersistentObjectFactory
 {
@@ -66,9 +53,7 @@ final class DatesFactory extends PersistentObjectFactory
             'description' => self::faker()->paragraph(),
             'room' => null,
             'creator' => null,
-            // `start_day`, `datetime_start`, `datetime_end` are NOT NULL in
-            // the dates schema — provide a sensible default so callers only
-            // override them for tests that actually care about the values.
+            // start_day, datetime_start, datetime_end are NOT NULL in the schema.
             'startDay' => date('Y-m-d'),
             'startTime' => '10:00:00',
             'endDay' => date('Y-m-d'),
@@ -109,12 +94,9 @@ final class DatesFactory extends PersistentObjectFactory
 
                 $env = $this->primeLegacyEnvironment($room, $creator);
 
-                // Legacy _newDate() falls back to `$contextItem->getDefaultCalendarId()`
-                // if no calendarId is set on the item, which in turn calls
-                // CalendarsService::createCalendar() and dereferences
-                // `$roomItem->getCreatorItem()` — but in the test fixture the
-                // legacy room has no creator populated. Short-circuit by
-                // making sure a default calendar exists and set it explicitly.
+                // Legacy _newDate() falls back to getDefaultCalendarId(), which
+                // dereferences a creator item the test fixture's legacy room does
+                // not populate — short-circuit by setting a default calendar explicitly.
                 $calendarId = $this->ensureDefaultCalendar($room, $creator);
 
                 $item = $env->getDatesManager()->getNewItem();
@@ -138,9 +120,8 @@ final class DatesFactory extends PersistentObjectFactory
                     $item->setRecurrencePattern($attributes['recurrencePattern']);
                 }
 
-                // Legacy `_newDate` swallows DBAL exceptions via trigger_error —
-                // promote the E_USER_WARNING to a real exception so missing
-                // NOT-NULL columns show up as real test failures.
+                // Promote legacy trigger_error into a real failure so swallowed
+                // DBAL warnings (missing NOT-NULL columns, etc.) break the test.
                 set_error_handler(function(int $errno, string $errstr): bool {
                     throw new LogicException(sprintf('Legacy save() warning: %s', $errstr));
                 }, E_USER_WARNING);

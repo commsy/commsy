@@ -35,17 +35,9 @@ use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see GroupRoomDeleter}.
- *
- * On top of the contract shared with {@see UserRoomDeleterTest} the group
- * room tests cover the three structural additions:
- *   - WorkspaceDeletedEvent is dispatched (legacy sent the three
- *     moderation mails inline; now it goes through the event + subscriber).
- *   - WorkspaceDeletedEvent is suppressed when options.silent is true —
- *     used by the project-room cascade so we do not fan out one mail per
- *     group room inside the deleted project.
- *   - ItemDeletedEvent is dispatched so ElasticaSubscriber removes the
- *     document from the `commsy_room` index.
+ * Pins GroupRoomDeleter on top of the shared RoomDeleter contract, plus
+ * WorkspaceDeletedEvent dispatch / silent suppression and ItemDeletedEvent
+ * for ES cleanup.
  */
 final class GroupRoomDeleterTest extends KernelTestCase
 {
@@ -95,12 +87,6 @@ final class GroupRoomDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $member->getItemId());
     }
 
-    /**
-     * Moderation-mail delivery used to live in cs_grouproom_item::delete()
-     * as a synchronous inline call; the modernised path dispatches
-     * WorkspaceDeletedEvent and lets WorkspaceSubscriber fan out.
-     * Verified through the TraceableEventDispatcher.
-     */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteDispatchesWorkspaceDeletedEvent(): void
     {
@@ -119,11 +105,6 @@ final class GroupRoomDeleterTest extends KernelTestCase
         );
     }
 
-    /**
-     * silent=true is used by the project-room cascade — firing one
-     * moderation mail per cascaded group room would be spammy, so the
-     * event must be suppressed in that case.
-     */
     #[WithStory(AccountStory::class)]
     public function testSilentOptionSuppressesWorkspaceDeletedEvent(): void
     {
@@ -146,12 +127,6 @@ final class GroupRoomDeleterTest extends KernelTestCase
         );
     }
 
-    /**
-     * Grouprooms are indexed in the `commsy_room` ES index. Dispatching
-     * ItemDeletedEvent triggers ElasticaSubscriber::onItemDeleted to
-     * remove the document. Without this, deleted group rooms would
-     * keep showing up in search results.
-     */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteDispatchesItemDeletedEvent(): void
     {
@@ -217,12 +192,9 @@ final class GroupRoomDeleterTest extends KernelTestCase
     }
 
     /**
-     * Happy-path hard-delete: soft-delete → hard-delete physically
-     * removes the `room` row, rubric content and membership row, while
-     * leaving a bystander room untouched. The mirrored group-as-label
-     * row in `labels` sits in the *parent project's* context and is
-     * removed when the parent is hard-deleted — not here — so we do
-     * not assert on it.
+     * The mirrored group-as-label row in `labels` lives in the parent
+     * project's context and is swept when the parent is hard-deleted —
+     * not here.
      */
     #[WithStory(AccountStory::class)]
     public function testHardDeleteRemovesRoomAndContentPhysically(): void

@@ -24,27 +24,14 @@ use LogicException;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
- * Generic delete strategy used by all rubric controllers as the default.
+ * Generic delete strategy used by rubric controllers.
  *
- * Dispatches deletion to the matching {@see RubricDeleter} (identified by
- * `rubricType()->value` == `cs_item::getItemType()`) so that UI deletions go
- * through exactly the same code path as the user-footprint erasure flow
- * ({@see \App\Rubric\UserContentDeleter}).
- *
- * `cs_user_item` (room-membership rows) is routed through the dedicated
- * {@see UserMembershipDeleter} — it is not a rubric and has no
- * `RubricDeleter`, but the same soft-delete + cascade contract applies.
- * Everything else is a bug: every type reaching this strategy is either
- * a rubric (covered by a {@see RubricDeleter}) or a room membership
- * (covered by {@see UserMembershipDeleter}). Labels / topics / groups are
- * already covered by {@see \App\Rubric\Label\LabelDeleter}, and Material —
- * despite being versioned with its own `deleteAllVersions()` fast path in
- * Legacy — is no longer special-cased here: {@see \App\Rubric\Material\MaterialDeleter::softDeleteItem()}
- * already implements the CS_ALL semantic (wipes every version plus every
- * section version), so the generic dispatch below covers it. Anything
- * unexpected raises a {@see LogicException} so we surface the gap in a
- * test rather than silently fall back to the legacy `cs_item::delete()`
- * cascade (which is on the chopping block).
+ * Dispatches to the matching {@see RubricDeleter} (by
+ * `rubricType()->value` == `cs_item::getItemType()`) so UI deletions share
+ * the code path of {@see \App\Rubric\UserContentDeleter}. `cs_user_item`
+ * is routed through {@see UserMembershipDeleter}. Anything else raises a
+ * {@see LogicException} to surface missing deleters rather than fall back
+ * to legacy.
  */
 class DeleteGeneric implements DeleteInterface
 {

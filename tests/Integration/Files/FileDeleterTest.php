@@ -26,18 +26,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Integration coverage for {@see FileDeleter::softDeleteFile()} — the
- * replacement for the legacy `cs_file_item::delete()` cascade used by the
- * FileList live component.
- *
- * Pins down the contract of the soft-delete path:
- *  - `files` row marked as soft-deleted (deletion_date + deleter_id).
- *  - `item_link_file` rows referencing this file soft-deleted (in both
- *    `file_id` directions — every attachment of any item version).
- *  - Other files and their attachments stay untouched.
- *
- * Physical removal (`files` row + disk file) is out of scope: that will
- * land with the FileHardDeleter, tracked as a separate ticket.
+ * Pins {@see FileDeleter::softDeleteFile()} — the replacement for the legacy
+ * `cs_file_item::delete()` cascade used by the FileList live component.
+ * Physical removal lands later with the FileHardDeleter (separate ticket).
  */
 final class FileDeleterTest extends KernelTestCase
 {
@@ -123,9 +114,7 @@ final class FileDeleterTest extends KernelTestCase
     }
 
     /**
-     * `item_link_file` has a composite PK (item_iid, item_vid, file_id) —
-     * no surrogate id column. Rows are addressed by that triple in the
-     * assertions below.
+     * Composite PK (item_iid, item_vid, file_id); no surrogate id column.
      */
     private function createItemLinkFile(int $fileId, int $itemId, int $versionId): void
     {

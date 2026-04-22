@@ -28,16 +28,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<LinkItems>
- *
- * Creates a link between two main items through the legacy manager chain
- * (`cs_link_manager::getNewItem()` + `cs_link_item::save()`). Same pattern as
- * {@see AnnouncementFactory}.
- *
- * Required factory inputs:
- *  - `room`           App\Entity\Room — the containing context
- *  - `creator`        App\Entity\User — priming the legacy current-user slot
- *  - `firstItemId`    int            — id of the first linked item
- *  - `secondItemId`   int            — id of the second linked item
  */
 final class LinkItemFactory extends PersistentObjectFactory
 {

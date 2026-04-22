@@ -15,19 +15,9 @@ namespace App\Message;
 
 /**
  * Asks a worker to refresh the denormalised `room.contact_persons`
- * cache string for a single room.
- *
- * The cache holds a comma-separated list of moderator full names that
- * the UI shows on room cards / search results / room home pages. It
- * goes stale whenever a moderator's status changes or a moderator
- * leaves the room.
- *
- * Dispatching this message is the modernised replacement for legacy's
- * inline `cs_room_item::renewContactPersonString()` call inside
- * `cs_user_item::save()` / `::delete()`. Routed async via
- * `messenger.yaml` (`App\Message\*: async`) so the originating user
- * request returns without waiting for a moderator-list rebuild +
- * room save.
+ * cache string (comma-separated moderator names shown in the UI) for a
+ * single room. Async replacement for the legacy inline
+ * `cs_room_item::renewContactPersonString()` call.
  */
 final readonly class RefreshRoomContactPersonsMessage
 {

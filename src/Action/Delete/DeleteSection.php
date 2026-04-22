@@ -21,9 +21,8 @@ use cs_section_item;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Thin wrapper around {@see MaterialDeleter::deleteSection()}. The section
- * is removed for the current material version only; older versions keep
- * their section lists intact.
+ * Thin wrapper around {@see MaterialDeleter::deleteSection()} — removes
+ * the section for the current material version only.
  */
 class DeleteSection implements DeleteInterface
 {

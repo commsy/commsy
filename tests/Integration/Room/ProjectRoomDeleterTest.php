@@ -35,12 +35,8 @@ use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Database-level integration tests for {@see ProjectRoomDeleter}.
- *
- * On top of the shared RoomDeleter contract the project-room tests cover
- * the cascade into sub-rooms (grouprooms + userrooms), which is unique
- * to project rooms and the last-remaining piece of the
- * `cs_project_item::delete()` legacy cascade.
+ * Pins ProjectRoomDeleter on top of the shared RoomDeleter contract, plus
+ * the project-specific cascade into sub-rooms (grouprooms + userrooms).
  */
 final class ProjectRoomDeleterTest extends KernelTestCase
 {
@@ -90,11 +86,6 @@ final class ProjectRoomDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('items', $member->getItemId());
     }
 
-    /**
-     * Grouprooms whose extras point back at the project must be dragged
-     * down with the project — they would otherwise linger as orphans
-     * with no reachable parent.
-     */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteCascadesIntoGroupRooms(): void
     {
@@ -111,10 +102,6 @@ final class ProjectRoomDeleterTest extends KernelTestCase
         $this->assertSoftDeleted('user', $groupMember->getItemId());
     }
 
-    /**
-     * Userrooms hang off the project (not off grouprooms) — verify the
-     * cascade reaches them even without an intermediate group room.
-     */
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteCascadesIntoUserRooms(): void
     {
@@ -132,9 +119,8 @@ final class ProjectRoomDeleterTest extends KernelTestCase
     }
 
     /**
-     * The sub-room cascade must run with `silent = true` so we end up
-     * with exactly one WorkspaceDeletedEvent for the project itself —
-     * not one per cascaded grouproom/userroom.
+     * Sub-room cascade runs silent so only one project-level
+     * WorkspaceDeletedEvent fires, not one per sub-room.
      */
     #[WithStory(AccountStory::class)]
     public function testSubRoomCascadeSuppressesPerSubRoomWorkspaceEvents(): void
@@ -151,9 +137,6 @@ final class ProjectRoomDeleterTest extends KernelTestCase
 
         $this->deleter->softDeleteRoom($project->getItemId(), $this->deleterId, RoomDeletionOptions::forUserAction());
 
-        // With three sub-rooms involved we would see up to four events
-        // without the silent flag. We expect exactly the single
-        // project-level event.
         $events = $this->dispatchedEvents($dispatcher, WorkspaceDeletedEvent::class);
         self::assertCount(
             1,
@@ -270,14 +253,8 @@ final class ProjectRoomDeleterTest extends KernelTestCase
     }
 
     /**
-     * Happy-path hard-delete of a project room: the project's own `room`
-     * row + rubric content + membership row are physically removed. Sub-
-     * rooms (grouproom / userroom) are **not** cascaded here — they carry
-     * their own `deletion_date` from the soft-delete phase and will be
-     * picked up by {@see \App\Room\RoomHardDeleter::hardDeleteRoomsOlderThan}
-     * on their own. The test leaves the sub-rooms soft-deleted and
-     * asserts they stay that way (no premature physical removal, no
-     * resurrection).
+     * Sub-rooms are NOT cascaded by hard-delete — they carry their own
+     * deletion_date and get swept by RoomHardDeleter on their own pass.
      */
     #[WithStory(AccountStory::class)]
     public function testHardDeleteRemovesProjectContentAndLeavesSubRoomsSoftDeleted(): void
@@ -291,20 +268,14 @@ final class ProjectRoomDeleterTest extends KernelTestCase
         $groupRoom = $this->createGroupRoom($project);
         $userRoom = $this->createUserRoom($project);
 
-        // Soft-delete cascades into sub-rooms (silent).
         $this->deleter->softDeleteRoom($project->getItemId(), $this->deleterId, RoomDeletionOptions::forUserAction());
-
-        // Hard-delete only the project itself.
         $this->deleter->hardDeleteRoom($project->getItemId());
 
-        // Project physically gone.
         $this->assertPhysicallyDeleted('room', $project->getItemId());
         $this->assertPhysicallyDeleted('announcement', $announcement->getItemId());
         $this->assertPhysicallyDeleted('items', $announcement->getItemId());
         $this->assertPhysicallyDeleted('user', $member->getItemId());
 
-        // Sub-rooms stay soft-deleted (their own hard-delete happens on
-        // the next RoomHardDeleter pass).
         $this->assertSoftDeleted('room', $groupRoom->getItemId());
         $this->assertSoftDeleted('room', $userRoom->getItemId());
     }

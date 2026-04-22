@@ -29,9 +29,6 @@ class AccountMerger
 {
     private readonly cs_environment $legacyEnvironment;
 
-    /**
-     * AccountMerger constructor.
-     */
     public function __construct(
         private readonly UserService $userService,
         LegacyEnvironment $legacyEnvironment,
@@ -183,11 +180,8 @@ class AccountMerger
             $manager->mergeAccounts($intoRoomUser->getItemID(), $fromRoomUser->getItemID());
         }
 
-        // Soft-delete the from-account's membership row in this context.
-        // Legacy parity: the acting (current) user is the deleter. Note
-        // that when called for the portal context, the legacy delete
-        // cascaded into `getOwnRoom()->delete()`, which `rewritePrivateRoom`
-        // has already handled at this point — no cascade needed here.
+        // For portal context, the legacy delete cascaded into
+        // getOwnRoom()->delete() — already handled by rewritePrivateRoom().
         $this->membershipDeleter->softDeleteMembership(
             (int) $fromRoomUser->getItemID(),
             $this->currentDeleterId()
@@ -256,9 +250,7 @@ class AccountMerger
     }
 
     /**
-     * Returns the acting user's `cs_user_item.item_id` for audit stamping,
-     * mirroring what legacy `cs_*_item::delete()` read from the current
-     * environment. Falls back to 0 when no user is bound (CLI/merge jobs).
+     * Acting user's item id for audit stamping; 0 when no user is bound.
      */
     private function currentDeleterId(): int
     {

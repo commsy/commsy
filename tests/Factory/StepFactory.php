@@ -28,14 +28,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Step>
- *
- * Creates a single step through the legacy
- * `cs_step_manager::getNewItem()` + `save()` chain.
- *
- * Required inputs:
- *  - `room`    App\Entity\Room  — the containing context
- *  - `creator` App\Entity\User  — priming the legacy current-user slot
- *  - `todo`    App\Entity\Todos — the parent todo
  */
 final class StepFactory extends PersistentObjectFactory
 {

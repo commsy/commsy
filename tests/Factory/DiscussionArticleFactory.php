@@ -28,18 +28,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Discussionarticles>
- *
- * Creates a single discussion article through the legacy
- * `cs_discussionarticles_manager::getNewItem()` + `save()` chain.
- *
- * Required inputs:
- *  - `room`       App\Entity\Room        — the containing context
- *  - `creator`    App\Entity\User        — priming the legacy current-user slot
- *  - `discussion` App\Entity\Discussions — the parent discussion
- *
- * Optional inputs (for hierarchy tests):
- *  - `position`   string — explicit thread position ("1", "1.1", "1.2.1", …).
- *    If omitted, the legacy manager assigns the next free root-level position.
  */
 final class DiscussionArticleFactory extends PersistentObjectFactory
 {

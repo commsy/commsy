@@ -28,15 +28,6 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
  * @extends PersistentObjectFactory<Section>
- *
- * Creates a section through the legacy
- * `cs_section_manager::getNewItem()` + `save()` chain and attaches it to
- * the given parent material (using the material's current `version_id`).
- *
- * Required inputs:
- *  - `room`     App\Entity\Room      — the containing context
- *  - `creator`  App\Entity\User      — priming the legacy current-user slot
- *  - `material` App\Entity\Materials — the parent material
  */
 final class SectionFactory extends PersistentObjectFactory
 {
@@ -93,8 +84,7 @@ final class SectionFactory extends PersistentObjectFactory
                 $item = $env->getSectionManager()->getNewItem();
                 $item->setContextID($room->getItemId());
                 $item->setLinkedItemID($material->getItemId());
-                // Sections live inside a specific material version — inherit the
-                // parent material's current version id (what the controller does).
+                // Sections live inside a specific material version — inherit the parent's.
                 $item->setVersionID((int) $material->getVersionId());
                 $item->setTitle($section->getTitle());
                 if ($section->getDescription() !== null) {

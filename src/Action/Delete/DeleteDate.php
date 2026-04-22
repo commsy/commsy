@@ -23,9 +23,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Thin wrapper that dispatches between single-occurrence, series and
- * "exclude from series" deletion paths. All actual deletion work (row
- * soft-delete, links/annotations cleanup, CalDAV sync-token bump, event
- * dispatch) lives in {@see DatesDeleter}.
+ * "exclude from series" paths on {@see DatesDeleter}.
  */
 class DeleteDate implements DeleteInterface
 {
@@ -71,9 +69,7 @@ class DeleteDate implements DeleteInterface
             $this->datesDeleter->softDeleteItem($itemId, $deleterId);
         }
 
-        // UI-specific side effect: drop the item from every user's clipboard.
-        // Kept here rather than in the deleter because clipboard state is a
-        // UI concern that does not apply to account-wide user-content cleanup.
+        // UI-only: clipboard state does not apply to account-wide cleanup.
         $this->markedService->removeItemFromClipboard($itemId);
     }
 

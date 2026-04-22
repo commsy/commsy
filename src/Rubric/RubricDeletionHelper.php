@@ -18,27 +18,12 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 
 /**
- * Shared low-level soft-delete primitives for a **single rubric item** and
- * its auxiliary rows (`link_items`, `links`, `annotations`, `item_link_file`,
+ * Shared low-level soft-delete primitives for a single rubric item and its
+ * auxiliary rows (`link_items`, `links`, `annotations`, `item_link_file`,
  * `items` twin).
  *
  * Composed by every {@see RubricDeleter} implementation — each deleter picks
- * only the primitives it needs for its rubric's cascade shape. Mirrors the
- * soft-delete behaviour of the legacy `cs_item::_delete()` cascade, but as
- * explicit DBAL operations instead of a monolithic method.
- *
- * Scope-boundary: this class contains **only rubric-item-scoped primitives**.
- * User-scoped cleanup (task ownership, membership artefacts) lives in
- * {@see \App\User\UserDeletionHelper} — a separate bounded context, intentionally
- * not mixed in here, so the class stays small and its name keeps telling the
- * truth as the delete landscape grows.
- *
- * Naming: mirrors {@see \App\Room\RoomDeletionHelper} — same `…DeletionHelper`
- * suffix signals "primitives consumed by the leaf deleters of this aggregate",
- * never the leaf-delete interface itself.
- *
- * (Was previously `App\Rubric\ItemDeletionHelper`; split in the post-#5082
- * consolidation pass to disentangle rubric- and user-scoped operations.)
+ * the primitives it needs for its rubric's cascade shape.
  */
 class RubricDeletionHelper
 {
@@ -48,17 +33,11 @@ class RubricDeletionHelper
     ) {}
 
     /**
-     * Soft-deletes all `link_items` rows that reference the given item, either
-     * as first/second linked item or as the subject of the row itself.
+     * Soft-deletes all `link_items` rows referencing the given item (as
+     * first/second linked item or as subject) plus their `items` twin rows.
      *
-     * Equivalent to legacy `cs_link_manager::deleteLinksBecauseItemIsDeleted()`,
-     * but additionally soft-deletes the `items` twin row of each affected
-     * link_item: `cs_link_manager::_create()` allocates a row in `items`
-     * (type = 'link_item') to obtain the AUTO_INCREMENT id before inserting
-     * into `link_items`, and `cs_link_manager::delete()` cleans up both sides
-     * via `parent::delete()`. The legacy batch-cascade `deleteLinksBecause
-     * ItemIsDeleted()` skipped the twin, leaving orphaned `items` rows; we fix
-     * that inconsistency here so the two tables stay in sync.
+     * Parity fix: the legacy batch cascade `deleteLinksBecauseItemIsDeleted()`
+     * skipped the twin, leaving orphaned `items` rows.
      */
     public function softDeleteLinkItems(int $itemId, int $deleterId): void
     {
@@ -92,15 +71,9 @@ class RubricDeletionHelper
     }
 
     /**
-     * Soft-deletes all rows in the `links` table that reference the given item,
-     * regardless of link_type (`buzzword_for`, `in_time`, `label_for`, …) and
-     * direction (from/to).
-     *
-     * This fixes a legacy inconsistency: `cs_dates_manager::delete()` cleaned
-     * up `links` via `deleteLinksBecauseItemIsDeleted()`, while other rubric
-     * managers either skipped it (Discussion, Material, Task) or hard-deleted
-     * a single type (Announcement's `relevant_for`). All rubrics migrated off
-     * the legacy cascade use this helper so the behaviour is uniform.
+     * Soft-deletes all rows in `links` that reference the given item,
+     * regardless of link_type and direction. Applied uniformly across all
+     * rubrics (legacy cleanup was inconsistent).
      */
     public function softDeleteLinks(int $itemId, int $deleterId): void
     {
@@ -113,11 +86,8 @@ class RubricDeletionHelper
     }
 
     /**
-     * Soft-deletes all annotations attached to the given item, including their
-     * `items` twin rows and their `link_items` references.
-     *
-     * Equivalent to legacy `cs_item::deleteAssociatedAnnotations()` which loads
-     * the annotation list and calls `delete()` on each.
+     * Soft-deletes all annotations attached to the given item, including
+     * their `items` twin rows and their `link_items` references.
      */
     public function softDeleteAnnotations(int $parentItemId, int $deleterId): void
     {
@@ -144,27 +114,19 @@ class RubricDeletionHelper
 
     /**
      * Soft-deletes `item_link_file` rows attached to the given item.
-     *
-     * Delegates to the existing FileDeleter service. Note that the legacy
-     * `delete()` methods only cleaned up file links for Material items — this
-     * refactoring applies the cleanup uniformly across all rubrics, since any
-     * cs_item can carry file attachments.
+     * Applied uniformly across all rubrics (legacy only cleaned these for
+     * Material).
      */
     public function softDeleteFileLinks(int $itemId, ?int $versionId = null): void
     {
-        // When versionId is not given, treat it as "all versions" (0).
+        // versionId 0 = all versions.
         $this->fileDeleter->softDeleteFileLink($itemId, $versionId ?? 0);
     }
 
     /**
-     * Soft-deletes **every version** of `item_link_file` rows for the given
-     * item. Needed for versioned rubrics (Material, Section): the FileDeleter
-     * variant filters on an exact `version_id` match, so it cannot purge
-     * attachments from older versions in one go.
-     *
-     * The legacy `cs_material_item::delete()` cascade passed the *current*
-     * version id into `deleteByItem()` even when dropping all versions — that
-     * was a bug; this helper fixes it by dropping the version filter entirely.
+     * Soft-deletes every version of `item_link_file` rows for the given
+     * item. For versioned rubrics (Material, Section) — the FileDeleter
+     * variant filters on exact version_id.
      */
     public function softDeleteAllFileLinkVersions(int $itemId, int $deleterId): void
     {
@@ -178,9 +140,6 @@ class RubricDeletionHelper
 
     /**
      * Soft-deletes the shared `items` table row for the given item.
-     *
-     * Equivalent to legacy base `cs_manager::delete()` which is invoked from
-     * every rubric manager's delete() as `parent::delete()`.
      */
     public function softDeleteItemsRow(int $itemId, int $deleterId): void
     {
@@ -195,13 +154,8 @@ class RubricDeletionHelper
     /**
      * Batch variant: soft-delete every reference in `link_items`, `links`,
      * `item_link_file` and the shared `items` row for the given list of item
-     * ids. Used by rubrics that wipe out hierarchies in one go (e.g.
-     * DiscussionDeleter removing all articles of a discussion) — the single
-     * SQL statements are cheaper than looping singular helpers per item.
-     *
-     * Annotations are intentionally *not* included here: rubrics that carry
-     * annotations still call {@see softDeleteAnnotations()} on a per-parent
-     * basis because the parent id is the join key, not the batched ids.
+     * ids. Annotations are not included — rubrics that carry them call
+     * {@see softDeleteAnnotations()} per parent.
      */
     public function softDeleteAuxiliaryRowsForItems(array $itemIds, int $deleterId, bool $allFileLinkVersions = false): void
     {
@@ -211,11 +165,8 @@ class RubricDeletionHelper
 
         $ids = array_values(array_unique(array_map('intval', $itemIds)));
 
-        // Collect the item_ids of every link_items row that references any of
-        // the batched ids (as subject, first or second linked item) *before*
-        // soft-deleting them, so we can soft-delete their `items` twin rows in
-        // the same pass. See {@see softDeleteLinkItems()} for why the twin
-        // exists and why the legacy batch cascade missed it.
+        // Collect link_items ids before soft-deleting them so we can also
+        // soft-delete their `items` twin rows in the same pass.
         $linkItemIds = array_map('intval', $this->connection->fetchFirstColumn(
             'SELECT item_id FROM link_items
                 WHERE (first_item_id IN (:ids)
@@ -245,7 +196,7 @@ class RubricDeletionHelper
         );
 
         if ($allFileLinkVersions) {
-            // Versioned rubrics (Material, Section): match regardless of version_id.
+            // Versioned rubrics: match regardless of version_id.
             $this->connection->executeStatement(
                 'UPDATE item_link_file
                     SET deletion_date = NOW(), deleter_id = :deleterId
@@ -254,14 +205,11 @@ class RubricDeletionHelper
                 ['ids' => ArrayParameterType::INTEGER]
             );
         } else {
-            // Non-versioned rubrics: delegate to FileDeleter item-by-item.
             foreach ($ids as $id) {
                 $this->fileDeleter->softDeleteFileLink($id, 0);
             }
         }
 
-        // Soft-delete the `items` rows for both the batched ids themselves and
-        // the link_items twin rows in a single UPDATE.
         $itemsRowIds = array_values(array_unique(array_merge($ids, $linkItemIds)));
         $this->connection->executeStatement(
             'UPDATE items

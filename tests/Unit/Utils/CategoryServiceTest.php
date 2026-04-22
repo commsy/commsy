@@ -23,17 +23,12 @@ use cs_user_item;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit-level verification that {@see CategoryService::removeTag()} is a true
- * thin wrapper over {@see TagDeleter::softDelete()}: it resolves the deleter
- * id from the current user of the legacy environment and delegates. The
- * four-table cascade itself is pinned in {@see \Tests\Integration\Tag\TagDeleterTest}.
+ * Pins that {@see CategoryService::removeTag()} delegates to {@see TagDeleter::softDelete()}
+ * with the current user as deleter; the cascade itself lives in {@see \Tests\Integration\Tag\TagDeleterTest}.
  *
- * `addTag` / `updateTag` / `combineTags` remain uncovered here — they exercise
- * the legacy `cs_tag_manager` save flow (forceSQL, createRootTagItemFor,
- * setPosition, getChildrenList, …) which would require a full container
- * boot plus a populated room context. Not cost-justified for a
- * wrapper-delegation assertion; the real coverage lives against the legacy
- * manager itself.
+ * addTag/updateTag/combineTags intentionally uncovered — they exercise legacy
+ * cs_tag_manager flows that would require a full container boot; real coverage
+ * lives against the legacy manager.
  */
 final class CategoryServiceTest extends TestCase
 {

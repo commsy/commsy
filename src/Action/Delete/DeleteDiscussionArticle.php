@@ -21,10 +21,7 @@ use cs_item;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * Thin wrapper around {@see DiscussionDeleter::deleteArticle()}. The deleter
- * handles both the leaf-delete case (regular soft-delete) and the
- * "has-answers" case (content purge + author anonymisation while keeping the
- * row alive) and re-indexes the parent discussion afterwards.
+ * Thin wrapper around {@see DiscussionDeleter::deleteArticle()}.
  */
 class DeleteDiscussionArticle implements DeleteInterface
 {
