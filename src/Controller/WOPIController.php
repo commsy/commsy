@@ -55,7 +55,10 @@ class WOPIController extends AbstractController
 
         if ($permission === WOPIPermission::EDIT) {
             if ($file->getSize() === 0) {
-                // This is a zero-byte file, try to use "editnew" action
+                // Safety net for legacy / left-over zero-byte files (e.g. from earlier failed creation
+                // attempts or out-of-band uploads). New files created via OfficeFileFactory now ship a
+                // valid blank OOXML template, so this branch is not hit on the happy path.
+                // See https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/scenarios/createnew
                 $action = $discoveryService->findAction($app, $extension, WOPIPermission::EDITNEW->value);
             } else {
                 $action = $discoveryService->findAction($app, $extension, WOPIPermission::EDIT->value);
