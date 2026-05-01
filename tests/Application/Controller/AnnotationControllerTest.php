@@ -94,6 +94,97 @@ class AnnotationControllerTest extends AbstractApplicationTestCase
         $this->assertSelectorExists('form');
     }
 
+    public function testEditSubmitUpdatesDescription(): void
+    {
+        $announcement = $this->createAnnouncement();
+        $annotation = $this->createAnnotation($announcement->getItemId(), 'alter-text');
+
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->room->getItemId()}/annotation/{$annotation->getItemId()}/edit"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('annotation[save]')->form();
+        $form['annotation[description]'] = 'frischer-text';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // verify the new description shows up on the parent's annotation feed
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->room->getItemId()}/annotation/feed/{$announcement->getItemId()}/0"
+        );
+        $this->assertResponseIsSuccessful();
+        $html = $crawler->html();
+        $this->assertStringContainsString('frischer-text', $html);
+        $this->assertStringNotContainsString('alter-text', $html);
+    }
+
+    public function testEditSubmitWithBlankDescriptionShowsError(): void
+    {
+        $announcement = $this->createAnnouncement();
+        $annotation = $this->createAnnotation($announcement->getItemId(), 'soll-bleiben');
+
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->room->getItemId()}/annotation/{$annotation->getItemId()}/edit"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('annotation[save]')->form();
+        $form['annotation[description]'] = '';
+        $this->client->submit($form);
+
+        // Symfony >=6.2 surfaces invalid form submits as 422. The annotation
+        // edit template renders the field via form_widget without its
+        // form_row wrapper, so field-level errors are not in the DOM here —
+        // 422 status is the canonical signal. The verify-no-save consistency
+        // check below confirms the original text was kept.
+        $this->assertResponseStatusCodeSame(422);
+
+        // verify nothing was persisted: feed still shows the original text
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->room->getItemId()}/annotation/feed/{$announcement->getItemId()}/0"
+        );
+        $this->assertStringContainsString('soll-bleiben', $crawler->html());
+    }
+
+    public function testDeleteRemovesAnnotationFromFeed(): void
+    {
+        $announcement = $this->createAnnouncement();
+        $annotation = $this->createAnnotation($announcement->getItemId(), 'doomed-annotation');
+
+        // sanity: the annotation is currently rendered on the feed
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->room->getItemId()}/annotation/feed/{$announcement->getItemId()}/0"
+        );
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('doomed-annotation', $crawler->html());
+
+        // delete via the JSON endpoint
+        $this->client->request(
+            'GET',
+            "/room/{$this->room->getItemId()}/annotation/{$annotation->getItemId()}/delete"
+        );
+        $this->assertResponseIsSuccessful();
+        $payload = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertTrue($payload['deleted'] ?? false);
+
+        // after delete: feed no longer contains the annotation text
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->room->getItemId()}/annotation/feed/{$announcement->getItemId()}/0"
+        );
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString('doomed-annotation', $crawler->html());
+    }
+
     public function testSuccessPageRenders(): void
     {
         $announcement = $this->createAnnouncement();
@@ -132,12 +223,17 @@ class AnnotationControllerTest extends AbstractApplicationTestCase
         ]);
     }
 
-    private function createAnnotation(int $linkedItemId): Annotations
+    private function createAnnotation(int $linkedItemId, ?string $description = null): Annotations
     {
-        return AnnotationFactory::createOne([
+        $attrs = [
             'room' => $this->room,
             'creator' => $this->roomUser,
             'linkedItemId' => $linkedItemId,
-        ]);
+        ];
+        if ($description !== null) {
+            $attrs['description'] = $description;
+        }
+
+        return AnnotationFactory::createOne($attrs);
     }
 }

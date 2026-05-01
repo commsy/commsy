@@ -126,6 +126,91 @@ class HashtagControllerTest extends AbstractApplicationTestCase
         $this->assertSelectorExists('form');
     }
 
+    public function testEditSubmitRenamesLabel(): void
+    {
+        $this->enableBuzzwords();
+        $hashtag = $this->createHashtag('alter-name');
+
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->roomId}/hashtag/edit/{$hashtag->getItemId()}"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('hashtag_edit[update]')->form();
+        $form['hashtag_edit[name]'] = 'neuer-name';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // verify via /hashtag/all that the rename was applied
+        $this->client->request('GET', "/room/{$this->roomId}/hashtag/all");
+        $this->assertResponseIsSuccessful();
+        $payload = json_decode($this->client->getResponse()->getContent(), true);
+        $names = array_column($payload['results'], 'value');
+        $this->assertContains('neuer-name', $names);
+        $this->assertNotContains('alter-name', $names);
+    }
+
+    public function testEditSubmitWithBlankNameShowsError(): void
+    {
+        $this->enableBuzzwords();
+        $hashtag = $this->createHashtag('bleibt-erhalten');
+
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->roomId}/hashtag/edit/{$hashtag->getItemId()}"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('hashtag_edit[update]')->form();
+        $form['hashtag_edit[name]'] = '';
+        $this->client->submit($form);
+
+        // Symfony >=6.2 surfaces invalid form submits as 422 Unprocessable
+        // Entity; the form re-renders with the NotBlank violation visible.
+        // Use a structural selector (no text match) to stay locale-agnostic.
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertSelectorExists('ul.form-errors li');
+    }
+
+    public function testDeleteRemovesLabelFromList(): void
+    {
+        $this->enableBuzzwords();
+        $this->createHashtag('bleibt');
+        $hashtagToDelete = $this->createHashtag('zu-loeschen');
+
+        // sanity: both labels currently present
+        $this->client->request('GET', "/room/{$this->roomId}/hashtag/all");
+        $payload = json_decode($this->client->getResponse()->getContent(), true);
+        $namesBefore = array_column($payload['results'], 'value');
+        $this->assertContains('zu-loeschen', $namesBefore);
+        $this->assertContains('bleibt', $namesBefore);
+
+        // click the delete button on the edit form for the doomed hashtag
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->roomId}/hashtag/edit/{$hashtagToDelete->getItemId()}"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('hashtag_edit[delete]')->form();
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // the deleted hashtag is gone from the listing, the other one survives
+        $this->client->request('GET', "/room/{$this->roomId}/hashtag/all");
+        $payload = json_decode($this->client->getResponse()->getContent(), true);
+        $namesAfter = array_column($payload['results'], 'value');
+        $this->assertNotContains('zu-loeschen', $namesAfter);
+        $this->assertContains('bleibt', $namesAfter);
+    }
+
     private function enableBuzzwords(): void
     {
         /** @var LegacyEnvironment $legacyEnvironment */

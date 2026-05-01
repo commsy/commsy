@@ -40,6 +40,10 @@ class CategoryNewType extends AbstractType
                 ],
                 'label' => 'Title',
                 'required' => true,
+                // bind missing/empty as '' so the NotBlank constraint surfaces
+                // it; otherwise null is bound into the typed Tag::setTitle()
+                // setter and a TypeError beats the form validator.
+                'empty_data' => '',
             ])
 
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

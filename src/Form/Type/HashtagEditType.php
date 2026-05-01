@@ -41,6 +41,11 @@ class HashtagEditType extends AbstractType
                 'label' => 'Name',
                 'translation_domain' => 'hashtag',
                 'required' => true,
+                // bind a missing/empty value as '' so the NotBlank constraint
+                // can surface it; otherwise null is bound into the typed
+                // Labels::setName(string) setter and a TypeError beats the
+                // form validator.
+                'empty_data' => '',
             ])
 
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {

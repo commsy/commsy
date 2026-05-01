@@ -73,6 +73,42 @@ class TodoControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testEditSubmitUpdatesTitle(): void
+    {
+        [$itemId, $crawler] = $this->createTodoAndOpenEdit();
+
+        $form = $crawler->selectButton('todo[save]')->form();
+        $form['todo[title]'] = 'frische-aufgabe';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        $crawler = $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // post-save view (app_todo_save) renders the persisted title
+        $this->assertStringContainsString('frische-aufgabe', $crawler->html());
+
+        $this->assertGreaterThan(0, $itemId);
+    }
+
+    public function testEditSubmitWithBlankTitleShowsError(): void
+    {
+        [$itemId, $crawler] = $this->createTodoAndOpenEdit();
+
+        $form = $crawler->selectButton('todo[save]')->form();
+        $form['todo[title]'] = '';
+        $this->client->submit($form);
+
+        // Symfony >=6.2: invalid form submit = 422 Unprocessable Entity.
+        // The todo edit template renders the title via form_widget without
+        // a sibling form_errors call, so field-level errors aren't in the
+        // DOM here — 422 is the canonical signal that the save was blocked.
+        $this->assertResponseStatusCodeSame(422);
+
+        // sanity: $itemId was used to ensure no static-analysis warning
+        $this->assertGreaterThan(0, $itemId);
+    }
+
     public function testFeed(): void
     {
         $this->client->request('GET', "/room/$this->roomId/todo/feed");
@@ -83,5 +119,24 @@ class TodoControllerTest extends AbstractApplicationTestCase
     {
         $this->client->request('GET', "/room/$this->roomId/todo");
         $this->assertResponseIsSuccessful();
+    }
+
+    /**
+     * Creates a fresh todo via the /create route (which redirects to detail),
+     * then explicitly loads its /edit page. Returns [itemId, crawlerOnEditPage].
+     *
+     * @return array{0: int, 1: \Symfony\Component\DomCrawler\Crawler}
+     */
+    private function createTodoAndOpenEdit(): array
+    {
+        $this->client->request('GET', "/room/$this->roomId/todo/create");
+        $this->assertResponseRedirects();
+        $this->client->followRedirect();
+        $itemId = (int) $this->client->getRequest()->attributes->get('itemId');
+
+        $crawler = $this->client->request('GET', "/room/$this->roomId/todo/$itemId/edit");
+        $this->assertResponseIsSuccessful();
+
+        return [$itemId, $crawler];
     }
 }
