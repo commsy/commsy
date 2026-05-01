@@ -13,13 +13,28 @@
 
 namespace App\Form\Type\Account;
 
+use App\Account\AccountSetting;
+use App\Account\AccountSettingsManager;
+use App\Entity\Account;
+use App\Entity\Portal;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\DataMapperInterface;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Traversable;
 
-class PrivacyType extends AbstractType
+class PrivacyType extends AbstractType implements DataMapperInterface
 {
+    public function __construct(
+        private AccountSettingsManager $settingsManager
+    ) {}
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -31,12 +46,32 @@ class PrivacyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('download', SubmitType::class, [
-                'label' => 'Display PDF',
-                'attr' => [
-                    'class' => 'uk-button-primary',
-                ],
-            ]);
+            ->setDataMapper($this)
+        ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
+            /** @var Portal $portal */
+            $portal = $options['portal'];
+            $form = $event->getForm();
+
+            if ($portal->isAllowUserDefinedDeletionStrategy()) {
+                $form
+                    ->add(AccountSetting::USER_DELETION_CASCADING_ITEMS->value, CheckboxType::class, [
+                        'label' => 'profile.privacy.cascading_items_deletion_strategy.label',
+                        'help' => 'profile.privacy.cascading_items_deletion_strategy.help',
+                        'required' => false,
+                        'label_attr' => [
+                            'class' => 'uk-form-label',
+                        ],
+                    ])
+                    ->add('save', SubmitType::class, [
+                        'label' => 'save',
+                        'translation_domain' => 'form',
+                        'attr' => ['style' => 'margin-top: 20px;'],
+                    ])
+                ;
+            }
+        });
     }
 
     /**
@@ -47,18 +82,43 @@ class PrivacyType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setDefaults(['translation_domain' => 'profile', 'attr' => ['target' => '_blank']]);
+            ->setRequired('portal')
+            ->setAllowedTypes('portal', Portal::class)
+            ->setDefaults([
+                'validation_groups' => 'account_settings',
+                'translation_domain' => 'profile',
+            ]);
     }
 
-    /**
-     * Returns the prefix of the template block name for this type.
-     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
-     * (e.g. "UserProfileType" => "user_profile").
-     *
-     * @return string The prefix of the template block name
-     */
-    public function getBlockPrefix(): string
+    public function mapDataToForms(mixed $viewData, Traversable $forms): void
     {
-        return 'room_profile';
+        if (!$viewData instanceof Account) {
+            throw new UnexpectedTypeException($viewData, Account::class);
+        }
+
+        /** @var FormInterface[] $forms */
+        $forms = iterator_to_array($forms);
+
+        $userDeletionCascadingItems = $this->settingsManager
+            ->getSetting($viewData, AccountSetting::USER_DELETION_CASCADING_ITEMS);
+
+        $forms[AccountSetting::USER_DELETION_CASCADING_ITEMS->value]
+            ?->setData($userDeletionCascadingItems['enabled']);
+    }
+
+    public function mapFormsToData(Traversable $forms, mixed &$viewData): void
+    {
+        if (!$viewData instanceof Account) {
+            throw new UnexpectedTypeException($viewData, Account::class);
+        }
+
+        /** @var FormInterface[] $forms */
+        $forms = iterator_to_array($forms);
+
+        $this->settingsManager->storeSetting(
+            $viewData,
+            AccountSetting::USER_DELETION_CASCADING_ITEMS,
+            ['enabled' => $forms[AccountSetting::USER_DELETION_CASCADING_ITEMS->value]?->getData() ?? true]
+        );
     }
 }

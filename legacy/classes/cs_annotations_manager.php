@@ -311,39 +311,4 @@ class cs_annotations_manager extends cs_manager
         parent::delete($itemId);
     }
 
-    public function deleteAnnotationsOfUser($uid): void
-    {
-        global $symfonyContainer;
-        $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-
-        if (null !== $disableOverwrite && 'TRUE' !== $disableOverwrite) {
-            $currentDatetime = getCurrentDateTimeInMySQL();
-            $query = 'SELECT ' . $this->addDatabasePrefix('annotations') . '.* FROM ' . $this->addDatabasePrefix('annotations') . ' WHERE ' . $this->addDatabasePrefix('annotations') . '.creator_id = "' . encode(AS_DB, $uid) . '"';
-            $result = $this->_db_connector->performQuery($query);
-
-            if (!empty($result)) {
-                foreach ($result as $rs) {
-                    $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('annotations') . ' SET';
-
-                    /* flag */
-                    if ('FLAG' === $disableOverwrite) {
-                        $updateQuery .= ' public = "-1",';
-                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
-                    }
-
-                    /* disabled */
-                    if ('FALSE' === $disableOverwrite) {
-                        $updateQuery .= ' description = "' . encode(AS_DB, $this->translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
-                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
-                    }
-
-                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB, $rs['item_id']) . '"';
-                    $result2 = $this->_db_connector->performQuery($updateQuery);
-                    if (!$result2) {
-                        trigger_error('Problems automatic deleting annotations.', E_USER_WARNING);
-                    }
-                }
-            }
-        }
-    }
 }

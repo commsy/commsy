@@ -14,6 +14,7 @@
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\User;
+use App\Rubric\UserContentDeleter;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class cs_user_item extends cs_item
@@ -1546,46 +1547,15 @@ class cs_user_item extends cs_item
 
     public function deleteAllEntriesOfUser(): void
     {
-        // datenschutz: overwrite or not (03.09.2012 IJ)
-        $overwrite = true;
         global $symfonyContainer;
-        $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-        if (!empty($disable_overwrite) and 'TRUE' === $disable_overwrite) {
-            $overwrite = false;
-        }
 
-        if ($overwrite) {
-            $announcement_manager = $this->_environment->getAnnouncementManager();
-            $dates_manager = $this->_environment->getDatesManager();
-            $discussion_manager = $this->_environment->getDiscussionManager();
-            $discarticle_manager = $this->_environment->getDiscussionarticlesManager();
-            $material_manager = $this->_environment->getMaterialManager();
-            $section_manager = $this->_environment->getSectionManager();
-            $annotation_manager = $this->_environment->getAnnotationManager();
-            $label_manager = $this->_environment->getLabelManager();
-            $tag_manager = $this->_environment->getTagManager();
-            $todo_manager = $this->_environment->getTodosManager();
-            $step_manager = $this->_environment->getStepManager();
-
-            // replace users entries with the standard message for deleted entries
-            $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
-            $dates_manager->deleteDatesOfUser($this->getItemID());
-            $discussion_manager->deleteDiscussionsOfUser($this->getItemID());
-            $discarticle_manager->deleteDiscarticlesOfUser($this->getItemID());
-            $material_manager->deleteMaterialsOfUser($this->getItemID());
-            $section_manager->deleteSectionsOfUser($this->getItemID());
-            $annotation_manager->deleteAnnotationsOfUser($this->getItemID());
-            $todo_manager->deleteTodosOfUser($this->getItemID());
-            $step_manager->deleteStepsOfUser($this->getItemID());
-
-            // NOTE: we don't replace hashtags (aka buzzwords) and categories (aka tags) with the standard message for
-            // deleted entries since these are structural elements benefitting all room users, and which have no direct
-            // association in the UI to the user who created them.
-            // However note that, even with these lines uncommented, buzzwords currently won't get overwritten in the UI
-            // if the server option `security.privacy_disable_overwriting` (in parameters.yml) is set to `flag`.
-//          $label_manager->deleteLabelsOfUser($this->getItemID());
-//          $tag_manager->deleteTagsOfUser($this->getItemID());
-        }
+        /** @var UserContentDeleter $userContentDeleter */
+        $userContentDeleter = $symfonyContainer->get(UserContentDeleter::class);
+        $userContentDeleter->eraseUserFootprint(
+            $this->getItemID(),
+            $this->getContextID(),
+            $this->getAccount(),
+        );
     }
 
     public function setAGBAcceptanceDate(?DateTimeImmutable $agbAcceptanceDate): cs_user_item

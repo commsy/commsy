@@ -1053,47 +1053,6 @@ class cs_material_manager extends cs_manager
     // statistic functions
     // #######################################################
 
-     public function deleteMaterialsOfUser($uid)
-     {
-         global $symfonyContainer;
-         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-
-         if (null !== $disableOverwrite && 'TRUE' !== $disableOverwrite) {
-             $currentDatetime = getCurrentDateTimeInMySQL();
-             $query = 'SELECT '.$this->addDatabasePrefix('materials').'.* FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.creator_id = "'.encode(AS_DB, $uid).'"';
-             $result = $this->_db_connector->performQuery($query);
-
-             if (!empty($result)) {
-                 foreach ($result as $rs) {
-                     $updateQuery = 'UPDATE '.$this->addDatabasePrefix('materials').' SET';
-
-                     /* flag */
-                     if ('FLAG' === $disableOverwrite) {
-                         $updateQuery .= ' public = "-1",';
-                         $updateQuery .= ' modification_date = "'.$currentDatetime.'"';
-                     }
-
-                     /* disabled */
-                     if ('FALSE' === $disableOverwrite) {
-                         $updateQuery .= ' title = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-                         $updateQuery .= ' description = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-                         $updateQuery .= ' modification_date = "'.$currentDatetime.'",';
-                         $updateQuery .= ' author = "",';
-                         $updateQuery .= ' publishing_date = "",';
-                         $updateQuery .= ' extras = "",';
-                         $updateQuery .= ' public = "1"';
-                     }
-
-                     $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
-                     $result2 = $this->_db_connector->performQuery($updateQuery);
-                     if (!$result2) {
-                         trigger_error('Problems automatic deleting materials from query: "'.$updateQuery.'"', E_USER_WARNING);
-                     }
-                 }
-             }
-         }
-     }
-
      public function getResubmissionItemIDsByDate($year, $month, $day)
      {
          $query = 'SELECT item_id, version_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_resubmission_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';

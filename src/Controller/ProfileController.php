@@ -381,7 +381,6 @@ class ProfileController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $deleteParameter = $this->getParameter('commsy.security.privacy_disable_overwriting');
         $lockForm = $formFactory->createNamedBuilder('lock_form', DeleteType::class, [
             'confirm_string' => $translator->trans('lock', [], 'profile'),
         ], [])->getForm();
@@ -437,7 +436,6 @@ class ProfileController extends AbstractController
         }
 
         return $this->render('profile/delete_room_profile.html.twig', [
-            'override' => $deleteParameter,
             'form_lock' => $lockForm,
             'form_delete' => $deleteForm,
         ]);

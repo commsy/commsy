@@ -484,6 +484,18 @@
                 <source>profile.portal_moderation</source>
                 <target>Portal Moderation</target>
             </trans-unit>
+            <trans-unit id="profile.privacy.deletion_title">
+                <source>profile.privacy.deletion_title</source>
+                <target>Item deletion</target>
+            </trans-unit>
+            <trans-unit id="profile.privacy.cascading_items_deletion_strategy.label">
+                <source>profile.privacy.cascading_items_deletion_strategy.label</source>
+                <target>Also delete all user entries when the account is deleted</target>
+            </trans-unit>
+            <trans-unit id="profile.privacy.cascading_items_deletion_strategy.help">
+                <source>profile.privacy.cascading_items_deletion_strategy.help</source>
+                <target>If an account is deleted, also delete all entries?</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

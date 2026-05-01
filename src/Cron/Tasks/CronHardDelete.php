@@ -51,9 +51,11 @@ readonly class CronHardDelete implements CronTaskInterface
         $itemTypes[] = CS_TASK_TYPE;
         $itemTypes[] = CS_TODO_TYPE;
 
-        // Todo: When deleting user entries, they must be unlinked from related rooms and other entities
-        // if they are creator or modifier
-        // $itemTypes[] = CS_USER_TYPE; // NO NO NO -> because of old entries of user
+        // CS_USER_TYPE is intentionally excluded here. User items are hard-deleted via two paths:
+        // 1. AccountDeleter proactively removes user items during account deletion
+        // 2. cs_room_manager::deleteReallyOlderThan() cascades user deletion when a room is finally removed
+        // Activating CS_USER_TYPE here would hit orphaned user records without proper FK cleanup.
+        // $itemTypes[] = CS_USER_TYPE;
 
         $deleteDays = $this->parameterBag->get('commsy.settings.delete_days');
         if (!empty($deleteDays) && is_numeric($deleteDays)) {

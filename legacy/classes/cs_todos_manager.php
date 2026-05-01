@@ -515,44 +515,6 @@ class cs_todos_manager extends cs_manager
         }
     }
 
-     public function deleteTodosOfUser($uid)
-     {
-         global $symfonyContainer;
-         $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-
-         if (null !== $disableOverwrite && 'TRUE' !== $disableOverwrite) {
-             $currentDatetime = getCurrentDateTimeInMySQL();
-             $query = 'SELECT '.$this->addDatabasePrefix('todos').'.* FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').'.creator_id = "'.encode(AS_DB, $uid).'"';
-             $result = $this->_db_connector->performQuery($query);
-
-             if (!empty($result)) {
-                 foreach ($result as $rs) {
-                     $updateQuery = 'UPDATE '.$this->addDatabasePrefix('todos').' SET';
-
-                     /* flag */
-                     if ('FLAG' === $disableOverwrite) {
-                         $updateQuery .= ' public = "-1",';
-                         $updateQuery .= ' modification_date = "'.$currentDatetime.'"';
-                     }
-
-                     /* disabled */
-                     if ('FALSE' === $disableOverwrite) {
-                         $updateQuery .= ' title = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-                         $updateQuery .= ' description = "'.encode(AS_DB, $this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-                         $updateQuery .= ' modification_date = "'.$currentDatetime.'",';
-                         $updateQuery .= ' public = "1"';
-                     }
-
-                     $updateQuery .= ' WHERE item_id = "'.encode(AS_DB, $rs['item_id']).'"';
-                     $result2 = $this->_db_connector->performQuery($updateQuery);
-                     if (!$result2) {
-                         trigger_error('Problems automatic deleting todos from query: "'.$updateQuery.'"', E_USER_WARNING);
-                     }
-                 }
-             }
-         }
-     }
-
      /**
       * @param int[] $contextIds List of context ids
       * @param array Limits for buzzwords / categories

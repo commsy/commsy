@@ -78,6 +78,7 @@ use App\Form\Type\Portal\TermsType;
 use App\Form\Type\Portal\TimePulsesType;
 use App\Form\Type\Portal\TimePulseTemplateType;
 use App\Form\Type\TermType;
+use App\Account\AccountDeleter;
 use App\Mail\Helper\ContactFormHelper;
 use App\Model\TimePulseTemplate;
 use App\Repository\AccountsRepository;
@@ -1213,6 +1214,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         UserService $userService,
         AccountManager $accountManager,
+        AccountDeleter $accountDeleter,
         Request $request
     ): Response {
         $IdsMailRecipients = [];
@@ -1233,7 +1235,7 @@ class PortalSettingsController extends AbstractController
                 $user = $userService->getUser($userId);
                 $account = $accountManager->getAccount($user, $portal->getId());
                 if ($account) {
-                    $accountManager->delete($account);
+                    $accountDeleter->dispatch($account);
                 }
 
                 $this->addFlash('deleteSuccess', true);
@@ -1271,7 +1273,8 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         UserService $userService,
         Request $request,
-        AccountManager $accountManager
+        AccountManager $accountManager,
+        AccountDeleter $accountDeleter
     ): Response {
         $users = [];
         $userNames = [];
@@ -1301,7 +1304,7 @@ class PortalSettingsController extends AbstractController
                             $user = $userService->getUser($userId);
                             $account = $accountManager->getAccount($user, $portal->getId());
                             if ($account) {
-                                $accountManager->delete($account);
+                                $accountDeleter->dispatch($account);
                             }
                             $IdsMailRecipients[] = $userId;
                         }

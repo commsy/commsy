@@ -48,6 +48,26 @@ class PrivacyType extends AbstractType
                 ],
                 'choice_translation_domain' => 'form',
             ])
+            ->add('cascadingUserDeletionStrategy', Types\ChoiceType::class, [
+                'label' => 'portal.settings.privacy.cascading_user_deletion_strategy.label',
+                'help' => 'portal.settings.privacy.cascading_user_deletion_strategy.help',
+                'expanded' => true,
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false,
+                ],
+                'choice_translation_domain' => 'portal',
+            ])
+            ->add('allowUserDefinedDeletionStrategy', Types\ChoiceType::class, [
+                'label' => 'portal.settings.privacy.allow_user_defined_deletion_strategy.label',
+                'help' => 'portal.settings.privacy.allow_user_defined_deletion_strategy.help',
+                'expanded' => true,
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false,
+                ],
+                'choice_translation_domain' => 'portal',
+            ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
