@@ -13,8 +13,11 @@
 
 namespace App\Utils;
 
+use App\Room\RoomDeletionOptions;
 use App\Room\RoomManager;
+use App\Room\UserRoomDeleter;
 use App\Services\LegacyEnvironment;
+use App\User\UserMembershipDeleter;
 use cs_environment;
 use cs_project_item;
 use cs_room_item;
@@ -35,9 +38,22 @@ class UserroomService
         LegacyEnvironment $legacyEnvironment,
         private readonly RoomService $roomService,
         private readonly UserService $userService,
-        private readonly RoomManager $roomManager)
+        private readonly RoomManager $roomManager,
+        private readonly UserMembershipDeleter $membershipDeleter,
+        private readonly UserRoomDeleter $userRoomDeleter)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
+    /**
+     * Returns the current user's item id for use as `deleter_id` audit
+     * stamp on soft-deletes triggered from this service. Defaults to 0
+     * (sentinel for "system / unattributed") when the request is not
+     * tied to a logged-in user — matches legacy `getItemID() ?: 0`.
+     */
+    private function currentDeleterId(): int
+    {
+        return (int) ($this->legacyEnvironment->getCurrentUserItem()?->getItemID() ?? 0);
     }
 
     /**
@@ -326,7 +342,10 @@ class UserroomService
                     // remove this user room moderator if the project room user who's related to this user room moderator
                     // isn't a project room moderator anymore
                     if (!$ownsUserroom && $userroomUser->isModerator() && !$changedUser->isModerator()) {
-                        $userroomUser->delete();
+                        $this->membershipDeleter->softDeleteMembership(
+                            (int) $userroomUser->getItemID(),
+                            $this->currentDeleterId()
+                        );
                     }
                 }
             }
@@ -366,7 +385,10 @@ class UserroomService
                 // remove this user room user if the project room user who's related to this user room user was deleted
                 $userroomUserIsRelatedToDeletedUser = !empty($projectUserIdRelatedToUserroomUser) && $projectUserIdRelatedToUserroomUser == $deletedUser->getItemID();
                 if ($userroomUserIsRelatedToDeletedUser) {
-                    $userroomUser->delete();
+                    $this->membershipDeleter->softDeleteMembership(
+                        (int) $userroomUser->getItemID(),
+                        $this->currentDeleterId()
+                    );
                 }
             }
         }
@@ -375,23 +397,37 @@ class UserroomService
     public function deleteUserroomsForProjectRoomId(int $projectRoomId): void
     {
         $roomItem = $this->roomService->getRoomItem($projectRoomId);
-        if ('project' === $roomItem->getType()) {
-            $userList = $roomItem->getUserList();
-
-            foreach ($userList as $roomUser) {
-                $linkedUserRoomItem = $roomUser->getLinkedUserroomItem();
-                if (null !== $linkedUserRoomItem) {
-                    if ($linkedUserRoomItem->getContextID() === $projectRoomId) {
-                        $linkedUserRoomItem->delete();
-                        $linkedUserRoomItem->save();
-                    }
-                }
-            }
-            $roomItem->setShouldCreateUserRooms(false);
-            $roomItem->save();
-        } else {
+        if ('project' !== $roomItem->getType()) {
             throw new NotFoundHttpException("No project room found for id $projectRoomId");
         }
+
+        $deleterId = $this->currentDeleterId();
+        // `asSilent()` is a no-op for UserRoomDeleter today (it
+        // dispatches no WorkspaceDeletedEvent — neither in legacy nor
+        // in the new path). It stays here as a forward-compat signal
+        // that this is a configuration toggle, not a user-initiated
+        // workspace deletion: should UserRoomDeleter ever grow an
+        // event, the project must remain mail-quiet during this loop.
+        $opts = RoomDeletionOptions::forUserAction()->asSilent();
+
+        $userList = $roomItem->getUserList();
+        foreach ($userList as $roomUser) {
+            $linkedUserRoomItem = $roomUser->getLinkedUserroomItem();
+            if (null === $linkedUserRoomItem) {
+                continue;
+            }
+            if ($linkedUserRoomItem->getContextID() !== $projectRoomId) {
+                continue;
+            }
+            $this->userRoomDeleter->softDeleteRoom(
+                (int) $linkedUserRoomItem->getItemID(),
+                $deleterId,
+                $opts
+            );
+        }
+
+        $roomItem->setShouldCreateUserRooms(false);
+        $roomItem->save();
     }
 
     /**

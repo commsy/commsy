@@ -421,67 +421,6 @@ class cs_project_item extends cs_room_item
         }
     }
 
-    /**
-     * Deletes the project room.
-     */
-    public function delete(bool $silent = false): void
-    {
-        parent::delete();
-
-        // delete related group rooms
-        foreach ($this->getGroupRoomList() as $groupRoom) {
-            /* @var \cs_grouproom_item $groupRoom */
-            $groupRoom->delete();
-            $groupRoom->save();
-        }
-
-        // delete all project room users which will also delete any associated user rooms
-        foreach ($this->getUserList() as $user) {
-            /* @var \cs_user_item $user */
-            $user->delete();
-            $user->save();
-        }
-
-        // delete in community rooms
-        $com_list = $this->getCommunityList();
-        if (isset($com_list)
-            and is_object($com_list)
-            and $com_list->isNotEmpty()
-        ) {
-            $com_item = $com_list->getFirst();
-            while ($com_item) {
-                $com_item->removeProjectID2InternalProjectIDArray($this->getItemID());
-                $com_item->saveWithoutChangingModificationInformation();
-                unset($com_item);
-                $com_item = $com_list->getNext();
-            }
-        }
-        unset($com_list);
-
-        // delete associated tasks
-        $task_list = $this->_getTaskList();
-        foreach ($task_list as $task) {
-            $task->delete();
-        }
-
-        // dispatch delete event (sending mail to moderation is handled by an event subscriber)
-        $symfonyContainer = $this->_environment->getSymfonyContainer();
-
-        /** @var EventDispatcher $eventDispatcher */
-        $eventDispatcher = $symfonyContainer->get('event_dispatcher');
-        $eventDispatcher->dispatch(new WorkspaceDeletedEvent($this));
-
-        $manager = $this->_environment->getProjectManager();
-        $this->_delete($manager);
-        unset($manager);
-
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
-
     public function undelete()
     {
         $manager = $this->_environment->getProjectManager();

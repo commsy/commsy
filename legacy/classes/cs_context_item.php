@@ -2651,10 +2651,6 @@ class cs_context_item extends cs_item
         return $user_manager->getCountAll();
     }
 
-    public function delete(bool $silent = false): void
-    {
-    }
-
     public function getPageImpressionAndUserActivityLast()
     {
         $retour = $this->_getExtra('PIUA_LAST');

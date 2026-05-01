@@ -237,55 +237,6 @@ class cs_file_manager extends cs_manager
         return $result;
     }
 
-    /**  delete a file "item".
-     */
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $user_id = $current_user->getItemID() ?: 0;
-        $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET ' .
-            'deletion_date="' . $current_datetime . '",' .
-            'deleter_id="' . encode(AS_DB, $user_id) . '"' .
-            ' WHERE files_id="' . encode(AS_DB, $itemId) . '"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting files from query: "' . $query . '"', E_USER_WARNING);
-        } else {
-            $link_manager = $this->_environment->getLinkItemFileManager();
-            $link_manager->deleteByFileID($itemId);
-        }
-    }
-
-    public function deleteReally($file_item)
-    {
-        $query = 'DELETE FROM ' . $this->addDatabasePrefix($this->_db_table) .
-            ' WHERE files_id="' . encode(AS_DB, $file_item->getFileID()) . '"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problems deleting files from query: "' . $query . '"', E_USER_WARNING);
-        } else {
-            $disc_manager = $this->_environment->getDiscManager();
-            $disc_manager->unlinkFile($file_item->getDiskFileNameWithoutFolder());
-            unset($disc_manager);
-
-            $link_manager = $this->_environment->getLinkItemFileManager();
-            $link_manager->deleteByFileReally($file_item->getFileID());
-            unset($link_manager);
-        }
-        unset($file_item);
-    }
-
-    private function _deleteReallyByFileIDOnlyDB($file_id)
-    {
-        $query = 'DELETE FROM ' . $this->addDatabasePrefix($this->_db_table) .
-            ' WHERE files_id="' . encode(AS_DB, $file_id) . '"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problems deleting links of a file item from query: "' . $query . '"', E_USER_WARNING);
-        }
-    }
-
     public function _miniatur($pict, $dest_pict)
     {
         $image_in_info = getimagesize($pict);
@@ -497,41 +448,6 @@ class cs_file_manager extends cs_manager
         }
 
         return $retour;
-    }
-
-    public function deleteReallyOlderThan(int $days): void
-    {
-        $disc_manager = $this->_environment->getDiscManager();
-        $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-
-        $query = 'SELECT ' .
-            $this->addDatabasePrefix($this->_db_table) . '.files_id, ' .
-            $this->addDatabasePrefix($this->_db_table) . '.portal_id, ' .
-            $this->addDatabasePrefix($this->_db_table) . '.context_id, ' .
-            $this->addDatabasePrefix($this->_db_table) . '.filename
-            FROM ' . $this->addDatabasePrefix($this->_db_table) . '
-            WHERE deletion_date IS NOT NULL and deletion_date < "' . $timestamp . '";';
-
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problem selecting items from query: "' . $query . '"', E_USER_ERROR);
-        } else {
-            // foreign key constraint
-            foreach ($result as $file) {
-                $linkItemFileManager = $this->_environment->getLinkItemFileManager();
-                $linkItemFileManager->deleteByFileReally($file['files_id']);
-            }
-
-            parent::deleteReallyOlderThan($days);
-            foreach ($result as $query_result) {
-                $filename = 'cid' . $query_result['context_id'] . '_' . $query_result['files_id'] . '_' . $query_result['filename'];
-                $disc_manager->setPortalID($query_result['portal_id']);
-                $disc_manager->setContextID($query_result['context_id']);
-                if ($disc_manager->existsFile($filename)) {
-                    $disc_manager->unlinkFile($filename);
-                }
-            }
-        }
     }
 
     public function deleteUnneededFiles($context_id, $portal_id = '')

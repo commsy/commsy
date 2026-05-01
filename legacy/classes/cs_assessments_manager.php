@@ -294,22 +294,6 @@ class cs_assessments_manager extends cs_manager
         }
     }
 
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $user_id = $this->_current_user->getItemID() ?: 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                 'deletion_date="'.$current_datetime.'",'.
-                 'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id = "'.encode(AS_DB, $itemId).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting assessment from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            parent::delete($itemId);
-        }
-    }
-
     public function getItemIDForOwn($item_link_id)
     {
         $query = '

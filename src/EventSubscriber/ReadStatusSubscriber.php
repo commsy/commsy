@@ -13,6 +13,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Event\ItemReindexEvent;
 use App\Event\ReadStatusPreChangeEvent;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
@@ -32,7 +33,18 @@ readonly class ReadStatusSubscriber implements EventSubscriberInterface
     {
         return [
             ReadStatusPreChangeEvent::class => 'onReadStatusPreChange',
+            ItemReindexEvent::class => 'onItemReindex',
         ];
+    }
+
+    /**
+     * Invalidate the cached read status of an item whose content just changed
+     * (e.g. edit save, room-copy) so stale cache entries don't outlive the change.
+     * The DB-level read status itself is untouched — only the cache is cleared.
+     */
+    public function onItemReindex(ItemReindexEvent $event): void
+    {
+        $this->readerService->invalidateCachedReadStatusForItem($event->getItem());
     }
 
     public function onReadStatusPreChange(ReadStatusPreChangeEvent $event): void

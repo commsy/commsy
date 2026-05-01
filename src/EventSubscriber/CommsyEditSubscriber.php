@@ -15,20 +15,21 @@ namespace App\EventSubscriber;
 
 use App\Enum\EditableSection;
 use App\Event\CommsyEditEvent;
+use App\Event\ItemReindexEvent;
 use App\Lock\LockManager;
 use App\Services\CalendarsService;
-use App\Utils\ReaderService;
 use cs_item;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 final readonly class CommsyEditSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private ReaderService $readerService,
         private CalendarsService $calendarsService,
         private LockManager $lockManager,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -87,18 +88,13 @@ final readonly class CommsyEditSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Updates the Elastic search index for the given item, and invalidates its cached read status.
-     *
-     * @param cs_item $item the item whose search index entry shall be updated
+     * Dispatches an {@see ItemReindexEvent} so the ES index and the read-status
+     * cache stay consistent with the just-saved content. The ES reindex is
+     * handled by {@see ElasticaSubscriber::onItemReindex()} and the cache
+     * invalidation by {@see ReadStatusSubscriber::onItemReindex()}.
      */
     private function updateSearchIndex(cs_item $item): void
     {
-        if (method_exists($item, 'updateElastic')) {
-            $item->updateElastic();
-
-            // NOTE: read status cache items also get invalidated via the ReadStatusPreChangeEvent
-            // which will be triggered when items get marked as read
-            $this->readerService->invalidateCachedReadStatusForItem($item);
-        }
+        $this->eventDispatcher->dispatch(new ItemReindexEvent($item), ItemReindexEvent::class);
     }
 }

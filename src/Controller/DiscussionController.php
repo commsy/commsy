@@ -29,6 +29,7 @@ use App\Form\DataTransformer\DiscussionarticleTransformer;
 use App\Form\DataTransformer\DiscussionTransformer;
 use App\Form\Type\DiscussionAnswerType;
 use App\Form\Type\DiscussionType;
+use App\Rubric\Discussion\DiscussionDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
@@ -635,6 +636,7 @@ class DiscussionController extends BaseController
     public function editAnswer(
         Request $request,
         DiscussionarticleTransformer $transformer,
+        DiscussionDeleter $discussionDeleter,
         int $roomId,
         int $itemId
     ): RedirectResponse {
@@ -665,7 +667,13 @@ class DiscussionController extends BaseController
                 $article->save();
             } else {
                 if ($form->get('cancel')->isClicked()) {
-                    $article->delete();
+                    // Draft cancel: the article was freshly created and saved with
+                    // draft status; route the cleanup through DiscussionDeleter so
+                    // links / link_items / file_links and the items-row are all
+                    // soft-deleted uniformly (legacy $article->delete() left the
+                    // items twin row behind).
+                    $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+                    $discussionDeleter->deleteArticle((int) $article->getItemID(), $deleterId);
                 }
             }
         }

@@ -435,48 +435,6 @@ class cs_discussion_manager extends cs_manager
         }
     }
 
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $user_id = $current_user->getItemID() ?: 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET '.
-                 'deletion_date="'.$current_datetime.'",'.
-                 'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting discussion.', E_USER_WARNING);
-        } else {
-            parent::delete($itemId);
-        }
-    }
-
-    public function deleteReallyOlderThan(int $days): void
-    {
-        $conn = $this->_db_connector->getConnection();
-
-        // It's possible that there are discussion articles that are not yet deleted, even if the discussion itself
-        // is already deleted. It would be preferred to enforce this on database level in the future.
-        $qb = $conn->createQueryBuilder();
-        $qb
-            ->select('item_id')
-            ->from($this->_db_table, 't')
-            ->where('t.deletion_date < DATE_SUB(CURRENT_DATE, INTERVAL :days DAY)')
-            ->setParameter('days', $days)
-            ->executeQuery();
-        $results = $qb->fetchAllAssociative();
-        $discussionIds = array_map(fn ($result) => $result['item_id'], $results);
-
-        $conn->executeStatement('DELETE FROM discussionarticles WHERE discussion_id IN (?)',
-            [$discussionIds],
-            [ArrayParameterType::INTEGER]
-        );
-
-        // call parent implementation to delete discussions
-        parent::deleteReallyOlderThan($days);
-    }
-
     // #######################################################
     // statistic functions
     // #######################################################

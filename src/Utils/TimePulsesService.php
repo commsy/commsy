@@ -15,6 +15,7 @@ namespace App\Utils;
 
 use App\Entity\Portal;
 use App\Model\TimePulseTemplate;
+use App\Rubric\Label\LabelDeleter;
 use App\Services\LegacyEnvironment;
 
 /**
@@ -24,8 +25,10 @@ use App\Services\LegacyEnvironment;
  */
 class TimePulsesService
 {
-    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private readonly LegacyEnvironment $legacyEnvironment,
+        private readonly LabelDeleter $labelDeleter,
+    ) {
     }
 
     /**
@@ -216,6 +219,7 @@ class TimePulsesService
         }
 
         $currentUserItem = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+        $deleterId = (int) ($currentUserItem->getItemID() ?: 0);
         $time_manager = $this->legacyEnvironment->getEnvironment()->getTimeManager();
 
         if (!empty($clock_pulse_array)) {
@@ -237,8 +241,7 @@ class TimePulsesService
                             $clock_pulse_pos = $temp_clock_pulse_array[1];
                             if ($clock_pulse_pos > $count) {
                                 if (!$time_label->isDeleted()) {
-                                    $time_label->setDeleterItem($currentUserItem);
-                                    $time_label->delete();
+                                    $this->labelDeleter->softDeleteItem((int) $time_label->getItemID(), $deleterId);
                                 }
                             } else {
                                 if ($time_label->isDeleted()) {
@@ -248,13 +251,11 @@ class TimePulsesService
                             }
                         } elseif ($time_label->getTitle() > $last_new_clock_pulse) {
                             if (!$time_label->isDeleted()) {
-                                $time_label->setDeleterItem($currentUserItem);
-                                $time_label->delete();
+                                $this->labelDeleter->softDeleteItem((int) $time_label->getItemID(), $deleterId);
                             }
                         } else {
                             if (!$time_label->isDeleted()) {
-                                $time_label->setDeleterItem($currentUserItem);
-                                $time_label->delete();
+                                $this->labelDeleter->softDeleteItem((int) $time_label->getItemID(), $deleterId);
                             }
                         }
                     } else {
@@ -287,8 +288,7 @@ class TimePulsesService
             if ($time_list->isNotEmpty()) {
                 $time_label = $time_list->getFirst();
                 while ($time_label) {
-                    $time_label->setDeleterItem($currentUserItem);
-                    $time_label->delete();
+                    $this->labelDeleter->softDeleteItem((int) $time_label->getItemID(), $deleterId);
                     $time_label = $time_list->getNext();
                 }
             }

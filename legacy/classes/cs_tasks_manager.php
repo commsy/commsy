@@ -338,27 +338,4 @@ class cs_tasks_manager extends cs_manager
         return $task_list;
     }
 
-    /** delete a task
-     * this method deletes a new task.
-     *
-     * @param int $itemId item id of the task
-     */
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $user_id = $current_user->getItemID() ?: 0;
-        unset($current_user);
-        $query = 'UPDATE '.$this->addDatabasePrefix('tasks').' SET '.
-                 'deletion_date="'.$current_datetime.'",'.
-                 'deleter_id="'.encode(AS_DB, $user_id).'",'.
-                 'status="CLOSED"'.
-                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting tasks from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            parent::delete($itemId);
-        }
-    }
 }

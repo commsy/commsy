@@ -608,27 +608,6 @@ class cs_manager
         }
     }
 
-    /** delete a commsy item
-     * this method deletes a commsy item.
-     *
-     * @param int $itemId id of the commsy item
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $currentDatetime = getCurrentDateTimeInMySQL();
-        $currentUser = $this->_environment->getCurrentUserItem();
-        $deleterId = (0 !== $currentUser->getItemID()) ? $currentUser->getItemID() : 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix('items').' SET '.
-            'deletion_date="'.$currentDatetime.'",'.
-            'deleter_id="'.encode(AS_DB, $deleterId).'"'.
-            ' WHERE item_id="'.$itemId.'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) || !$result) {
-            trigger_error('Problems deleting item in table items.', E_USER_WARNING);
-        }
-    }
-
   public function undeleteItemByItemID($item_id)
   {
       $current_datetime = getCurrentDateTimeInMySQL();
@@ -1241,19 +1220,6 @@ class cs_manager
        }
 
        return $retour;
-   }
-
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function deleteReallyOlderThan(int $days): void
-   {
-       $qb = $this->_db_connector->getConnection()->createQueryBuilder();
-       $qb
-           ->delete($this->_db_table)
-           ->where('deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)')
-           ->setParameter('days', $days, ParameterType::INTEGER)
-           ->executeStatement();
    }
 
    public function getLastQuery()

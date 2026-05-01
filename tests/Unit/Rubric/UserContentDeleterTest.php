@@ -4,10 +4,12 @@ namespace Tests\Unit\Rubric;
 
 use App\Account\AccountSetting;
 use App\Account\AccountSettingsManager;
+use App\Assessment\AssessmentDeleter;
 use App\Entity\Account;
 use App\Entity\Portal;
 use App\Rubric\DeletionStrategy;
 use App\Rubric\UserContentDeleter;
+use App\User\UserDeletionHelper;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 
@@ -26,6 +28,8 @@ class UserContentDeleterTest extends TestCase
             new \ArrayIterator([]),
             $this->settingsManager,
             $connection,
+            $this->createMock(UserDeletionHelper::class),
+            $this->createMock(AssessmentDeleter::class),
         );
     }
 

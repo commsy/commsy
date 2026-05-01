@@ -31,6 +31,7 @@ use App\Form\DataTransformer\TodoTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\StepType;
 use App\Form\Type\TodoType;
+use App\Rubric\Todo\TodoDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
@@ -354,6 +355,7 @@ class TodoController extends BaseController
     public function editStep(
         Request $request,
         TodoTransformer $transformer,
+        TodoDeleter $todoDeleter,
         int $roomId,
         int $itemId
     ): Response {
@@ -399,9 +401,12 @@ class TodoController extends BaseController
                     CommsyEditEvent::SAVE);
             } else {
                 if ($form->get('cancel')->isClicked()) {
-                    // remove not saved item
-                    $step->delete();
-                    $step->save();
+                    // Draft cancel: route through TodoDeleter::deleteStep so the
+                    // step's links / link_items / file_links and the items twin
+                    // row are soft-deleted uniformly. Legacy $step->delete() +
+                    // ->save() left the items row behind.
+                    $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+                    $todoDeleter->deleteStep((int) $step->getItemID(), $deleterId);
 
                     return $this->redirectToRoute('app_todo_detail', [
                         'roomId' => $roomId,

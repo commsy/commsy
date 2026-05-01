@@ -19,6 +19,8 @@ use App\Filter\ProjectFilterType;
 use App\Form\Type\ProjectType;
 use App\Form\Type\Room\DeleteType;
 use App\Room\Copy\LegacyCopy;
+use App\Room\ProjectRoomDeleter;
+use App\Room\RoomDeletionOptions;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -315,6 +317,8 @@ class ProjectController extends AbstractController
         Request $request,
         RoomService $roomService,
         TranslatorInterface $translator,
+        LegacyEnvironment $legacyEnvironment,
+        ProjectRoomDeleter $projectRoomDeleter,
         int $roomId,
         int $itemId
     ): Response {
@@ -330,8 +334,13 @@ class ProjectController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $roomItem->delete();
-            $roomItem->save();
+            $deleterId = (int) ($legacyEnvironment->getEnvironment()
+                ->getCurrentUserItem()?->getItemID() ?? 0);
+            $projectRoomDeleter->softDeleteRoom(
+                (int) $roomItem->getItemID(),
+                $deleterId,
+                RoomDeletionOptions::forUserAction()
+            );
 
             return $this->redirectToRoute('app_project_list', ['roomId' => $roomId]);
         }

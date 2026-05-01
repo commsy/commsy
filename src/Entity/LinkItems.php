@@ -78,4 +78,9 @@ class LinkItems
     {
         $this->creationDate = new DateTime('0000-00-00 00:00:00');
     }
+
+    public function getItemId(): ?int
+    {
+        return $this->itemId;
+    }
 }

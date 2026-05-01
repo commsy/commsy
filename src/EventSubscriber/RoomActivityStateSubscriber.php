@@ -19,6 +19,8 @@ use App\Mail\Factories\RoomMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
+use App\Room\RoomDeleterRegistry;
+use App\Room\RoomDeletionOptions;
 use App\Room\RoomManager;
 use App\Utils\ItemService;
 use cs_room_item;
@@ -36,7 +38,8 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
         private RoomManager $roomManager,
         private ItemService $itemService,
         private RoomMessageFactory $roomMessageFactory,
-        private Mailer $mailer
+        private Mailer $mailer,
+        private RoomDeleterRegistry $roomDeleterRegistry,
     ) {
     }
 
@@ -235,8 +238,20 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
         $room = $event->getSubject();
 
         $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
-        if ($legacyRoom) {
-            $legacyRoom->delete();
+        if ($legacyRoom instanceof cs_room_item) {
+            // Auto-abandon: the deletion happens in the background when
+            // the workflow transitions this room to `abandoned`; there is
+            // no acting user and no UI feedback. {@see forAutoAbandon()}
+            // therefore flips `silent = true` so WorkspaceDeletedEvent
+            // does not fan out moderation mails about an invisible
+            // maintenance step. Deleter id stays 0 — same sentinel the
+            // legacy `cs_user_item::delete()` used when no current-user
+            // context was bound.
+            $this->roomDeleterRegistry->softDeleteLegacyRoom(
+                $legacyRoom,
+                0,
+                RoomDeletionOptions::forAutoAbandon()
+            );
         }
     }
 

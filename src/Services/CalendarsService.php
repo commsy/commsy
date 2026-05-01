@@ -16,6 +16,7 @@ namespace App\Services;
 use App\Action\Delete\DeleteAction;
 use App\Entity\Calendars;
 use App\Repository\CalendarsRepository;
+use App\Rubric\Dates\DatesDeleter;
 use App\Utils\DateService;
 use App\Utils\RoomService;
 use cs_environment;
@@ -27,6 +28,7 @@ use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Sabre\VObject;
 use Sabre\VObject\Component\VEvent;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class CalendarsService
@@ -41,7 +43,11 @@ readonly class CalendarsService
         private DateService         $dateService,
         LegacyEnvironment           $legacyEnvironment,
         private TranslatorInterface $translator,
-        private DeleteAction        $deleteAction
+        private DeleteAction        $deleteAction,
+        // Lazy to break the CalendarsService <-> DatesDeleter cycle
+        // (DatesDeleter calls back into CalendarsService::updateSynctoken()).
+        #[Autowire(lazy: true)]
+        private DatesDeleter        $datesDeleter,
     ) {
         $this->objectManager = $doctrine->getManager();
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -395,10 +401,20 @@ readonly class CalendarsService
                 }
             }
 
+            // Resolve the deleter id the same way legacy cs_dates_manager::delete()
+            // did: current user id, or 0 when none is available (CLI cron via
+            // ExternalCalendarsCommand). `0` is the established legacy sentinel
+            // for "no real deleter" — used uniformly across all legacy delete
+            // managers — and matches the existing DB state (no soft-deleted
+            // row has deleter_id IS NULL). Routes through DatesDeleter so
+            // CalDAV sync tokens, ES cleanup and item_link_file handling stay
+            // consistent with the regular delete path.
+            $cleanupDeleterId = (int) $this->legacyEnvironment->getCurrentUserID();
+
             foreach ($this->dateService->getListDates($roomId, null, null, null) as $date) {
                 if ($date->getCalendarId() == $calendar->getId()) {
                     if (!in_array($date->getUid(), $uids)) {
-                        $date->delete();
+                        $this->datesDeleter->softDeleteItem((int) $date->getItemID(), $cleanupDeleterId);
                     }
                 }
             }

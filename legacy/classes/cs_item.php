@@ -11,7 +11,8 @@
  * file that was distributed with this source code.
  */
 
-use App\Files\FileManager;
+use App\Files\FileDeleter;
+use App\Legacy\LegacySoftDeleteBridge;
 use App\Proxy\PortalProxy;
 use App\Repository\ItemLinkFileRepository;
 use App\Repository\MaterialsRepository;
@@ -1212,9 +1213,10 @@ class cs_item
             $link_item->save();
             $changed_key_item = $create_key_item_list->getNext();
         }
+        $bridge = $this->_environment->getSymfonyContainer()->get(LegacySoftDeleteBridge::class);
         $delete_link_item = $delete_link_item_list->getFirst();
         while ($delete_link_item) {
-            $delete_link_item->delete();
+            $bridge->softDeleteLinkItem((int) $delete_link_item->getItemID());
             $delete_link_item = $delete_link_item_list->getNext();
         }
     }
@@ -1284,6 +1286,7 @@ class cs_item
             $link_item->setSecondLinkedItem($item);
             $link_item->save();
         }
+        $bridge = $this->_environment->getSymfonyContainer()->get(LegacySoftDeleteBridge::class);
         $delete_link_item = $delete_link_item_list->getFirst();
         while ($delete_link_item) {
             if ($change_all_items_in_community_room) {
@@ -1292,7 +1295,7 @@ class cs_item
                 $link_manager = $this->_environment->getLinkItemManager();
                 $link_manager->deleteAllLinkItemsInCommunityRoom($item_id, $context_id);
             }
-            $delete_link_item->delete();
+            $bridge->softDeleteLinkItem((int) $delete_link_item->getItemID());
             $delete_link_item = $delete_link_item_list->getNext();
         }
     }
@@ -1399,16 +1402,6 @@ class cs_item
      *
      * @author CommSy Development Group
      */
-    protected function _delete(cs_manager $manager, bool $silent = false): void
-    {
-        $manager->delete($this->getItemID(), $silent);
-        $link_manager = $this->_environment->getLinkItemManager();
-        $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
-
-        $this->setDeletionDate(getCurrentDateTimeInMySQL());
-        $this->setDeleterID($this->_environment->getCurrentUserItem()->getItemID());
-    }
-
     public function _undelete($manager)
     {
         $manager->undelete($this->getItemID());
@@ -1827,27 +1820,6 @@ class cs_item
         $manager->undeleteItemByItemID($this->getItemID());
     }
 
-     /** delete item
-      * this method deletes an item.
-      */
-     public function delete(bool $silent = false): void
-     {
-         $manager = $this->_environment->getManager($this->getItemType());
-         $this->_delete($manager);
-     }
-
-    public function deleteAssociatedAnnotations()
-    {
-        $item_manager = $this->_environment->getItemManager();
-        $item = $item_manager->getItem($this->getItemID());
-
-        $annotation_list = $item->getAnnotationList();
-        foreach ($annotation_list as $annotation) {
-            /** @var cs_annotation_item $annotation */
-            $annotation->delete();
-        }
-    }
-
     // ################# file handling ############################
 
     /** get list of files attached o this item.
@@ -1938,8 +1910,8 @@ class cs_item
     {
         $container = $this->_environment->getSymfonyContainer();
 
-        /** @var FileManager $fileManager */
-        $fileManager = $container->get(FileManager::class);
+        /** @var FileDeleter $fileDeleter */
+        $fileDeleter = $container->get(FileDeleter::class);
 
         /** @var ItemLinkFileRepository $itemLinkFileRepository */
         $itemLinkFileRepository = $container->get(ItemLinkFileRepository::class);
@@ -1951,7 +1923,7 @@ class cs_item
             $link_manager = $this->_environment->getLinkManager();
             $file_id_array = $this->getFileIDArray();
             if (empty($file_id_array)) {
-                $fileManager->softDeleteFileLink($this->getItemID(), $this->getVersionID());
+                $fileDeleter->softDeleteFileLink($this->getItemID(), $this->getVersionID());
             } else {
                 $linkedIds = $itemLinkFileRepository->getLinkedFileIds($this->getItemID(), $this->getVersionID());
                 $keep_links = [];
@@ -1959,7 +1931,7 @@ class cs_item
                     if (in_array($linkedId, $file_id_array)) {
                         $keep_links[] = $linkedId;
                     } else {
-                        $fileManager->softDeleteFileLink(
+                        $fileDeleter->softDeleteFileLink(
                             $this->getItemID(),
                             $this->getVersionID(),
                             $linkedId

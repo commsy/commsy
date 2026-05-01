@@ -15,13 +15,13 @@ namespace App\Twig\Components\FileList;
 
 use App\Entity\Files;
 use App\Event\CommsyEditEvent;
+use App\Files\FileDeleter;
 use App\Form\Type\UploadDropzoneType;
 use App\Office\OfficeFileFactory;
 use App\Repository\FilesRepository;
 use App\Services\FileUploader;
 use App\Services\LegacyEnvironment;
 use App\Twig\Components\DTO\FileDto;
-use App\Utils\FileService;
 use App\Utils\ItemService;
 use App\WOPI\Discovery\DiscoveryService;
 use cs_file_item;
@@ -151,7 +151,8 @@ final class FileList extends AbstractController
 
     #[LiveListener('FileListItem:fileRemoved')]
     public function removeFile(
-        FileService $fileService,
+        FileDeleter $fileDeleter,
+        LegacyEnvironment $legacyEnvironment,
         #[LiveArg] int $fileId
     ): void
     {
@@ -159,8 +160,8 @@ final class FileList extends AbstractController
             $file->fileId != $fileId
         );
 
-        $file = $fileService->getFile($fileId);
-        $file?->delete();
+        $deleterId = (int) ($legacyEnvironment->getEnvironment()->getCurrentUserItem()?->getItemID() ?: 0);
+        $fileDeleter->softDeleteFile($fileId, $deleterId);
         $this->updateIndex();
     }
 

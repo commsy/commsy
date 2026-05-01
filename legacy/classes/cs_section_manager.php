@@ -455,31 +455,6 @@ class cs_section_manager extends cs_manager
       unset($item);
   }
 
-    /**  delete a section item.
-     */
-    public function delete(int $itemId, $version_id = null, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $user_id = $current_user->getItemID() ?: 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix('section').' SET '.
-                 'deletion_date="'.$current_datetime.'",'.
-                 'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-        if ($version_id) {
-            $query .= ' AND version_id="'.encode(AS_DB, $version_id).'"';
-        }
-
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting section from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            if (is_null($version_id)) {
-                parent::delete($itemId);
-            }
-        }
-    }
-
   /** save a commsy item
    * this method saves a commsy item.
    *

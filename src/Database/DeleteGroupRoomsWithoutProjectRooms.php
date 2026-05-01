@@ -13,24 +13,18 @@
 
 namespace App\Database;
 
-use App\Entity\Labels;
 use App\Entity\Room;
-use App\Services\LegacyEnvironment;
-use cs_environment;
-use cs_grouproom_item;
-use cs_user_item;
+use App\Room\GroupRoomDeleter;
+use App\Room\RoomDeletionOptions;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DeleteGroupRoomsWithoutProjectRooms extends GeneralCheck
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        LegacyEnvironment $legacyEnvironment
+        private readonly GroupRoomDeleter $groupRoomDeleter
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         parent::__construct($entityManager);
     }
 
@@ -59,9 +53,16 @@ class DeleteGroupRoomsWithoutProjectRooms extends GeneralCheck
             if (!$projectId || !$roomRepository->findOneBy(['itemId' => $projectId])) {
                 $io->warning("No project room with id '{$projectId}' found for grouproom {$groupRoom->getItemId()}");
 
-                $groupRoomManager = $this->legacyEnvironment->getGroupRoomManager();
-                $legacyGroupRoom = $groupRoomManager->getItem($groupRoom->getItemId());
-                $legacyGroupRoom->delete(true);
+                // DB-fix path: no user session, no moderator, no UI —
+                // `forDbFix()` is implicitly silent so no
+                // WorkspaceDeletedEvent mails fan out. Deleter id 0
+                // mirrors legacy behaviour when `cs_user_item::delete()`
+                // ran without a current-user context.
+                $this->groupRoomDeleter->softDeleteRoom(
+                    (int) $groupRoom->getItemId(),
+                    0,
+                    RoomDeletionOptions::forDbFix()
+                );
 
                 $io->caution("Group room '{$groupRoom->getItemId()}' was deleted");
             }

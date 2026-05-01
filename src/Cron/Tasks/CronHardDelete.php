@@ -13,57 +13,52 @@
 
 namespace App\Cron\Tasks;
 
-use App\Services\LegacyEnvironment;
-use cs_environment;
+use App\Assessment\AssessmentDeleter;
+use App\Files\FileDeleter;
+use App\Legacy\LegacyAuxHardDeleter;
+use App\Room\RoomHardDeleter;
+use App\Rubric\RubricHardDeleter;
 use DateTimeImmutable;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 readonly class CronHardDelete implements CronTaskInterface
 {
-    private cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
-        private ParameterBagInterface $parameterBag
+        private ParameterBagInterface $parameterBag,
+        private RoomHardDeleter $roomHardDeleter,
+        private RubricHardDeleter $rubricHardDeleter,
+        private LegacyAuxHardDeleter $legacyAuxHardDeleter,
+        private FileDeleter $fileDeleter,
+        private AssessmentDeleter $assessmentDeleter,
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        $itemTypes = [];
-        $itemTypes[] = CS_ANNOTATION_TYPE;
-        $itemTypes[] = CS_ANNOUNCEMENT_TYPE;
-        $itemTypes[] = CS_DATE_TYPE;
-        $itemTypes[] = CS_DISCUSSION_TYPE;
-        $itemTypes[] = CS_LINKITEMFILE_TYPE;
-        $itemTypes[] = CS_FILE_TYPE;
-        $itemTypes[] = CS_ITEM_TYPE;
-        $itemTypes[] = CS_LABEL_TYPE;
-        $itemTypes[] = CS_LINK_TYPE;
-        $itemTypes[] = CS_LINKITEM_TYPE;
-        $itemTypes[] = CS_MATERIAL_TYPE;
-        // $itemTypes[] = CS_PORTAL_TYPE; // not implemented yet because than all data (rooms, data in rooms) should be deleted too
-        $itemTypes[] = CS_ROOM_TYPE;
-        $itemTypes[] = CS_SECTION_TYPE;
-        $itemTypes[] = CS_TAG_TYPE;
-        $itemTypes[] = CS_TAG2TAG_TYPE;
-        $itemTypes[] = CS_TASK_TYPE;
-        $itemTypes[] = CS_TODO_TYPE;
-
-        // CS_USER_TYPE is intentionally excluded here. User items are hard-deleted via two paths:
-        // 1. AccountDeleter proactively removes user items during account deletion
-        // 2. cs_room_manager::deleteReallyOlderThan() cascades user deletion when a room is finally removed
-        // Activating CS_USER_TYPE here would hit orphaned user records without proper FK cleanup.
-        // $itemTypes[] = CS_USER_TYPE;
-
         $deleteDays = $this->parameterBag->get('commsy.settings.delete_days');
-        if (!empty($deleteDays) && is_numeric($deleteDays)) {
-            foreach ($itemTypes as $itemType) {
-                $manager = $this->legacyEnvironment->getManager($itemType);
-                $manager->deleteReallyOlderThan($deleteDays);
-            }
+        if (empty($deleteDays) || !is_numeric($deleteDays)) {
+            return;
         }
+        $deleteDays = (int) $deleteDays;
+
+        $this->rubricHardDeleter->hardDeleteOlderThan($deleteDays);
+
+        // Files first: item_link_file FK-references files, and filesystem
+        // cleanup needs the row data.
+        $this->fileDeleter->hardDeleteExpiredFiles($deleteDays);
+
+        $this->legacyAuxHardDeleter->hardDeleteLinkItemRows($deleteDays);
+        $this->legacyAuxHardDeleter->hardDeleteTagRows($deleteDays);
+        $this->legacyAuxHardDeleter->hardDeleteTag2TagPivotRows($deleteDays);
+        $this->legacyAuxHardDeleter->hardDeleteTaskRows($deleteDays);
+        // Legacy had no deleteReallyOlderThan on cs_assessments_manager,
+        // so soft-deleted rows accumulated forever — this closes that gap.
+        $this->assessmentDeleter->hardDeleteOlderThan($deleteDays);
+        // `items` last: referenced as shared twin by every rubric row above.
+        $this->legacyAuxHardDeleter->hardDeleteItemsRows($deleteDays);
+
+        $this->roomHardDeleter->hardDeleteRoomsOlderThan($deleteDays);
+        $this->roomHardDeleter->hardDeletePortalsOlderThan($deleteDays);
     }
 
     public function getSummary(): string

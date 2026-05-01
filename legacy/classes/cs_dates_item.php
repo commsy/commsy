@@ -15,8 +15,6 @@
  */
 
 use App\Entity\Dates;
-use App\Event\ItemDeletedEvent;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /** class for a dates
  * this class implements a dates item.
@@ -523,7 +521,9 @@ class cs_dates_item extends cs_item
         while ($link_member_item) {
             $linked_user_id = $link_member_item->getLinkedItemID($this);
             if ($user->getItemID() == $linked_user_id) {
-                $link_member_item->delete();
+                $this->_environment->getSymfonyContainer()
+                    ->get(\App\Legacy\LegacySoftDeleteBridge::class)
+                    ->softDeleteLinkItem((int) $link_member_item->getItemID());
             }
             $link_member_item = $link_member_list->getNext();
         }
@@ -561,29 +561,6 @@ class cs_dates_item extends cs_item
          $repository = $em->getRepository(Dates::class);
 
          $this->replaceElasticItem($objectPersister, $repository);
-     }
-
-     public function delete(bool $silent = false): void
-     {
-         global $symfonyContainer;
-
-         /** @var EventDispatcher $eventDispatcher */
-         $eventDispatcher = $symfonyContainer->get('event_dispatcher');
-
-         $itemDeletedEvent = new ItemDeletedEvent($this);
-         $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
-
-         $date_manager = $this->_environment->getDatesManager();
-         $this->_delete($date_manager);
-
-         // delete associated annotations
-         $this->deleteAssociatedAnnotations();
-
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_date');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Dates::class);
-
-         $this->deleteElasticItem($objectPersister, $repository);
      }
 
     /** asks if item is editable by everybody or just creator.

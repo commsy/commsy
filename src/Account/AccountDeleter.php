@@ -5,26 +5,38 @@ namespace App\Account;
 use App\Entity\Account;
 use App\Message\DeleteAccountMessage;
 use App\Repository\UserRepository;
+use App\Room\PrivateRoomDeleter;
+use App\Room\RoomDeletionOptions;
 use App\Rubric\UserContentDeleter;
+use App\Services\LegacyEnvironment;
 use App\User\UserListBuilder;
+use App\User\UserMembershipDeleter;
 use App\Utils\UserService;
+use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-readonly class AccountDeleter
+class AccountDeleter
 {
+    private readonly cs_environment $legacyEnvironment;
+
     public function __construct(
-        private UserContentDeleter $userContentDeleter,
-        private UserListBuilder $userListBuilder,
-        private UserService $userService,
-        private UserRepository $userRepository,
-        private EntityManagerInterface $entityManager,
-        private MessageBusInterface $messageBus,
-        private LoggerInterface $logger,
-    ) {}
+        private readonly UserContentDeleter $userContentDeleter,
+        private readonly UserListBuilder $userListBuilder,
+        private readonly UserService $userService,
+        private readonly UserRepository $userRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly MessageBusInterface $messageBus,
+        private readonly LoggerInterface $logger,
+        private readonly UserMembershipDeleter $membershipDeleter,
+        private readonly PrivateRoomDeleter $privateRoomDeleter,
+        LegacyEnvironment $legacyEnvironment,
+    ) {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
 
     /**
      * Dispatches async account deletion via Messenger.
@@ -52,7 +64,23 @@ readonly class AccountDeleter
             ->withPrivateRoomUser()
             ->getList();
 
-        // Erase user footprint in each context, then soft-delete the user
+        // Audit stamp: portal user's own item id (parity with cs_user_item::delete()).
+        $deleterId = (int) ($portalUser?->getItemID() ?? 0);
+
+        // Resolve the private room BEFORE stamping any user rows —
+        // getRelatedOwnRoomForUser() inner-joins on user.deletion_date IS NULL,
+        // so once the user rows are stamped the lookup would silently orphan.
+        $privateRoomId = null;
+        if ($portalUser !== null) {
+            $privateRoom = $this->legacyEnvironment
+                ->getPrivateRoomManager()
+                ->getRelatedOwnRoomForUser($portalUser, $portalUser->getContextID());
+            if ($privateRoom !== null) {
+                $privateRoomId = (int) $privateRoom->getItemID();
+            }
+        }
+
+        // Erase footprint per context, then soft-delete the membership row.
         foreach ($userList as $user) {
             /** @var cs_user_item $user */
             $this->userContentDeleter->eraseUserFootprint(
@@ -60,10 +88,26 @@ readonly class AccountDeleter
                 $user->getContextID(),
                 $account,
             );
-            $user->delete();
+            $this->membershipDeleter->softDeleteMembership(
+                (int) $user->getItemID(),
+                $deleterId
+            );
         }
 
-        $portalUser?->delete();
+        if ($portalUser !== null) {
+            $this->membershipDeleter->softDeleteMembership(
+                (int) $portalUser->getItemID(),
+                $deleterId
+            );
+        }
+
+        if ($privateRoomId !== null) {
+            $this->privateRoomDeleter->softDeleteRoom(
+                $privateRoomId,
+                $deleterId,
+                RoomDeletionOptions::forAccountDelete()
+            );
+        }
 
         // NULL account_id on remaining soft-deleted user references
         $usersWithAccountRef = $this->userRepository->findBy(['account' => $account]);

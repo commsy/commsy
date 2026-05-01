@@ -14,12 +14,15 @@
 namespace App\Utils;
 
 use App\Services\LegacyEnvironment;
+use App\Tag\TagDeleter;
 use cs_tag_item;
 
 class CategoryService
 {
-    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        private readonly LegacyEnvironment $legacyEnvironment,
+        private readonly TagDeleter $tagDeleter,
+    ) {
     }
 
     public function getTag($tagId)
@@ -88,13 +91,85 @@ class CategoryService
         return $tagItem;
     }
 
+    /**
+     * Soft-deletes the tag and, recursively, every descendant in the
+     * `tag2tag` tree. Cascade lives in {@see TagDeleter::softDelete()}.
+     */
     public function removeTag($tagId, $roomId): void
     {
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);
 
+        $deleterId = (int) ($environment->getCurrentUserItem()?->getItemID() ?: 0);
+
+        $this->tagDeleter->softDelete((int) $tagId, $deleterId);
+    }
+
+    /**
+     * Combines two tags into a new merged tag (title "t1/t2", union of linked
+     * items, children of both re-parented under it).
+     *
+     * Parity: cs_tag2tag_manager::combine() + non-recursive
+     * cs_tag_manager::delete($id, false).
+     */
+    public function combineTags(int $tagIdOne, int $tagIdTwo, int $roomId): void
+    {
+        $environment = $this->legacyEnvironment->getEnvironment();
+        $environment->setCurrentContextID($roomId);
+
         $tagManager = $environment->getTagManager();
-        $tagManager->delete($tagId);
+        $tag2tagManager = $environment->getTag2TagManager();
+
+        // If tag one is a successor of tag two, swap so the father-id lookup
+        // walks up from the deeper tag's parent (legacy parity).
+        if ($tag2tagManager->isASuccessorOfB($tagIdOne, $tagIdTwo)) {
+            [$tagIdOne, $tagIdTwo] = [$tagIdTwo, $tagIdOne];
+        }
+
+        $fatherId = (int) $tag2tagManager->getFatherItemID($tagIdOne);
+
+        $itemOne = $tagManager->getItem($tagIdOne);
+        $itemTwo = $tagManager->getItem($tagIdTwo);
+
+        $titleOne = $itemOne->getTitle();
+        $titleTwo = $itemTwo->getTitle();
+
+        $linkedIdsOne = $itemOne->getAllLinkedItemIDArray();
+        $linkedIdsTwo = $itemTwo->getAllLinkedItemIDArray();
+
+        $childrenIdsOne = $tag2tagManager->getChildrenItemIDArray($tagIdOne);
+        $childrenIdsTwo = $tag2tagManager->getChildrenItemIDArray($tagIdTwo);
+
+        $deleterId = (int) ($environment->getCurrentUserItem()?->getItemID() ?: 0);
+
+        // Non-recursive: children survive to be re-parented below.
+        // Parity: tag_manager->delete($id, false).
+        $this->tagDeleter->softDeleteWithoutChildren($tagIdOne, $deleterId);
+        $this->tagDeleter->softDeleteWithoutChildren($tagIdTwo, $deleterId);
+
+        unset($itemOne, $itemTwo);
+
+        $mergedLinkedIds = array_unique(array_merge($linkedIdsOne, $linkedIdsTwo));
+
+        $newTag = $tagManager->getNewItem();
+        $newTag->setTitle($titleOne.'/'.$titleTwo);
+        $newTag->setContextID($environment->getCurrentContextID());
+        $newTag->setCreatorItem($environment->getCurrentUserItem());
+        $newTag->setCreationDate(getCurrentDateTimeInMySQL());
+        $newTag->setLinkedItemsByIDArray($mergedLinkedIds);
+        $newTag->setPosition($fatherId, $tag2tagManager->countChildren($fatherId));
+        $newTag->save();
+
+        // Re-parent children of both old tags under the new merged tag.
+        $newId = (int) $newTag->getItemID();
+        $count = 1;
+        foreach (array_merge($childrenIdsOne, $childrenIdsTwo) as $childId) {
+            $child = $tagManager->getItem($childId);
+            $child->setPosition($newId, $count);
+            $child->save();
+            unset($child);
+            ++$count;
+        }
     }
 
     public function updateStructure($structure, $roomId): void

@@ -55,6 +55,14 @@ class WorkspaceSubscriber implements EventSubscriberInterface
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomDeleteToCommunityModeration();
             $workspace->_sendMailRoomDeleteToPortalModeration();
+        } else if ($workspace instanceof cs_grouproom_item) {
+            // Legacy parity: cs_grouproom_item::delete() used to send
+            // these three mails synchronously inline. Under the new
+            // RoomDeleter pipeline the dispatch moves here so every
+            // room type flows through the same event.
+            $workspace->_sendMailRoomDeleteToGroupModeration();
+            $workspace->_sendMailRoomDeleteToProjectModeration();
+            $workspace->_sendMailRoomDeleteToPortalModeration();
         }
     }
 
@@ -68,6 +76,12 @@ class WorkspaceSubscriber implements EventSubscriberInterface
             $workspace->_sendMailRoomUnDeleteToPortalModeration();
         } else if ($workspace instanceof cs_community_item) {
             $workspace->_sendMailRoomUnDeleteToCommunityModeration();
+            $workspace->_sendMailRoomUnDeleteToPortalModeration();
+        } else if ($workspace instanceof cs_grouproom_item) {
+            // Symmetric to onWorkspaceDeletedEvent above — legacy sent
+            // these three un-delete mails inline from cs_grouproom_item::undelete().
+            $workspace->_sendMailRoomUnDeleteToGroupModeration();
+            $workspace->_sendMailRoomUnDeleteToProjectModeration();
             $workspace->_sendMailRoomUnDeleteToPortalModeration();
         }
     }

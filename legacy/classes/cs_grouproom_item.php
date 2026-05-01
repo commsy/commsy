@@ -184,38 +184,6 @@ class cs_grouproom_item extends cs_room_item
         $this->updateElastic();
     }
 
-    /** delete project
-     * this method deletes the group room.
-     */
-    public function delete(bool $silent = false): void
-    {
-        parent::delete();
-
-        // delete associated tasks
-        foreach ($this->_getTaskList() as $task) {
-            /** @var cs_task_item $task */
-            $task->delete();
-        }
-
-        // send mail to moderation
-        if (!$silent) {
-            $this->_sendMailRoomDelete();
-        }
-
-        $manager = $this->_environment->getProjectManager();
-        $this->_delete($manager, $silent);
-
-        // delete linked group
-        $group = $this->getLinkedGroupItem();
-        $group?->delete(false);
-
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
-
     public function undelete()
     {
         $manager = $this->_environment->getProjectManager();
@@ -588,14 +556,12 @@ class cs_grouproom_item extends cs_room_item
     // - unlock
     // ###############################################################
 
-    private function _sendMailRoomDelete(): void
-    {
-        $this->_sendMailRoomDeleteToGroupModeration();
-        $this->_sendMailRoomDeleteToProjectModeration();
-        $this->_sendMailRoomDeleteToPortalModeration();
-    }
-
-    private function _sendMailRoomDeleteToGroupModeration(): void
+    // Promoted to public (was private) so the modernised
+    // App\EventSubscriber\WorkspaceSubscriber can invoke it when
+    // dispatching WorkspaceDeletedEvent for a group room — same
+    // visibility as the sibling open/archive/lock mail hooks already
+    // used by the subscriber.
+    public function _sendMailRoomDeleteToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'delete');
     }
@@ -607,7 +573,8 @@ class cs_grouproom_item extends cs_room_item
         $this->_sendMailRoomUnDeleteToPortalModeration();
     }
 
-    private function _sendMailRoomUnDeleteToGroupModeration(): void
+    // Public for the same reason as _sendMailRoomDeleteToGroupModeration().
+    public function _sendMailRoomUnDeleteToGroupModeration(): void
     {
         $this->_sendMailToModeration('group', 'undelete');
     }

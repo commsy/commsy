@@ -411,26 +411,6 @@ class cs_step_manager extends cs_manager
          }
      }
 
-    /**  delete a step item.
-     */
-    public function delete(int $itemId, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $user_id = $current_user->getItemID() ?: 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix('step').' SET '.
-                 'deletion_date="'.$current_datetime.'",'.
-                 'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting step from query: "'.$query.'"', E_USER_WARNING);
-        } else {
-            parent::delete($itemId);
-        }
-    }
-
   /** save a commsy item
    * this method saves a commsy item.
    *

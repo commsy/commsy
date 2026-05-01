@@ -14,6 +14,8 @@
 namespace App\Database;
 
 use App\Entity\Room;
+use App\Room\GroupRoomDeleter;
+use App\Room\RoomDeletionOptions;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_grouproom_item;
@@ -27,7 +29,8 @@ class DeleteGroupRoomsWithoutTitle extends GeneralCheck
 
     public function __construct(
         protected EntityManagerInterface $entityManager,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        private readonly GroupRoomDeleter $groupRoomDeleter
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         parent::__construct($entityManager);
@@ -81,7 +84,15 @@ class DeleteGroupRoomsWithoutTitle extends GeneralCheck
 
             $io->warning("Invalid group room found");
 
-            $legacyGroupRoom->delete(true);
+            // DB-fix path: no user session, no moderator, no UI —
+            // `forDbFix()` is implicitly silent so no WorkspaceDeletedEvent
+            // mails fan out. Deleter id 0 mirrors legacy behaviour when
+            // `cs_user_item::delete()` ran without a current-user context.
+            $this->groupRoomDeleter->softDeleteRoom(
+                (int) $legacyGroupRoom->getItemID(),
+                0,
+                RoomDeletionOptions::forDbFix()
+            );
             $io->caution("Group room '{$groupRoom->getItemId()}' was deleted");
         }
 

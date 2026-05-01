@@ -12,8 +12,6 @@
  */
 
 use App\Entity\Room;
-use App\Hash\HashManager;
-use App\Utils\ReaderService;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -523,84 +521,6 @@ class cs_room_manager extends cs_context_manager
                 ->where('item_id = :item_id')
                 ->setParameter('item_id', $context_id, ParameterType::INTEGER);
             $queryBuilder->executeStatement();
-        }
-    }
-
-    public function deleteReallyOlderThan(int $days): void
-    {
-        $symfonyContainer = $this->_environment->getSymfonyContainer();
-
-        /** @var HashManager $hashManager */
-        $hashManager = $symfonyContainer->get(HashManager::class);
-        $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
-        $link_item_file_manager = $this->_environment->getLinkItemFileManager();
-        $annotation_manager = $this->_environment->getAnnotationManager();
-        $announcement_manager = $this->_environment->getAnnouncementManager();
-        $dates_manager = $this->_environment->getDatesManager();
-        $discussion_manager = $this->_environment->getDiscussionManager();
-        $discussionarticles_manager = $this->_environment->getDiscussionarticlesManager();
-        $file_manager = $this->_environment->getFileManager();
-        $item_manager = $this->_environment->getItemManager();
-        $labels_manager = $this->_environment->getLabelManager();
-        $links_manager = $this->_environment->getLinkManager();
-        $link_item_manager = $this->_environment->getLinkItemManager();
-        $material_manager = $this->_environment->getMaterialManager();
-        $section_manager = $this->_environment->getSectionManager();
-        $step_manager = $this->_environment->getStepManager();
-        $tag_manager = $this->_environment->getTagManager();
-        $tag2tag_manager = $this->_environment->getTag2TagManager();
-        $task_manager = $this->_environment->getTaskManager();
-        $todo_manager = $this->_environment->getTodosManager();
-        $user_manager = $this->_environment->getUserManager();
-        $room_manager = $this->_environment->getRoomManager();
-
-        /** @var EntityManagerInterface $em */
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $query = $em->createQuery('
-            SELECT r.itemId, r.contextId
-            FROM App\Entity\Room r
-            WHERE DATE_DIFF(CURRENT_DATE(), r.deletionDate) > :diff
-        ');
-        $query->setParameter('diff', $days);
-        $rooms = $query->getResult();
-
-        /** @var ReaderService $readerService */
-        $readerService = $symfonyContainer->get(ReaderService::class);
-
-        foreach ($rooms as $room) {
-            $contextId = $room['contextId'];
-            $itemId = $room['itemId'];
-
-            // delete files
-            $disc_manager = $this->_environment->getDiscManager();
-            $disc_manager->removeRoomDir($contextId, $itemId);
-
-            // reader
-            $readerService->deleteAllEntriesInWorkspace($itemId);
-
-            // managers
-            $hashManager->deleteHashesInContext($itemId);
-            $link_modifier_item_manager->deleteFromDb($itemId);
-            $link_item_file_manager->deleteFromDb($itemId);
-            $annotation_manager->deleteFromDb($itemId);
-            $announcement_manager->deleteFromDb($itemId);
-            $dates_manager->deleteFromDb($itemId);
-            $discussionarticles_manager->deleteFromDb($itemId);
-            $discussion_manager->deleteFromDb($itemId);
-            $file_manager->deleteFromDb($itemId);
-            $item_manager->deleteFromDb($itemId);
-            $labels_manager->deleteFromDb($itemId);
-            $links_manager->deleteFromDb($itemId);
-            $link_item_manager->deleteFromDb($itemId);
-            $material_manager->deleteFromDb($itemId);
-            $section_manager->deleteFromDb($itemId);
-            $step_manager->deleteFromDb($itemId);
-            $tag_manager->deleteFromDb($itemId);
-            $tag2tag_manager->deleteFromDb($itemId);
-            $task_manager->deleteFromDb($itemId);
-            $todo_manager->deleteFromDb($itemId);
-            $user_manager->deleteFromDb($itemId);
-            $room_manager->deleteFromDb($itemId);
         }
     }
 

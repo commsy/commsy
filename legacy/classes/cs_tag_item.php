@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use App\Legacy\LegacySoftDeleteBridge;
+
 /** class for a tag
  * this class implements a commsy tag.
  */
@@ -228,7 +230,12 @@ class cs_tag_item extends cs_item
             if (!empty($father)) {
                 // delete old position
                 if (!$new) {
-                    $tag2tag_manager->delete($position_old_array[0]['father'], $this->getItemID());
+                    $this->_environment->getSymfonyContainer()
+                        ->get(LegacySoftDeleteBridge::class)
+                        ->softDeleteTag2TagPivot(
+                            (int) $position_old_array[0]['father'],
+                            (int) $this->getItemID()
+                        );
                 }
                 // insert new position
                 $tag2tag_manager->insert($this->getItemID(), $father, $position_array[0]['place']);
@@ -242,18 +249,6 @@ class cs_tag_item extends cs_item
             }
             unset($tag2tag_manager);
         }
-    }
-
-    public function saveMaterialLinkItemsByIDArray($array)
-    {
-        $link_manager = $this->_environment->getLinkItemManager();
-        $link_manager->saveLinkItemsMaterialToItem($array, $this);
-    }
-
-    public function saveRubricLinkItemsByIDArray($array, $rubric)
-    {
-        $link_manager = $this->_environment->getLinkItemManager();
-        $link_manager->saveLinkItemsRubricToItem($array, $this, $rubric);
     }
 
     public function setSavePositionWithoutChange($value)

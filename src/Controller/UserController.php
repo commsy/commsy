@@ -34,6 +34,7 @@ use App\Services\AvatarService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
+use App\User\UserMembershipDeleter;
 use App\Utils\AccountMail;
 use App\Utils\ItemService;
 use App\Utils\TopicService;
@@ -381,6 +382,7 @@ class UserController extends BaseController
         EventDispatcherInterface $eventDispatcher,
         Mailer $mailer,
         AccountMail $accountMail,
+        UserMembershipDeleter $membershipDeleter,
         int $roomId
     ): Response {
         $room = $this->getRoom($roomId);
@@ -427,9 +429,17 @@ class UserController extends BaseController
                 if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
                         case 'user-delete':
+                            // Moderator-driven bulk removal of memberships
+                            // from this room. The current user is the
+                            // deleter; falls back to the targeted user's
+                            // own id when no moderator session is bound
+                            // (mirrors legacy `cs_user_item::delete()`).
+                            $deleterId = (int) ($this->userService->getCurrentUserItem()?->getItemID() ?? 0);
                             foreach ($users as $user) {
-                                $user->delete();
-                                $user->save();
+                                $membershipDeleter->softDeleteMembership(
+                                    (int) $user->getItemID(),
+                                    $deleterId ?: (int) $user->getItemID()
+                                );
                             }
                             break;
 

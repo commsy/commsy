@@ -412,16 +412,6 @@ class cs_item_manager extends cs_manager
         return array_column($result, 'item_id');
     }
 
-    public function deleteReallyOlderThan(int $days): void
-    {
-        $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-        $query = 'DELETE FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE deletion_date IS NOT NULL and deletion_date < "' . $timestamp . '" AND type != "' . CS_USER_TYPE . '";';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problem deleting items.', E_USER_ERROR);
-        }
-    }
-
     // #######################################################
     // statistic functions
     // #######################################################

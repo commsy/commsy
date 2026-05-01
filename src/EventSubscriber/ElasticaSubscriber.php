@@ -13,12 +13,24 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Announcement;
+use App\Entity\Dates;
+use App\Entity\Discussions;
+use App\Entity\Materials;
+use App\Entity\Todos;
+use App\Entity\User;
+use App\Event\ItemDeletedEvent;
+use App\Event\ItemReindexEvent;
+use App\Repository\MaterialsRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
 use cs_file_item;
 use cs_list;
 use cs_project_item;
+use Doctrine\ORM\EntityManagerInterface;
+use Elastica\Exception\NotFoundException;
+use Elastica\Exception\ResponseException;
 use Elastica\Pipeline;
 use Elastica\Processor\AttachmentProcessor;
 use Elastica\Processor\ForeachProcessor;
@@ -27,6 +39,8 @@ use Elastica\Request;
 use FOS\ElasticaBundle\Event\PostIndexResetEvent;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
+use FOS\ElasticaBundle\Persister\PersisterRegistry;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Psr\Cache\InvalidArgumentException;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -46,7 +60,10 @@ class ElasticaSubscriber implements EventSubscriberInterface
         LegacyEnvironment $legacyEnvironment,
         private readonly ItemService $itemService,
         private readonly IndexManager $indexManager,
-        private readonly ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly EntityManagerInterface $entityManager,
+        #[Autowire(service: 'fos_elastica.persister_registry')]
+        private readonly PersisterRegistry $persisterRegistry,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -56,7 +73,131 @@ class ElasticaSubscriber implements EventSubscriberInterface
         return [
             PostIndexResetEvent::class => 'prepareIngestPipeline',
             PostTransformEvent::class => 'addCustomProperty',
+            ItemDeletedEvent::NAME => 'onItemDeleted',
+            ItemReindexEvent::class => 'onItemReindex',
         ];
+    }
+
+    /**
+     * Reindex a single item in its Elasticsearch index.
+     *
+     * Replaces the legacy `cs_item::updateElastic()` / `replaceElasticItem()` bridge
+     * with a direct Symfony-side implementation: resolves the Doctrine entity via
+     * `EntityManager`, gets the FOS-Elastica `ObjectPersister` via `PersisterRegistry`,
+     * and performs `deleteOne` + `insertOne` (mirroring the legacy behaviour — a
+     * straight `replaceOne` would bypass the ingest pipeline).
+     *
+     * Silently skipped when Elasticsearch is not configured, the item type is not
+     * indexed, the entity is not found, or the item is a non-indexable draft.
+     */
+    public function onItemReindex(ItemReindexEvent $event): void
+    {
+        if (empty($_ENV['ELASTICSEARCH_URL'] ?? null)) {
+            return;
+        }
+
+        $item = $event->getItem();
+        $cfg = self::REINDEXABLE[$item->getItemType()] ?? null;
+        if ($cfg === null) {
+            return;
+        }
+
+        $repository = $this->entityManager->getRepository($cfg['entity']);
+        $object = ($repository instanceof MaterialsRepository)
+            ? $repository->findLatestVersionByItemId($item->getItemID())
+            : $repository->findOneBy(['itemId' => $item->getItemID()]);
+
+        if ($object === null || !$object->isIndexable() || $item->isDraft()) {
+            return;
+        }
+
+        try {
+            $persister = $this->persisterRegistry->getPersister($cfg['index']);
+        } catch (\InvalidArgumentException) {
+            return;
+        }
+
+        $persister->deleteOne($object);
+        $persister->insertOne($object);
+    }
+
+    /**
+     * Maps item-type → (FOS-Elastica index name, Doctrine entity class) for reindex.
+     * Tasks and labels are intentionally absent — they were never reindexed via
+     * the legacy `updateElastic()` path either.
+     */
+    private const REINDEXABLE = [
+        'announcement' => ['index' => 'commsy_announcement', 'entity' => Announcement::class],
+        'date'         => ['index' => 'commsy_date',         'entity' => Dates::class],
+        'discussion'   => ['index' => 'commsy_discussion',   'entity' => Discussions::class],
+        'material'     => ['index' => 'commsy_material',     'entity' => Materials::class],
+        'todo'         => ['index' => 'commsy_todo',         'entity' => Todos::class],
+        'user'         => ['index' => 'commsy_user',         'entity' => User::class],
+    ];
+
+    /**
+     * Removes the deleted item's document from its Elasticsearch index.
+     *
+     * Replaces the legacy per-rubric `cs_item::deleteElasticItem()` approach with a
+     * generic handler: the index name is derived from the item type (e.g. 'announcement'
+     * → 'commsy_announcement'). Silently skipped when Elasticsearch is not configured
+     * or the document does not exist.
+     */
+    public function onItemDeleted(ItemDeletedEvent $event): void
+    {
+        if (empty($_ENV['ELASTICSEARCH_URL'] ?? null)) {
+            return;
+        }
+
+        $item = $event->getItem();
+        $indexName = $this->resolveIndexName($item->getItemType());
+        if ($indexName === null) {
+            return;
+        }
+
+        try {
+            $index = $this->indexManager->getIndex($indexName);
+            $index->deleteById((string) $item->getItemID());
+        } catch (NotFoundException) {
+            // Document not present in the index — nothing to do.
+        } catch (ResponseException $e) {
+            // 404 responses (missing document/index) are not fatal; swallow them.
+            if ($e->getResponse()->getStatus() !== 404) {
+                throw $e;
+            }
+        } catch (\InvalidArgumentException) {
+            // IndexManager throws this when the index name is unknown — skip silently.
+        }
+    }
+
+    /**
+     * Maps an internal item type (as returned by `cs_item::getItemType()`) to its
+     * FOS Elastica index name, or null if the type is not indexed.
+     */
+    private function resolveIndexName(string $itemType): ?string
+    {
+        // Known indexed rubrics. Tasks and other types are not indexed in Elasticsearch.
+        //
+        // Room-type entries share a single `commsy_room` index — the legacy
+        // `cs_room_item::delete()` cascade resolved the persister on that
+        // index directly. Private rooms and user rooms are intentionally
+        // absent: legacy did not remove them from ES on delete (user rooms
+        // were never indexed at all; private rooms were indexed on save
+        // but never cleaned up on delete, and we preserve that parity).
+        $indexed = [
+            'announcement' => 'commsy_announcement',
+            'community'    => 'commsy_room',
+            'date'         => 'commsy_date',
+            'discussion'   => 'commsy_discussion',
+            'grouproom'    => 'commsy_room',
+            'label'        => 'commsy_label',
+            'material'     => 'commsy_material',
+            'project'      => 'commsy_room',
+            'todo'         => 'commsy_todo',
+            'user'         => 'commsy_user',
+        ];
+
+        return $indexed[$itemType] ?? null;
     }
 
     public function prepareIngestPipeline(PostIndexResetEvent $event): void

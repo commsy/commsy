@@ -584,31 +584,6 @@ class cs_tag_manager extends cs_manager
          }
      }
 
-    public function delete(int $itemId, $deleteTag2TagRecursive = true, bool $silent = false): void
-    {
-        $current_datetime = getCurrentDateTimeInMySQL();
-        $current_user = $this->_environment->getCurrentUserItem();
-        $user_id = $current_user->getItemID() ?: 0;
-        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                 'deletion_date="'.$current_datetime.'",'.
-                 'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting '.$this->_db_table.'.', E_USER_WARNING);
-        } else {
-            $link_manager = $this->_environment->getLinkItemManager();
-            $link_manager->deleteLinksBecauseItemIsDeleted($itemId);
-            $tag2tag_manager = $this->_environment->getTag2TagManager();
-            if ($deleteTag2TagRecursive) {
-                $tag2tag_manager->deleteTagLinksForTag($itemId);
-            } else {
-                $tag2tag_manager->deleteTagLinks($itemId);
-            }
-            parent::delete($itemId);
-        }
-    }
-
       public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '', $newRoomType = '')
       {
           $retour = parent::copyDataFromRoomToRoom($old_id, $new_id, $user_id, $id_array, $newRoomType);

@@ -4,7 +4,9 @@ namespace App\Rubric;
 
 use App\Account\AccountSetting;
 use App\Account\AccountSettingsManager;
+use App\Assessment\AssessmentDeleter;
 use App\Entity\Account;
+use App\User\UserDeletionHelper;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
@@ -19,30 +21,44 @@ class UserContentDeleter
         private iterable $subEntryRedactors,
         private AccountSettingsManager $accountSettingsManager,
         private Connection $connection,
+        private UserDeletionHelper $userDeletionHelper,
+        private AssessmentDeleter $assessmentDeleter,
     ) {}
 
     /**
      * Erases the footprint of a user in a given context.
      *
-     * Depending on the resolved strategy:
-     * - CASCADE_ITEMS: Main entries are deleted (via legacy cascade), sub-entries
-     *   in surviving parent items are redacted, all references are nullified.
-     * - KEEP_ITEMS: Nothing is deleted, only references are nullified.
+     * - CASCADE_ITEMS: main entries deleted, sub-entries in surviving parent
+     *   items redacted, references nullified.
+     * - KEEP_ITEMS: nothing deleted, only references nullified.
      */
     public function eraseUserFootprint(int $userId, int $contextId, ?Account $account): void
     {
         $strategy = $this->resolveStrategy($account);
 
-        // 1. Main entries via RubricDeleters (rubric-specific tables only)
+        // 1. Main entries via RubricDeleters.
         foreach ($this->deleters as $deleter) {
             if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
-                foreach ($deleter->findItemsCreatedBy($userId, $contextId) as $item) {
-                    $deleter->deleteItem($item);
+                foreach ($deleter->findItemIdsCreatedBy($userId, $contextId) as $itemId) {
+                    $deleter->softDeleteItem($itemId, $userId);
                 }
             }
 
             $deleter->nullifyReferencesInContext($userId, $contextId);
         }
+
+        // 1b. Tasks — auxiliary, not a rubric.
+        if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
+            $this->userDeletionHelper->deleteUserTasks($userId, $contextId, $userId);
+        }
+        $this->userDeletionHelper->nullifyUserTaskReferences($userId, $contextId);
+
+        // 1c. Assessments — auxiliary per-user ratings. KEEP preserves the
+        //     numeric value in the rated item's average but erases authorship.
+        if ($strategy === DeletionStrategy::CASCADE_ITEMS) {
+            $this->assessmentDeleter->softDeleteAssessmentsByUser($userId, $contextId, $userId);
+        }
+        $this->assessmentDeleter->nullifyReferencesInContext($userId, $contextId);
 
         // 2. Sub-entries: never deleted, but redacted (CASCADE) and references nullified (always)
         foreach ($this->subEntryRedactors as $redactor) {
@@ -59,17 +75,12 @@ class UserContentDeleter
 
     /**
      * Cleans up references in tables shared across all rubrics:
-     * - items table (modifier_id)
-     * - files (creator_id)
-     * - link_modifier_item (modifier references)
+     * `files.creator_id` and `link_modifier_item`. The `items` table has no
+     * `modifier_id` / `creator_id` — modifier history lives in
+     * `link_modifier_item`.
      */
     private function cleanupSharedReferences(int $userId, int $contextId): void
     {
-        $this->connection->executeStatement(
-            'UPDATE items SET modifier_id = NULL WHERE modifier_id = :userId AND context_id = :contextId',
-            ['userId' => $userId, 'contextId' => $contextId]
-        );
-
         $this->connection->executeStatement(
             'UPDATE files SET creator_id = NULL WHERE creator_id = :userId AND context_id = :contextId',
             ['userId' => $userId, 'contextId' => $contextId]
@@ -92,7 +103,6 @@ class UserContentDeleter
             return DeletionStrategy::KEEP_ITEMS;
         }
 
-        // If the portal allows user-defined strategies, check the user's preference
         if ($portal->isAllowUserDefinedDeletionStrategy()) {
             $setting = $this->accountSettingsManager->getSetting(
                 $account,
@@ -104,7 +114,6 @@ class UserContentDeleter
                 : DeletionStrategy::KEEP_ITEMS;
         }
 
-        // Otherwise use the portal-wide default
         return $portal->isCascadingUserDeletionStrategy()
             ? DeletionStrategy::CASCADE_ITEMS
             : DeletionStrategy::KEEP_ITEMS;

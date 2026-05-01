@@ -15,8 +15,7 @@
  */
 
 use App\Entity\Discussions;
-use App\Event\ItemDeletedEvent;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use App\Legacy\LegacySoftDeleteBridge;
 
 /** class for a discussion
  * this class implements a discussion item.
@@ -204,33 +203,6 @@ class cs_discussion_item extends cs_item
         $this->replaceElasticItem($objectPersister, $repository);
     }
 
-    public function delete(bool $silent = false): void
-    {
-        $symfonyContainer = $this->_environment->getSymfonyContainer();
-
-        /** @var EventDispatcher $eventDispatcher */
-        $eventDispatcher = $symfonyContainer->get('event_dispatcher');
-
-        $itemDeletedEvent = new ItemDeletedEvent($this);
-        $eventDispatcher->dispatch($itemDeletedEvent, ItemDeletedEvent::NAME);
-
-        // delete all discussion articles
-        $articles = $this->getAllArticles() ?? new cs_list();
-        foreach ($articles as $article) {
-            /** @var cs_discussionarticle_item $article */
-            $article->delete();
-        }
-
-        $discussion_manager = $this->_environment->getDiscussionManager();
-        $this->_delete($discussion_manager);
-
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_discussion');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Discussions::class);
-
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
-
    /** Checks and sets the data of the discussion_item.
     *
     * @param $data_array
@@ -342,7 +314,9 @@ class cs_discussion_item extends cs_item
                $copy->setErrorArray($error_array_sum);
            }
            if ($article->isDeleted()) {
-               $arcticle_copy->delete();
+               $this->_environment->getSymfonyContainer()
+                   ->get(LegacySoftDeleteBridge::class)
+                   ->softDeleteDiscussionArticle((int) $arcticle_copy->getItemID());
            }
            $article = $article_list->getNext();
        }

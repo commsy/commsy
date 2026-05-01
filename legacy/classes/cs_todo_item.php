@@ -33,6 +33,7 @@
 //    along with CommSy.
 
 use App\Entity\Todos;
+use App\Legacy\LegacySoftDeleteBridge;
 
 /** class for a todo
  * this class implements a todo item.
@@ -296,12 +297,13 @@ class cs_todo_item extends cs_item
 
     public function removeProcessor($user)
     {
+        $bridge = $this->_environment->getSymfonyContainer()->get(LegacySoftDeleteBridge::class);
         $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
         $link_member_item = $link_member_list->getFirst();
         while ($link_member_item) {
             $linked_user_id = $link_member_item->getLinkedItemID($this);
             if ($user->getItemID() == $linked_user_id) {
-                $link_member_item->delete();
+                $bridge->softDeleteLinkItem((int) $link_member_item->getItemID());
             }
             $link_member_item = $link_member_list->getNext();
         }
@@ -347,34 +349,6 @@ class cs_todo_item extends cs_item
 
          $this->replaceElasticItem($objectPersister, $repository);
      }
-
-    /** delete todo item
-     * this methode delete the todo item.
-     *
-     * @author CommSy Development Group
-     */
-    public function delete(bool $silent = false): void
-    {
-        $todo_manager = $this->_environment->getTodosManager();
-        $this->_delete($todo_manager);
-
-        // delete steps
-        $step_item_list = $this->getStepItemList();
-        if ($step_item_list->isNotEmpty()) {
-            $step_item = $step_item_list->getFirst();
-            while ($step_item) {
-                $step_item->delete();
-                $step_item = $step_item_list->getNext();
-            }
-        }
-
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_todo');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Todos::class);
-
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
 
     /** Checks and sets the data of the todo_item.
      *
@@ -457,7 +431,9 @@ class cs_todo_item extends cs_item
                 $copy->setErrorArray($error_array_sum);
             }
             if ($step_item->isDeleted()) {
-                $step_item_copy->delete();
+                $this->_environment->getSymfonyContainer()
+                    ->get(LegacySoftDeleteBridge::class)
+                    ->softDeleteStep((int) $step_item_copy->getItemID());
             }
             $step_item = $step_list->getNext();
         }

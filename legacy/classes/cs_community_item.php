@@ -251,31 +251,6 @@ class cs_community_item extends cs_room_item
        $this->updateElastic();
    }
 
-   /** delete community
-    * this method deletes the community.
-    */
-   public function delete(bool $silent = false): void
-   {
-       parent::delete();
-
-       // dispatch delete event (sending mail to moderation is handled by an event subscriber)
-       $symfonyContainer = $this->_environment->getSymfonyContainer();
-
-       /** @var EventDispatcher $eventDispatcher */
-       $eventDispatcher = $symfonyContainer->get('event_dispatcher');
-       $eventDispatcher->dispatch(new WorkspaceDeletedEvent($this));
-
-       $manager = $this->_environment->getCommunityManager();
-       $this->_delete($manager);
-
-       global $symfonyContainer;
-       $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_room');
-       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-       $repository = $em->getRepository(Room::class);
-
-       $this->deleteElasticItem($objectPersister, $repository);
-   }
-
    public function undelete()
    {
        $manager = $this->_environment->getCommunityManager();

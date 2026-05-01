@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Assessment\AssessmentDeleter;
 use App\Services\LegacyEnvironment;
 use cs_assessments_manager;
 use cs_environment;
@@ -23,8 +24,10 @@ class AssessmentService
 
     private readonly cs_assessments_manager $assessmentManager;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly AssessmentDeleter $assessmentDeleter,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
         $this->assessmentManager = $this->legacyEnvironment->getAssessmentManager();
@@ -56,10 +59,23 @@ class AssessmentService
         return $this->assessmentManager->addAssessmentForItem($item, $vote);
     }
 
-    public function removeRating($item)
+    /**
+     * Soft-deletes the current user's rating for the given item.
+     *
+     * Thin wrapper: the actual cascade (assessment row + shared `items`
+     * twin) lives in {@see AssessmentDeleter::softDelete()}. This method
+     * only resolves the own-rating item id and the current deleter id
+     * from the legacy environment and hands off.
+     */
+    public function removeRating($item): void
     {
-        $item_id = $this->assessmentManager->getItemIDForOwn($item->getItemId());
+        $itemId = (int) $this->assessmentManager->getItemIDForOwn($item->getItemId());
+        if ($itemId === 0) {
+            return;
+        }
 
-        return $this->assessmentManager->delete($item_id);
+        $deleterId = (int) ($this->legacyEnvironment->getCurrentUserItem()?->getItemID() ?: 0);
+
+        $this->assessmentDeleter->softDelete($itemId, $deleterId);
     }
 }

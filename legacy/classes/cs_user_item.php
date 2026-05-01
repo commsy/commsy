@@ -1229,54 +1229,6 @@ class cs_user_item extends cs_item
         }
     }
 
-    public function delete(bool $silent = false): void
-    {
-        // delete associated tasks
-        $tasks = $this->_getTaskList();
-        foreach ($tasks as $task) {
-            $task->delete();
-        }
-
-        // in case of portal user, delete own room
-        if ($this->_environment->getCurrentPortalID() == $this->getContextID()) {
-            $own_room = $this->getOwnRoom();
-            $own_room?->delete();
-        }
-
-        // delete any associated user room
-        $userroom = $this->getLinkedUserroomItem();
-        $userroom?->delete();
-
-        $this->makeNoContactPerson();
-        $user_manager = $this->_environment->getUserManager();
-        $this->_delete($user_manager);
-
-        // ContactPersonString
-        $context_item = $this->getContextItem();
-        if (isset($context_item)
-            && !$context_item->isPortal()
-            && !$context_item->isServer()
-            && (!isset($this->oldStatus)
-                || !isset($this->oldContact)
-                || $this->oldStatus != $this->getStatus()
-                || $this->oldContact != $this->getContactStatus()
-            )
-        ) {
-            $context_item->renewContactPersonString();
-        }
-
-        // set old status to current status
-        $this->oldStatus = $this->getStatus();
-        $this->oldContact = $this->getContactStatus();
-
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(User::class);
-
-        $this->deleteElasticItem($objectPersister, $repository);
-    }
-
     /**
      * @return bool
      */

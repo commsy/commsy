@@ -14,7 +14,10 @@
 namespace App\Account;
 
 use App\Entity\Account;
+use App\Room\PrivateRoomDeleter;
+use App\Room\RoomDeletionOptions;
 use App\Services\LegacyEnvironment;
+use App\User\UserMembershipDeleter;
 use App\Utils\ReaderService;
 use App\Utils\UserService;
 use cs_environment;
@@ -26,14 +29,13 @@ class AccountMerger
 {
     private readonly cs_environment $legacyEnvironment;
 
-    /**
-     * AccountMerger constructor.
-     */
     public function __construct(
         private readonly UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ReaderService $readerService
+        private readonly ReaderService $readerService,
+        private readonly UserMembershipDeleter $membershipDeleter,
+        private readonly PrivateRoomDeleter $privateRoomDeleter,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -178,7 +180,12 @@ class AccountMerger
             $manager->mergeAccounts($intoRoomUser->getItemID(), $fromRoomUser->getItemID());
         }
 
-        $fromRoomUser->delete();
+        // For portal context, the legacy delete cascaded into
+        // getOwnRoom()->delete() — already handled by rewritePrivateRoom().
+        $this->membershipDeleter->softDeleteMembership(
+            (int) $fromRoomUser->getItemID(),
+            $this->currentDeleterId()
+        );
     }
 
     private function rewritePrivateRoom(Account $from, Account $into): void
@@ -235,6 +242,18 @@ class AccountMerger
             $manager->refreshInDescLinks($intoPrivateRoom->getItemID(), $newIds);
         }
 
-        $fromPrivateRoom->delete();
+        $this->privateRoomDeleter->softDeleteRoom(
+            (int) $fromPrivateRoom->getItemID(),
+            $this->currentDeleterId(),
+            RoomDeletionOptions::forAccountMerge()
+        );
+    }
+
+    /**
+     * Acting user's item id for audit stamping; 0 when no user is bound.
+     */
+    private function currentDeleterId(): int
+    {
+        return (int) ($this->legacyEnvironment->getCurrentUserItem()?->getItemID() ?? 0);
     }
 }

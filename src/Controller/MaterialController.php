@@ -34,6 +34,7 @@ use App\Form\Type\MaterialType;
 use App\Form\Type\SectionType;
 use App\Http\JsonRedirectResponse;
 use App\Repository\LicenseRepository;
+use App\Rubric\Material\MaterialDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
@@ -1116,6 +1117,7 @@ class MaterialController extends BaseController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveSection(
         Request $request,
+        MaterialDeleter $materialDeleter,
         int $roomId,
         int $itemId
     ): RedirectResponse {
@@ -1155,10 +1157,18 @@ class MaterialController extends BaseController
                 $section->getLinkedItem()->save();
             } else {
                 if ($form->get('cancel')->isClicked()) {
-                    // remove not saved item
-                    $section->delete();
-
-                    $section->save();
+                    // Draft cancel: the section was freshly created for the
+                    // current material version — drop just that version of the
+                    // section so older material versions remain intact.
+                    // Legacy $section->delete() + ->save() left the items twin
+                    // row behind; MaterialDeleter::deleteSection() cleans it up
+                    // alongside link_items / links / file_links.
+                    $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+                    $materialDeleter->deleteSection(
+                        (int) $section->getItemID(),
+                        $deleterId,
+                        (int) $section->getLinkedItem()->getVersionID(),
+                    );
                 }
             }
         }
