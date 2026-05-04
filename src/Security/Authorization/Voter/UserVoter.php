@@ -13,6 +13,7 @@
 
 namespace App\Security\Authorization\Voter;
 
+use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
@@ -54,9 +55,17 @@ class UserVoter extends Voter
     {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        $roomId = $subject;
+        // Subjects can come in three shapes from #[IsGranted]: a numeric
+        // room id (`subject: 'roomId'`), a Portal entity from MapEntity
+        // (`subject: 'portal'`), or another scalar id. PORTAL_MODERATOR
+        // does not need a room item; the others do.
+        if ($subject instanceof Portal) {
+            $roomId = $subject->getId();
+        } else {
+            $roomId = (int) $subject;
+        }
         /** @var cs_room_item $room */
-        $room = $this->roomService->getRoomItem(intval($roomId));
+        $room = $this->roomService->getRoomItem($roomId);
 
         return match ($attribute) {
             self::MODERATOR => $this->isModerator($currentUser),

@@ -173,4 +173,177 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
         ], 'POST');
         $this->assertResponseIsSuccessful();
     }
+
+    #[WithStory(PortalStory::class)]
+    public function testGeneralPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/general");
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testAppearancePageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/appearance");
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testSupportPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/support");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testPortalHomePageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/portalhome");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testRoomCreationPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/roomcreation");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testRoomCategoriesPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/roomcategories");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testAuthLocalPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/auth/local");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testAuthLdapPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/auth/ldap");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testAuthShibPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/auth/shib");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testAuthGuestPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/auth/guest");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testAuthWorkspaceMembershipPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/auth/workspacemembership");
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testMailTextsPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/mailtexts");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testNotificationsPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/notifications");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testPrivacyPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/privacy");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testInactivePageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/inactive");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testAnnouncementsPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/announcements");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(PortalStory::class)]
+    public function testCsvImportPageRenders(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portal->getId()}/settings/csvimport");
+        $this->assertResponseIsSuccessful();
+    }
 }

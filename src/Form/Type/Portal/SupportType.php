@@ -34,7 +34,7 @@ class SupportType extends AbstractType
             ->add('supportPageLink', Types\UrlType::class, [
                 'label' => 'Support page link',
                 'constraints' => [
-                    new Assert\Url(),
+                    new Assert\Url(requireTld: false),
                 ],
                 'required' => false,
                 'help' => 'Support page link help text',

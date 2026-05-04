@@ -208,4 +208,72 @@ class AccountControllerTest extends AbstractApplicationTestCase
         $this->client->request('GET', "/portal/{$account->getContextId()}/account/personal");
         $this->assertResponseIsSuccessful();
     }
+
+    public function testChangePasswordPageRenders(): void
+    {
+        $account = AccountStory::get('account');
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request('GET', '/account/changepassword');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
+    public function testPrivacyPageRenders(): void
+    {
+        $account = AccountStory::get('account');
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request('GET', "/portal/{$account->getContextId()}/account/privacy");
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testNotificationsPageRequiresPortalModerator(): void
+    {
+        // The notifications endpoint requires PORTAL_MODERATOR; AccountStory
+        // produces a regular non-moderator user, so the access-denied
+        // handler redirects to the portal/room fallback.
+        $account = AccountStory::get('account');
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request('GET', "/portal/{$account->getContextId()}/account/notifications");
+        $this->assertResponseRedirects();
+    }
+
+    public function testNewsletterPageRenders(): void
+    {
+        $account = AccountStory::get('account');
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request('GET', "/portal/{$account->getContextId()}/account/newsletter");
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testAdditionalPageRenders(): void
+    {
+        $account = AccountStory::get('account');
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request('GET', "/portal/{$account->getContextId()}/account/additional");
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testDeleteAccountPageRenders(): void
+    {
+        $account = AccountStory::get('account');
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request('GET', "/portal/{$account->getContextId()}/account/delete");
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
+    public function testMergeAccountsPageRenders(): void
+    {
+        $account = AccountStory::get('account');
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request('GET', "/portal/{$account->getContextId()}/account/merge");
+        $this->assertResponseIsSuccessful();
+    }
 }

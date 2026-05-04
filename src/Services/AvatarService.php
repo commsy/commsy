@@ -115,9 +115,9 @@ class AvatarService
         $textWidth = $textBox[2] - $textBox[0];
         $textHeight = $textBox[7] - $textBox[1];
 
-        // Calculate coordinates of the text
-        $x = ($this->imageWidth / 2) - ($textWidth / 2);
-        $y = ($this->imageHeight / 2) - ($textHeight / 2);
+        // Calculate coordinates of the text (imagettftext expects ints)
+        $x = (int) (($this->imageWidth / 2) - ($textWidth / 2));
+        $y = (int) (($this->imageHeight / 2) - ($textHeight / 2));
 
         imagettftext($image, $fontSize, $angle, $x, $y, $colors['text'], $font, $initialString);
 

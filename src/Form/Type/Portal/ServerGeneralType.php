@@ -34,7 +34,7 @@ class ServerGeneralType extends AbstractType
             ->add('commsyIconLink', Types\UrlType::class, [
                 'label' => 'CommSy icon link',
                 'constraints' => [
-                    new Assert\Url(),
+                    new Assert\Url(requireTld: false),
                 ],
                 'required' => false,
                 'help' => 'CommSy icon link help text',
