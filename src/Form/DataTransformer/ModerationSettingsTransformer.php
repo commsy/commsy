@@ -22,6 +22,11 @@ class ModerationSettingsTransformer extends AbstractTransformer
 {
     protected $entity = 'moderation_settings';
 
+    /**
+     * @var array<string, string>
+     */
+    private array $emailTexts;
+
     private readonly cs_environment $legacyEnvironment;
 
     public function __construct(

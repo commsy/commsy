@@ -19,18 +19,20 @@ use Symfony\Component\Validator\Exception\MissingOptionsException;
 
 class MandatoryProjectRoomAssignment extends Constraint
 {
-    /**
-     * @var cs_room_item
-     */
-    public $room;
+    public ?cs_room_item $room = null;
 
-    public $messageStart = 'Caution, the following project rooms are attached to this workspace:';
-    public $message = '{{ criteria }}';
-    public $messageEnd = 'Those project rooms must be delete first or must be assigned to a different workspace.';
+    public string $messageStart = 'Caution, the following project rooms are attached to this workspace:';
+    public string $message = '{{ criteria }}';
+    public string $messageEnd = 'Those project rooms must be delete first or must be assigned to a different workspace.';
 
-    public function __construct($options = null)
-    {
-        parent::__construct($options);
+    public function __construct(
+        ?cs_room_item $room = null,
+        ?array $groups = null,
+        mixed $payload = null,
+    ) {
+        parent::__construct(null, $groups, $payload);
+
+        $this->room = $room;
 
         if (null === $this->room) {
             throw new MissingOptionsException(sprintf('Option "room" must be given for constraint %s', self::class), ['room']);

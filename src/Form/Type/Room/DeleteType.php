@@ -37,13 +37,13 @@ class DeleteType extends AbstractType
             ->add('confirm', TextType::class, [
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\IdenticalTo([
-                        'value' => mb_strtoupper((string) $options['confirm_string']),
-                        'message' => 'The input does not match {{ compared_value }}',
-                    ]),
-                    new MandatoryProjectRoomAssignment([
-                        'room' => $options['room'],
-                    ]),
+                    new Assert\IdenticalTo(
+                        value: mb_strtoupper((string) $options['confirm_string']),
+                        message: 'The input does not match {{ compared_value }}',
+                    ),
+                    new MandatoryProjectRoomAssignment(
+                        room: $options['room'],
+                    ),
                 ],
                 'required' => true,
                 'mapped' => false,
