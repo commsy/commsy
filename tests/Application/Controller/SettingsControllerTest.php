@@ -128,4 +128,47 @@ class SettingsControllerTest extends AbstractApplicationTestCase
 
         $this->assertResponseStatusCodeSame(422);
     }
+
+    public function testDeleteUserRoomsSubmitWithBlankConfirmShowsError(): void
+    {
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/settings/deleteuserrooms");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('delete_settings[delete]')->form();
+        $form['delete_settings[confirm]'] = '';
+        $this->client->submit($form);
+
+        // NotBlank + IdenticalTo on the confirm field both fail → 422.
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    public function testDeleteUserRoomsSubmitWithCorrectConfirmRedirectsToExtensions(): void
+    {
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/settings/deleteuserrooms");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('delete_settings[delete]')->form();
+        $locale = $this->client->getResponse()->headers->get('Content-Language') ?? 'en';
+        /** @var TranslatorInterface $translator */
+        $translator = self::getContainer()->get(TranslatorInterface::class);
+        $form['delete_settings[confirm]'] = mb_strtoupper($translator->trans('delete', [], 'profile', $locale));
+
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects("/room/{$this->roomId}/settings/extensions");
+    }
+
+    public function testInvitationsSubmitWithoutEmailRedirectsToInvitations(): void
+    {
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/settings/invitations");
+        $this->assertResponseIsSuccessful();
+
+        // The "send" submit button without an actual email submits an
+        // empty form; the controller's clicked-button branch falls
+        // through and just redirects back to the invitations page.
+        $form = $crawler->selectButton('invitations_settings[send]')->form();
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects("/room/{$this->roomId}/settings/invitations");
+    }
 }

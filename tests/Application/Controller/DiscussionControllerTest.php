@@ -14,6 +14,8 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use App\Services\LegacyEnvironment;
+use App\Utils\DiscussionService;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -104,6 +106,98 @@ class DiscussionControllerTest extends AbstractApplicationTestCase
         $this->assertGreaterThan(0, $itemId);
     }
 
+    public function testAnswerFormReturns404OnDraftDiscussion(): void
+    {
+        // Newly-created discussions are drafts. answerRoot rejects drafts
+        // with 404 — a draft discussion has no public surface to answer on.
+        $itemId = $this->createDiscussionAndGetId();
+
+        $this->client->request('GET', "/room/$this->roomId/discussion/$itemId/answerform");
+
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testAnswerFormRendersOnPublishedDiscussion(): void
+    {
+        $itemId = $this->createPublishedDiscussion('Veröffentlichte Diskussion');
+
+        $this->client->request('GET', "/room/$this->roomId/discussion/$itemId/answerform");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
+    public function testAnswerSubmitCreatesAnswerAndRedirectsToDetail(): void
+    {
+        $itemId = $this->createPublishedDiscussion('Diskussion mit Antwort');
+
+        $crawler = $this->client->request('GET', "/room/$this->roomId/discussion/$itemId/answerform");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('discussion_answer[save]')->form();
+        $form['discussion_answer[description]'] = 'Meine Antwort hier';
+        $this->client->submit($form);
+
+        // answerRoot redirects to the discussion detail with an
+        // answer_id_<n> fragment — the path itself is enough to verify.
+        $this->assertResponseRedirects();
+        $location = $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString(
+            "/room/$this->roomId/discussion/$itemId",
+            $location,
+            "expected redirect to discussion detail, got: {$location}"
+        );
+
+        // verify the answer text shows up on the detail page
+        $crawler = $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Meine Antwort hier', $crawler->html());
+    }
+
+    public function testCreateAnswerRendersFormForExistingDiscussion(): void
+    {
+        // createAnswer is a GET that creates a new (draft) article and
+        // renders the answer-edit form pointed at /editanswer.
+        $itemId = $this->createPublishedDiscussion('Mit createAnswer');
+
+        $crawler = $this->client->request('GET', "/room/$this->roomId/discussion/$itemId/createanswer");
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+        // the rendered form action targets the editanswer route on the
+        // freshly-created article id (not the original discussion id)
+        $this->assertSelectorExists('form[action*="/editanswer"]');
+    }
+
+    public function testEditAnswerSaveSubmitRedirectsToDetail(): void
+    {
+        $discussionId = $this->createPublishedDiscussion('Edit-Antwort-Test');
+
+        // first, createAnswer to materialise an article + render its form
+        $crawler = $this->client->request(
+            'GET',
+            "/room/$this->roomId/discussion/$discussionId/createanswer"
+        );
+        $this->assertResponseIsSuccessful();
+
+        // submit the edit-answer form with text → 302 to detail
+        $form = $crawler->selectButton('discussion_answer[save]')->form();
+        $form['discussion_answer[description]'] = 'Editierte Antwort';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        $location = $this->client->getResponse()->headers->get('Location');
+        $this->assertStringContainsString(
+            "/room/$this->roomId/discussion/$discussionId",
+            $location,
+            "expected redirect to discussion detail, got: {$location}"
+        );
+
+        // verify the new answer text shows up on the detail page
+        $crawler = $this->client->followRedirect();
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Editierte Antwort', $crawler->html());
+    }
+
     private function createDiscussionAndGetId(): int
     {
         $this->client->request('GET', "/room/$this->roomId/discussion/create");
@@ -124,5 +218,36 @@ class DiscussionControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
 
         return [$itemId, $crawler];
+    }
+
+    /**
+     * Creates a published (non-draft) discussion directly via the legacy
+     * service layer rather than going through /create + /edit + undraft.
+     *
+     * The HTTP route /discussion/create always sets draftStatus=1 and
+     * there is no clean HTTP path inside a single test to publish that
+     * discussion: /item/{id}/undraft works on disk but the legacy
+     * cs_discussion_manager keeps two parallel caches (`_cache_object`
+     * for instantiated items, `_cached_items` for raw DB rows) that
+     * survive across requests in the disableReboot test client and
+     * re-serve the stale draft=1 row on the next getDiscussion() call.
+     * Going through DiscussionService directly avoids the cache trap
+     * and matches what answerRoot ultimately needs (a non-draft
+     * discussion that the room user owns).
+     */
+    private function createPublishedDiscussion(string $title): int
+    {
+        $discussionService = self::getContainer()->get(DiscussionService::class);
+        $env = self::getContainer()->get(LegacyEnvironment::class)->getEnvironment();
+        $env->setCurrentContextID($this->roomId);
+
+        $discussion = $discussionService->getNewDiscussion();
+        $discussion->setTitle($title);
+        $discussion->setDescription('');
+        $discussion->setDraftStatus(0);
+        $discussion->setPrivateEditing('0');
+        $discussion->save();
+
+        return (int) $discussion->getItemID();
     }
 }

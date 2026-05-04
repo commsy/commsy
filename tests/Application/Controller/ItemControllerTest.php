@@ -131,6 +131,44 @@ class ItemControllerTest extends AbstractApplicationTestCase
         $this->assertResponseRedirects("/room/{$this->roomId}/item/{$itemId}/savedescription");
     }
 
+    public function testEditWorkflowSubmitRedirectsToSaveWorkflow(): void
+    {
+        $itemId = $this->createMaterial();
+
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/item/{$itemId}/editworkflow");
+        $this->assertResponseIsSuccessful();
+
+        // submit unchanged — workflow fields are all optional, accepting
+        // the default values yields a redirect to app_material_saveworkflow
+        $form = $crawler->selectButton('itemWorkflow[save]')->form();
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects("/room/{$this->roomId}/material/{$itemId}/saveworkflow");
+    }
+
+    public function testEditLinksSubmitRedirectsToSaveLinks(): void
+    {
+        $itemId = $this->createMaterial();
+
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/item/{$itemId}/editlinks/20");
+        $this->assertResponseIsSuccessful();
+
+        // submit unchanged — links/categories/hashtags fields are all
+        // optional, default-empty submit redirects to savelinks
+        $form = $crawler->selectButton('itemLinks[save]')->form();
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects("/room/{$this->roomId}/item/{$itemId}/savelinks");
+    }
+
+    public function testSaveLinksRoute(): void
+    {
+        $itemId = $this->createMaterial();
+
+        $this->client->request('GET', "/room/{$this->roomId}/item/{$itemId}/savelinks");
+        $this->assertResponseIsSuccessful();
+    }
+
     /**
      * Creates a material item via the /material/create route (which is the
      * standard production code path) and returns its id.
