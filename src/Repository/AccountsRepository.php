@@ -44,21 +44,31 @@ class AccountsRepository extends ServiceEntityRepository
     }
 
     /**
+     * Looks up an account by username and auth source, scoped to a portal
+     * if one is given. The server-context root account and its auth source
+     * have no portal binding (portal_id IS NULL) — pass $portal=null in
+     * that case to find it.
+     *
      * @throws NonUniqueResultException
      */
-    public function findOneByCredentials(string $username, Portal $portal, AuthSource $authSource): ?Account
+    public function findOneByCredentials(string $username, ?Portal $portal, AuthSource $authSource): ?Account
     {
-        return $this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->where('a.username = :username')
             ->andWhere('a.authSource = :authSource')
-            ->andWhere('a.portal = :portal')
             ->setParameters(new ArrayCollection([
                 new Parameter('username', $username),
-                new Parameter('portal', $portal),
                 new Parameter('authSource', $authSource),
-            ]))
-            ->getQuery()
-            ->getOneOrNullResult();
+            ]));
+
+        if ($portal !== null) {
+            $qb->andWhere('a.portal = :portal')
+                ->setParameter('portal', $portal);
+        } else {
+            $qb->andWhere('a.portal IS NULL');
+        }
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     public function findByEmailAndPortalId(string $email, int $portalId)
