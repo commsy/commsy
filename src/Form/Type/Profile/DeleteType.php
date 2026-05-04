@@ -38,14 +38,14 @@ class DeleteType extends AbstractType
                 'label' => false,
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\IdenticalTo([
-                        'value' => mb_strtoupper((string) $options['data']['confirm_string']),
-                        'message' => 'The input does not match {{ compared_value }}',
-                    ]),
-                    new UniqueModeratorConstraint([
-                        'concernsOwnRoomMembership' => true,
-                        'newUserStatus' => 'user-delete',
-                    ]),
+                    new Assert\IdenticalTo(
+                        value: mb_strtoupper((string) $options['data']['confirm_string']),
+                        message: 'The input does not match {{ compared_value }}',
+                    ),
+                    new UniqueModeratorConstraint(
+                        concernsOwnRoomMembership: true,
+                        newUserStatus: 'user-delete',
+                    ),
                 ],
                 'required' => true,
             ])

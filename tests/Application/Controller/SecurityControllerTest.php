@@ -13,8 +13,12 @@
 
 namespace Tests\Application\Controller;
 
+use App\Entity\Account;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Story\AccountStory;
+use Zenstruck\Foundry\Attribute\WithStory;
 
+#[WithStory(AccountStory::class)]
 class SecurityControllerTest extends AbstractApplicationTestCase
 {
     public function testLoginAsRoot(): void
@@ -30,24 +34,78 @@ class SecurityControllerTest extends AbstractApplicationTestCase
         $this->assertResponseRedirects('/portal/server/enter');
     }
 
-    public function atestLoginAsUser(): void
+    public function testLoginPageRendersForPortal(): void
     {
-        $R->loginAndCreatePortalAsRoot();
-        $R->goToLogoutPath();
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getPortal()->getId();
 
-        $U->registerAndLoginAsUser(1);
-        $U->seeCurrentRouteIs('app_dashboard_overview');
+        $this->client->request('GET', "/login/{$portalId}");
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
 
-        // Make sure ...
 
-        // TODO: Make sure the user is redirected if he gets to the login form again
+    public function testLogoutRedirects(): void
+    {
+        $this->client->request('GET', '/logout');
 
-        /**
-         * TODO: This is very basic right now and we should check that the access to a room on a portal the user is
-         * currently not logged in to is forbidden:
-         * - If the user is already logged in, check he does not see another login form
-         * - If the user is already logged in, check he gets a 404 forbidden when trying to acccess another room
-         * - ...
-         */
+        // The logout firewall configuration redirects somewhere — to / or
+        // to a portal-specific login page depending on the current
+        // context. We just verify it's a redirect (i.e. we left /logout).
+        $this->assertResponseRedirects();
+    }
+
+    public function testRequestAccountsPageRenders(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getPortal()->getId();
+
+        $this->client->request('GET', "/login/{$portalId}/request_accounts");
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testRequestPasswordResetPageRenders(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getPortal()->getId();
+
+        $this->client->request('GET', "/login/{$portalId}/request_password_reset");
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testPasswordResetWithUnknownTokenRedirectsToLogin(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getPortal()->getId();
+
+        $this->client->request('GET', "/login/{$portalId}/password_reset/no-such-token-xyz");
+
+        // unknown / expired reset tokens are bounced back to the login
+        // page with a flash message rather than 404'd.
+        $this->assertResponseRedirects("/login/{$portalId}");
+    }
+
+    public function testSimultaneousLoginPageRenders(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getPortal()->getId();
+
+        $this->client->request('GET', "/login/{$portalId}/simultaneous");
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testAdminPageRedirectsToLoginWhenAnonymous(): void
+    {
+        $this->client->request('GET', '/admin');
+        // The Symfony firewall intercepts before the admin controller's
+        // own redirect runs, so the user lands on /login (the firewall's
+        // default login_path) rather than the controller's preferred
+        // /login/server target.
+        $this->assertResponseRedirects('/login');
     }
 }

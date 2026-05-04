@@ -53,11 +53,11 @@ class UserStatusChangeType extends AbstractType
                 'entry_type' => HiddenType::class,
                 'label' => false,
                 'constraints' => [
-                    new UniqueModeratorConstraint([
-                        'concernsOwnRoomMembership' => false,
-                        'newUserStatus' => $formData['status'],
-                        'userIds' => $formData['userIds'],
-                    ]),
+                    new UniqueModeratorConstraint(
+                        concernsOwnRoomMembership: false,
+                        newUserStatus: $formData['status'],
+                        userIds: $formData['userIds'],
+                    ),
                 ],
                 'required' => true,
                 'allow_add' => true,

@@ -110,4 +110,56 @@ class ProfileControllerTest extends AbstractApplicationTestCase
         ]);
         $this->assertResponseIsSuccessful();
     }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testMenuRendersDropdown(): void
+    {
+        $account = RoomWithMemberStory::get('account');
+        $room = RoomWithMemberStory::get('room');
+
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request('GET', "/room/{$room->getItemId()}/user/dropdownmenu");
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testDeleteRoomProfilePageRenders(): void
+    {
+        $account = RoomWithMemberStory::get('account');
+        $room = RoomWithMemberStory::get('room');
+        $roomUser = RoomWithMemberStory::get('roomUser');
+
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request(
+            'GET',
+            "/room/{$room->getItemId()}/user/{$roomUser->getItemId()}/deleteroomprofile"
+        );
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('form');
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testDeleteRoomProfileSubmitWithBlankConfirmShowsError(): void
+    {
+        $account = RoomWithMemberStory::get('account');
+        $room = RoomWithMemberStory::get('room');
+        $roomUser = RoomWithMemberStory::get('roomUser');
+
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$room->getItemId()}/user/{$roomUser->getItemId()}/deleteroomprofile"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('delete_form[confirm_button]')->form();
+        $form['delete_form[confirm_field]'] = '';
+        $this->client->submit($form);
+
+        // Symfony >=6.2 surfaces invalid form submits as 422.
+        $this->assertResponseStatusCodeSame(422);
+    }
 }
