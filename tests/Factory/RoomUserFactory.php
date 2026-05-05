@@ -45,6 +45,43 @@ final class RoomUserFactory extends PersistentObjectFactory
         ];
     }
 
+    /**
+     * status 0 with a non-guest user_id — a member whose request was rejected.
+     *
+     * Note: the dedicated portal-level guest user (status 0 + user_id='guest')
+     * is NOT created via this factory — guests are a portal singleton without
+     * a per-room profile. See PermissionMatrixStory or insert directly into
+     * the users table if you need a guest cs_user_item.
+     */
+    public function asRejected(): static
+    {
+        return $this->with(['status' => 0]);
+    }
+
+    /** status 1 — membership request pending moderator approval. */
+    public function asRequested(): static
+    {
+        return $this->with(['status' => 1]);
+    }
+
+    /** status 2 — the default. Regular room member. */
+    public function asUser(): static
+    {
+        return $this->with(['status' => 2]);
+    }
+
+    /** status 3 — room moderator. */
+    public function asModerator(): static
+    {
+        return $this->with(['status' => 3]);
+    }
+
+    /** status 4 — read-only user. */
+    public function asReadOnly(): static
+    {
+        return $this->with(['status' => 4]);
+    }
+
     protected function initialize(): static
     {
         return $this

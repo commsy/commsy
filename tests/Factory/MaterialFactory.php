@@ -50,6 +50,19 @@ final class MaterialFactory extends PersistentObjectFactory
             'description' => self::faker()->paragraph(),
             'room' => null,
             'creator' => null,
+            // Pushes the entry into the future. Used to characterize the
+            // isNotActivated() branch in cs_item::maySee — only mods and
+            // the creator can see deactivated entries.
+            'activationDate' => null,
+            // Whitespace-separated user_ids on items in private rooms get
+            // SEE-rights via cs_item::mayExternalSee + the external_viewer
+            // table. Pass an array of usernames; persistence runs through
+            // cs_item::persistExternalViewer() during save().
+            'externalViewers' => [],
+            // Defaults to private editing (creator only). Pass true to
+            // make the material editable by any room user — sets the
+            // legacy `public` column to 1.
+            'public' => false,
         ];
     }
 
@@ -57,7 +70,13 @@ final class MaterialFactory extends PersistentObjectFactory
     {
         return $this
             ->withoutPersisting()
-            ->instantiateWith(Instantiator::withConstructor()->allowExtra('room', 'creator'))
+            ->instantiateWith(Instantiator::withConstructor()->allowExtra(
+                'room',
+                'creator',
+                'activationDate',
+                'externalViewers',
+                'public',
+            ))
             ->afterInstantiate(function(Materials $material, array $attributes): void {
                 $room = $attributes['room'] ?? null;
                 $creator = $attributes['creator'] ?? null;
@@ -77,6 +96,20 @@ final class MaterialFactory extends PersistentObjectFactory
                     $item->setDescription($material->getDescription());
                 }
                 $item->setContextID($room->getItemId());
+
+                if (!empty($attributes['activationDate'])) {
+                    $activation = $attributes['activationDate'];
+                    if ($activation instanceof \DateTimeInterface) {
+                        $activation = $activation->format('Y-m-d H:i:s');
+                    }
+                    $item->setActivationDate($activation);
+                }
+                if (!empty($attributes['externalViewers'])) {
+                    $item->setExternalViewerAccounts($attributes['externalViewers']);
+                }
+                if (!empty($attributes['public'])) {
+                    $item->setPublic(1);
+                }
 
                 set_error_handler(function(int $errno, string $errstr): bool {
                     throw new LogicException(sprintf('Legacy save() warning: %s', $errstr));
