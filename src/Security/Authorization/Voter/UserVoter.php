@@ -13,7 +13,6 @@
 
 namespace App\Security\Authorization\Voter;
 
-use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
@@ -55,24 +54,20 @@ class UserVoter extends Voter
     {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-        // Subjects can come in three shapes from #[IsGranted]: a numeric
-        // room id (`subject: 'roomId'`), a Portal entity from MapEntity
-        // (`subject: 'portal'`), or another scalar id. PORTAL_MODERATOR
-        // does not need a room item; the others do.
-        if ($subject instanceof Portal) {
-            $roomId = $subject->getId();
-        } else {
-            $roomId = (int) $subject;
+        if (self::MODERATOR === $attribute) {
+            return $this->isModerator($currentUser);
         }
-        /** @var cs_room_item $room */
-        $room = $this->roomService->getRoomItem($roomId);
+        if (self::PORTAL_MODERATOR === $attribute) {
+            return $this->isPortalModerator($currentUser);
+        }
+        
+        /** @var cs_room_item|null $room */
+        $room = $this->roomService->getRoomItem((int) $subject);
 
         return match ($attribute) {
-            self::MODERATOR => $this->isModerator($currentUser),
             self::ROOM_MODERATOR => $this->isModeratorForRoom($currentUser, $room),
             self::PARENT_ROOM_MODERATOR => $this->isParentModeratorForRoom($currentUser, $room),
-            self::PORTAL_MODERATOR => $this->isPortalModerator($currentUser),
-            default => throw new LogicException('This code should not be reached!'),
+            default => throw new LogicException('Unhandled UserVoter attribute: ' . $attribute),
         };
     }
 
