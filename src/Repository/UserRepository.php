@@ -116,6 +116,34 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Resolves the {@see User} for an {@see Account} in the given context.
+     * Generalizes {@see findPortalUser()}: pass the portal id to find the
+     * portal-level user, or a room item_id to find the room-level user.
+     *
+     * Mirrors `cs_user_manager::getUserListByLimits` setup
+     * (context_id + user_id + auth_source + alive). Returns null when the
+     * account has no membership in that context.
+     *
+     * Used by the new {@see \App\Security\Permission} services as their
+     * primary "who is this Account in this context?" lookup — replaces
+     * `cs_user_item::getRelatedUserItemInContext()` in legacy-free code.
+     */
+    public function findInContext(Account $account, int $contextId): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('IDENTITY(u.room) = :contextId')
+            ->andWhere('u.authSource = :authSourceId')
+            ->andWhere('u.userId = :username')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleterId IS NULL')
+            ->setParameter('contextId', $contextId)
+            ->setParameter('authSourceId', $account->getAuthSource()?->getId())
+            ->setParameter('username', $account->getUsername())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findAllByRoomStatus(
         Account $account,
         string $filterArchived = 'all',

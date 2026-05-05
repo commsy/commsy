@@ -16,6 +16,7 @@ namespace Tests\Factory;
 use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
@@ -82,6 +83,21 @@ final class RoomUserFactory extends PersistentObjectFactory
         return $this->with(['status' => 4]);
     }
 
+    /**
+     * Marks the user as soft-deleted at creation time. The DBAL insert
+     * picks up `deletion_date` from {@see User::getDeletionDate()} and
+     * `deleter_id` from {@see User::getDeleterId()}, so passing
+     * `deletionDate` / `deleterId` directly to {@see createOne()} also
+     * works.
+     */
+    public function softDeleted(?int $deleterId = 1): static
+    {
+        return $this->with([
+            'deletionDate' => new DateTime(),
+            'deleterId' => $deleterId,
+        ]);
+    }
+
     protected function initialize(): static
     {
         return $this
@@ -109,12 +125,16 @@ final class RoomUserFactory extends PersistentObjectFactory
 
                 $conn = $this->entityManager->getConnection();
                 $now = (new DateTimeImmutable())->format('Y-m-d H:i:s');
+                $deletionDate = $user->getDeletionDate()?->format('Y-m-d H:i:s');
 
-                // 1) Insert in items
+                // 1) Insert in items — also propagates the soft-delete state
+                // so the items twin row is consistent with the user row.
                 $conn->insert('items', [
                     'context_id' => $room->getItemId(),
                     'modification_date' => $now,
                     'type' => 'user',
+                    'deleter_id' => $user->getDeleterId(),
+                    'deletion_date' => $deletionDate,
                 ]);
 
                 $itemId = (int) $conn->lastInsertId();
@@ -127,10 +147,10 @@ final class RoomUserFactory extends PersistentObjectFactory
                     'portal_id' => $user->getPortal()?->getId(),
                     'creator_id' => null,
                     'modifier_id' => null,
-                    'deleter_id' => null,
+                    'deleter_id' => $user->getDeleterId(),
                     'creation_date' => $now,
                     'modification_date' => $now,
-                    'deletion_date' => null,
+                    'deletion_date' => $deletionDate,
                     'account_id' => $account->getId(),
                     'user_id' => $user->getUserId(),
                     'status' => $user->getStatus(),

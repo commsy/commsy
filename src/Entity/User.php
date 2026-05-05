@@ -226,6 +226,61 @@ class User
         return $this->status === 3;
     }
 
+    /**
+     * Legacy-aligned: a "user" is anyone with status 2, 3 or 4 — i.e. user,
+     * moderator or read-only member. Mirrors `cs_user_item::isUser()`
+     * (status >= 2). Distinct from isPersistentGuest()/isRequested(), which
+     * are status 0 / 1 respectively.
+     */
+    public function isUser(): bool
+    {
+        return $this->status >= 2;
+    }
+
+    public function isReadOnlyUser(): bool
+    {
+        return $this->status === 4;
+    }
+
+    /**
+     * Status === 0 — "inactive" in the broadest sense: portal-level guest
+     * singleton, rejected member, or any other status-0 row. Mirrors
+     * `cs_user_item::isGuest()` (and `isRejected()`, which has the same
+     * legacy body — status alone, no userId check).
+     */
+    public function isGuest(): bool
+    {
+        return $this->status === 0;
+    }
+
+    /**
+     * The dedicated portal-level guest user_item (`status === 0` AND
+     * `user_id === 'guest'`). Distinct from a "rejected" member (status 0
+     * with a real userId). Mirrors `cs_user_item::isReallyGuest()`.
+     */
+    public function isReallyGuest(): bool
+    {
+        return $this->status === 0 && strtolower($this->userId) === 'guest';
+    }
+
+    /**
+     * The system "root" user_item: status === 3 (moderator) AND
+     * user_id === 'root'. Mirrors `cs_user_item::isRoot()` minus the
+     * legacy `context_id === SERVER_ID(99)` check — the new Doctrine
+     * entity exposes contextId via the Room relationship and the server
+     * context is neither a Room nor a Portal entity, so that part is
+     * not reachable here. status=3 + userId='root' is system-wide unique
+     * by convention.
+     *
+     * Production callers reach the root short-circuit at the Voter
+     * top-level (Account.username === 'root'), so this method exists
+     * mainly for defensive checks deeper in the permission stack.
+     */
+    public function isRoot(): bool
+    {
+        return $this->status === 3 && strtolower($this->userId) === 'root';
+    }
+
     public function setIsContact(bool $isContact): static
     {
         $this->isContact = $isContact;
