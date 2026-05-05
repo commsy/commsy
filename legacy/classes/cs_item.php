@@ -17,10 +17,8 @@ use App\Proxy\PortalProxy;
 use App\Repository\ItemLinkFileRepository;
 use App\Repository\MaterialsRepository;
 use App\Repository\PortalRepository;
-use App\Security\Authorization\Voter\ItemVoter;
 use Doctrine\ORM\UnexpectedResultException;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 
 class cs_item
 {
@@ -1449,15 +1447,15 @@ class cs_item
         }
 
         if (true === $access) {
-            // don't check locking for etherpads
-            if ($this->_issetExtra('etherpad_id')) {
-                $access = true;
-            } else {
+            // don't check locking for etherpads, and root bypasses lock checks
+            // entirely (mirrors the historical Voter::canEditLock root branch).
+            $skipLockCheck = $this->_issetExtra('etherpad_id') || $userItem->isRoot();
+            if (!$skipLockCheck) {
                 global $symfonyContainer;
 
-                /** @var Security $security */
-                $security = $symfonyContainer->get('app.security');
-                $access = $security->isGranted(ItemVoter::EDIT_LOCK, $this->getItemID());
+                /** @var \App\Security\Permission\Checker\ItemEditChecker $editChecker */
+                $editChecker = $symfonyContainer->get(\App\Security\Permission\Checker\ItemEditChecker::class);
+                $access = $editChecker->canEditLock($this->getItemID());
             }
         } else {
             // NOTE: for guest users, $privateRoomUserItem will be null

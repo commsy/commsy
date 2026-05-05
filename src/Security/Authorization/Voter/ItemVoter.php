@@ -17,9 +17,9 @@ use App\Entity\Account;
 use App\Entity\Files;
 use App\Entity\Portal;
 use App\Lock\FileLockManager;
-use App\Lock\LockManager;
 use App\Proxy\PortalProxy;
 use App\Repository\FilesRepository;
+use App\Security\Permission\Checker\ItemEditChecker;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
@@ -59,9 +59,9 @@ class ItemVoter extends Voter
         private readonly UserService $userService,
         private readonly RequestStack $requestStack,
         private readonly EntityManagerInterface $entityManager,
-        private readonly LockManager $lockManager,
         private readonly FileLockManager $fileLockManager,
-        private readonly DiscoveryService $discoveryService
+        private readonly DiscoveryService $discoveryService,
+        private readonly ItemEditChecker $itemEditChecker,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -369,11 +369,11 @@ class ItemVoter extends Voter
 
     private function canEditLock(cs_item $item, cs_user_item $currentUser): bool
     {
-        if ($currentUser->isRoot() || !$this->lockManager->supportsLocking($item->getItemID())) {
+        if ($currentUser->isRoot()) {
             return true;
         }
 
-        return $this->lockManager->userCanLock($item->getItemID());
+        return $this->itemEditChecker->canEditLock($item->getItemID());
     }
 
     private function canFileLock(cs_item $item): bool
