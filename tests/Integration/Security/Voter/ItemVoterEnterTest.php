@@ -274,28 +274,17 @@ final class ItemVoterEnterTest extends KernelTestCase
         self::assertTrue($this->authChecker->isGranted(ItemVoter::ENTER, $portal));
     }
 
-    /**
-     * Characterization: Portal locking via status='3' does NOT block ENTER
-     * because of a long-standing type-mismatch bug in PortalProxy:
-     *   public function isLocked(): bool {
-     *       return 3 === $this->portal->getStatus();
-     *   }
-     * Portal::getStatus() returns a string (the column is Types::STRING).
-     * The strict comparison `3 === "3"` is always false, so a "locked"
-     * portal is effectively unlocked. We pin this dead-code path so the
-     * refactor can choose to fix it deliberately rather than accidentally.
-     */
-    public function testLockedPortalDoesNotActuallyBlockEnterDueToTypeMismatchBug(): void
+    public function testLockedPortalBlocksNonRootEnter(): void
     {
         $lockedPortal = PortalFactory::new()->locked()->create();
         $account = $this->createPortalAccount(portal: $lockedPortal);
         $this->loginAs($account);
 
-        self::assertTrue(
+        self::assertFalse(
             $this->authChecker->isGranted(ItemVoter::ENTER, $lockedPortal),
-            'PortalProxy::isLocked() always returns false (3 === "3" strict comparison '
-            . 'mismatch); the Voter never reaches its `return false` for portal locks. '
-            . 'Refactor TODO: fix PortalProxy::isLocked() to compare loosely or cast.',
+            'A portal with status=3 (locked) blocks ENTER for non-root users — '
+            . 'PortalProxy::isLocked() casts the string column to int before '
+            . 'comparison.',
         );
     }
 
