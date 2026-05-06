@@ -1478,64 +1478,63 @@ class cs_item
         return $access;
     }
 
-     /**
-      * @throws \Doctrine\DBAL\Exception
-      */
      public function mayExternalSee(int $itemId, string $username): bool
      {
-         $item_manager = $this->_environment->getItemManager();
-         return $item_manager->getExternalViewerForItem($itemId, $username);
+         global $symfonyContainer;
+         /** @var \App\Security\Permission\Checker\ExternalViewerChecker $checker */
+         $checker = $symfonyContainer->get(\App\Security\Permission\Checker\ExternalViewerChecker::class);
+         return $checker->isViewerOf($itemId, $username);
      }
 
      /** is the given user allowed to see this item?
       */
      public function maySee(cs_user_item $userItem)
      {
-         // Deny access, if the item's context is deleted
-         $contextItem = $this->getContextItem();
-         if (null === $contextItem || $contextItem->isDeleted()) {
+         global $symfonyContainer;
+         /** @var \App\Security\Permission\Checker\ItemViewChecker $checker */
+         $checker = $symfonyContainer->get(\App\Security\Permission\Checker\ItemViewChecker::class);
+         /** @var \App\Repository\UserRepository $userRepository */
+         $userRepository = $symfonyContainer->get(\App\Repository\UserRepository::class);
+         /** @var \Doctrine\ORM\EntityManagerInterface $em */
+         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+
+         // Convert cs_user_item → Doctrine User. Goes away when the
+         // legacy maySee wrapper itself is removed in Phase 5.
+         $actor = $userRepository->findOneByLegacyIdentity(
+             $userItem->getUserID(),
+             (int) $userItem->getContextID(),
+             $userItem->getAuthSource() !== null ? (int) $userItem->getAuthSource() : null,
+         );
+         if ($actor === null) {
              return false;
          }
 
-         // Root
-         if ($userItem->isRoot()) {
-             return true;
+         $contextItem = $this->getContextItem();
+         $creatorId = $this->getCreatorID();
+         $subject = new \App\Security\Permission\Subject\ItemViewSubject(
+             itemId: (int) $this->getItemID(),
+             contextId: $contextItem?->getItemID() !== null ? (int) $contextItem->getItemID() : null,
+             creatorId: !empty($creatorId) ? (int) $creatorId : null,
+             isDeactivated: $this->isNotActivated(),
+             contextIsDeleted: $contextItem === null || $contextItem->isDeleted(),
+         );
+
+         // Items always live in a room — their context_id is a room.item_id,
+         // never a portal id. So whenever cs_item::maySee runs, the legacy
+         // env's current context is, in practice, also a room (the one the
+         // user is browsing). A Portal-as-current-context here would only
+         // arise on portal-scope listings of room-bound items (admin
+         // overview, global search) — paths that the room-bound
+         // openForGuests model was never designed for. We therefore only
+         // resolve a Room and skip the guest fallback in the Portal case.
+         $currentLegacyContext = $this->_environment->getCurrentContextItem();
+         $currentRoom = null;
+         if ($currentLegacyContext instanceof cs_room_item) {
+             $currentRoom = $em->getRepository(\App\Entity\Room::class)
+                 ->find($currentLegacyContext->getItemID());
          }
 
-         // Room user
-         $userInContext = ($userItem->getContextID() === $this->getContextID()) ? $userItem :
-             $userItem->getRelatedUserItemInContext($this->getContextID());
-         if (null !== $userInContext && $userInContext->isUser()) {
-             // deactivated entries can be only viewed by a moderator or by their creator
-             if ($this->isNotActivated()) {
-                 if ($userInContext->isModerator()) {
-                     return true;
-                 }
-
-                 if ($this->getCreatorID() == $userInContext->getItemId()) {
-                     return true;
-                 }
-             } else {
-                 return true;
-             }
-         }
-
-         // External viewer
-         if ($this->mayExternalSee($this->getItemID(), $userItem->getUserID())) {
-             return true;
-         }
-
-         // Guest
-         $currentContextItem = $this->_environment->getCurrentContextItem();
-         if ($currentContextItem->isOpenForGuests()) {
-             if ($userItem->isGuest() || $userItem->isRequested()) {
-                 if (!$this->isNotActivated()) {
-                     return true;
-                 }
-             }
-         }
-
-         return false;
+         return $checker->canSee($actor, $subject, $currentRoom);
      }
 
     public function getLatestLinkItemList($count)

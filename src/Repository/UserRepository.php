@@ -144,6 +144,29 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Looks up the Doctrine User entity matching a legacy cs_user_item's
+     * identity triple (userId + contextId + authSource). The new
+     * Permission services consume Doctrine entities only — this is the
+     * conversion seam used by the cs_item.may* wrappers during the
+     * Phase 2/Phase 5 transition. Goes away once the legacy methods are
+     * removed.
+     */
+    public function findOneByLegacyIdentity(string $userId, int $contextId, ?int $authSourceId): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.userId = :userId')
+            ->andWhere('IDENTITY(u.room) = :contextId')
+            ->andWhere('u.authSource = :authSourceId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleterId IS NULL')
+            ->setParameter('userId', $userId)
+            ->setParameter('contextId', $contextId)
+            ->setParameter('authSourceId', $authSourceId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findAllByRoomStatus(
         Account $account,
         string $filterArchived = 'all',
