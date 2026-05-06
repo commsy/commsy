@@ -65,7 +65,7 @@
                                         </p>
                                         {% if project.isLocked() %}
                                             <p>
-                                            {% if (is_granted('ROOM_MODERATOR', project.itemId) and not project.isLockedByModerator()) or is_granted('PORTAL_MODERATOR', commsy.portal.id) %}
+                                            {% if (is_granted('ROOM_MODERATOR', project.itemId) and not project.isLockedByModerator()) or is_granted('PORTAL_MODERATOR', commsy.portal) %}
                                                 {{ 'This workspace can be unlocked using the "Unlock project workspace" action.'|trans({}, 'room') }}
                                             {% elseif project.isLockedByModerator() %}
                                                 {{ 'This workspace can only be unlocked by portal moderation.'|trans({}, 'room') }}

@@ -66,8 +66,13 @@ class UserVoter extends Voter
         }
 
         if (self::PORTAL_MODERATOR === $attribute) {
-            return $tokenUser instanceof Account
-                && $this->isPortalModerator($tokenUser, $subject);
+            if (!$tokenUser instanceof Account) {
+                return false;
+            }
+            if ($subject !== null && !$subject instanceof Portal) {
+                return false;
+            }
+            return $this->isPortalModerator($tokenUser, $subject);
         }
 
         // The remaining attributes still ride on the legacy currentUserItem
@@ -138,32 +143,26 @@ class UserVoter extends Voter
      * Subject handling:
      *   - {@see Portal} entity → cross-portal check against the account's
      *     own portal; the entity itself is the deletion-date source of truth.
-     *   - int (portal id) → cross-portal check; deletion check on the
-     *     account's own portal (the only one a non-root user can act in).
      *   - null → no cross-portal check; deletion check on the account's
      *     own portal.
      */
-    private function isPortalModerator(Account $account, mixed $subject = null): bool
+    private function isPortalModerator(Account $account, ?Portal $subject = null): bool
     {
         $accountPortal = $account->getPortal();
         if ($accountPortal === null) {
             return false;
         }
-        $accountPortalId = $accountPortal->getId();
 
-        if ($subject instanceof Portal && $subject->getId() !== $accountPortalId) {
-            return false;
-        }
-        if (is_int($subject) && $subject !== $accountPortalId) {
+        if ($subject !== null && $subject->getId() !== $accountPortal->getId()) {
             return false;
         }
 
-        $portal = $subject instanceof Portal ? $subject : $accountPortal;
+        $portal = $subject ?? $accountPortal;
         if ($portal->getDeletionDate() !== null) {
             return false;
         }
 
-        $portalUser = $this->userRepository->findInContext($account, $accountPortalId);
+        $portalUser = $this->userRepository->findInContext($account, $accountPortal->getId());
         return $portalUser !== null && $portalUser->isModerator();
     }
 }

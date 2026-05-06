@@ -94,17 +94,23 @@ final class UserVoterTest extends KernelTestCase
         );
     }
 
-    public function testPortalModeratorWithMatchingPortalIdSubjectIsGranted(): void
+    /**
+     * Non-Portal subjects (ints, strings, unrelated entities) are denied at
+     * the voter level — the contract is `Portal | null`. Symfony's
+     * AccessDecisionManager does not type-narrow subjects, so the voter
+     * has to filter them itself.
+     */
+    public function testPortalModeratorWithNonPortalSubjectIsDenied(): void
     {
         $this->promoteToPortalModerator($this->portalAccount);
         $this->loginAs($this->portalAccount);
 
-        self::assertTrue(
+        self::assertFalse(
             $this->authChecker->isGranted(
                 UserVoter::PORTAL_MODERATOR,
                 $this->portalAccount->getPortal()?->getId(),
             ),
-            'Passing the user\'s own portal id as subject must still grant',
+            'Portal-id (int) subject is no longer accepted — pass the Portal entity',
         );
     }
 
@@ -153,10 +159,6 @@ final class UserVoterTest extends KernelTestCase
         self::assertFalse(
             $this->authChecker->isGranted(UserVoter::PORTAL_MODERATOR, $foreignPortal),
             'Portal moderator on portal A must not be granted PORTAL_MODERATOR for portal B',
-        );
-        self::assertFalse(
-            $this->authChecker->isGranted(UserVoter::PORTAL_MODERATOR, $foreignPortal->getId()),
-            'Same outcome when the foreign portal is passed by id',
         );
     }
 
