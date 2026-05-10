@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Repository\TasksRepository;
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +26,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Tasks
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -33,18 +35,6 @@ class Tasks
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id', nullable: true)]
-    private ?User $creator = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id', nullable: true)]
-    private ?User $modifier = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
-    private ?User $deleter = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private string $title;

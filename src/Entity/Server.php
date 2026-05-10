@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\OpenApi\Model;
 use App\Controller\Api\GetServerAnnouncement;
 use App\Repository\ServerRepository;
+use App\Utils\EntityUsersTrait;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -68,6 +69,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 )]
 class Server
 {
+    use EntityUsersTrait;
+
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Id]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
@@ -77,15 +80,6 @@ class Server
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private int $contextId;
-
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
-    private ?int $creatorId = 0;
-
-    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
-    private int $modifierId;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private int $deleterId;
 
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE, nullable: false)]
     private DateTime $creationDate;

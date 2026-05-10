@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Utils\EntityUsersTrait;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -25,6 +26,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 class Discussionarticles
 {
+    use EntityUsersTrait;
+
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -39,15 +42,6 @@ class Discussionarticles
     #[ORM\ManyToOne(targetEntity: 'Discussions', inversedBy: 'discussionarticles')]
     #[ORM\JoinColumn(name: 'discussion_id', referencedColumnName: 'item_id', nullable: false)]
     private Discussions $discussion;
-
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
-    private ?int $creatorId = null;
-
-    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
-    private ?int $modifierId = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
 
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     private DateTime $creationDate;
@@ -114,42 +108,6 @@ class Discussionarticles
     public function getDiscussionId(): int
     {
         return $this->discussionId;
-    }
-
-    public function setCreatorId(?int $creatorId): static
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    public function getCreatorId(): ?int
-    {
-        return $this->creatorId;
-    }
-
-    public function setModifierId(?int $modifierId): static
-    {
-        $this->modifierId = $modifierId;
-
-        return $this;
-    }
-
-    public function getModifierId(): ?int
-    {
-        return $this->modifierId;
-    }
-
-    public function setDeleterId(?int $deleterId): static
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    public function getDeleterId(): ?int
-    {
-        return $this->deleterId;
     }
 
     public function setCreationDate(DateTime $creationDate): static
