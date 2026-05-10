@@ -83,7 +83,7 @@ final class AccountLifecycleTest extends KernelTestCase
         $userRepository = repository(User::class);
 
         $numUsersBefore = $userRepository->count([
-            'deleterId' => null,
+            'deleter' => null,
             'deletionDate' => null,
         ]);
 
@@ -96,7 +96,7 @@ final class AccountLifecycleTest extends KernelTestCase
         assert_not_persisted($account);
 
         $numUsersAfter = $userRepository->count([
-            'deleterId' => null,
+            'deleter' => null,
             'deletionDate' => null,
         ]);
 
@@ -121,7 +121,7 @@ final class AccountLifecycleTest extends KernelTestCase
         $userRepository = repository(User::class);
 
         $numUsersBefore = $userRepository->count([
-            'deleterId' => null,
+            'deleter' => null,
             'deletionDate' => null,
         ]);
 
@@ -133,7 +133,7 @@ final class AccountLifecycleTest extends KernelTestCase
         $membershipManager->leaveWorkspace($legacyRoom, $account);
 
         $numUsersAfter = $userRepository->count([
-            'deleterId' => null,
+            'deleter' => null,
             'deletionDate' => null,
         ]);
 
@@ -143,7 +143,7 @@ final class AccountLifecycleTest extends KernelTestCase
         self::getContainer()->get(EntityManagerInterface::class)
             ->refresh($roomUser);
 
-        $this->assertNotNull($roomUser->getDeleterId());
+        $this->assertNotNull($roomUser->getDeleter());
         $this->assertNotNull($roomUser->getDeletionDate());
     }
 }

@@ -16,6 +16,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use App\Repository\UserRepository;
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,6 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class User
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
@@ -45,17 +47,6 @@ class User
     #[ORM\ManyToOne(targetEntity: Portal::class)]
     #[ORM\JoinColumn(name: 'portal_id', referencedColumnName: 'id', nullable: true)]
     private ?Portal $portal = null;
-
-    #[ORM\OneToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?User $creator = null;
-
-    #[ORM\OneToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?User $modifier = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
 
     #[ORM\Column(name: 'not_deleted', type: Types::BOOLEAN, insertable: false, updatable: false, columnDefinition: 'TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date', generated: 'ALWAYS')]
     private ?bool $isNotDeleted = null;
@@ -139,45 +130,9 @@ class User
         return $this->portal;
     }
 
-    public function setCreator(?User $creator = null): static
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setModifier(?User $modifier = null): static
-    {
-        $this->modifier = $modifier;
-
-        return $this;
-    }
-
-    public function getModifier(): ?User
-    {
-        return $this->modifier;
-    }
-
-    public function setDeleterId(?int $deleterId): static
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    public function getDeleterId(): ?int
-    {
-        return $this->deleterId;
-    }
-
     public function isDeleted(): bool
     {
-        return null !== $this->deleterId && null !== $this->deletionDate;
+        return null !== $this->deleter && null !== $this->deletionDate;
     }
 
     public function getAccount(): ?Account
@@ -494,7 +449,7 @@ class User
 
     public function isIndexable(): bool
     {
-        return null == $this->deleterId && null == $this->deletionDate;
+        return null === $this->deleter && null === $this->deletionDate;
     }
 
     public function getFullname(): string

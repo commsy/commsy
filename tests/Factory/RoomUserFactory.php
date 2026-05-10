@@ -85,16 +85,21 @@ final class RoomUserFactory extends PersistentObjectFactory
 
     /**
      * Marks the user as soft-deleted at creation time. The DBAL insert
-     * picks up `deletion_date` from {@see User::getDeletionDate()} and
-     * `deleter_id` from {@see User::getDeleterId()}, so passing
-     * `deletionDate` / `deleterId` directly to {@see createOne()} also
-     * works.
+     * picks `deletion_date` and `deleter_id` off the User entity, so we
+     * stash both directly on the entity here. The deleter is wired as a
+     * detached User stub carrying the requested itemId — the factory
+     * does raw DBAL writes anyway, so a managed entity isn't required.
      */
     public function softDeleted(?int $deleterId = 1): static
     {
+        $deleterStub = null;
+        if ($deleterId !== null) {
+            $deleterStub = new User();
+            $deleterStub->itemId = $deleterId;
+        }
         return $this->with([
             'deletionDate' => new DateTime(),
-            'deleterId' => $deleterId,
+            'deleter' => $deleterStub,
         ]);
     }
 
@@ -133,7 +138,7 @@ final class RoomUserFactory extends PersistentObjectFactory
                     'context_id' => $room->getItemId(),
                     'modification_date' => $now,
                     'type' => 'user',
-                    'deleter_id' => $user->getDeleterId(),
+                    'deleter_id' => $user->getDeleter()?->getItemId(),
                     'deletion_date' => $deletionDate,
                 ]);
 
@@ -147,7 +152,7 @@ final class RoomUserFactory extends PersistentObjectFactory
                     'portal_id' => $user->getPortal()?->getId(),
                     'creator_id' => null,
                     'modifier_id' => null,
-                    'deleter_id' => $user->getDeleterId(),
+                    'deleter_id' => $user->getDeleter()?->getItemId(),
                     'creation_date' => $now,
                     'modification_date' => $now,
                     'deletion_date' => $deletionDate,

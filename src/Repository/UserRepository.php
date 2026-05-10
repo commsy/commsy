@@ -38,7 +38,7 @@ class UserRepository extends ServiceEntityRepository
                 $qb->expr()->eq('IDENTITY(u.room)', ':contextId'),
                 $qb->expr()->eq('u.status', ':status'),
                 $qb->expr()->isNull('u.deletionDate'),
-                $qb->expr()->isNull('u.deleterId')
+                $qb->expr()->isNull('u.deleter')
             ))
             ->setParameters(new ArrayCollection([
                 new Parameter('contextId', $contextId),
@@ -73,7 +73,7 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->where('IDENTITY(u.room) = :contextId')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $contextId)
             ->getQuery()
             ->getResult();
@@ -84,7 +84,7 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->where('IDENTITY(u.room) = :contextId')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $contextId)
             ->getQuery();
     }
@@ -95,7 +95,7 @@ class UserRepository extends ServiceEntityRepository
             ->select('COUNT(u.itemId) as num')
             ->where('IDENTITY(u.room) = :contextId')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $contextId)
             ->getQuery()
             ->getSingleScalarResult();
@@ -108,7 +108,7 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('u.authSource = :authSourceId')
             ->andWhere('u.userId = :username')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $account->getPortal())
             ->setParameter('authSourceId', $account->getAuthSource()->getId())
             ->setParameter('username', $account->getUsername())
@@ -136,7 +136,7 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('u.authSource = :authSourceId')
             ->andWhere('u.userId = :username')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $contextId)
             ->setParameter('authSourceId', $account->getAuthSource()?->getId())
             ->setParameter('username', $account->getUsername())
@@ -159,7 +159,7 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('IDENTITY(u.room) = :contextId')
             ->andWhere('u.authSource = :authSourceId')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('userId', $userId)
             ->setParameter('contextId', $contextId)
             ->setParameter('authSourceId', $authSourceId)
@@ -178,7 +178,7 @@ class UserRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('u')
             ->innerJoin('u.room', 'r', Join::WITH)
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->andWhere('u.userId = :userId')
             ->andWhere('u.authSource = :authSource')
             ->setParameters(new ArrayCollection([
