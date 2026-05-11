@@ -17,9 +17,7 @@ use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Http\JsonRedirectResponse;
 use App\Security\Authorization\Voter\ItemVoter;
-use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
-use cs_environment;
 use cs_item;
 use cs_room_item;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -28,8 +26,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DeleteAction implements ActionInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     private DeleteInterface $deleteStrategy;
 
     public function setDeleteStrategy(DeleteInterface $deleteStrategy): void
@@ -42,9 +38,7 @@ class DeleteAction implements ActionInterface
         private readonly TranslatorInterface $translator,
         private readonly UserService $userService,
         private readonly Security $security,
-        LegacyEnvironment $legacyEnvironment
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->deleteStrategy = $this->deleteGeneric;
     }
 
@@ -85,8 +79,7 @@ class DeleteAction implements ActionInterface
 
     private function isDeletionAllowed(cs_room_item $room, cs_item $item): bool
     {
-        $currentUser = $this->legacyEnvironment->getCurrentUser();
-        if (!$item->mayEdit($currentUser)) {
+        if (!$this->security->isGranted(ItemVoter::EDIT, $item->getItemId())) {
             return false;
         }
 
