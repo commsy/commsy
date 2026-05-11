@@ -45,6 +45,13 @@ final readonly class ItemViewSubject
         /** the item's context (room) is soft-deleted — the maySee path
          *  short-circuits to false in that case. */
         public bool $contextIsDeleted,
+        /** Type-specific tombstone marker — `true` when the item's body
+         *  has been replaced with placeholder text while the row stays
+         *  alive (currently only `cs_discussionarticle_item` with
+         *  `public = -2`, to preserve discussion-thread hierarchies).
+         *  Treated as "not viewable" regardless of other state, which
+         *  matches the legacy `cs_file_item::maySeeLinkedItem` filter. */
+        public bool $hasOverwrittenContent = false,
     ) {
     }
 }

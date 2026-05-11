@@ -57,6 +57,27 @@ final class ItemViewCheckerTest extends TestCase
         self::assertFalse($this->checker->canSee($this->roomMember(2), $subject));
     }
 
+    // ---- step 1b: tombstone (hasOverwrittenContent)
+
+    public function testDeniesTombstonedItemEvenForRoot(): void
+    {
+        $root = (new User())->setStatus(3)->setUserId('root');
+        $subject = $this->subject(hasOverwrittenContent: true);
+
+        self::assertFalse(
+            $this->checker->canSee($root, $subject),
+            'Even root cannot see a tombstoned item (body is placeholder)',
+        );
+    }
+
+    public function testDeniesTombstonedItemForMember(): void
+    {
+        $member = $this->roomMember(2, contextId: 42);
+        $subject = $this->subject(contextId: 42, hasOverwrittenContent: true);
+
+        self::assertFalse($this->checker->canSee($member, $subject));
+    }
+
     // ---- step 2: root short-circuit
 
     public function testGrantsForRootActor(): void
@@ -250,6 +271,7 @@ final class ItemViewCheckerTest extends TestCase
         ?int $creatorId = null,
         bool $isDeactivated = false,
         bool $contextIsDeleted = false,
+        bool $hasOverwrittenContent = false,
     ): ItemViewSubject {
         return new ItemViewSubject(
             itemId: $itemId,
@@ -257,6 +279,7 @@ final class ItemViewCheckerTest extends TestCase
             creatorId: $creatorId,
             isDeactivated: $isDeactivated,
             contextIsDeleted: $contextIsDeleted,
+            hasOverwrittenContent: $hasOverwrittenContent,
         );
     }
 

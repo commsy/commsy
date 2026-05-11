@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Security\Permission\Subject;
 
+use App\Entity\Discussionarticles;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
 use DateTimeImmutable;
@@ -73,7 +74,21 @@ final readonly class ItemViewSubjectFactory
             creatorId: $this->resolveCreatorId($item),
             isDeactivated: $this->isDeactivated($item),
             contextIsDeleted: $this->isContextDeleted($contextId, $preloadedContext),
+            hasOverwrittenContent: $this->hasOverwrittenContent($item),
         );
+    }
+
+    /**
+     * Tombstone marker — body has been replaced with placeholder text,
+     * but the row stays alive for hierarchy reasons. Currently only
+     * {@see Discussionarticles} has this concept. Localized as an
+     * `instanceof` here so consumers (ItemViewChecker, FilePermissionChecker)
+     * can treat the result as a boolean fact rather than needing to know
+     * which rubric type carries the marker.
+     */
+    private function hasOverwrittenContent(object $item): bool
+    {
+        return $item instanceof Discussionarticles && $item->hasOverwrittenContent();
     }
 
     private function resolveCreatorId(object $item): ?int

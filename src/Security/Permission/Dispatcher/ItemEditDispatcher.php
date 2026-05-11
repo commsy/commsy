@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Security\Permission\Dispatcher;
 
+use App\Entity\Discussionarticles;
 use App\Entity\Section;
 use App\Entity\Step;
 use App\Entity\User;
@@ -31,15 +32,19 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  *  1. Subtype-specific {@see RubricPermissionOverride} (tagged
  *     `app.rubric.permission_override`) — if registered AND its
  *     `canEdit()` returns a non-null verdict, that wins.
- *  2. Section / Step → delegate to the linked parent item (recursion
- *     through the dispatcher; the legacy switch did the same).
+ *  2. Sub-entry / type-specific gates that DON'T need their own class
+ *     (one-line guards):
+ *       - Discussionarticles with overwritten content (`public = -2`)
+ *         → false. Mirrors `cs_discussionarticle_item::mayEdit`.
+ *       - Section / Step → delegate to the linked parent item
+ *         (recursion through the dispatcher; the legacy switch did
+ *         the same).
  *  3. Default fallback → {@see ItemEditChecker::canEdit()} (the full
  *     mayEdit body: root, in-context moderator, creator, public=1, lock).
  *
- * Discussion articles and File items are intentionally NOT handled
- * here; the article path lives in `App\Rubric\Discussion\\…` and the
- * File path in {@see \App\Files\FilePermissionChecker} which calls
- * back into this dispatcher for each linked item.
+ * File items are NOT handled here; the File path lives in
+ * {@see \App\Files\FilePermissionChecker} which itself calls back into
+ * this dispatcher for each linked item.
  */
 final readonly class ItemEditDispatcher
 {
@@ -73,7 +78,15 @@ final readonly class ItemEditDispatcher
             }
         }
 
-        // 2. Section / Step → linked parent item.
+        // 2a. Discussionarticles with overwritten content (`public = -2`)
+        //     can never be edited — keeps the discussion hierarchy intact
+        //     while the body is a placeholder. Mirrors
+        //     `cs_discussionarticle_item::mayEdit`.
+        if ($item instanceof Discussionarticles && $item->hasOverwrittenContent()) {
+            return false;
+        }
+
+        // 2b. Section / Step → linked parent item.
         if ($item instanceof Section || $item instanceof Step) {
             $parent = $this->resolveParentForSubEntry($item);
             if ($parent === null) {

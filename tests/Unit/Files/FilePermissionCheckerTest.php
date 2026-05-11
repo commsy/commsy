@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Tests\Unit\Files;
 
 use App\Entity\Account;
-use App\Entity\Discussionarticles;
 use App\Entity\Files;
 use App\Entity\Materials;
 use App\Entity\User;
@@ -96,20 +95,26 @@ final class FilePermissionCheckerTest extends TestCase
     }
 
     /**
-     * Pre-existing entity/schema mismatch: Discussionarticles maps
-     * `public` as `bool`, but the legacy "overwritten content" marker
-     * is the integer `-2`. The bool entity can't represent that, so
-     * `hasOverwrittenContent()` in production never fires for
-     * Doctrine-loaded articles. The legacy code still works because
-     * cs_discussionarticle_item reads `_getValue('public')` raw.
-     *
-     * The overwritten-content path is therefore covered by the legacy
-     * Phase 1 characterization tests (ItemVoterSeeTest), not here.
-     * Tracked in the permission-refactor follow-ups memory.
+     * Tombstone filtering now lives in ItemViewChecker via the
+     * `hasOverwrittenContent` flag on ItemViewSubject — FilePermissionChecker
+     * no longer carries type-specific knowledge. This test pins that
+     * the checker still does NOT short-circuit on its own: it always
+     * builds a subject and delegates the verdict to the view checker.
      */
-    public function testCanSeeOverwrittenContentTrackedInPhase1Suite(): void
+    public function testCanSeeAlwaysDefersOverwrittenContentDecisionToViewChecker(): void
     {
-        self::markTestSkipped('Discussionarticles::public is typed bool; cannot construct -2 in unit test.');
+        $file = $this->file(filesId: 1);
+        $this->linkFileRepository->method('findLinkedItemIds')->willReturn([10]);
+        $this->itemRepository->method('find')->willReturn(new Materials());
+
+        // Factory + checker are mocked, so we only verify that BOTH are
+        // consulted in the loop, regardless of any per-item state. The
+        // factory builds the subject (with whatever flags it computes),
+        // the checker decides — here it denies.
+        $this->subjectFactory->expects(self::once())->method('fromItem')->willReturn($this->subject());
+        $this->itemViewChecker->expects(self::once())->method('canSee')->willReturn(false);
+
+        self::assertFalse($this->checker->canSee(new User(), $file));
     }
 
     // ---- canEdit

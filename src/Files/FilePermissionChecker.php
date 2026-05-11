@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace App\Files;
 
-use App\Entity\Discussionarticles;
 use App\Entity\Files;
 use App\Entity\Room;
 use App\Entity\User;
@@ -64,16 +63,16 @@ final readonly class FilePermissionChecker
 
     /**
      * Whether the actor may see the file. True iff at least one linked
-     * item is visible to the actor and is not soft-overwritten content.
+     * item is visible to the actor. The tombstone filter on
+     * `hasOverwrittenContent` is enforced inside {@see ItemViewChecker}
+     * via the `ItemViewSubject::$hasOverwrittenContent` flag (built by
+     * the factory), so this loop stays type-agnostic.
      *
      * Mirrors `cs_file_item::maySee` → `maySeeLinkedItem`.
      */
     public function canSee(User $actor, Files $file, ?Room $currentContext = null): bool
     {
         foreach ($this->loadActiveLinkedItems($file) as $linkedItem) {
-            if ($this->hasOverwrittenContent($linkedItem)) {
-                continue;
-            }
             $subject = $this->subjectFactory->fromItem($linkedItem, $currentContext);
             if ($this->itemViewChecker->canSee($actor, $subject, $currentContext)) {
                 return true;
@@ -155,18 +154,6 @@ final readonly class FilePermissionChecker
                 yield $item;
             }
         }
-    }
-
-    /**
-     * The only legacy `getHasOverwrittenContent()` override lives on
-     * `cs_discussionarticle_item`: `public = -2` means "body replaced
-     * with placeholder text after deletion to keep the discussion
-     * hierarchy intact". Everything else returns false.
-     */
-    private function hasOverwrittenContent(object $item): bool
-    {
-        return $item instanceof Discussionarticles
-            && (string) $item->getPublic() === '-2';
     }
 
     private function resolveMembershipInContext(User $actor, int $contextId): ?User

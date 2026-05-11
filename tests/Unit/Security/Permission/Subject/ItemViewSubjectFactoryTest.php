@@ -115,6 +115,45 @@ final class ItemViewSubjectFactoryTest extends TestCase
         self::assertTrue($subject->contextIsDeleted);
     }
 
+    public function testHasOverwrittenContentIsFalseForNonDiscussionarticleEntities(): void
+    {
+        $item = $this->materials(itemId: 5, contextId: 42, activationDate: null);
+        $this->roomRepository->method('find')->willReturn((new \App\Entity\Room())->setItemId(42));
+
+        $subject = $this->factory->fromItem($item);
+
+        self::assertFalse($subject->hasOverwrittenContent);
+    }
+
+    public function testHasOverwrittenContentIsTrueForDiscussionarticleWithPublicMinusTwo(): void
+    {
+        $article = $this->discussionarticle(itemId: 7, contextId: 42, public: -2);
+        $this->roomRepository->method('find')->willReturn((new \App\Entity\Room())->setItemId(42));
+
+        $subject = $this->factory->fromItem($article);
+
+        self::assertTrue($subject->hasOverwrittenContent);
+    }
+
+    public function testHasOverwrittenContentIsFalseForLiveDiscussionarticle(): void
+    {
+        $article = $this->discussionarticle(itemId: 7, contextId: 42, public: 0);
+        $this->roomRepository->method('find')->willReturn((new \App\Entity\Room())->setItemId(42));
+
+        $subject = $this->factory->fromItem($article);
+
+        self::assertFalse($subject->hasOverwrittenContent);
+    }
+
+    private function discussionarticle(int $itemId, int $contextId, int $public): \App\Entity\Discussionarticles
+    {
+        $a = new \App\Entity\Discussionarticles();
+        (new ReflectionProperty(\App\Entity\Discussionarticles::class, 'itemId'))->setValue($a, $itemId);
+        $a->setContextId($contextId);
+        $a->setPublic($public);
+        return $a;
+    }
+
     private function materials(int $itemId, ?int $contextId, ?DateTime $activationDate): Materials
     {
         $m = new Materials();

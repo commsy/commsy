@@ -79,6 +79,14 @@ final readonly class ItemViewChecker
             return false;
         }
 
+        // 1b. Tombstone (body replaced with placeholder text, e.g. a
+        //     discussion article kept alive only for its thread node) →
+        //     never visible, even to root. Mirrors the legacy
+        //     `cs_file_item::maySeeLinkedItem` skip filter.
+        if ($subject->hasOverwrittenContent) {
+            return false;
+        }
+
         // 2. Root short-circuit.
         if ($actor->isRoot()) {
             return true;
