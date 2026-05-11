@@ -66,6 +66,35 @@ final readonly class RoomAccessChecker
     }
 
     /**
+     * Identity-triple check used by the {@see ItemVoter::ENTER} path:
+     * the voter holds the legacy `currentUserItem` (which is whatever
+     * `LegacySubscriber` resolved for the request) but not always an
+     * {@see Account} (token user may not be the Doctrine Account in
+     * exotic auth flows). Mirrors `cs_context_item::mayEnter()` →
+     * `mayEnterByUserID($user_id, $auth_source)` →
+     * `cs_user_manager::isUserInContext()`.
+     */
+    public function canEnterByLegacyIdentity(string $userId, ?int $authSourceId, Room $room): bool
+    {
+        if ('root' === $userId) {
+            return true;
+        }
+        if ($room->isLocked()) {
+            return false;
+        }
+        if ($this->reachableViaGuestAccess($room)) {
+            return true;
+        }
+
+        $membership = $this->userRepository->findOneByLegacyIdentity(
+            $userId,
+            $room->getItemId(),
+            $authSourceId,
+        );
+        return $membership !== null && $membership->isUser();
+    }
+
+    /**
      * Identifier-only check used by callers that have a user_item id but
      * not the originating Account (e.g. RSS / iCal hash logins). Mirrors
      * `cs_context_item::mayEnterByUserItemID()` — note the legacy method

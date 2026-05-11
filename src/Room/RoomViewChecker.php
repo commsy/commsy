@@ -68,27 +68,42 @@ final readonly class RoomViewChecker
     }
 
     /**
-     * Project rooms — mirrors `cs_project_item::maySee`. Note the
-     * legacy quirk: the `openForGuests` flag is checked on the
-     * *current browsing context*, not on `$target`. Replicated here.
+     * Project rooms — mirrors `cs_project_item::maySee`:
+     *
+     *   if ($user->isRoot()
+     *       || ($user->getContextID() == $env->getCurrentContextID()
+     *           && ($user->isGuest() || $user->isUser()))
+     *       || $contextItem->isOpenForGuests())
+     *
+     * Two practical consequences worth pinning:
+     *
+     *   - The `contextID == currentContextID` branch is effectively
+     *     "the actor is a guest/user in the current browsing context".
+     *     The legacy `LegacySubscriber` resolves `currentUserItem` IN
+     *     the current context, so the actor's `getContextId()` is the
+     *     current context by construction — for both room-level and
+     *     portal-level browses. This is what grants any logged-in
+     *     portal user the right to SEE project rooms in their portal
+     *     dashboard.
+     *
+     *   - The `openForGuests` flag is read off the *current browsing
+     *     context*, not the target room. Replicated here.
      */
     private function canSeeProjectRoom(User $actor, ?Room $currentContext): bool
     {
         if ($actor->isRoot()) {
             return true;
         }
-        if ($currentContext === null) {
-            // Portal-level browse: no currentContext for the legacy
-            // env's openForGuests check → only root sees.
-            return false;
-        }
-
-        $sameContext = $actor->getContextId() === $currentContext->getItemId();
-        if ($sameContext && ($actor->isGuest() || $actor->isUser())) {
+        if ($actor->isGuest() || $actor->isUser()) {
+            // Legacy "user is in the current context" branch. The actor
+            // is whatever `LegacySubscriber` resolved as `currentUserItem`,
+            // which always lives in the current browsing context — so we
+            // just need a non-zero status. Trusting this short-circuit
+            // keeps portal-level room listings visible to portal users
+            // (`/portal/X/room/Y` dashboard), matching legacy.
             return true;
         }
-
-        return $currentContext->getOpenForGuests();
+        return $currentContext !== null && $currentContext->getOpenForGuests();
     }
 
     /**

@@ -87,12 +87,32 @@ final class RoomViewCheckerTest extends TestCase
         self::assertTrue($this->checker->canSee($stranger, $target, $current));
     }
 
-    public function testProjectRoomDeniesAtPortalLevelForNonRoot(): void
+    public function testProjectRoomGrantsAtPortalLevelForAnyPortalUser(): void
     {
+        // Legacy `cs_project_item::maySee` grants on the
+        //   user.contextID == currentContextID && (isGuest|isUser)
+        // branch, which is trivially satisfied for portal-level browses:
+        // the LegacySubscriber resolves currentUserItem in whatever
+        // context the request carries, so the actor's home context IS
+        // the current context. Portal dashboards (`/portal/X/room/Y`)
+        // rely on this — without it, members can't see their own rooms.
         $target = $this->room(42, 'project');
         $actor = $this->user(itemId: 5, status: 2, contextId: 7);
 
-        self::assertFalse($this->checker->canSee($actor, $target, currentContext: null));
+        self::assertTrue($this->checker->canSee($actor, $target, currentContext: null));
+    }
+
+    public function testProjectRoomDeniesAtPortalLevelForRequested(): void
+    {
+        // Status 1 (requested) is the only "logged-in-but-restricted"
+        // status — not guest (0), not isUser (>=2). Legacy maySee's
+        // user.contextID == currentContextID branch checks isGuest()
+        // OR isUser(); requested users hit neither, so portal-level
+        // browse cannot see project rooms via the membership branch.
+        $target = $this->room(42, 'project');
+        $requested = $this->user(itemId: 5, status: 1, contextId: 7);
+
+        self::assertFalse($this->checker->canSee($requested, $target, currentContext: null));
     }
 
     // ---- Group room
