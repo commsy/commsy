@@ -222,23 +222,6 @@ class cs_group_item extends cs_label_item
         $this->updateElastic();
     }
 
-    /** returns whether the given user may edit the group item or not
-     * for CommSy 9: only the moderators or groups creator may edit
-     * the group item.
-     */
-    public function mayEdit(cs_user_item $user_item)
-    {
-        $mayEditItem = parent::mayEdit($user_item);
-        if (!$mayEditItem) {
-            return false;
-        }
-
-        // NOTE: the logic here overrides superclass implementations of this method which effectively treats the
-        // "Only editable by creator" (aka \cs_item::isPublic) option as always being checked; this prevents regular
-        // group or room members from messing with the group or its group room; see #391(activity-3)
-        return $user_item->isModerator() || $user_item->getItemId() == $this->getCreatorID();
-    }
-
     public function isMember($user): bool
     {
         $linkMemberList = $this->getLinkItemList(CS_USER_TYPE);

@@ -35,7 +35,6 @@ class cs_context_item extends cs_item
 
     public array $_rubric_support = [];
 
-    public array $_cache_may_enter = [];
 
     private array $cachePageImpressions = [];
 
@@ -876,83 +875,12 @@ class cs_context_item extends cs_item
         $this->_addExtra('DATEPRESENTATIONSTATUS', $value);
     }
 
-    /** returns a boolean, if the the user can enter the context
-     * true: user can enter project
-     * false: user can not enter project.
-     *
-     * @param object user item this user wants to enter the project
-     */
-    public function mayEnter($user_item): bool
-    {
-        return $this->mayEnterByUserID($user_item->getUserID(), $user_item->getAuthSource());
-    }
-
-    /**
-     * returns a boolean, if  the user can enter the context
-     * true: user can enter project
-     * false: user can not enter project.
-     *
-     * @param string $user_id id of user wants to enter the project
-     */
-    public function mayEnterByUserID($user_id, $auth_source): bool
-    {
-        if (isset($this->_cache_may_enter[$user_id . '_' . $auth_source])) {
-            return $this->_cache_may_enter[$user_id . '_' . $auth_source];
-        }
-
-        if ('root' == $user_id) {
-            return true;
-        }
-
-        if ($this->isLocked()) {
-            return false;
-        }
-
-        if ($this->isOpenForGuests()) {
-            return true;
-        }
-
-        $user_manager = $this->_environment->getUserManager();
-        if ($user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source)) {
-            $this->_cache_may_enter[$user_id . '_' . $auth_source] = true;
-
-            return true;
-        } else {
-            $this->_cache_may_enter[$user_id . '_' . $auth_source] = false;
-        }
-
-        return false;
-    }
-
     public function isSystemLabel(): bool
     {
         if ($this->_issetExtra('SYSTEM_LABEL')) {
             $value = $this->_getExtra('SYSTEM_LABEL');
             if (1 == $value) {
                 return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function mayEnterByUserItemID($user_item_id): bool
-    {
-        if ($this->isLocked()) {
-            return false;
-        } elseif (isset($this->_cache_may_enter[$user_item_id])) {
-            return $this->_cache_may_enter[$user_item_id];
-        } elseif ($this->isOpenForGuests()) {
-            return true;
-        } else {
-            $user_manager = $this->_environment->getUserManager();
-            $user_in_room = $user_manager->getItem($user_item_id);
-            if ($user_in_room->isUser() && $user_in_room->getContextID() == $this->getItemID()
-            ) {
-                $this->_cache_may_enter[$user_item_id] = true;
-                return true;
-            } else {
-                $this->_cache_may_enter[$user_item_id] = false;
             }
         }
 
@@ -2269,44 +2197,6 @@ class cs_context_item extends cs_item
         $this->_save($manager);
     }
 
-    /**
-     * Phase 2.9: rooms delegate to {@see \App\Room\RoomEditChecker::canEdit()}.
-     *
-     * Non-room context subclasses (cs_guide_item, cs_server_item) also
-     * inherit this method, but neither overrides it and there is no
-     * caller in src/ or legacy/ that invokes mayEdit on a non-room
-     * context. The legacy body that lived here was dead defensive code
-     * — we return `false` for non-rooms as the safe default. Phase 5
-     * deletes the wrapper outright.
-     */
-    public function mayEdit(cs_user_item $user): bool
-    {
-        if ($this instanceof cs_room_item) {
-            return $this->roomCheckerCanEdit($user);
-        }
-        return false;
-    }
-
-    /**
-     * Transitional Phase 2.9 hop into {@see \App\Room\RoomEditChecker}.
-     * The helpers used here live on cs_context_item and are inherited;
-     * `$this` resolves to the concrete room subclass.
-     */
-    private function roomCheckerCanEdit(cs_user_item $user): bool
-    {
-        /** @var cs_room_item $this */
-        $actor = $this->doctrineActorFromLegacy($user);
-        $target = $this->doctrineTargetRoom();
-        if ($actor === null || $target === null) {
-            return false;
-        }
-
-        global $symfonyContainer;
-        /** @var \App\Room\RoomEditChecker $checker */
-        $checker = $symfonyContainer->get(\App\Room\RoomEditChecker::class);
-        return $checker->canEdit($actor, $target, $this->doctrineCurrentRoom());
-    }
-
     public function isModeratorByUserID($user_id, $auth_source): bool
     {
         $mod_list = $this->getModeratorList();
@@ -2772,59 +2662,4 @@ class cs_context_item extends cs_item
           return false;
       }
 
-    /**
-     * Converts the given legacy `cs_user_item` to its Doctrine `User`
-     * twin via the (userId + contextId + authSource) identity triple.
-     *
-     * Transitional helper used by the Phase 2.9 cs_room_item / cs_context_item
-     * permission wrappers. Goes away with the wrappers in Phase 5.
-     */
-    protected function doctrineActorFromLegacy(cs_user_item $u): ?\App\Entity\User
-    {
-        global $symfonyContainer;
-        /** @var \App\Repository\UserRepository $userRepository */
-        $userRepository = $symfonyContainer->get(\App\Repository\UserRepository::class);
-
-        return $userRepository->findOneByLegacyIdentity(
-            $u->getUserID(),
-            (int) $u->getContextID(),
-            $u->getAuthSource() !== null ? (int) $u->getAuthSource() : null,
-        );
-    }
-
-    /**
-     * Returns `$this` as its Doctrine `Room` twin, looked up by item id.
-     * Returns null for non-room contexts (portal / server / guide) where
-     * Doctrine has no `Room` row — the wrappers gate on that.
-     *
-     * Transitional helper; goes away in Phase 5.
-     */
-    protected function doctrineTargetRoom(): ?\App\Entity\Room
-    {
-        global $symfonyContainer;
-        /** @var \Doctrine\ORM\EntityManagerInterface $em */
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        return $em->getRepository(\App\Entity\Room::class)->find($this->getItemID());
-    }
-
-    /**
-     * Resolves the legacy `currentContextItem` to a Doctrine `Room`
-     * when it's a room (portals aren't Rooms in Doctrine). Returns
-     * null otherwise — the new checkers accept that as "portal-level
-     * browse".
-     *
-     * Transitional helper; goes away in Phase 5.
-     */
-    protected function doctrineCurrentRoom(): ?\App\Entity\Room
-    {
-        $current = $this->_environment->getCurrentContextItem();
-        if (!$current instanceof cs_room_item) {
-            return null;
-        }
-
-        global $symfonyContainer;
-        /** @var \Doctrine\ORM\EntityManagerInterface $em */
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        return $em->getRepository(\App\Entity\Room::class)->find($current->getItemID());
-    }
 }
