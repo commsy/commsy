@@ -85,34 +85,6 @@ final class UserEditCheckerTest extends TestCase
         self::assertFalse($this->checker->canEdit($actor, $target));
     }
 
-    // ---- canEditRegular
-
-    public function testCanEditRegularGrantsSelf(): void
-    {
-        $actor = $this->user(itemId: 5, status: 2, contextId: 42, userId: 'alice', authSource: 7);
-        $target = $this->user(itemId: 5, status: 2, contextId: 42, userId: 'alice', authSource: 7);
-
-        self::assertTrue($this->checker->canEditRegular($actor, $target));
-    }
-
-    public function testCanEditRegularDeniesModerator(): void
-    {
-        // mayEditRegular is intentionally stricter than mayEdit —
-        // moderators do NOT get the override.
-        $actor = $this->user(itemId: 5, status: 3, contextId: 42, userId: 'alice');
-        $target = $this->user(itemId: 6, status: 2, contextId: 42, userId: 'bob');
-
-        self::assertFalse($this->checker->canEditRegular($actor, $target));
-    }
-
-    public function testCanEditRegularDeniesReadOnly(): void
-    {
-        $actor = $this->user(itemId: 5, status: 4, contextId: 42, userId: 'alice', authSource: 7);
-        $target = $this->user(itemId: 5, status: 4, contextId: 42, userId: 'alice', authSource: 7);
-
-        self::assertFalse($this->checker->canEditRegular($actor, $target));
-    }
-
     private function user(
         int $itemId,
         int $status,

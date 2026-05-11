@@ -1268,23 +1268,6 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * Phase 2.8: delegates to {@see \App\User\UserEditChecker::canEditRegular()}.
-     */
-    public function mayEditRegular($user_item)
-    {
-        $actor  = $this->doctrineUserFromLegacy($user_item);
-        $target = $this->doctrineUserFromLegacy($this);
-        if ($actor === null || $target === null) {
-            return false;
-        }
-
-        global $symfonyContainer;
-        /** @var \App\User\UserEditChecker $checker */
-        $checker = $symfonyContainer->get(\App\User\UserEditChecker::class);
-        return $checker->canEditRegular($actor, $target);
-    }
-
-    /**
      * Converts a legacy `cs_user_item` to its Doctrine `User` twin via
      * the (userId, contextId, authSource) identity triple. Returns null
      * when the lookup misses — caller decides what that means.

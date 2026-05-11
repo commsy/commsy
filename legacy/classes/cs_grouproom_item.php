@@ -206,29 +206,21 @@ class cs_grouproom_item extends cs_room_item
         return false;
     }
 
+    /**
+     * Phase 2.9: delegates to {@see \App\Room\RoomViewChecker::canSee()}.
+     */
     public function maySee($user_item)
     {
-        $project_item = $this->getLinkedProjectItem();
-        if ($user_item->isRoot()
-             or (isset($project_item)
-                  and !empty($project_item)
-                  and $user_item->getContextID() == $project_item->getItemID()
-                  and ($user_item->isUser()
-                        or ($user_item->isGuest()
-                             and $project_item->isOpenForGuests()
-                        )
-                  )
-             )
-             or ($this->_environment->inPrivateRoom()
-               and $this->isUser($user_item)
-             )
-        ) {
-            $access = true;
-        } else {
-            $access = false;
+        $actor = $this->doctrineActorFromLegacy($user_item);
+        $target = $this->doctrineTargetRoom();
+        if ($actor === null || $target === null) {
+            return false;
         }
 
-        return $access;
+        global $symfonyContainer;
+        /** @var \App\Room\RoomViewChecker $checker */
+        $checker = $symfonyContainer->get(\App\Room\RoomViewChecker::class);
+        return $checker->canSee($actor, $target, $this->doctrineCurrentRoom());
     }
 
     public function getLinkedProjectItem()

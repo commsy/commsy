@@ -106,18 +106,21 @@ class cs_userroom_item extends cs_room_item
 
     /**
      * is the given user allowed to see this item?
+     *
+     * Phase 2.9: delegates to {@see \App\Room\RoomViewChecker::canSee()}.
      */
     public function maySee(cs_user_item $userItem)
     {
-        if ($userItem->isRoot() || $userItem->isModerator()) {
-            return true;
+        $actor = $this->doctrineActorFromLegacy($userItem);
+        $target = $this->doctrineTargetRoom();
+        if ($actor === null || $target === null) {
+            return false;
         }
 
-        if ($this->getLinkedUserItemID() == $userItem->getItemID()) {
-            return true;
-        }
-
-        return false;
+        global $symfonyContainer;
+        /** @var \App\Room\RoomViewChecker $checker */
+        $checker = $symfonyContainer->get(\App\Room\RoomViewChecker::class);
+        return $checker->canSee($actor, $target, $this->doctrineCurrentRoom());
     }
 
     public function getLinkedProjectItem(): ?cs_project_item

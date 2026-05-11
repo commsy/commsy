@@ -462,20 +462,21 @@ class cs_project_item extends cs_room_item
         return false;
     }
 
+    /**
+     * Phase 2.9: delegates to {@see \App\Room\RoomViewChecker::canSee()}.
+     */
     public function maySee($user_item)
     {
-        $context_item = $this->_environment->getCurrentContextItem();
-        if ($user_item->isRoot() or
-             ($user_item->getContextID() == $this->_environment->getCurrentContextID()
-               and ($user_item->isGuest() or $user_item->isUser())
-             ) or $context_item->isOpenForGuests()
-        ) {
-            $access = true;
-        } else {
-            $access = false;
+        $actor = $this->doctrineActorFromLegacy($user_item);
+        $target = $this->doctrineTargetRoom();
+        if ($actor === null || $target === null) {
+            return false;
         }
 
-        return $access;
+        global $symfonyContainer;
+        /** @var \App\Room\RoomViewChecker $checker */
+        $checker = $symfonyContainer->get(\App\Room\RoomViewChecker::class);
+        return $checker->canSee($actor, $target, $this->doctrineCurrentRoom());
     }
 
     public function getUsageInfoTextForRubric($rubric)

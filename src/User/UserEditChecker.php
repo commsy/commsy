@@ -18,7 +18,7 @@ namespace App\User;
 use App\Entity\User;
 
 /**
- * Doctrine-only port of `cs_user_item::mayEdit` and `mayEditRegular`.
+ * Doctrine-only port of `cs_user_item::mayEdit`.
  *
  * Distinct from {@see \App\Security\Permission\Checker\ItemEditChecker}
  * because user-items don't follow the cs_item::mayEdit body — no
@@ -26,15 +26,13 @@ use App\Entity\User;
  * legacy rules collapse to: read-only never; root always; in the same
  * context + (moderator OR self) → yes; otherwise no.
  *
- * `canEditRegular` is the stricter "self-only" variant: it permits edit
- * exclusively to the user themselves (used by legacy form views that
- * intentionally hide the moderator override).
+ * Note: the legacy `mayEditRegular` companion method is NOT ported.
+ * Verified across origin/10.0 … origin/10.5 plus the current branch:
+ * zero callers, six+ legacy major versions of dead code. Removed as
+ * part of this phase rather than mirrored.
  */
 final readonly class UserEditChecker
 {
-    /**
-     * Mirrors `cs_user_item::mayEdit`.
-     */
     public function canEdit(User $actor, User $target): bool
     {
         if ($actor->isReadOnlyUser()) {
@@ -58,19 +56,6 @@ final readonly class UserEditChecker
         }
 
         return false;
-    }
-
-    /**
-     * Mirrors `cs_user_item::mayEditRegular` — self-only, no moderator
-     * override.
-     */
-    public function canEditRegular(User $actor, User $target): bool
-    {
-        if ($actor->isReadOnlyUser()) {
-            return false;
-        }
-
-        return $this->isSameAccountIdentity($actor, $target);
     }
 
     private function isSameAccountIdentity(User $actor, User $target): bool
