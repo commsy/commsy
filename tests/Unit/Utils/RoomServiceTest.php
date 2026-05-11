@@ -13,7 +13,9 @@
 
 namespace Tests\Unit\Utils;
 
+use App\Repository\RoomRepository;
 use App\Room\Copy\LegacyCopy;
+use App\Room\RoomAccessChecker;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
@@ -35,8 +37,15 @@ class RoomServiceTest extends TestCase
             ]),
         ]);
         $legacyCopy = $this->createStub(LegacyCopy::class);
+        $roomAccessChecker = $this->createStub(RoomAccessChecker::class);
+        $roomRepository = $this->createStub(RoomRepository::class);
 
-        $roomService = new RoomService($legacyEnvironment, $legacyCopy);
+        $roomService = new RoomService(
+            $legacyEnvironment,
+            $legacyCopy,
+            $roomAccessChecker,
+            $roomRepository,
+        );
         $rubrics = $roomService->getRubricInformation(1, false);
 
         $this->assertCount(1, $rubrics);
