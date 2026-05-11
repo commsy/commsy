@@ -13,7 +13,9 @@
 
 namespace App\Utils;
 
+use App\Repository\RoomRepository;
 use App\Room\Copy\LegacyCopy;
+use App\Room\RoomAccessChecker;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
 use cs_environment;
@@ -27,7 +29,9 @@ class RoomService
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly LegacyCopy $legacyCopy
+        private readonly LegacyCopy $legacyCopy,
+        private readonly RoomAccessChecker $roomAccessChecker,
+        private readonly RoomRepository $roomRepository,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -446,12 +450,12 @@ class RoomService
             }
 
             // only for members
-            if (!$add && '1' == $availability && $template->mayEnter($currentUserItem)) {
+            if (!$add && '1' == $availability && $this->templateMayEnter($template, $currentUserItem)) {
                 $add = true;
             }
 
             // only mods
-            if (!$add && '2' == $availability && $template->mayEnter($currentUserItem)) {
+            if (!$add && '2' == $availability && $this->templateMayEnter($template, $currentUserItem)) {
                 if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
                     $add = true;
                 }
@@ -468,5 +472,27 @@ class RoomService
         }
 
         return $templates;
+    }
+
+    /**
+     * Doctrine-side ENTER check used by {@see getAvailableTemplates()} to
+     * gate template visibility. Mirrors legacy
+     * `cs_context_item::mayEnter($currentUserItem)` 1:1 via the
+     * identity-triple path (userId + authSource). Templates that don't
+     * have a Doctrine `Room` row are skipped — the legacy code can't
+     * reach this either, the templates table only stores rooms.
+     */
+    private function templateMayEnter(cs_room_item $template, cs_user_item $currentUserItem): bool
+    {
+        $roomEntity = $this->roomRepository->find($template->getItemID());
+        if ($roomEntity === null) {
+            return false;
+        }
+        $authSource = $currentUserItem->getAuthSource();
+        return $this->roomAccessChecker->canEnterByLegacyIdentity(
+            (string) $currentUserItem->getUserID(),
+            $authSource !== null ? (int) $authSource : null,
+            $roomEntity,
+        );
     }
 }

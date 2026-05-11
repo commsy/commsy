@@ -17,7 +17,9 @@ use App\Entity\Account;
 use App\Entity\User;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
+use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
+use App\Room\RoomAccessChecker;
 use App\Services\LegacyEnvironment;
 use cs_context_item;
 use cs_environment;
@@ -55,7 +57,9 @@ class UserService
         LegacyEnvironment $legacyEnvironment,
         private readonly RoomService $roomService,
         private readonly UserRepository $userRepository,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly RoomAccessChecker $roomAccessChecker,
+        private readonly RoomRepository $roomRepository,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
@@ -762,7 +766,7 @@ class UserService
             $roomUser = $roomUserList->getFirst();
 
             if ($roomUser) {
-                if ($room->mayEnter($roomUser)) {
+                if ($this->roomUserMayEnter($room, $roomUser)) {
                     return 'enter';
                 }
 
@@ -782,6 +786,26 @@ class UserService
         }
 
         return 'join';
+    }
+
+    /**
+     * Doctrine-side ENTER check for the {@see getMemberStatus()} probe.
+     * Mirrors legacy `cs_room_item::mayEnter($roomUser)` 1:1 via the
+     * identity-triple path: $roomUser is the user_item we just resolved
+     * IN the target room, so we forward its userId / authSource.
+     */
+    private function roomUserMayEnter(cs_room_item $room, cs_user_item $roomUser): bool
+    {
+        $roomEntity = $this->roomRepository->find($room->getItemID());
+        if ($roomEntity === null) {
+            return false;
+        }
+        $authSource = $roomUser->getAuthSource();
+        return $this->roomAccessChecker->canEnterByLegacyIdentity(
+            (string) $roomUser->getUserID(),
+            $authSource !== null ? (int) $authSource : null,
+            $roomEntity,
+        );
     }
 
     /**
