@@ -58,4 +58,19 @@ class Annotations
     {
         return $this->itemId ?? null;
     }
+
+    public function getContextId(): ?int
+    {
+        return $this->contextId;
+    }
+
+    public function getLinkedItemId(): ?int
+    {
+        return $this->linkedItemId;
+    }
+
+    public function getPublic(): bool
+    {
+        return (bool) $this->public;
+    }
 }

@@ -91,6 +91,12 @@ final readonly class ItemViewSubjectFactory
 
     private function isDeactivated(object $item): bool
     {
+        // Activation_date isn't present on every rubric (Annotations
+        // doesn't have it, for instance) — degrade to "always activated"
+        // rather than crash if the accessor is missing.
+        if (!method_exists($item, 'getActivationDate')) {
+            return false;
+        }
         $activationDate = $item->getActivationDate();
         if ($activationDate === null) {
             return false;
