@@ -233,28 +233,33 @@ class cs_file_item extends cs_item
      * Returns true if the user represented by the given user item is allowed to edit the file,
      * otherwise returns false.
      *
-     * @return bool
+     * Phase 2.6: delegates to {@see \App\Files\FilePermissionChecker::canEdit()}.
      */
     public function mayEdit(cs_user_item $user_item)
     {
-        $access = false;
-        if (!$user_item->isOnlyReadUser()) {
-            if ($user_item->isRoot() or
-                ($user_item->getContextID() == $this->getContextID()
-                    and ($user_item->isModerator()
-                        or ($user_item->isUser()
-                            and ($user_item->getItemID() == $this->getCreatorID()
-                                or $this->mayEditLinkedItem($user_item)
-                            )
-                        )
-                    )
-                )
-            ) {
-                $access = true;
-            }
+        global $symfonyContainer;
+        /** @var \App\Files\FilePermissionChecker $checker */
+        $checker = $symfonyContainer->get(\App\Files\FilePermissionChecker::class);
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $symfonyContainer->get(\App\Repository\UserRepository::class);
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+
+        $actor = $userRepository->findOneByLegacyIdentity(
+            $user_item->getUserID(),
+            (int) $user_item->getContextID(),
+            $user_item->getAuthSource() !== null ? (int) $user_item->getAuthSource() : null,
+        );
+        if ($actor === null) {
+            return false;
         }
 
-        return $access;
+        $file = $em->getRepository(\App\Entity\Files::class)->find((int) $this->getFileID());
+        if ($file === null) {
+            return false;
+        }
+
+        return $checker->canEdit($actor, $file);
     }
 
     /**
@@ -281,12 +286,42 @@ class cs_file_item extends cs_item
      * Returns true if the user represented by the given user item is allowed to see the file,
      * otherwise returns false.
      *
-     * @return bool
+     * Phase 2.6: delegates to {@see \App\Files\FilePermissionChecker::canSee()}.
      */
     public function maySee(cs_user_item $userItem)
     {
-        // a user who's allowed to see any of this file's linked items may also see this file
-        return $this->maySeeLinkedItem($userItem);
+        global $symfonyContainer;
+        /** @var \App\Files\FilePermissionChecker $checker */
+        $checker = $symfonyContainer->get(\App\Files\FilePermissionChecker::class);
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $symfonyContainer->get(\App\Repository\UserRepository::class);
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+
+        $actor = $userRepository->findOneByLegacyIdentity(
+            $userItem->getUserID(),
+            (int) $userItem->getContextID(),
+            $userItem->getAuthSource() !== null ? (int) $userItem->getAuthSource() : null,
+        );
+        if ($actor === null) {
+            return false;
+        }
+
+        $file = $em->getRepository(\App\Entity\Files::class)->find((int) $this->getFileID());
+        if ($file === null) {
+            return false;
+        }
+
+        // ItemViewChecker's guest fallback only fires when the legacy
+        // current context resolves to a Room — mirror that here.
+        $currentLegacyContext = $this->_environment->getCurrentContextItem();
+        $currentRoom = null;
+        if ($currentLegacyContext instanceof cs_room_item) {
+            $currentRoom = $em->getRepository(\App\Entity\Room::class)
+                ->find($currentLegacyContext->getItemID());
+        }
+
+        return $checker->canSee($actor, $file, $currentRoom);
     }
 
     /**
@@ -310,18 +345,16 @@ class cs_file_item extends cs_item
     }
 
     /**
-     * May view files for external viewer.
-     *
-     * @throws \Doctrine\DBAL\Exception
+     * May view files for external viewer. Phase 2.6: delegates to
+     * {@see \App\Files\FilePermissionChecker::canExternalViewerSee()}.
+     * The first-link-only quirk is preserved there 1:1 — see the
+     * checker's docblock for the deferred-fix rationale.
      */
     public function mayExternalViewerSeeLinkedItem(string $username): bool
     {
-        $itemCollection = $this->getLinkedItems();
-        if (!isset($itemCollection) or $itemCollection->isEmpty()) {
-            return false;
-        }
-        $itemId = $itemCollection[0]->getItemID();
-
-        return $this->mayExternalSee($itemId, $username);
+        global $symfonyContainer;
+        /** @var \App\Files\FilePermissionChecker $checker */
+        $checker = $symfonyContainer->get(\App\Files\FilePermissionChecker::class);
+        return $checker->canExternalViewerSee((int) $this->getFileID(), $username);
     }
 }

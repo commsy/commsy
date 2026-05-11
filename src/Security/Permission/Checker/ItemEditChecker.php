@@ -15,28 +15,85 @@ declare(strict_types=1);
 
 namespace App\Security\Permission\Checker;
 
+use App\Entity\User;
 use App\Lock\LockManager;
+use App\Repository\UserRepository;
 
 /**
- * Edit-time lock state check.
+ * Default edit-permission base for items that don't carry a rubric-
+ * specific override. Mirrors the body of `cs_item::mayEdit` 1:1 — root
+ * shortcut, context-membership lookup, moderator/creator/public branch,
+ * lock check.
  *
- * Mirrors {@see \App\Security\Authorization\Voter\ItemVoter::canEditLock}
- * but with a direct {@see LockManager} dependency — there is no Symfony
- * `isGranted()` round-trip through the Voter chain. This is what breaks
- * the long-standing cycle in `cs_item::mayEdit`, where the legacy item
- * was reaching back into the security layer via
- * `global $symfonyContainer` to ask `isGranted(ItemVoter::EDIT_LOCK)`.
+ * Rubric-specific edit semantics live in their own checkers and are
+ * dispatched via {@see \App\Security\Permission\Dispatcher\ItemEditDispatcher}
+ * — discussion-articles override "no edit after closed", section/step
+ * delegate to the linked item, etc.
  *
- * The root short-circuit (which the legacy `Voter::canEditLock` carries)
- * is intentionally NOT in this checker — root semantics depend on the
- * caller's notion of "user". The cs_item.mayEdit wrapper handles it
- * inline via `cs_user_item::isRoot()`. The future Doctrine-only callers
- * will pass a Doctrine User and route through `User::isRoot()` instead.
+ * `canEditLock` is the legacy-Voter-cycle-breaking entry from Phase 2.3
+ * and stays a public method because the file-edit and dispatcher paths
+ * both consult it after their own moderator/creator decision.
  */
 final readonly class ItemEditChecker
 {
-    public function __construct(private LockManager $lockManager)
+    public function __construct(
+        private LockManager $lockManager,
+        private UserRepository $userRepository,
+    ) {
+    }
+
+    /**
+     * Full base check. Mirrors `cs_item::mayEdit` for items that have
+     * no subtype override:
+     *
+     *   - read-only users (status 4) can never edit          → false
+     *   - root short-circuits                                → true
+     *   - actor must have a non-deleted membership in the
+     *     item's context with status >= 2 (isUser)           → otherwise false
+     *   - moderator in context                               → lock check
+     *   - creator of the item                                → lock check
+     *   - item is `public=1` (i.e. !isPrivateEditing)        → lock check
+     *   - else                                               → false
+     *
+     * The lock check is `canEditLock($item->getItemId())` — already
+     * Phase 2.3 Doctrine-only via {@see LockManager}.
+     */
+    public function canEdit(User $actor, object $item): bool
     {
+        if ($actor->isReadOnlyUser()) {
+            return false;
+        }
+        if ($actor->isRoot()) {
+            return true;
+        }
+
+        $contextId = $item->getContextId();
+        if ($contextId === null) {
+            return false;
+        }
+
+        $membership = $this->resolveMembershipInContext($actor, $contextId);
+        if ($membership === null || !$membership->isUser()) {
+            return false;
+        }
+
+        if ($membership->isModerator()) {
+            return $this->canEditLock($item->getItemId());
+        }
+
+        $creatorId = $this->resolveCreatorId($item);
+        if ($creatorId !== null && $creatorId === $membership->getItemId()) {
+            return $this->canEditLock($item->getItemId());
+        }
+
+        // `public == 1` on the subtype table = !isPrivateEditing on the
+        // legacy cs_item — items flagged as world-editable are open to
+        // any context member.
+        if ($this->isOpenToAnyMember($item)) {
+            return $this->canEditLock($item->getItemId());
+        }
+
+        return false;
     }
 
     /**
@@ -59,5 +116,49 @@ final readonly class ItemEditChecker
             return true;
         }
         return $this->lockManager->userCanLock($itemId);
+    }
+
+    private function resolveMembershipInContext(User $actor, int $contextId): ?User
+    {
+        if ($actor->getContextId() === $contextId) {
+            return $actor;
+        }
+        if ($actor->getAccount() === null) {
+            return null;
+        }
+        return $this->userRepository->findInContext($actor->getAccount(), $contextId);
+    }
+
+    /**
+     * Reads `getCreator()?->getItemId()` polymorphically — all
+     * Item-domain subclasses migrated to {@see \App\Utils\EntityUsersTrait}
+     * expose it. Partial-column entities (Files, Calendars, LinkItems,
+     * Assessments) degrade to null and lose the "is-creator" branch.
+     */
+    private function resolveCreatorId(object $item): ?int
+    {
+        if (!method_exists($item, 'getCreator')) {
+            return null;
+        }
+        return $item->getCreator()?->getItemId();
+    }
+
+    /**
+     * Reads the subtype's `public` flag — only set on Item-domain
+     * subclasses (Materials, Discussions, Dates, Announcement, Todos,
+     * Annotations, Labels, Step, Discussionarticles). The Items parent
+     * itself has no public column. Subclasses without that accessor
+     * fall back to the safe default (private editing on).
+     */
+    private function isOpenToAnyMember(object $item): bool
+    {
+        if (!method_exists($item, 'getPublic')) {
+            return false;
+        }
+        $public = $item->getPublic();
+        // Most subtypes return bool; Discussionarticles returns string
+        // (legacy `-1`, `-2`, `0`, `1` semantics). We accept anything
+        // that converts to the integer 1.
+        return (int) $public === 1;
     }
 }
