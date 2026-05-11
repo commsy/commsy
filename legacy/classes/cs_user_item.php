@@ -1231,102 +1231,99 @@ class cs_user_item extends cs_item
 
     /**
      * @return bool
+     *
+     * Phase 2.8: delegates to {@see \App\User\UserViewChecker::canSee()}.
      */
     public function maySee(cs_user_item $userItem)
     {
-        if ($this->_environment->inCommunityRoom()) {  // Community room
-            if ($userItem->isRoot()
-                or ($userItem->isGuest() and $this->isVisibleForAll())
-                or (($userItem->getContextID() == $this->getContextID()
-                        or $userItem->getContextID() == $this->_environment->getCurrentContextID()
-                )
-                and (($userItem->isUser()
-                        and $this->isVisibleForLoggedIn()
-                )
-                or ($userItem->getUserID() == $this->getUserID()
-                    and $userItem->getAuthSource() == $this->getAuthSource()
-                )
-                or $userItem->isModerator()
-                ))) {
-                $access = true;
-            } else {
-                $access = false;
-            }
-        } else {    // Project room, group room, private room, portal
-            $access = parent::maySee($userItem);
-            if ($access) {
-                $room = $this->_environment->getCurrentContextItem();
-                if ($room->isPrivateRoom()
-                    or $room->isPortal()
-                    or $room->withRubric(CS_USER_TYPE)
-                ) {
-                    $access = true;
-                } else {
-                    // if user rubric is not active, user can always see himself
-                    if (!$room->withRubric(CS_USER_TYPE)) {
-                        if ($userItem->getUserID() == $this->getUserID() && $userItem->getAuthSource() == $this->getAuthSource()) {
-                            $access = true;
-                        } elseif ($userItem->isModerator()) {
-                            $access = true;
-                        } else {
-                            $access = false;
-                        }
-                    } else {
-                        $access = false;
-                    }
-                }
-            }
+        $actor  = $this->doctrineUserFromLegacy($userItem);
+        $target = $this->doctrineUserFromLegacy($this);
+        if ($actor === null || $target === null) {
+            return false;
         }
 
-        return $access;
+        global $symfonyContainer;
+        /** @var \App\User\UserViewChecker $checker */
+        $checker = $symfonyContainer->get(\App\User\UserViewChecker::class);
+        return $checker->canSee($actor, $target, $this->doctrineCurrentRoom());
     }
 
     /**
      * Checks whether the current user is editable by the given one.
      *
-     * @param cs_user_item $userItem the user object asking for permission
-     *
-     * @return bool
+     * Phase 2.8: delegates to {@see \App\User\UserEditChecker::canEdit()}.
      */
     public function mayEdit(cs_user_item $userItem)
     {
-        // readonly users aren't allowed to edit anyone
-        if ($userItem->isOnlyReadUser()) {
+        $actor  = $this->doctrineUserFromLegacy($userItem);
+        $target = $this->doctrineUserFromLegacy($this);
+        if ($actor === null || $target === null) {
             return false;
         }
 
-        // root is always allowed to edit
-        if ($userItem->isRoot()) {
-            return true;
-        }
-
-        // if both live in the same context
-        if ($userItem->getContextID() == $this->getContextID()) {
-            // Moderators are only allowed to edit user in portal context
-            if ($userItem->isModerator()) { // && $userItem->getContextItem()->isPortal()
-                return true;
-            }
-
-            // Allow users to edit themselves
-            if ($userItem->isUser() &&
-                $this->getUserID() == $userItem->getUserID() &&
-                $this->getAuthSource() == $userItem->getAuthSource()
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        global $symfonyContainer;
+        /** @var \App\User\UserEditChecker $checker */
+        $checker = $symfonyContainer->get(\App\User\UserEditChecker::class);
+        return $checker->canEdit($actor, $target);
     }
 
+    /**
+     * Phase 2.8: delegates to {@see \App\User\UserEditChecker::canEditRegular()}.
+     */
     public function mayEditRegular($user_item)
     {
-        $access = false;
-        if (!$user_item->isOnlyReadUser()) {
-            $access = $this->getUserID() == $user_item->getUserID() and $this->getAuthSource() == $user_item->getAuthSource();
+        $actor  = $this->doctrineUserFromLegacy($user_item);
+        $target = $this->doctrineUserFromLegacy($this);
+        if ($actor === null || $target === null) {
+            return false;
         }
 
-        return $access;
+        global $symfonyContainer;
+        /** @var \App\User\UserEditChecker $checker */
+        $checker = $symfonyContainer->get(\App\User\UserEditChecker::class);
+        return $checker->canEditRegular($actor, $target);
+    }
+
+    /**
+     * Converts a legacy `cs_user_item` to its Doctrine `User` twin via
+     * the (userId, contextId, authSource) identity triple. Returns null
+     * when the lookup misses — caller decides what that means.
+     *
+     * Transitional helper; goes away with the cs_user_item wrappers in
+     * Phase 5.
+     */
+    private function doctrineUserFromLegacy(cs_user_item $u): ?\App\Entity\User
+    {
+        global $symfonyContainer;
+        /** @var \App\Repository\UserRepository $userRepository */
+        $userRepository = $symfonyContainer->get(\App\Repository\UserRepository::class);
+
+        return $userRepository->findOneByLegacyIdentity(
+            $u->getUserID(),
+            (int) $u->getContextID(),
+            $u->getAuthSource() !== null ? (int) $u->getAuthSource() : null,
+        );
+    }
+
+    /**
+     * Resolves the legacy `currentContextItem` to a Doctrine `Room`
+     * when it's actually a room (not a Portal, which has its own
+     * entity). Returns null otherwise — UserViewChecker treats null
+     * as "portal-level browse" which is what we want.
+     *
+     * Transitional helper; goes away in Phase 5.
+     */
+    private function doctrineCurrentRoom(): ?\App\Entity\Room
+    {
+        $currentLegacyContext = $this->_environment->getCurrentContextItem();
+        if (!$currentLegacyContext instanceof cs_room_item) {
+            return null;
+        }
+
+        global $symfonyContainer;
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        return $em->getRepository(\App\Entity\Room::class)->find($currentLegacyContext->getItemID());
     }
 
     /**

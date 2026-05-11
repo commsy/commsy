@@ -88,8 +88,19 @@ class User
     #[ORM\Column(name: 'lastlogin', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $lastlogin = null;
 
-    #[ORM\Column(name: 'visible', type: Types::BOOLEAN, nullable: false)]
-    private bool $visible = true;
+    /**
+     * Multi-state visibility flag, NOT a boolean (DB column is `tinyint`).
+     * Legacy values:
+     *   1 → visible for logged-in members only (default)
+     *   2 → visible for everyone including guests
+     *
+     * The legacy `cs_user_item::isVisibleForLoggedIn()` hard-codes
+     * `return true`, so for logged-in viewers the value is effectively
+     * irrelevant. The distinction matters in community rooms where a
+     * guest viewer is allowed to see `=== 2` users only.
+     */
+    #[ORM\Column(name: 'visible', type: Types::INTEGER, nullable: false)]
+    private int $visible = 1;
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
     private ?array $extras = null;
@@ -308,16 +319,35 @@ class User
         return $this->lastlogin;
     }
 
-    public function setVisible(bool $visible): static
+    public function setVisible(int $visible): static
     {
         $this->visible = $visible;
 
         return $this;
     }
 
-    public function getVisible(): bool
+    public function getVisible(): int
     {
         return $this->visible;
+    }
+
+    /**
+     * Whether the user is visible for everyone, including unauthenticated
+     * guests. Mirrors `cs_user_item::isVisibleForAll()`.
+     */
+    public function isVisibleForAll(): bool
+    {
+        return $this->visible === 2;
+    }
+
+    /**
+     * Whether the user is visible for logged-in members. The legacy
+     * `cs_user_item::isVisibleForLoggedIn()` hard-codes `return true`
+     * regardless of the column value; we replicate that.
+     */
+    public function isVisibleForLoggedIn(): bool
+    {
+        return true;
     }
 
     public function setExtras(array $extras): static
