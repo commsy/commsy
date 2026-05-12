@@ -15,5 +15,9 @@ framework:
         #app: cache.adapter.apcu
 
         # Namespaced pools use the above "app" backend by default
-        #pools:
-            #my.dedicated.cache: null
+        pools:
+            # Request-scoped in-memory cache for App\Room\RoomAccessChecker.
+            # No cross-request persistence (same scope as legacy
+            # cs_context_item::_cache_may_enter).
+            permission.access_cache:
+                adapter: cache.adapter.array

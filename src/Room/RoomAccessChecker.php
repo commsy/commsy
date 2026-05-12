@@ -17,93 +17,106 @@ namespace App\Room;
 
 use App\Entity\Account;
 use App\Entity\Room;
+use App\Entity\User;
 use App\Repository\UserRepository;
+use Closure;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Decides whether a given Account (or a known user_item id) is allowed
- * to enter a Room. Consumes only Doctrine entities and repositories —
- * no `cs_*_item`, no `LegacyEnvironment`. Replaces the
- * `cs_context_item::mayEnter*` chain in the new permission stack.
+ * to enter a Room. Doctrine-only — replaces `cs_context_item::mayEnter*`.
  *
  * Rules pinned by ItemVoter ENTER characterization tests:
+ *  1. `root` → always true (except via the user_item_id variant, which
+ *     mirrors legacy `mayEnterByUserItemID` and has no root short-circuit).
+ *  2. Locked rooms → false.
+ *  3. Community rooms with `is_open_for_guests` → true for everyone.
+ *     Project / grouproom / userroom hardcode the legacy flag to false
+ *     regardless of the column value.
+ *  4. Otherwise: non-deleted membership with status >= 2.
  *
- *   1. Account.username === 'root' → always true (short-circuits even
- *      for locked or deleted rooms; the Voter top-level grants in this
- *      case anyway, but the checker also honors it for direct callers).
- *   2. Locked rooms (status 3 / LOCKED_PORTAL_MOD) → false (except root).
- *   3. Community rooms with an enabled AuthSourceGuest accept non-members.
- *      *Only* community rooms — `cs_project_item::isOpenForGuests()` and
- *      its grouproom/userroom siblings hardcode false in the legacy code,
- *      so the `is_open_for_guests` column on those room types is dead.
- *      Replicated here as an explicit type check.
- *   4. Otherwise: must have a non-deleted membership with status >= 2
- *      (`User::isUser()`).
- *
- * The checker does NOT inspect Room.deletionDate / archived / portal-id
- * collisions — those guards live in the Voter (canEnter helper). The
- * checker is the post-guard membership engine.
+ * Verdicts are memoised in the request-scoped `permission.access_cache`
+ * pool (ArrayAdapter, see `config/packages/cache.yaml`). Same scope as
+ * the legacy `_cache_may_enter` — gone at end of request.
  */
-final readonly class RoomAccessChecker
+final class RoomAccessChecker
 {
-    public function __construct(private UserRepository $userRepository)
-    {
+    public function __construct(
+        private readonly UserRepository $userRepository,
+        #[Autowire(service: 'permission.access_cache')]
+        private readonly CacheInterface $cache,
+    ) {
     }
 
     public function canEnter(Account $account, Room $room): bool
     {
-        if ('root' === $account->getUsername()) {
-            return true;
-        }
-        if ($room->isLocked()) {
-            return false;
-        }
-        if ($this->reachableViaGuestAccess($room)) {
-            return true;
-        }
-
-        $membership = $this->userRepository->findInContext($account, $room->getItemId());
-        return $membership !== null && $membership->isUser();
+        $username = $account->getUsername();
+        return $this->resolve(
+            rootHint: $username,
+            room: $room,
+            cacheSubkey: 'account.' . bin2hex($username),
+            membershipLoader: fn(): ?User => $this->userRepository->findInContext($account, $room->getItemId()),
+        );
     }
 
     /**
-     * Identity-triple check used by the {@see ItemVoter::ENTER} path:
-     * the voter holds the legacy `currentUserItem` (which is whatever
-     * `LegacySubscriber` resolved for the request) but not always an
-     * {@see Account} (token user may not be the Doctrine Account in
-     * exotic auth flows). Mirrors `cs_context_item::mayEnter()` →
-     * `mayEnterByUserID($user_id, $auth_source)` →
-     * `cs_user_manager::isUserInContext()`.
+     * Identity-triple check used by ItemVoter ENTER — the voter holds
+     * a `cs_user_item`, not always an Account (hash-token flows).
+     * Mirrors `cs_context_item::mayEnterByUserID`.
      */
     public function canEnterByLegacyIdentity(string $userId, ?int $authSourceId, Room $room): bool
     {
-        if ('root' === $userId) {
-            return true;
-        }
-        if ($room->isLocked()) {
-            return false;
-        }
-        if ($this->reachableViaGuestAccess($room)) {
-            return true;
-        }
-
-        $membership = $this->userRepository->findOneByLegacyIdentity(
-            $userId,
-            $room->getItemId(),
-            $authSourceId,
+        return $this->resolve(
+            rootHint: $userId,
+            room: $room,
+            // bin2hex(userId) guarantees PSR-6-safe characters without
+            // central sanitisation: userId is the only freeform input
+            // (auth source / room / account IDs are ints).
+            cacheSubkey: 'identity.' . bin2hex($userId) . '.' . ($authSourceId ?? '_'),
+            membershipLoader: fn(): ?User => $this->userRepository->findOneByLegacyIdentity(
+                $userId,
+                $room->getItemId(),
+                $authSourceId,
+            ),
         );
-        return $membership !== null && $membership->isUser();
     }
 
     /**
-     * Identifier-only check used by callers that have a user_item id but
-     * not the originating Account (e.g. RSS / iCal hash logins). Mirrors
-     * `cs_context_item::mayEnterByUserItemID()` — note the legacy method
-     * does NOT short-circuit for the root user_item (root lives in the
-     * server context, never matches a Room id, so the membership branch
-     * would always say no).
+     * Identifier-only check (RSS / iCal hash logins). Mirrors
+     * `cs_context_item::mayEnterByUserItemID` — no root short-circuit.
      */
     public function canEnterByUserItemId(int $userItemId, Room $room): bool
     {
+        return $this->resolve(
+            rootHint: null,
+            room: $room,
+            cacheSubkey: 'useritem.' . $userItemId,
+            membershipLoader: function () use ($userItemId, $room): ?User {
+                $user = $this->userRepository->find($userItemId);
+                if ($user === null || $user->getRoom()?->getItemId() !== $room->getItemId()) {
+                    return null;
+                }
+                return $user;
+            },
+        );
+    }
+
+    /**
+     * Shared envelope: root short-circuit → lock/openForGuests pre-checks
+     * → memoised membership lookup → `isUser()` filter. Each caller's
+     * loader returns the candidate `User` or `null`.
+     */
+    private function resolve(
+        ?string $rootHint,
+        Room $room,
+        string $cacheSubkey,
+        Closure $membershipLoader,
+    ): bool {
+        if ('root' === $rootHint) {
+            return true;
+        }
         if ($room->isLocked()) {
             return false;
         }
@@ -111,22 +124,16 @@ final readonly class RoomAccessChecker
             return true;
         }
 
-        $user = $this->userRepository->find($userItemId);
-        if ($user === null) {
-            return false;
-        }
-        if ($user->getRoom()?->getItemId() !== $room->getItemId()) {
-            return false;
-        }
-        return $user->isUser();
+        return $this->cache->get(
+            'enter.' . $cacheSubkey . '.' . $room->getItemId(),
+            function (ItemInterface $item) use ($membershipLoader): bool {
+                $item->expiresAfter(null); // request-scoped, no TTL
+                $member = $membershipLoader();
+                return $member !== null && $member->isUser();
+            },
+        );
     }
 
-    /**
-     * Replicates the legacy "openForGuests" reachability:
-     * `cs_community_item` honors the `is_open_for_guests` column;
-     * `cs_project_item` / `cs_grouproom_item` / `cs_userroom_item`
-     * override the method to hardcoded false.
-     */
     private function reachableViaGuestAccess(Room $room): bool
     {
         return $room->getOpenForGuests()

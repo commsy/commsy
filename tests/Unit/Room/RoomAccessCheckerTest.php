@@ -24,6 +24,7 @@ use App\Room\RoomStatus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Pure-function tests for RoomAccessChecker. No kernel boot, no DB —
@@ -42,7 +43,10 @@ final class RoomAccessCheckerTest extends TestCase
     protected function setUp(): void
     {
         $this->userRepository = $this->createMock(UserRepository::class);
-        $this->checker = new RoomAccessChecker($this->userRepository);
+        // ArrayAdapter is Symfony's request-scoped in-memory cache; a
+        // fresh instance per test gives us a clean slate without having
+        // to mock the CacheInterface.
+        $this->checker = new RoomAccessChecker($this->userRepository, new ArrayAdapter());
     }
 
     // ---- canEnter(Account, Room) ----
@@ -215,6 +219,73 @@ final class RoomAccessCheckerTest extends TestCase
         $this->userRepository->method('find')->willReturn($member);
 
         self::assertFalse($this->checker->canEnterByUserItemId(7, $room));
+    }
+
+    // ---- request-scoped memoisation ----
+
+    public function testRepeatedCanEnterCallsHitTheCache(): void
+    {
+        $room = $this->room(itemId: 42, type: 'project');
+        $account = $this->account('alice');
+
+        // expects(self::once()): if the cache misses on the second call,
+        // findInContext would be invoked twice and the mock fails.
+        $this->userRepository
+            ->expects(self::once())
+            ->method('findInContext')
+            ->willReturn($this->member(status: 2));
+
+        self::assertTrue($this->checker->canEnter($account, $room));
+        self::assertTrue($this->checker->canEnter($account, $room));
+        self::assertTrue($this->checker->canEnter($account, $room));
+    }
+
+    public function testRepeatedCanEnterByLegacyIdentityCallsHitTheCache(): void
+    {
+        $room = $this->room(itemId: 42, type: 'project');
+
+        $this->userRepository
+            ->expects(self::once())
+            ->method('findOneByLegacyIdentity')
+            ->with('alice', 42, 7)
+            ->willReturn($this->member(status: 2));
+
+        self::assertTrue($this->checker->canEnterByLegacyIdentity('alice', 7, $room));
+        self::assertTrue($this->checker->canEnterByLegacyIdentity('alice', 7, $room));
+    }
+
+    public function testRepeatedCanEnterByUserItemIdCallsHitTheCache(): void
+    {
+        $room = $this->room(itemId: 42, type: 'project');
+
+        $this->userRepository
+            ->expects(self::once())
+            ->method('find')
+            ->with(7)
+            ->willReturn($this->member(status: 2, contextRoom: $room));
+
+        self::assertTrue($this->checker->canEnterByUserItemId(7, $room));
+        self::assertTrue($this->checker->canEnterByUserItemId(7, $room));
+    }
+
+    public function testCacheKeyIsolatesDifferentRoomsForSameUser(): void
+    {
+        $roomA = $this->room(itemId: 42, type: 'project');
+        $roomB = $this->room(itemId: 99, type: 'project');
+
+        // Two distinct rooms ⇒ two repository calls. If the cache key
+        // collapsed across rooms, the second call would not happen and
+        // assertions would fire incorrectly.
+        $this->userRepository
+            ->expects(self::exactly(2))
+            ->method('findOneByLegacyIdentity')
+            ->willReturnOnConsecutiveCalls(
+                $this->member(status: 2),
+                null,
+            );
+
+        self::assertTrue($this->checker->canEnterByLegacyIdentity('alice', 7, $roomA));
+        self::assertFalse($this->checker->canEnterByLegacyIdentity('alice', 7, $roomB));
     }
 
     // ---- helpers ----
