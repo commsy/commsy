@@ -11,18 +11,13 @@
 namespace App\Security\Authorization\Voter;
 
 use App\Entity\Account;
-use App\Entity\Files;
-use App\Entity\Room;
 use App\Files\FilePermissionChecker;
 use App\Repository\FilesRepository;
-use App\Repository\RoomRepository;
-use App\Repository\UserRepository;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use cs_environment;
 use cs_file_item;
-use cs_room_item;
-use cs_user_item;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -38,8 +33,7 @@ class FileVoter extends Voter
         private readonly FileService $fileService,
         private readonly FilePermissionChecker $filePermissionChecker,
         private readonly FilesRepository $filesRepository,
-        private readonly UserRepository $userRepository,
-        private readonly RoomRepository $roomRepository,
+        private readonly LegacyPermissionBridge $legacyBridge,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -55,12 +49,11 @@ class FileVoter extends Voter
     {
         $fileId = (int) $subject;
         $fileItem = $this->fileService->getFile($fileId);
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         /** @var ?Account $user */
         $user = $token->getUser();
 
         if ($fileItem instanceof cs_file_item && self::DOWNLOAD === $attribute) {
-            return $this->canDownload($fileItem, $currentUser, $user);
+            return $this->canDownload($fileItem, $user);
         }
 
         // Preserves the pre-refactor behavior: a non-existent fileId
@@ -76,23 +69,18 @@ class FileVoter extends Voter
      * Mirrors the legacy two-branch logic in
      * `cs_file_item::maySee` + `mayExternalViewerSeeLinkedItem` 1:1.
      */
-    private function canDownload(
-        cs_file_item $fileItem,
-        cs_user_item $currentUser,
-        ?Account $user,
-    ): bool {
+    private function canDownload(cs_file_item $fileItem, ?Account $user): bool
+    {
         $file = $this->filesRepository->find((int) $fileItem->getFileID());
         if ($file === null) {
             return false;
         }
 
-        $actor = $this->userRepository->findOneByLegacyIdentity(
-            (string) $currentUser->getUserID(),
-            (int) $currentUser->getContextID(),
-            $currentUser->getAuthSource() !== null ? (int) $currentUser->getAuthSource() : null,
+        $actor = $this->legacyBridge->userFromLegacy(
+            $this->legacyEnvironment->getCurrentUserItem(),
         );
 
-        if ($actor !== null && $this->filePermissionChecker->canSee($actor, $file, $this->currentRoom())) {
+        if ($actor !== null && $this->filePermissionChecker->canSee($actor, $file, $this->legacyBridge->currentRoom())) {
             return true;
         }
 
@@ -103,19 +91,5 @@ class FileVoter extends Voter
         }
 
         return false;
-    }
-
-    /**
-     * Resolves the legacy `currentContextItem` to a Doctrine Room when
-     * it is a room context (the checker's guest-fallback path requires
-     * a Room). Returns null for portal-level browses.
-     */
-    private function currentRoom(): ?Room
-    {
-        $current = $this->legacyEnvironment->getCurrentContextItem();
-        if (!$current instanceof cs_room_item) {
-            return null;
-        }
-        return $this->roomRepository->find($current->getItemID());
     }
 }

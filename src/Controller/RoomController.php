@@ -21,7 +21,7 @@ use App\Form\Type\ContextType;
 use App\Hash\HashManager;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
-use App\Room\RoomAccessChecker;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
@@ -56,28 +56,8 @@ class RoomController extends AbstractController
 {
     public function __construct(
         private readonly ReaderService $readerService,
-        private readonly RoomAccessChecker $roomAccessChecker,
-        private readonly RoomRepository $roomRepository,
+        private readonly LegacyPermissionBridge $legacyBridge,
     ) {
-    }
-
-    /**
-     * Doctrine-side ENTER probe used by {@see memberStatus()}. Mirrors
-     * legacy `cs_context_item::mayEnter($userItem)` 1:1 via the
-     * identity-triple path.
-     */
-    private function userMayEnter(\cs_room_item $room, \cs_user_item $userItem): bool
-    {
-        $roomEntity = $this->roomRepository->find($room->getItemID());
-        if ($roomEntity === null) {
-            return false;
-        }
-        $authSource = $userItem->getAuthSource();
-        return $this->roomAccessChecker->canEnterByLegacyIdentity(
-            (string) $userItem->getUserID(),
-            $authSource !== null ? (int) $authSource : null,
-            $roomEntity,
-        );
     }
 
     #[Route(path: '/room/{roomId}', requirements: ['roomId' => '\d+'])]
@@ -658,11 +638,11 @@ class RoomController extends AbstractController
             if ($currentUser->isRoot()) {
                 $mayEnter = true;
             } elseif (!empty($roomUser)) {
-                $mayEnter = $this->userMayEnter($item, $roomUser);
+                $mayEnter = $this->legacyBridge->userCanEnter($item, $roomUser);
             } else {
                 // in case of the guest user, $roomUser is null
                 if ($currentUser->isReallyGuest()) {
-                    $mayEnter = $this->userMayEnter($item, $currentUser);
+                    $mayEnter = $this->legacyBridge->userCanEnter($item, $currentUser);
                 }
             }
 

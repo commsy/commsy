@@ -31,9 +31,8 @@ use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
-use App\Repository\RoomRepository;
-use App\Room\RoomAccessChecker;
 use App\Security\Authorization\Voter\CategoryVoter;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -69,9 +68,7 @@ class GroupController extends BaseController
 
     private Mailer $mailer;
 
-    private RoomAccessChecker $roomAccessChecker;
-
-    private RoomRepository $roomRepository;
+    private LegacyPermissionBridge $legacyBridge;
 
     #[Required]
     public function setGroupService(GroupService $groupService): void
@@ -92,15 +89,9 @@ class GroupController extends BaseController
     }
 
     #[Required]
-    public function setRoomAccessChecker(RoomAccessChecker $roomAccessChecker): void
+    public function setLegacyPermissionBridge(LegacyPermissionBridge $legacyBridge): void
     {
-        $this->roomAccessChecker = $roomAccessChecker;
-    }
-
-    #[Required]
-    public function setRoomRepository(RoomRepository $roomRepository): void
-    {
-        $this->roomRepository = $roomRepository;
+        $this->legacyBridge = $legacyBridge;
     }
 
     #[Route(path: '/room/{roomId}/group')]
@@ -1128,8 +1119,8 @@ class GroupController extends BaseController
 
                 if (('0' == $templateAvailability) or
                     ($this->legacyEnvironment->inCommunityRoom() and '3' == $templateAvailability) or
-                    ('1' == $templateAvailability and $this->templateMayEnter($item, $currentUser)) or
-                    ('2' == $templateAvailability and $this->templateMayEnter($item, $currentUser) and $item->isModeratorByUserID($currentUser->getUserID(),
+                    ('1' == $templateAvailability and $this->legacyBridge->userCanEnter($item, $currentUser)) or
+                    ('2' == $templateAvailability and $this->legacyBridge->userCanEnter($item, $currentUser) and $item->isModeratorByUserID($currentUser->getUserID(),
                         $currentUser->getAuthSource()))
                 ) {
                     if ($item->getItemID() != $defaultId or '0' != $item->getTemplateAvailability()) {
@@ -1142,24 +1133,6 @@ class GroupController extends BaseController
         }
 
         return $templates;
-    }
-
-    /**
-     * Doctrine-side ENTER probe for {@see getAvailableTemplates()};
-     * mirrors legacy `cs_context_item::mayEnter($userItem)` 1:1.
-     */
-    private function templateMayEnter(\cs_context_item $template, \cs_user_item $userItem): bool
-    {
-        $roomEntity = $this->roomRepository->find($template->getItemID());
-        if ($roomEntity === null) {
-            return false;
-        }
-        $authSource = $userItem->getAuthSource();
-        return $this->roomAccessChecker->canEnterByLegacyIdentity(
-            (string) $userItem->getUserID(),
-            $authSource !== null ? (int) $authSource : null,
-            $roomEntity,
-        );
     }
 
     private function createFilterForm(

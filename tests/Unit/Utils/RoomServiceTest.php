@@ -13,9 +13,8 @@
 
 namespace Tests\Unit\Utils;
 
-use App\Repository\RoomRepository;
 use App\Room\Copy\LegacyCopy;
-use App\Room\RoomAccessChecker;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
@@ -37,14 +36,12 @@ class RoomServiceTest extends TestCase
             ]),
         ]);
         $legacyCopy = $this->createStub(LegacyCopy::class);
-        $roomAccessChecker = $this->createStub(RoomAccessChecker::class);
-        $roomRepository = $this->createStub(RoomRepository::class);
+        $legacyBridge = $this->createStub(LegacyPermissionBridge::class);
 
         $roomService = new RoomService(
             $legacyEnvironment,
             $legacyCopy,
-            $roomAccessChecker,
-            $roomRepository,
+            $legacyBridge,
         );
         $rubrics = $roomService->getRubricInformation(1, false);
 

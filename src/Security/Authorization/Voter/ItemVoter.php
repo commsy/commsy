@@ -19,9 +19,8 @@ use App\Entity\Portal;
 use App\Lock\FileLockManager;
 use App\Proxy\PortalProxy;
 use App\Repository\FilesRepository;
-use App\Repository\RoomRepository;
-use App\Room\RoomAccessChecker;
 use App\Security\Permission\Checker\ItemEditChecker;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Security\Permission\Resolver\PermissionResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
@@ -66,8 +65,7 @@ class ItemVoter extends Voter
         private readonly DiscoveryService $discoveryService,
         private readonly ItemEditChecker $itemEditChecker,
         private readonly PermissionResolver $permissionResolver,
-        private readonly RoomAccessChecker $roomAccessChecker,
-        private readonly RoomRepository $roomRepository,
+        private readonly LegacyPermissionBridge $legacyBridge,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -210,7 +208,7 @@ class ItemVoter extends Voter
             return false;
         }
 
-        return $this->permissionResolver->canSee($item, $currentUser, $this->currentRoomEntity());
+        return $this->permissionResolver->canSee($item, $currentUser, $this->legacyBridge->currentRoom());
     }
 
     private function canEdit(cs_item $item, cs_user_item $currentUser): bool
@@ -256,7 +254,7 @@ class ItemVoter extends Voter
             }
         }
 
-        return $this->permissionResolver->canEdit($item, $currentUser, $this->currentRoomEntity());
+        return $this->permissionResolver->canEdit($item, $currentUser, $this->legacyBridge->currentRoom());
     }
 
     private function canAnnotate(cs_item $item, cs_user_item $currentUser)
@@ -324,26 +322,23 @@ class ItemVoter extends Voter
             return $user instanceof UserInterface;
         }
 
-        // Doctrine-side path: load the Room entity, check it's not
-        // soft-deleted, then ask RoomAccessChecker. The legacy code used
-        // cs_room_item::mayEnter($currentUser) which extracts user_id +
-        // auth_source from the (often portal-level) currentUserItem and
-        // looks up the membership in the target room via
-        // cs_user_manager::isUserInContext — the identity-triple path.
-        // We mirror that 1:1 via canEnterByLegacyIdentity, which avoids
-        // assuming the token user is a Doctrine Account (hash-token
-        // flows expose a non-Account UserInterface).
-        $room = $this->roomRepository->find($item->getItemID());
+        // At this point the ENTER workaround above guarantees a
+        // cs_room_item; narrow for static analysis and the bridge's
+        // type contract.
+        if (!$item instanceof cs_room_item) {
+            return false;
+        }
+
+        // Voter-specific guard: a soft-deleted Room is never enterable,
+        // even via the identity-triple path. The bridge doesn't fold
+        // this in because none of the non-Voter callers need it (their
+        // input is already filtered upstream).
+        $room = $this->legacyBridge->roomFromLegacy($item);
         if ($room === null || $room->getDeletionDate() !== null) {
             return false;
         }
 
-        $authSource = $currentUser->getAuthSource();
-        return $this->roomAccessChecker->canEnterByLegacyIdentity(
-            (string) $currentUser->getUserID(),
-            $authSource !== null ? (int) $authSource : null,
-            $room,
-        );
+        return $this->legacyBridge->userCanEnter($item, $currentUser);
     }
 
     private function canDelete(cs_item|PortalProxy $item, $currentUser)
@@ -382,22 +377,6 @@ class ItemVoter extends Voter
         }
 
         return $this->itemEditChecker->canEditLock($item->getItemID());
-    }
-
-    /**
-     * Resolves the legacy `currentContextItem` to a Doctrine Room
-     * when it is a room context (the new view/edit checkers accept
-     * `null` for portal-level / non-room browsing). Voter-internal
-     * helper; mirrors the conversion seam in the cs_room_item /
-     * cs_user_item wrappers.
-     */
-    private function currentRoomEntity(): ?\App\Entity\Room
-    {
-        $current = $this->legacyEnvironment->getCurrentContextItem();
-        if (!$current instanceof cs_room_item) {
-            return null;
-        }
-        return $this->roomRepository->find($current->getItemID());
     }
 
     private function canFileLock(cs_item $item): bool

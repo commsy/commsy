@@ -34,12 +34,11 @@ use App\Entity\Todos;
 use App\Entity\User;
 use App\Files\FilePermissionChecker;
 use App\Repository\FilesRepository;
-use App\Repository\RoomRepository;
-use App\Repository\UserRepository;
 use App\Room\RoomEditChecker;
 use App\Room\RoomViewChecker;
 use App\Security\Permission\Checker\ItemViewChecker;
 use App\Security\Permission\Dispatcher\ItemEditDispatcher;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Security\Permission\Subject\ItemViewSubjectFactory;
 use App\User\UserEditChecker;
 use App\User\UserViewChecker;
@@ -68,9 +67,8 @@ use Doctrine\ORM\EntityManagerInterface;
 final readonly class PermissionResolver
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private LegacyPermissionBridge $legacyBridge,
         private EntityManagerInterface $entityManager,
-        private RoomRepository $roomRepository,
         private FilesRepository $filesRepository,
         private ItemViewSubjectFactory $subjectFactory,
         private ItemViewChecker $itemViewChecker,
@@ -127,18 +125,18 @@ final readonly class PermissionResolver
      */
     public function canSee(cs_item $item, cs_user_item $actorLegacy, ?Room $currentRoom = null): bool
     {
-        $actor = $this->convertActor($actorLegacy);
+        $actor = $this->legacyBridge->userFromLegacy($actorLegacy);
         if ($actor === null) {
             return false;
         }
 
         if ($item instanceof cs_user_item) {
-            $target = $this->convertActor($item);
+            $target = $this->legacyBridge->userFromLegacy($item);
             return $target !== null && $this->userViewChecker->canSee($actor, $target, $currentRoom);
         }
 
         if ($item instanceof cs_room_item) {
-            $room = $this->loadRoom($item->getItemID());
+            $room = $this->legacyBridge->roomFromLegacy($item);
             return $room !== null && $this->roomViewChecker->canSee($actor, $room, $currentRoom);
         }
 
@@ -157,18 +155,18 @@ final readonly class PermissionResolver
      */
     public function canEdit(cs_item $item, cs_user_item $actorLegacy, ?Room $currentRoom = null): bool
     {
-        $actor = $this->convertActor($actorLegacy);
+        $actor = $this->legacyBridge->userFromLegacy($actorLegacy);
         if ($actor === null) {
             return false;
         }
 
         if ($item instanceof cs_user_item) {
-            $target = $this->convertActor($item);
+            $target = $this->legacyBridge->userFromLegacy($item);
             return $target !== null && $this->userEditChecker->canEdit($actor, $target);
         }
 
         if ($item instanceof cs_room_item) {
-            $room = $this->loadRoom($item->getItemID());
+            $room = $this->legacyBridge->roomFromLegacy($item);
             return $room !== null && $this->roomEditChecker->canEdit($actor, $room, $currentRoom);
         }
 
@@ -193,25 +191,6 @@ final readonly class PermissionResolver
             return null;
         }
         return $this->entityManager->find($fqcn, $item->getItemID());
-    }
-
-    /**
-     * Converts a `cs_user_item` to its Doctrine `User` twin via the
-     * (userId, contextId, authSource) identity triple. Mirrors the
-     * legacy wrappers' conversion seam.
-     */
-    private function convertActor(cs_user_item $userItem): ?User
-    {
-        return $this->userRepository->findOneByLegacyIdentity(
-            $userItem->getUserID(),
-            (int) $userItem->getContextID(),
-            $userItem->getAuthSource() !== null ? (int) $userItem->getAuthSource() : null,
-        );
-    }
-
-    private function loadRoom(int $itemId): ?Room
-    {
-        return $this->roomRepository->find($itemId);
     }
 
     private function loadFile(int $filesId): ?Files

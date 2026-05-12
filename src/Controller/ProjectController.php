@@ -18,11 +18,10 @@ use App\Event\UserJoinedRoomEvent;
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ProjectType;
 use App\Form\Type\Room\DeleteType;
-use App\Repository\RoomRepository;
 use App\Room\Copy\LegacyCopy;
 use App\Room\ProjectRoomDeleter;
-use App\Room\RoomAccessChecker;
 use App\Room\RoomDeletionOptions;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -50,31 +49,8 @@ class ProjectController extends AbstractController
 {
     public function __construct(
         private readonly ReaderService $readerService,
-        private readonly RoomAccessChecker $roomAccessChecker,
-        private readonly RoomRepository $roomRepository,
+        private readonly LegacyPermissionBridge $legacyBridge,
     ) {
-    }
-
-    /**
-     * Doctrine-side ENTER check used by the in-controller helpers
-     * {@see memberStatus()} and {@see getAvailableTemplates()}. Mirrors
-     * legacy `cs_context_item::mayEnter($userItem)` 1:1 via the
-     * identity-triple path. Returns false when the room has no
-     * Doctrine `Room` row (portals/server contexts can't be entered
-     * through this path anyway).
-     */
-    private function userMayEnter(object $room, \cs_user_item $userItem): bool
-    {
-        $roomEntity = $this->roomRepository->find($room->getItemID());
-        if ($roomEntity === null) {
-            return false;
-        }
-        $authSource = $userItem->getAuthSource();
-        return $this->roomAccessChecker->canEnterByLegacyIdentity(
-            (string) $userItem->getUserID(),
-            $authSource !== null ? (int) $authSource : null,
-            $roomEntity,
-        );
     }
 
     #[Route(path: '/room/{roomId}/project/feed/{start}/{sort}')]
@@ -492,12 +468,12 @@ class ProjectController extends AbstractController
                 }
 
                 // only for members
-                if (!$add && '1' == $availability && $this->userMayEnter($template, $currentUserItem)) {
+                if (!$add && '1' == $availability && $this->legacyBridge->userCanEnter($template, $currentUserItem)) {
                     $add = true;
                 }
 
                 // only mods
-                if (!$add && '2' == $availability && $this->userMayEnter($template, $currentUserItem)) {
+                if (!$add && '2' == $availability && $this->legacyBridge->userCanEnter($template, $currentUserItem)) {
                     if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
                         $add = true;
                     }
@@ -539,11 +515,11 @@ class ProjectController extends AbstractController
         if ($currentUser->isRoot()) {
             $mayEnter = true;
         } elseif (!empty($roomUser)) {
-            $mayEnter = $this->userMayEnter($item, $roomUser);
+            $mayEnter = $this->legacyBridge->userCanEnter($item, $roomUser);
         } else {
             // in case of the guest user, $roomUser is null
             if ($currentUser->isReallyGuest()) {
-                $mayEnter = $this->userMayEnter($item, $currentUser);
+                $mayEnter = $this->legacyBridge->userCanEnter($item, $currentUser);
             }
         }
 
