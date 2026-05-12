@@ -116,8 +116,12 @@ class UserProvider implements UserProviderInterface
         return Account::class === $class;
     }
 
-    private function loadUser(string $username, Portal $portal, int $authSourceId): ?Account
+    private function loadUser(string $username, ?Portal $portal, ?int $authSourceId): ?Account
     {
+        if (null === $portal || null === $authSourceId) {
+            return null;
+        }
+
         try {
             $authSource = $this->entityManager->getRepository(AuthSource::class)->find($authSourceId);
 
