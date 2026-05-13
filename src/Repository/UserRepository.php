@@ -167,6 +167,45 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Finds non-soft-deleted user rows matching a given (username, auth_source)
+     * tuple within a single portal — regardless of whether their `account_id`
+     * FK is set, NULL, or pointing to a different account.
+     *
+     * This is the building block for the Phase 1 orphan sweep in
+     * {@see \App\Account\AccountDeleter::delete} and the fail-loud sanity check
+     * in {@see \App\Facade\AccountCreatorFacade::persistNewAccount}.
+     *
+     * `IDENTITY(u.portal) = :portalId` is the portal scope: `user.portal_id`
+     * is reliably populated since migration `Version20251128124048` (backfilled
+     * from `context_id`/`auth_source`), so this single predicate covers
+     * portal users AND room users in every room belonging to the portal.
+     *
+     * Callers must NOT use this for "active user in context" lookups — that's
+     * `findPortalUser()` / `findAllByRoomStatus()`. This method intentionally
+     * crosses account boundaries to catch rows that no specific account
+     * "owns" any more.
+     *
+     * @return User[]
+     */
+    public function findActiveProfilesByUsernameInPortal(
+        string $username,
+        int $authSourceId,
+        int $portalId
+    ): array {
+        return $this->createQueryBuilder('u')
+            ->where('u.userId = :username')
+            ->andWhere('u.authSource = :authSourceId')
+            ->andWhere('IDENTITY(u.portal) = :portalId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleter IS NULL')
+            ->setParameter('username', $username)
+            ->setParameter('authSourceId', $authSourceId)
+            ->setParameter('portalId', $portalId)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findAllByRoomStatus(
         Account $account,
         string $filterArchived = 'all',

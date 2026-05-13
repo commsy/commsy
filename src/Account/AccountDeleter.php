@@ -3,6 +3,7 @@
 namespace App\Account;
 
 use App\Entity\Account;
+use App\Entity\User;
 use App\Message\DeleteAccountMessage;
 use App\Repository\UserRepository;
 use App\Room\PrivateRoomDeleter;
@@ -13,6 +14,7 @@ use App\User\UserListBuilder;
 use App\User\UserMembershipDeleter;
 use App\Utils\UserService;
 use cs_environment;
+use cs_list;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
@@ -80,6 +82,18 @@ class AccountDeleter
             }
         }
 
+        // Phase 1: orphan sweep. The legacy UserListBuilder above derives its
+        // context set from the official portal-user membership graph and only
+        // returns rows reachable from there. Any user row in this portal that
+        // matches (username, auth_source) but lives outside that graph — typical
+        // for historical inconsistencies with account_id IS NULL or pointing to
+        // a different account — would otherwise survive the delete and later
+        // get adopted by a new same-username signup.
+        //
+        // We sweep them here BEFORE the main loop so eraseUserFootprint runs
+        // on every matching row, regardless of how it ended up in the table.
+        $sweepUsers = $this->collectOrphansForAccount($account, $userList);
+
         // Erase footprint per context, then soft-delete the membership row.
         foreach ($userList as $user) {
             /** @var cs_user_item $user */
@@ -90,6 +104,28 @@ class AccountDeleter
             );
             $this->membershipDeleter->softDeleteMembership(
                 (int) $user->getItemID(),
+                $deleterId
+            );
+        }
+
+        // Same treatment for sweep-only orphans. context_id is reconstructed
+        // from the entity: getRoom() covers every room user (project, community,
+        // group, userroom, privateroom) — Room.item_id IS user.context_id by
+        // mapping. getRoom() is NULL only for portal users (no Room entity
+        // exists with item_id == portal_id), where context_id == portal_id by
+        // construction (see AccountCreatorFacade::persistNewAccount), so the
+        // portal fallback returns the correct value.
+        foreach ($sweepUsers as $orphan) {
+            $contextId = $orphan->getRoom()?->getItemId()
+                ?? $orphan->getPortal()?->getId()
+                ?? 0;
+            $this->userContentDeleter->eraseUserFootprint(
+                $orphan->getItemId(),
+                $contextId,
+                $account,
+            );
+            $this->membershipDeleter->softDeleteMembership(
+                $orphan->getItemId(),
                 $deleterId
             );
         }
@@ -109,6 +145,34 @@ class AccountDeleter
             );
         }
 
+        // Safety net: re-run the sweep right before tearing down the account.
+        // If anything is found here, it means a row crept in between the first
+        // sweep and now (race condition, downstream side-effect we missed, …).
+        // We soft-delete it and log loudly — drift = 0 is the invariant we
+        // want monitored in Phase 4.
+        $stragglers = $this->userRepository->findActiveProfilesByUsernameInPortal(
+            $account->getUsername(),
+            $account->getAuthSource()->getId(),
+            $account->getPortal()->getId(),
+        );
+        if ($stragglers !== []) {
+            $this->logger->error(
+                'AccountDeleter safety net caught stragglers — investigate concurrent writes or missing soft-delete path.',
+                [
+                    'account_id' => $account->getId(),
+                    'username' => $account->getUsername(),
+                    'portal_id' => $account->getPortal()->getId(),
+                    'straggler_item_ids' => array_map(static fn (User $u) => $u->getItemId(), $stragglers),
+                ]
+            );
+            foreach ($stragglers as $straggler) {
+                $this->membershipDeleter->softDeleteMembership(
+                    $straggler->getItemId(),
+                    $deleterId
+                );
+            }
+        }
+
         // NULL account_id on remaining soft-deleted user references
         $usersWithAccountRef = $this->userRepository->findBy(['account' => $account]);
         foreach ($usersWithAccountRef as $userWithAccountRef) {
@@ -118,6 +182,50 @@ class AccountDeleter
         $this->entityManager->remove($account);
         $this->entityManager->flush();
 
-        $this->logger->info('Account {id} deleted successfully', ['id' => $account->getId()]);
+        $this->logger->info(
+            'Account {id} deleted successfully',
+            [
+                'id' => $account->getId(),
+                'users_from_builder' => $userList->getCount(),
+                'users_from_sweep' => count($sweepUsers),
+                'stragglers' => count($stragglers),
+            ]
+        );
+    }
+
+    /**
+     * Returns user-table rows in the portal that match the account's
+     * (username, auth_source) and were NOT already collected via the legacy
+     * UserListBuilder — i.e. the orphan delta the sweep is meant to catch.
+     *
+     * @return User[]
+     */
+    private function collectOrphansForAccount(Account $account, cs_list $legacyList): array
+    {
+        $portal = $account->getPortal();
+        $authSource = $account->getAuthSource();
+        if ($portal === null || $authSource === null) {
+            return [];
+        }
+
+        $sweep = $this->userRepository->findActiveProfilesByUsernameInPortal(
+            $account->getUsername(),
+            $authSource->getId(),
+            $portal->getId(),
+        );
+        if ($sweep === []) {
+            return [];
+        }
+
+        $knownItemIds = [];
+        foreach ($legacyList as $legacyUser) {
+            /** @var cs_user_item $legacyUser */
+            $knownItemIds[(int) $legacyUser->getItemID()] = true;
+        }
+
+        return array_values(array_filter(
+            $sweep,
+            static fn (User $u) => !isset($knownItemIds[$u->getItemId()])
+        ));
     }
 }

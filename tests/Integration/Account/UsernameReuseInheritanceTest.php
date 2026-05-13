@@ -67,8 +67,6 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
     #[WithStory(RoomWithMemberStory::class)]
     public function testAccountDeleteSweepsOrphanRow(): void
     {
-        self::markTestSkipped('Phase 0 reproduction — unskip in Phase 1 once AccountDeleter sweeps orphans.');
-
         self::bootKernel();
 
         /** @var Account $account */
