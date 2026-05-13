@@ -272,8 +272,7 @@ class UserService
     {
         $this->userManager->resetLimits();
         $this->userManager->setContextLimit($account->getPortal()->getId());
-        $this->userManager->setUserIDLimit($account->getUsername());
-        $this->userManager->setAuthSourceLimit($account->getAuthSource()->getId());
+        $this->userManager->setAccountIDLimit($account->getId());
         $this->userManager->select();
         $userList = $this->userManager->get();
 
@@ -360,8 +359,7 @@ class UserService
     {
         $this->userManager->resetLimits();
         $this->userManager->setContextLimit($contextId);
-        $this->userManager->setUserIDLimit($account->getUsername());
-        $this->userManager->setAuthSourceLimit($account->getAuthSource()->getId());
+        $this->userManager->setAccountIDLimit($account->getId());
         $this->userManager->select();
 
         $userList = $this->userManager->get();
@@ -755,13 +753,20 @@ class UserService
         } elseif ($room->isLocked()) {
             return 'locked';
         } else {
-            $userManager = $this->legacyEnvironment->getUserManager();
-            $userManager->setUserIDLimit($currentUser->getUserID());
-            $userManager->setAuthSourceLimit($currentUser->getAuthSource());
-            $userManager->setContextLimit($room->getItemID());
-            $userManager->select();
-            $roomUserList = $userManager->get();
-            $roomUser = $roomUserList->getFirst();
+            // Identity is keyed by account_id. Orphan rows (no account_id) are
+            // intentionally treated as non-members so the fall-through below
+            // returns 'join' — exactly the right answer for a row that does
+            // not belong to any account.
+            $accountId = $currentUser->getAccountID();
+            $roomUser = null;
+            if ($accountId !== null) {
+                $userManager = $this->legacyEnvironment->getUserManager();
+                $userManager->setAccountIDLimit($accountId);
+                $userManager->setContextLimit($room->getItemID());
+                $userManager->select();
+                $roomUserList = $userManager->get();
+                $roomUser = $roomUserList->getFirst();
+            }
 
             if ($roomUser) {
                 if ($this->legacyBridge->userCanEnter($room, $roomUser)) {

@@ -122,19 +122,17 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
      * the new account must not "inherit" room memberships that belonged to the
      * deleted predecessor.
      *
-     * Today this fails because `AccountManager::propagateAccountDataToProfiles`
-     * walks `cs_user_item::getRelatedUserList()`, which joins by
-     * `(user_id, auth_source)` and therefore happily rewrites the orphan row
-     * with the new account's name/email — effectively claiming the old
-     * membership for the new account.
-     *
-     * Will turn green once Phase 3 re-keys all related lookups to `account_id`.
+     * Defense-in-depth scenario: Phase 1's sweep would normally clean up the
+     * orphan when A1 is deleted, and the Phase 1 Facade guard would block A2
+     * being created on top of a remaining orphan. To isolate the Phase 3
+     * change — `propagateAccountDataToProfiles` and friends now key on
+     * account_id instead of (user_id, auth_source) — we re-inject the orphan
+     * AFTER A2 already exists, then verify that the legacy lookup path no
+     * longer rewrites it onto the new account.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testReRegisteredAccountDoesNotInheritOrphanRoomMembership(): void
     {
-        self::markTestSkipped('Phase 0 reproduction — unskip in Phase 3 once the identity key is account_id.');
-
         self::bootKernel();
 
         /** @var Account $a1 */
@@ -147,30 +145,12 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
         $username = $a1->getUsername();
         $portal = $a1->getPortal();
         $authSource = $a1->getAuthSource();
+        $roomUserItemId = $a1RoomUser->getItemId();
 
-        // Simulate the orphan condition as in Assertion 1.
-        $connection = $this->getConnection();
-        $connection->executeStatement(
-            'UPDATE user SET account_id = NULL WHERE item_id = :id',
-            ['id' => $a1RoomUser->getItemId()]
-        );
-
-        // Delete the old account. The orphan survives the delete on today's
-        // baseline. Once Phase 1 lands, the orphan would be soft-deleted here
-        // and this test would no longer reproduce the bug — at that point we
-        // would patch it differently. Phase 3 is about the lookup path even
-        // when an orphan does exist (defense in depth).
+        // Delete the old account. Phase 1's sweep soft-deletes every related
+        // user row including the project-room one we care about, so A2 can be
+        // registered cleanly afterwards without tripping the Facade guard.
         $this->getAccountDeleter()->delete($a1);
-
-        // Re-create the orphan so the test scenario stays valid even with
-        // Phase 1's sweep in place: we want to verify that Phase 3 makes the
-        // legacy lookup path impervious to orphans.
-        $connection->executeStatement(
-            'UPDATE user
-                SET deletion_date = NULL, deleter_id = NULL, account_id = NULL
-              WHERE item_id = :id',
-            ['id' => $a1RoomUser->getItemId()]
-        );
 
         // Register a new account with the very same username + auth_source.
         $a2 = AccountFactory::createOne([
@@ -180,18 +160,29 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
             'firstname' => 'NewFirst',
             'lastname' => 'NewLast',
             'email' => 'new@example.test',
-        ])->_real();
+        ]);
 
-        // Simulate the post-login profile propagation.
+        // Now inject the historical orphan shape onto the previous project-room
+        // row: revive it as a non-soft-deleted row with account_id = NULL.
+        // Phase 3 must make the lookup ignore this row regardless of whether
+        // its (user_id, auth_source) matches the new account.
+        $connection = $this->getConnection();
+        $connection->executeStatement(
+            'UPDATE user
+                SET deletion_date = NULL, deleter_id = NULL, account_id = NULL
+              WHERE item_id = :id',
+            ['id' => $roomUserItemId]
+        );
+
+        // Simulate the post-login profile propagation for A2.
         $this->getAccountManager()->propagateAccountDataToProfiles($a2);
 
-        // The orphan row in $room must still belong to "nobody" — not to the
-        // new account. We assert two things:
+        // Two assertions on the orphan row in $room:
         //
-        // (a) The orphan still has account_id = NULL (Phase 3 must not silently
-        //     re-attach orphans to the new account either).
-        // (b) The orphan's name/email must NOT have been overwritten with the
-        //     new account's data (that overwrite is the bug's smoking gun).
+        // (a) account_id stays NULL — Phase 3 must not silently re-attach the
+        //     orphan to the new account.
+        // (b) firstname / email are not overwritten with the new account's
+        //     data — that overwrite is the bug we are guarding against.
         $row = $connection->fetchAssociative(
             'SELECT account_id, firstname, lastname, email
                FROM user

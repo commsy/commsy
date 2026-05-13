@@ -1239,8 +1239,18 @@ class cs_user_item extends cs_item
      */
     public function getRelatedUserList(bool $includeUserroomUsers = false, bool $includeGrouproomUsers = false): cs_list
     {
-        $roomIds = [];
         $emptyList = new cs_list();
+
+        // Identity is keyed by account_id: a row without one is by definition
+        // an orphan and must not match any account-bound lookup, otherwise it
+        // would be silently adopted by the first signup with the same
+        // (username, auth_source) — the very bug this refactor closes.
+        $accountId = $this->getAccountID();
+        if ($accountId === null) {
+            return $emptyList;
+        }
+
+        $roomIds = [];
         $currentContextId = $this->getContextID();
         $currentPortalId = $this->_environment->getCurrentPortalID();
 
@@ -1288,8 +1298,7 @@ class cs_user_item extends cs_item
         $userManager = $this->_environment->getUserManager();
         $userManager->resetLimits();
         $userManager->setContextArrayLimit($roomIds);
-        $userManager->setUserIDLimit($this->getUserID());
-        $userManager->setAuthSourceLimit($this->getAuthSource());
+        $userManager->setAccountIDLimit($accountId);
         $userManager->select();
         /** @var cs_list $relatedUsers */
         $relatedUsers = $userManager->get();
@@ -1299,11 +1308,15 @@ class cs_user_item extends cs_item
 
     public function getRelatedUserItemInContext($contextId): ?cs_user_item
     {
+        $accountId = $this->getAccountID();
+        if ($accountId === null) {
+            return null;
+        }
+
         $userManager = $this->_environment->getUserManager();
         $userManager->resetLimits();
         $userManager->setContextLimit($contextId);
-        $userManager->setUserIDLimit($this->getUserID());
-        $userManager->setAuthSourceLimit($this->getAuthSource());
+        $userManager->setAccountIDLimit($accountId);
         $userManager->select();
         $userList = $userManager->get();
         if (isset($userList) && 1 == $userList->getCount()) {
@@ -1319,6 +1332,11 @@ class cs_user_item extends cs_item
      */
     public function getRelatedPrivateRoomUserItem(): ?cs_user_item
     {
+        $accountId = $this->getAccountID();
+        if ($accountId === null) {
+            return null;
+        }
+
         $private_room_manager = $this->_environment->getPrivateRoomManager();
         $own_room = $private_room_manager->getRelatedOwnRoomForUser($this, $this->_environment->getCurrentPortalID());
         if (isset($own_room)) {
@@ -1326,8 +1344,7 @@ class cs_user_item extends cs_item
             $user_manager = $this->_environment->getUserManager();
             $user_manager->resetLimits();
             $user_manager->setContextLimit($own_cid);
-            $user_manager->setUserIDLimit($this->getUserID());
-            $user_manager->setAuthSourceLimit($this->getAuthSource());
+            $user_manager->setAccountIDLimit($accountId);
             $user_manager->select();
             $user_list = $user_manager->get();
             if (1 == $user_list->getCount()) {
@@ -1341,11 +1358,15 @@ class cs_user_item extends cs_item
 
     public function getRelatedPortalUserItem(): ?cs_user_item
     {
+        $accountId = $this->getAccountID();
+        if ($accountId === null) {
+            return null;
+        }
+
         $user_manager = $this->_environment->getUserManager();
         $user_manager->resetLimits();
         $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
-        $user_manager->setUserIDLimit($this->getUserID());
-        $user_manager->setAuthSourceLimit($this->getAuthSource());
+        $user_manager->setAccountIDLimit($accountId);
         $user_manager->select();
         $user_list = $user_manager->get();
         if (1 == $user_list->getCount()) {

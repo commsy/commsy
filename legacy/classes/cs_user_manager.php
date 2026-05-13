@@ -106,6 +106,15 @@ class cs_user_manager extends cs_manager
 
     public $_auth_source_limit = null;
 
+    /**
+     * When set, limits selects to `user.account_id = <value>`. Preferred over
+     * `setUserIDLimit` + `setAuthSourceLimit` for identity-bound lookups:
+     * account_id is the actual primary join key since
+     * `Version20250514125210`, and using it sidesteps the username-reuse
+     * inheritance bug entirely.
+     */
+    public ?int $_account_id_limit = null;
+
     public $_cache_sql = [];
 
     private ?array $_group_array_limit = null;
@@ -153,6 +162,7 @@ class cs_user_manager extends cs_manager
         $this->_context_array_limit = null;
         $this->_contact_moderator_limit = null;
         $this->_auth_source_limit = null;
+        $this->_account_id_limit = null;
         $this->_limit_email = null;
     }
 
@@ -164,6 +174,18 @@ class cs_user_manager extends cs_manager
     public function setAuthSourceLimit($value)
     {
         $this->_auth_source_limit = (int)$value;
+    }
+
+    /**
+     * Limits selects to a single account id. Use this for identity-bound
+     * lookups instead of combining `setUserIDLimit` with `setAuthSourceLimit`:
+     * the account_id FK is the actual identity key, while (user_id,
+     * auth_source) can collide across deprovisioned and freshly-registered
+     * accounts that share a username.
+     */
+    public function setAccountIDLimit(int $value): void
+    {
+        $this->_account_id_limit = $value;
     }
 
     /** set age limit
@@ -420,6 +442,10 @@ class cs_user_manager extends cs_manager
         // fifth, insert limits into the select statement
         if (isset($this->_user_limit)) {
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.user_id = "' . encode(AS_DB, $this->_user_limit) . '"';
+        }
+
+        if (isset($this->_account_id_limit)) {
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.account_id = "' . encode(AS_DB, $this->_account_id_limit) . '"';
         }
 
         if (empty($this->_id_array_limit)) {
