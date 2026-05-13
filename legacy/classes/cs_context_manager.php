@@ -210,30 +210,34 @@ class cs_context_manager extends cs_manager
    }
 
     /**
-     * @param $user_id
-     * @param $auth_source
-     * @param $context_id
-     * @param bool $grouproom
-     * @param bool $only_user
-     * @param bool $withExtras
+     * Returns the list of rooms (of the configured `_room_type`) that the
+     * given account is a member of, scoped to the given context (portal /
+     * parent room).
+     *
+     * `$accountId === null` is the guest path — only community rooms open
+     * for guests are returned.
+     *
      * @return cs_list
      */
     public function getRelatedContextListForUserInt(
-        $user_id,
-        $auth_source,
-        $context_id,
+        ?int $accountId,
+        int $context_id,
         bool $grouproom = false,
         bool $only_user = false,
         bool $withExtras = true
     ): cs_list {
         $list = new cs_list();
 
-        if ('guest' === $user_id && CS_COMMUNITY_TYPE !== $this->_room_type) {
+        $isGuest = $accountId === null;
+
+        if ($isGuest && CS_COMMUNITY_TYPE !== $this->_room_type) {
             // only community rooms may be open for guests
             return $list;
         }
 
-        if (!isset($this->listCache[$user_id.'_'.$auth_source.'_'.$context_id.'_'.$withExtras])) {
+        $cacheKey = ($accountId ?? 'guest').'_'.$context_id.'_'.($withExtras ? '1' : '0');
+
+        if (!isset($this->listCache[$cacheKey])) {
             $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
             $queryBuilder
@@ -243,7 +247,7 @@ class cs_context_manager extends cs_manager
                     'c.lastlogin')
                 ->from($this->addDatabasePrefix($this->_db_table), 'c');
 
-            if ('guest' !== $user_id) {
+            if (!$isGuest) {
                 $queryBuilder
                     ->innerJoin('c', $this->addDatabasePrefix('user'), 'u', 'u.context_id = c.item_id');
             }
@@ -252,15 +256,13 @@ class cs_context_manager extends cs_manager
                 ->andWhere('c.deleter_id IS NULL')
                 ->andWhere('c.deletion_date IS NULL');
 
-            if ('guest' !== $user_id) {
+            if (!$isGuest) {
                 $queryBuilder
-                    ->andWhere('u.auth_source = :authSource')
+                    ->andWhere('u.account_id = :accountId')
                     ->andWhere('u.deleter_id IS NULL')
                     ->andWhere('u.deletion_date IS NULL')
-                    ->andWhere('u.user_id = :userId')
                     ->andWhere('u.status >= :status')
-                    ->setParameter('authSource', $auth_source)
-                    ->setParameter('userId', $user_id);
+                    ->setParameter('accountId', $accountId);
             }
 
             if ($withExtras) {
@@ -271,7 +273,7 @@ class cs_context_manager extends cs_manager
                 $queryBuilder->addSelect('c.archived');
             }
 
-            if ('guest' !== $user_id) {
+            if (!$isGuest) {
                 if (!$this->_all_status_limit) {
                     if (!$only_user) {
                         $queryBuilder->setParameter('status', 1);
@@ -285,7 +287,7 @@ class cs_context_manager extends cs_manager
 
             if (isset($this->_room_type) && !empty($this->_room_type)) {
                 $current_portal = $this->_environment->getCurrentPortalItem();
-                if ('guest' === $user_id && CS_COMMUNITY_TYPE === $this->_room_type) {
+                if ($isGuest && CS_COMMUNITY_TYPE === $this->_room_type) {
                     $queryBuilder->andWhere('c.is_open_for_guests = "1"');
                     $queryBuilder->andWhere('c.type = :roomType');
                     $queryBuilder->setParameter('roomType', $this->_room_type);
@@ -330,19 +332,19 @@ class cs_context_manager extends cs_manager
                     $list->add($this->_buildItem($query_result));
                 }
                 if ($this->_cache_on) {
-                    $this->listCache[$user_id.'_'.$auth_source.'_'.$context_id] = $list;
+                    $this->listCache[$cacheKey] = $list;
                 }
             } catch (\Doctrine\DBAL\Exception) {
                 trigger_error('Problems selecting '.$this->_db_table.' items.', E_USER_WARNING);
             }
         } else {
-            $list = $this->listCache[$user_id.'_'.$auth_source.'_'.$context_id.'_'.$withExtras];
+            $list = $this->listCache[$cacheKey];
         }
 
         return $list;
     }
 
-   public function _getRelatedContextListForUserSortByTime($user_id, $auth_source, $context_id, $grouproom = false)
+   public function _getRelatedContextListForUserSortByTime(int $accountId, $context_id, $grouproom = false)
    {
        $list = new cs_list();
 
@@ -350,9 +352,8 @@ class cs_context_manager extends cs_manager
        $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
        $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id
-                  AND '.$this->addDatabasePrefix('user').'.auth_source="'.$auth_source.'"
                   AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL
-                  AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB, $user_id).'"';
+                  AND '.$this->addDatabasePrefix('user').'.account_id="'.encode(AS_DB, $accountId).'"';
        if (!$this->_all_room_limit) {
            $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
        } else {

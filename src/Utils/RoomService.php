@@ -454,7 +454,8 @@ class RoomService
 
             // only mods
             if (!$add && '2' == $availability && $this->legacyBridge->userCanEnter($template, $currentUserItem)) {
-                if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
+                $accountId = $currentUserItem->getAccountID();
+                if ($accountId !== null && $template->isModeratorByAccountID($accountId)) {
                     $add = true;
                 }
             }

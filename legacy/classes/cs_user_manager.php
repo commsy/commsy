@@ -356,45 +356,38 @@ class cs_user_manager extends cs_manager
         return $this->getIDArray();
     }
 
-    public function isUserInContext($user_id, $context_id, $auth_source): bool
+    public function isUserInContext(int $accountId, int $contextId): bool
     {
-        if (isset($this->_is_user_in_context_cache[$user_id . $auth_source])) {
-            if (isset($this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) and 'is_user' == $this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            $qb = $this->_db_connector->getConnection()->createQueryBuilder();
+        if (isset($this->_is_user_in_context_cache[$accountId])) {
+            return isset($this->_is_user_in_context_cache[$accountId][$contextId])
+                && 'is_user' === $this->_is_user_in_context_cache[$accountId][$contextId];
+        }
 
-            $qb
-                ->select('u.context_id')
-                ->distinct()
-                ->from($this->addDatabasePrefix('user'), 'u')
-                ->where('u.user_id = :userId')
-                ->andWhere('u.auth_source = :authSource')
-                ->andWhere('u.deleter_id IS NULL')
-                ->andWhere('u.deletion_date IS NULL')
-                ->andWhere('u.status >= :status')
-                ->setParameter('userId', $user_id)
-                ->setParameter('authSource', $auth_source)
-                ->setParameter('status', 2);
+        $qb = $this->_db_connector->getConnection()->createQueryBuilder();
+        $qb
+            ->select('u.context_id')
+            ->distinct()
+            ->from($this->addDatabasePrefix('user'), 'u')
+            ->where('u.account_id = :accountId')
+            ->andWhere('u.deleter_id IS NULL')
+            ->andWhere('u.deletion_date IS NULL')
+            ->andWhere('u.status >= :status')
+            ->setParameter('accountId', $accountId)
+            ->setParameter('status', 2);
 
-            try {
-                $result = $this->_db_connector->performQuery($qb->getSQL(), $qb->getParameters());
-            } catch (\Doctrine\DBAL\Exception) {
-                trigger_error('Problems selecting user.', E_USER_WARNING);
-            }
+        $result = null;
+        try {
+            $result = $this->_db_connector->performQuery($qb->getSQL(), $qb->getParameters());
+        } catch (\Doctrine\DBAL\Exception) {
+            trigger_error('Problems selecting user.', E_USER_WARNING);
+        }
 
-            if (isset($result)) {
-                foreach ($result as $r) {
-                    $this->_is_user_in_context_cache[$user_id . $auth_source][$r['context_id']] = 'is_user';
-                }
-                if (isset($this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) &&
-                    'is_user' == $this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) {
-                    return true;
-                }
+        if (isset($result)) {
+            foreach ($result as $r) {
+                $this->_is_user_in_context_cache[$accountId][$r['context_id']] = 'is_user';
             }
+            return isset($this->_is_user_in_context_cache[$accountId][$contextId])
+                && 'is_user' === $this->_is_user_in_context_cache[$accountId][$contextId];
         }
 
         return false;
@@ -1113,21 +1106,6 @@ class cs_user_manager extends cs_manager
         } catch (\Doctrine\DBAL\Exception $e) {
             trigger_error('Problems updating user_id: ' . $e->getMessage(), E_USER_WARNING);
         }
-    }
-
-    public function exists($user_id, $auth_source = ''): bool
-    {
-        $this->setUserIDLimit($user_id);
-        if (!empty($auth_source)) {
-            $this->setAuthSourceLimit($auth_source);
-        }
-        $this->select();
-        $count = $this->getCountAll();
-        if (!empty($count) and $count > 0) {
-            return true;
-        }
-
-        return false;
     }
 
     // #########################################################

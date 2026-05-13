@@ -84,15 +84,17 @@ class cs_environment
             if ($current_user->isRoot() or $this->inPortal()) {
                 $this->_portal_user = $current_user;
             } else {
-                $manager = $this->getUserManager();
-                $manager->resetLimits();
-                $manager->setContextLimit($this->getCurrentPortalID());
-                $manager->setUserIDLimit($current_user->getUserID());
-                $manager->setAuthSourceLimit($current_user->getAuthSource());
-                $manager->select();
-                $list = $manager->get();
-                if ($list->isNotEmpty() and 1 == $list->getCount()) {
-                    $this->_portal_user = $list->getFirst();
+                $accountId = $current_user->getAccountID();
+                if ($accountId !== null) {
+                    $manager = $this->getUserManager();
+                    $manager->resetLimits();
+                    $manager->setContextLimit($this->getCurrentPortalID());
+                    $manager->setAccountIDLimit($accountId);
+                    $manager->select();
+                    $list = $manager->get();
+                    if ($list->isNotEmpty() and 1 == $list->getCount()) {
+                        $this->_portal_user = $list->getFirst();
+                    }
                 }
             }
         }

@@ -377,10 +377,13 @@ class ProjectController extends AbstractController
         $user_manager = $legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($targetRoom->getCreatorID());
         if ($creator_item->getContextID() != $targetRoom->getItemID()) {
+            $accountId = $creator_item->getAccountID();
+            if ($accountId === null) {
+                throw new Exception('can not get creator of new room: source row has no account_id');
+            }
             $user_manager->resetLimits();
             $user_manager->setContextLimit($targetRoom->getItemID());
-            $user_manager->setUserIDLimit($creator_item->getUserID());
-            $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
+            $user_manager->setAccountIDLimit($accountId);
             $user_manager->setModeratorLimit();
             $user_manager->select();
             $user_list = $user_manager->get();
@@ -474,7 +477,8 @@ class ProjectController extends AbstractController
 
                 // only mods
                 if (!$add && '2' == $availability && $this->legacyBridge->userCanEnter($template, $currentUserItem)) {
-                    if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
+                    $accountId = $currentUserItem->getAccountID();
+                    if ($accountId !== null && $template->isModeratorByAccountID($accountId)) {
                         $add = true;
                     }
                 }

@@ -1117,11 +1117,13 @@ class GroupController extends BaseController
             while ($item) {
                 $templateAvailability = $item->getTemplateAvailability();
 
+                $currentAccountId = $currentUser->getAccountID();
                 if (('0' == $templateAvailability) or
                     ($this->legacyEnvironment->inCommunityRoom() and '3' == $templateAvailability) or
                     ('1' == $templateAvailability and $this->legacyBridge->userCanEnter($item, $currentUser)) or
-                    ('2' == $templateAvailability and $this->legacyBridge->userCanEnter($item, $currentUser) and $item->isModeratorByUserID($currentUser->getUserID(),
-                        $currentUser->getAuthSource()))
+                    ('2' == $templateAvailability and $this->legacyBridge->userCanEnter($item, $currentUser)
+                        and $currentAccountId !== null
+                        and $item->isModeratorByAccountID($currentAccountId))
                 ) {
                     if ($item->getItemID() != $defaultId or '0' != $item->getTemplateAvailability()) {
                         $templates[$item->getTitle()] = $item->getItemID();

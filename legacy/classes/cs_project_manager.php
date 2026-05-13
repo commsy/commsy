@@ -332,7 +332,7 @@ class cs_project_manager extends cs_room2_manager
 
     public function getRelatedProjectRooms($userItem, $contextId): cs_list
     {
-        return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
+        return $this->getRelatedContextListForUserInt($userItem->getAccountID(), $contextId);
     }
 
     public function getRelatedProjectListForUser(cs_user_item $user, $contextId = null, bool $withExtras = true): cs_list
@@ -341,27 +341,35 @@ class cs_project_manager extends cs_room2_manager
             $contextId = $this->_environment->getCurrentPortalID();
         }
 
-        return $this->getRelatedContextListForUserInt($user->getUserID(), $user->getAuthSource(), $contextId, false, false, $withExtras);
+        return $this->getRelatedContextListForUserInt($user->getAccountID(), $contextId, false, false, $withExtras);
     }
 
    public function getUserRelatedProjectListForUser($user_item, bool $withExtras = true): cs_list
    {
-       return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID(), false, true, $withExtras);
+       return $this->getRelatedContextListForUserInt($user_item->getAccountID(), $this->_environment->getCurrentPortalID(), false, true, $withExtras);
    }
 
    public function getRelatedProjectListForUserSortByTime($user_item)
    {
-       return $this->_getRelatedContextListForUserSortByTime($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID());
+       $accountId = $user_item->getAccountID();
+       if ($accountId === null) {
+           return new cs_list();
+       }
+       return $this->_getRelatedContextListForUserSortByTime($accountId, $this->_environment->getCurrentPortalID());
    }
 
    public function getRelatedProjectListForUserForMyArea($user_item): cs_list
    {
-       return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID(), true);
+       return $this->getRelatedContextListForUserInt($user_item->getAccountID(), $this->_environment->getCurrentPortalID(), true);
    }
 
    public function getRelatedProjectListForUserSortByTimeForMyArea($user_item)
    {
-       return $this->_getRelatedContextListForUserSortByTime($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID(), true);
+       $accountId = $user_item->getAccountID();
+       if ($accountId === null) {
+           return new cs_list();
+       }
+       return $this->_getRelatedContextListForUserSortByTime($accountId, $this->_environment->getCurrentPortalID(), true);
    }
 
    public function getRelatedProjectListForUserAllUserStatus($user_item, $context_id)

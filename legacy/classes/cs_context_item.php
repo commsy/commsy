@@ -2197,29 +2197,16 @@ class cs_context_item extends cs_item
         $this->_save($manager);
     }
 
-    public function isModeratorByUserID($user_id, $auth_source): bool
+    public function isModeratorByAccountID(int $accountId): bool
     {
         $mod_list = $this->getModeratorList();
         if ($mod_list->isNotEmpty()) {
             $mod = $mod_list->getFirst();
             while ($mod) {
-                if ($mod->getUserID() == $user_id and $mod->getAuthSource() == $auth_source) {
+                if ($mod->getAccountID() === $accountId) {
                     return true;
                 }
                 $mod = $mod_list->getNext();
-            }
-        }
-
-        return false;
-    }
-
-    public function isLastModeratorByUserID($user_id, $auth_source): bool
-    {
-        $mod_list = $this->getModeratorList();
-        if (1 == $mod_list->getCount()) {
-            $mod = $mod_list->getFirst();
-            if ($mod->getUserID() == $user_id && $mod->getAuthSource() == $auth_source) {
-                return true;
             }
         }
 
@@ -2254,25 +2241,28 @@ class cs_context_item extends cs_item
 
     public function isUser($user): bool
     {
+        $accountId = $user->getAccountID();
+        if ($accountId === null) {
+            return false;
+        }
+
         $user_manager = $this->_environment->getUserManager();
-        return $user_manager->isUserInContext($user->getUserID(), $this->getItemID(), $user->getAuthSource());
+        return $user_manager->isUserInContext($accountId, $this->getItemID());
     }
 
-    public function getUserByUserID($user_id, $auth_source): cs_user_item|null
+    public function getUserByAccountID(int $accountId): cs_user_item|null
     {
-        $retour = null;
         $user_manager = $this->_environment->getUserManager();
         $user_manager->resetLimits();
         $user_manager->setContextLimit($this->getItemID());
-        $user_manager->setUserIDLimit($user_id);
-        $user_manager->setAuthSourceLimit($auth_source);
+        $user_manager->setAccountIDLimit($accountId);
         $user_manager->select();
         $user_list = $user_manager->get();
-        if ($user_list->isNotEmpty() and 1 == $user_list->getCount()) {
-            $retour = $user_list->getFirst();
+        if ($user_list->isNotEmpty() && 1 == $user_list->getCount()) {
+            return $user_list->getFirst();
         }
 
-        return $retour;
+        return null;
     }
 
     /** asks if item is editable by everybody or just creator.

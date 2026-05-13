@@ -684,10 +684,13 @@ class RoomController extends AbstractController
         $user_manager = $legacyEnvironment->getUserManager();
         $creator_item = $user_manager->getItem($new_room->getCreatorID());
         if ($creator_item->getContextID() != $new_room->getItemID()) {
+            $accountId = $creator_item->getAccountID();
+            if ($accountId === null) {
+                throw new Exception('can not get creator of new room: source row has no account_id');
+            }
             $user_manager->resetLimits();
             $user_manager->setContextLimit($new_room->getItemID());
-            $user_manager->setUserIDLimit($creator_item->getUserID());
-            $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
+            $user_manager->setAccountIDLimit($accountId);
             $user_manager->setModeratorLimit();
             $user_manager->select();
             $user_list = $user_manager->get();

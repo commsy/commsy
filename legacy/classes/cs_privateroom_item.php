@@ -487,13 +487,18 @@ class cs_privateroom_item extends cs_room_item
                 }
             }
 
-            // get room list
+            // get room list — membership filter via account_id. Orphan
+            // current users (no account_id) have no membership-filtered
+            // room list to return.
+            $accountId = $current_user_item->getAccountID();
+            if ($accountId === null) {
+                return null;
+            }
             $room_manager = $this->_environment->getRoomManager();
             $room_manager->setRoomTypeLimit('');
             $room_manager->setIDArrayLimit($room_id_array);
             $room_manager->setOrder('id_array');
-            $room_manager->setUserIDLimit($current_user_item->getUserID());
-            $room_manager->setAuthSourceLimit($current_user_item->getAuthSource());
+            $room_manager->setAccountIDLimit($accountId);
             $room_manager->select();
             $retour = $room_manager->get();
             unset($room_manager);
