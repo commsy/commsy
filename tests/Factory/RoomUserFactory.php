@@ -16,6 +16,7 @@ namespace Tests\Factory;
 use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
@@ -45,6 +46,63 @@ final class RoomUserFactory extends PersistentObjectFactory
         ];
     }
 
+    /**
+     * status 0 with a non-guest user_id — a member whose request was rejected.
+     *
+     * Note: the dedicated portal-level guest user (status 0 + user_id='guest')
+     * is NOT created via this factory — guests are a portal singleton without
+     * a per-room profile. See PermissionMatrixStory or insert directly into
+     * the users table if you need a guest cs_user_item.
+     */
+    public function asRejected(): static
+    {
+        return $this->with(['status' => 0]);
+    }
+
+    /** status 1 — membership request pending moderator approval. */
+    public function asRequested(): static
+    {
+        return $this->with(['status' => 1]);
+    }
+
+    /** status 2 — the default. Regular room member. */
+    public function asUser(): static
+    {
+        return $this->with(['status' => 2]);
+    }
+
+    /** status 3 — room moderator. */
+    public function asModerator(): static
+    {
+        return $this->with(['status' => 3]);
+    }
+
+    /** status 4 — read-only user. */
+    public function asReadOnly(): static
+    {
+        return $this->with(['status' => 4]);
+    }
+
+    /**
+     * Marks the user as soft-deleted at creation time. The DBAL insert
+     * picks `deletion_date` and `deleter_id` off the User entity, so we
+     * stash both directly on the entity here. The deleter is wired as a
+     * detached User stub carrying the requested itemId — the factory
+     * does raw DBAL writes anyway, so a managed entity isn't required.
+     */
+    public function softDeleted(?int $deleterId = 1): static
+    {
+        $deleterStub = null;
+        if ($deleterId !== null) {
+            $deleterStub = new User();
+            $deleterStub->itemId = $deleterId;
+        }
+        return $this->with([
+            'deletionDate' => new DateTime(),
+            'deleter' => $deleterStub,
+        ]);
+    }
+
     protected function initialize(): static
     {
         return $this
@@ -72,12 +130,16 @@ final class RoomUserFactory extends PersistentObjectFactory
 
                 $conn = $this->entityManager->getConnection();
                 $now = (new DateTimeImmutable())->format('Y-m-d H:i:s');
+                $deletionDate = $user->getDeletionDate()?->format('Y-m-d H:i:s');
 
-                // 1) Insert in items
+                // 1) Insert in items — also propagates the soft-delete state
+                // so the items twin row is consistent with the user row.
                 $conn->insert('items', [
                     'context_id' => $room->getItemId(),
                     'modification_date' => $now,
                     'type' => 'user',
+                    'deleter_id' => $user->getDeleter()?->getItemId(),
+                    'deletion_date' => $deletionDate,
                 ]);
 
                 $itemId = (int) $conn->lastInsertId();
@@ -90,10 +152,10 @@ final class RoomUserFactory extends PersistentObjectFactory
                     'portal_id' => $user->getPortal()?->getId(),
                     'creator_id' => null,
                     'modifier_id' => null,
-                    'deleter_id' => null,
+                    'deleter_id' => $user->getDeleter()?->getItemId(),
                     'creation_date' => $now,
                     'modification_date' => $now,
-                    'deletion_date' => null,
+                    'deletion_date' => $deletionDate,
                     'account_id' => $account->getId(),
                     'user_id' => $user->getUserId(),
                     'status' => $user->getStatus(),

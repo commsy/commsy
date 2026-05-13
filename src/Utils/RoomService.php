@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Room\Copy\LegacyCopy;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
 use cs_environment;
@@ -27,7 +28,8 @@ class RoomService
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly LegacyCopy $legacyCopy
+        private readonly LegacyCopy $legacyCopy,
+        private readonly LegacyPermissionBridge $legacyBridge,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -446,12 +448,12 @@ class RoomService
             }
 
             // only for members
-            if (!$add && '1' == $availability && $template->mayEnter($currentUserItem)) {
+            if (!$add && '1' == $availability && $this->legacyBridge->userCanEnter($template, $currentUserItem)) {
                 $add = true;
             }
 
             // only mods
-            if (!$add && '2' == $availability && $template->mayEnter($currentUserItem)) {
+            if (!$add && '2' == $availability && $this->legacyBridge->userCanEnter($template, $currentUserItem)) {
                 if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
                     $add = true;
                 }

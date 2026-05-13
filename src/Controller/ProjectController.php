@@ -21,6 +21,7 @@ use App\Form\Type\Room\DeleteType;
 use App\Room\Copy\LegacyCopy;
 use App\Room\ProjectRoomDeleter;
 use App\Room\RoomDeletionOptions;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -46,8 +47,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ProjectController extends AbstractController
 {
-    public function __construct(private readonly ReaderService $readerService)
-    {
+    public function __construct(
+        private readonly ReaderService $readerService,
+        private readonly LegacyPermissionBridge $legacyBridge,
+    ) {
     }
 
     #[Route(path: '/room/{roomId}/project/feed/{start}/{sort}')]
@@ -465,12 +468,12 @@ class ProjectController extends AbstractController
                 }
 
                 // only for members
-                if (!$add && '1' == $availability && $template->mayEnter($currentUserItem)) {
+                if (!$add && '1' == $availability && $this->legacyBridge->userCanEnter($template, $currentUserItem)) {
                     $add = true;
                 }
 
                 // only mods
-                if (!$add && '2' == $availability && $template->mayEnter($currentUserItem)) {
+                if (!$add && '2' == $availability && $this->legacyBridge->userCanEnter($template, $currentUserItem)) {
                     if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
                         $add = true;
                     }
@@ -512,11 +515,11 @@ class ProjectController extends AbstractController
         if ($currentUser->isRoot()) {
             $mayEnter = true;
         } elseif (!empty($roomUser)) {
-            $mayEnter = $item->mayEnter($roomUser);
+            $mayEnter = $this->legacyBridge->userCanEnter($item, $roomUser);
         } else {
             // in case of the guest user, $roomUser is null
             if ($currentUser->isReallyGuest()) {
-                $mayEnter = $item->mayEnter($currentUser);
+                $mayEnter = $this->legacyBridge->userCanEnter($item, $currentUser);
             }
         }
 

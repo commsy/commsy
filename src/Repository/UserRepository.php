@@ -38,7 +38,7 @@ class UserRepository extends ServiceEntityRepository
                 $qb->expr()->eq('IDENTITY(u.room)', ':contextId'),
                 $qb->expr()->eq('u.status', ':status'),
                 $qb->expr()->isNull('u.deletionDate'),
-                $qb->expr()->isNull('u.deleterId')
+                $qb->expr()->isNull('u.deleter')
             ))
             ->setParameters(new ArrayCollection([
                 new Parameter('contextId', $contextId),
@@ -73,7 +73,7 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->where('IDENTITY(u.room) = :contextId')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $contextId)
             ->getQuery()
             ->getResult();
@@ -84,7 +84,7 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->where('IDENTITY(u.room) = :contextId')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $contextId)
             ->getQuery();
     }
@@ -95,7 +95,7 @@ class UserRepository extends ServiceEntityRepository
             ->select('COUNT(u.itemId) as num')
             ->where('IDENTITY(u.room) = :contextId')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $contextId)
             ->getQuery()
             ->getSingleScalarResult();
@@ -108,10 +108,61 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('u.authSource = :authSourceId')
             ->andWhere('u.userId = :username')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $account->getPortal())
             ->setParameter('authSourceId', $account->getAuthSource()->getId())
             ->setParameter('username', $account->getUsername())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Resolves the {@see User} for an {@see Account} in the given context.
+     * Generalizes {@see findPortalUser()}: pass the portal id to find the
+     * portal-level user, or a room item_id to find the room-level user.
+     *
+     * Mirrors `cs_user_manager::getUserListByLimits` setup
+     * (context_id + user_id + auth_source + alive). Returns null when the
+     * account has no membership in that context.
+     *
+     * Used by the new {@see \App\Security\Permission} services as their
+     * primary "who is this Account in this context?" lookup — replaces
+     * `cs_user_item::getRelatedUserItemInContext()` in legacy-free code.
+     */
+    public function findInContext(Account $account, int $contextId): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('IDENTITY(u.room) = :contextId')
+            ->andWhere('u.authSource = :authSourceId')
+            ->andWhere('u.userId = :username')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleter IS NULL')
+            ->setParameter('contextId', $contextId)
+            ->setParameter('authSourceId', $account->getAuthSource()?->getId())
+            ->setParameter('username', $account->getUsername())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Looks up the Doctrine User entity matching a legacy cs_user_item's
+     * identity triple (userId + contextId + authSource). The new
+     * Permission services consume Doctrine entities only — this is the
+     * conversion seam used by the cs_item.may* wrappers during the
+     * Phase 2/Phase 5 transition. Goes away once the legacy methods are
+     * removed.
+     */
+    public function findOneByLegacyIdentity(string $userId, int $contextId, ?int $authSourceId): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.userId = :userId')
+            ->andWhere('IDENTITY(u.room) = :contextId')
+            ->andWhere('u.authSource = :authSourceId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleter IS NULL')
+            ->setParameter('userId', $userId)
+            ->setParameter('contextId', $contextId)
+            ->setParameter('authSourceId', $authSourceId)
             ->getQuery()
             ->getOneOrNullResult();
     }
@@ -127,7 +178,7 @@ class UserRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('u')
             ->innerJoin('u.room', 'r', Join::WITH)
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->andWhere('u.userId = :userId')
             ->andWhere('u.authSource = :authSource')
             ->setParameters(new ArrayCollection([

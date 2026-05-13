@@ -62,6 +62,10 @@ final class DatesFactory extends PersistentObjectFactory
             'datetimeEnd' => date('Y-m-d') . ' 11:00:00',
             'recurrenceId' => null,
             'recurrencePattern' => null,
+            // Public dates can be edited by any room member; private dates
+            // (default) only by their creator + moderators. cs_dates_item
+            // reads the `public` column.
+            'public' => false,
         ];
     }
 
@@ -80,6 +84,7 @@ final class DatesFactory extends PersistentObjectFactory
                 'datetimeEnd',
                 'recurrenceId',
                 'recurrencePattern',
+                'public',
             ))
             ->afterInstantiate(function(Dates $dates, array $attributes): void {
                 $room = $attributes['room'] ?? null;
@@ -118,6 +123,9 @@ final class DatesFactory extends PersistentObjectFactory
                 }
                 if (!empty($attributes['recurrencePattern'])) {
                     $item->setRecurrencePattern($attributes['recurrencePattern']);
+                }
+                if (!empty($attributes['public'])) {
+                    $item->setPublic(1);
                 }
 
                 // Promote legacy trigger_error into a real failure so swallowed

@@ -18,6 +18,7 @@ use App\Entity\User;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\UserRepository;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\LegacyEnvironment;
 use cs_context_item;
 use cs_environment;
@@ -55,7 +56,8 @@ class UserService
         LegacyEnvironment $legacyEnvironment,
         private readonly RoomService $roomService,
         private readonly UserRepository $userRepository,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly LegacyPermissionBridge $legacyBridge,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
@@ -762,7 +764,7 @@ class UserService
             $roomUser = $roomUserList->getFirst();
 
             if ($roomUser) {
-                if ($room->mayEnter($roomUser)) {
+                if ($this->legacyBridge->userCanEnter($room, $roomUser)) {
                     return 'enter';
                 }
 

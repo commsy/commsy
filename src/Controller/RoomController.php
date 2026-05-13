@@ -21,6 +21,7 @@ use App\Form\Type\ContextType;
 use App\Hash\HashManager;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
@@ -53,8 +54,10 @@ use UnexpectedValueException;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class RoomController extends AbstractController
 {
-    public function __construct(private readonly ReaderService $readerService)
-    {
+    public function __construct(
+        private readonly ReaderService $readerService,
+        private readonly LegacyPermissionBridge $legacyBridge,
+    ) {
     }
 
     #[Route(path: '/room/{roomId}', requirements: ['roomId' => '\d+'])]
@@ -635,11 +638,11 @@ class RoomController extends AbstractController
             if ($currentUser->isRoot()) {
                 $mayEnter = true;
             } elseif (!empty($roomUser)) {
-                $mayEnter = $item->mayEnter($roomUser);
+                $mayEnter = $this->legacyBridge->userCanEnter($item, $roomUser);
             } else {
                 // in case of the guest user, $roomUser is null
                 if ($currentUser->isReallyGuest()) {
-                    $mayEnter = $item->mayEnter($currentUser);
+                    $mayEnter = $this->legacyBridge->userCanEnter($item, $currentUser);
                 }
             }
 

@@ -31,7 +31,7 @@ class ServerRepository extends ServiceEntityRepository
     public function getServer(): Server
     {
         return $this->createQueryBuilder('s')
-            ->where('s.deleterId IS NULL')
+            ->where('s.deleter IS NULL')
             ->andWhere('s.deletionDate IS NULL')
             ->andWhere('s.id = :serverId')
             ->setParameter('serverId', 99)

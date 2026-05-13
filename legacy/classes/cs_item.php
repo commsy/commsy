@@ -17,10 +17,8 @@ use App\Proxy\PortalProxy;
 use App\Repository\ItemLinkFileRepository;
 use App\Repository\MaterialsRepository;
 use App\Repository\PortalRepository;
-use App\Security\Authorization\Voter\ItemVoter;
 use Doctrine\ORM\UnexpectedResultException;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 
 class cs_item
 {
@@ -1428,117 +1426,6 @@ class cs_item
     {
         return $this->_getValue('public');
     }
-
-    public function mayEdit(cs_user_item $userItem)
-    {
-        $user = ($userItem->getContextID() !== $this->getContextID())
-            ? ($userItem->getRelatedUserItemInContext($this->getContextID()) ?? $userItem)
-            : $userItem;
-
-        $access = false;
-        if (!$user->isOnlyReadUser()) {
-            if ($user->isRoot() or
-                 ($user->getContextID() == $this->getContextID()
-                  and ($user->isModerator()
-                       or ($user->isUser()
-                           and ($user->getItemID() == $this->getCreatorID()
-                                or !$this->isPrivateEditing()))))
-            ) {
-                $access = true;
-            }
-        }
-
-        if (true === $access) {
-            // don't check locking for etherpads
-            if ($this->_issetExtra('etherpad_id')) {
-                $access = true;
-            } else {
-                global $symfonyContainer;
-
-                /** @var Security $security */
-                $security = $symfonyContainer->get('app.security');
-                $access = $security->isGranted(ItemVoter::EDIT_LOCK, $this->getItemID());
-            }
-        } else {
-            // NOTE: for guest users, $privateRoomUserItem will be null
-            $privateRoomUserItem = $userItem->getRelatedPrivateRoomUserItem();
-
-            // check for sub-types
-            switch ($this->getType()) {
-                case CS_SECTION_TYPE:
-                case CS_STEP_TYPE:
-                    $linkedItem = $this->getLinkedItem();
-                    $mayEdit = $linkedItem->mayEdit($userItem);
-                    if (!$mayEdit && $privateRoomUserItem) {
-                        $mayEdit = $linkedItem->mayEdit($privateRoomUserItem);
-                    }
-
-                    return $mayEdit;
-            }
-        }
-
-        return $access;
-    }
-
-     /**
-      * @throws \Doctrine\DBAL\Exception
-      */
-     public function mayExternalSee(int $itemId, string $username): bool
-     {
-         $item_manager = $this->_environment->getItemManager();
-         return $item_manager->getExternalViewerForItem($itemId, $username);
-     }
-
-     /** is the given user allowed to see this item?
-      */
-     public function maySee(cs_user_item $userItem)
-     {
-         // Deny access, if the item's context is deleted
-         $contextItem = $this->getContextItem();
-         if (null === $contextItem || $contextItem->isDeleted()) {
-             return false;
-         }
-
-         // Root
-         if ($userItem->isRoot()) {
-             return true;
-         }
-
-         // Room user
-         $userInContext = ($userItem->getContextID() === $this->getContextID()) ? $userItem :
-             $userItem->getRelatedUserItemInContext($this->getContextID());
-         if (null !== $userInContext && $userInContext->isUser()) {
-             // deactivated entries can be only viewed by a moderator or by their creator
-             if ($this->isNotActivated()) {
-                 if ($userInContext->isModerator()) {
-                     return true;
-                 }
-
-                 if ($this->getCreatorID() == $userInContext->getItemId()) {
-                     return true;
-                 }
-             } else {
-                 return true;
-             }
-         }
-
-         // External viewer
-         if ($this->mayExternalSee($this->getItemID(), $userItem->getUserID())) {
-             return true;
-         }
-
-         // Guest
-         $currentContextItem = $this->_environment->getCurrentContextItem();
-         if ($currentContextItem->isOpenForGuests()) {
-             if ($userItem->isGuest() || $userItem->isRequested()) {
-                 if (!$this->isNotActivated()) {
-                     return true;
-                 }
-             }
-         }
-
-         return false;
-     }
 
     public function getLatestLinkItemList($count)
     {

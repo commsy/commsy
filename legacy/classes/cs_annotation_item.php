@@ -199,24 +199,4 @@ class cs_annotation_item extends cs_item
         $linkedItem->updateElastic();
     }
 
-    public function mayEdit(cs_user_item $user_item)
-    {
-        $access = false;
-        if (!$user_item->isOnlyReadUser()) {
-            if ($user_item->isRoot() ||
-                ($user_item->getContextID() == $this->getContextID() && $user_item->isModerator()) ||
-                ($user_item->isUser() && ($user_item->getItemID() === $this->getCreatorID() || $this->isPublic()))
-            ) {
-                $access = true;
-            }
-        }
-        if (!$access) {
-            $item_manager = $this->_environment->getItemManager();
-            $item = $this->getLinkedItem();
-            $access = $item_manager->getExternalViewerForItem($item->getItemID(),
-                $this->_environment->getCurrentUserID());
-        }
-
-        return $access;
-    }
 }

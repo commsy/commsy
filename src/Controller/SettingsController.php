@@ -518,7 +518,7 @@ class SettingsController extends AbstractController
         if ($lockForm->isSubmitted() && $lockForm->isValid()) {
             if ($lockForm->get('lock')->isClicked()) {
                 $portal = $portalRepository->find($portalId);
-                $status = $this->isGranted('PORTAL_MODERATOR', $portal->getId()) ?
+                $status = $this->isGranted('PORTAL_MODERATOR', $portal) ?
                     RoomStatus::LOCKED_PORTAL_MOD : RoomStatus::LOCKED;
 
                 $roomItem->lock($status);

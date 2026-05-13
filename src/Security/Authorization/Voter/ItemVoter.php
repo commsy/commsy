@@ -17,9 +17,11 @@ use App\Entity\Account;
 use App\Entity\Files;
 use App\Entity\Portal;
 use App\Lock\FileLockManager;
-use App\Lock\LockManager;
 use App\Proxy\PortalProxy;
 use App\Repository\FilesRepository;
+use App\Security\Permission\Checker\ItemEditChecker;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
+use App\Security\Permission\Resolver\PermissionResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
@@ -59,9 +61,11 @@ class ItemVoter extends Voter
         private readonly UserService $userService,
         private readonly RequestStack $requestStack,
         private readonly EntityManagerInterface $entityManager,
-        private readonly LockManager $lockManager,
         private readonly FileLockManager $fileLockManager,
-        private readonly DiscoveryService $discoveryService
+        private readonly DiscoveryService $discoveryService,
+        private readonly ItemEditChecker $itemEditChecker,
+        private readonly PermissionResolver $permissionResolver,
+        private readonly LegacyPermissionBridge $legacyBridge,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -198,17 +202,13 @@ class ItemVoter extends Voter
         return false;
     }
 
-    private function canView(cs_item $item, cs_user_item $currentUser)
+    private function canView(cs_item $item, cs_user_item $currentUser): bool
     {
         if ($item->isDeleted()) {
             return false;
         }
 
-        if ($item->maySee($currentUser)) {
-            return true;
-        }
-
-        return false;
+        return $this->permissionResolver->canSee($item, $currentUser, $this->legacyBridge->currentRoom());
     }
 
     private function canEdit(cs_item $item, cs_user_item $currentUser): bool
@@ -254,11 +254,7 @@ class ItemVoter extends Voter
             }
         }
 
-        if ($item->mayEdit($currentUser)) {
-            return true;
-        }
-
-        return false;
+        return $this->permissionResolver->canEdit($item, $currentUser, $this->legacyBridge->currentRoom());
     }
 
     private function canAnnotate(cs_item $item, cs_user_item $currentUser)
@@ -326,16 +322,23 @@ class ItemVoter extends Voter
             return $user instanceof UserInterface;
         }
 
-        $roomItem = $this->roomService->getRoomItem($item->getItemID());
-        if (!$roomItem) {
+        // At this point the ENTER workaround above guarantees a
+        // cs_room_item; narrow for static analysis and the bridge's
+        // type contract.
+        if (!$item instanceof cs_room_item) {
             return false;
         }
 
-        if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
-            return true;
+        // Voter-specific guard: a soft-deleted Room is never enterable,
+        // even via the identity-triple path. The bridge doesn't fold
+        // this in because none of the non-Voter callers need it (their
+        // input is already filtered upstream).
+        $room = $this->legacyBridge->roomFromLegacy($item);
+        if ($room === null || $room->getDeletionDate() !== null) {
+            return false;
         }
 
-        return false;
+        return $this->legacyBridge->userCanEnter($item, $currentUser);
     }
 
     private function canDelete(cs_item|PortalProxy $item, $currentUser)
@@ -369,11 +372,11 @@ class ItemVoter extends Voter
 
     private function canEditLock(cs_item $item, cs_user_item $currentUser): bool
     {
-        if ($currentUser->isRoot() || !$this->lockManager->supportsLocking($item->getItemID())) {
+        if ($currentUser->isRoot()) {
             return true;
         }
 
-        return $this->lockManager->userCanLock($item->getItemID());
+        return $this->itemEditChecker->canEditLock($item->getItemID());
     }
 
     private function canFileLock(cs_item $item): bool

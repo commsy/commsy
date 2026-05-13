@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Repository\LabelRepository;
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use App\Validator\Constraints as CommsyAssert;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
@@ -29,6 +30,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Labels
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -37,18 +39,6 @@ class Labels
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: false)]
     private int $contextId;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?User $creator = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?User $modifier = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
-    private ?User $deleter = null;
 
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
@@ -172,42 +162,6 @@ class Labels
     public function getPublic(): bool
     {
         return $this->public;
-    }
-
-    public function setCreator(?User $creator): static
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setModifier(?User $modifier): static
-    {
-        $this->modifier = $modifier;
-
-        return $this;
-    }
-
-    public function getModifier(): ?User
-    {
-        return $this->modifier;
-    }
-
-    public function setDeleter(?User $deleter): static
-    {
-        $this->deleter = $deleter;
-
-        return $this;
-    }
-
-    public function getDeleter(): ?User
-    {
-        return $this->deleter;
     }
 
     public function getTitle(): string

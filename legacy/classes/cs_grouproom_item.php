@@ -206,31 +206,6 @@ class cs_grouproom_item extends cs_room_item
         return false;
     }
 
-    public function maySee($user_item)
-    {
-        $project_item = $this->getLinkedProjectItem();
-        if ($user_item->isRoot()
-             or (isset($project_item)
-                  and !empty($project_item)
-                  and $user_item->getContextID() == $project_item->getItemID()
-                  and ($user_item->isUser()
-                        or ($user_item->isGuest()
-                             and $project_item->isOpenForGuests()
-                        )
-                  )
-             )
-             or ($this->_environment->inPrivateRoom()
-               and $this->isUser($user_item)
-             )
-        ) {
-            $access = true;
-        } else {
-            $access = false;
-        }
-
-        return $access;
-    }
-
     public function getLinkedProjectItem()
     {
         $retour = null;

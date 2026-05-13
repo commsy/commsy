@@ -277,12 +277,12 @@ class PortalProxy
 
     public function isLocked(): bool
     {
-        return 3 === $this->portal->getStatus();
+        return 3 === (int) $this->portal->getStatus();
     }
 
     public function isClosed(): bool
     {
-        return 2 === $this->portal->getStatus();
+        return 2 === (int) $this->portal->getStatus();
     }
 
     public function isOpenForGuests(): bool

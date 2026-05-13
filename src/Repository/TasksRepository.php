@@ -35,7 +35,7 @@ class TasksRepository extends ServiceEntityRepository
                 $qb->expr()->eq('r.contextId', ':contextId'),
                 $qb->expr()->eq('r.status', ':status'),
                 $qb->expr()->isNull('r.deletionDate'),
-                $qb->expr()->isNull('r.deleterId')
+                $qb->expr()->isNull('r.deleter')
             ))
             ->setParameters(new ArrayCollection([
                 new Parameter('contextId', $contextId),

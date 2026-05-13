@@ -108,7 +108,7 @@ class RoomRepository extends ServiceEntityRepository
             ->andWhere('r.deleter IS NULL')
             ->andWhere('r.contextId = :contextId')
             ->andWhere('u.deletionDate IS NULL')
-            ->andWhere('u.deleterId IS NULL')
+            ->andWhere('u.deleter IS NULL')
             ->andWhere('u.userId = :userId')
             ->andWhere('u.authSource = :authSource')
             ->andWhere($qb->expr()->in('r.type', $roomTypes))
@@ -126,7 +126,7 @@ class RoomRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
             ->select('r')
-            ->innerJoin(User::class, 'u', Join::WITH, 'u.room = r AND u.deleterId IS NULL AND u.deletionDate IS NULL')
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.room = r AND u.deleter IS NULL AND u.deletionDate IS NULL')
             ->innerJoin(Account::class, 'a', Join::WITH, 'a.username = u.userId AND a.authSource = u.authSource')
             ->where('r.contextId = :portalId')
             ->andWhere('r.deleter IS NULL')

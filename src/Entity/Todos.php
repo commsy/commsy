@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,6 +31,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Todos
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -38,17 +40,6 @@ class Todos
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?User $creator = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?User $modifier = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
 
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
@@ -107,7 +98,7 @@ class Todos
 
     public function isIndexable()
     {
-        return null == $this->deleterId && null == $this->deletionDate;
+        return null === $this->deleter && null === $this->deletionDate;
     }
 
     public function getItemId(): int
@@ -130,23 +121,6 @@ class Todos
     public function getContextId(): ?int
     {
         return $this->contextId;
-    }
-
-    /**
-     * Set deleterId.
-     *
-     * @param int $deleterId
-     */
-    public function setDeleterId($deleterId): static
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    public function getDeleterId(): ?int
-    {
-        return $this->deleterId;
     }
 
     /**
@@ -293,27 +267,4 @@ class Todos
         return $this->extras;
     }
 
-    public function setCreator(?User $creator = null): static
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setModifier(?User $modifier = null): static
-    {
-        $this->modifier = $modifier;
-
-        return $this;
-    }
-
-    public function getModifier(): ?User
-    {
-        return $this->modifier;
-    }
 }

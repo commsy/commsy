@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Utils\EntityUsersTrait;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
@@ -25,6 +26,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 class Discussionarticles
 {
+    use EntityUsersTrait;
+
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -39,15 +42,6 @@ class Discussionarticles
     #[ORM\ManyToOne(targetEntity: 'Discussions', inversedBy: 'discussionarticles')]
     #[ORM\JoinColumn(name: 'discussion_id', referencedColumnName: 'item_id', nullable: false)]
     private Discussions $discussion;
-
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
-    private ?int $creatorId = null;
-
-    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
-    private ?int $modifierId = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
 
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     private DateTime $creationDate;
@@ -67,8 +61,25 @@ class Discussionarticles
     #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]
     private ?array $extras = null;
 
-    #[ORM\Column(name: 'public', type: Types::BOOLEAN)]
-    private bool $public = false;
+    /**
+     * Multi-state legacy flag, NOT a boolean (DB column is `tinyint(11)`).
+     * Known values:
+     *   1  → public-readable article (legacy "world view" flag)
+     *   0  → private to room (default)
+     *  -2  → tombstone for an article with answers: body is replaced
+     *        with placeholder text, row stays alive to preserve the
+     *        thread hierarchy. Written by
+     *        {@see \App\Rubric\Discussion\DiscussionDeleter::deleteArticle()}.
+     *  -1  → defensively read by `cs_*_item::getDescription()` via the
+     *        `COMMON_AUTOMATIC_DELETE_DESCRIPTION` translation key, but
+     *        no writer for this value exists in the current codebase
+     *        (no `setPublic(-1)`, no raw SQL). Likely a relic of an
+     *        older deletion path; the reader code may be dead too.
+     * Overloading `public` as a tombstone marker is misuse — replacing
+     * it with a dedicated column is tracked as a follow-up.
+     */
+    #[ORM\Column(name: 'public', type: Types::INTEGER)]
+    private int $public = 0;
 
     public function __construct()
     {
@@ -114,42 +125,6 @@ class Discussionarticles
     public function getDiscussionId(): int
     {
         return $this->discussionId;
-    }
-
-    public function setCreatorId(?int $creatorId): static
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    public function getCreatorId(): ?int
-    {
-        return $this->creatorId;
-    }
-
-    public function setModifierId(?int $modifierId): static
-    {
-        $this->modifierId = $modifierId;
-
-        return $this;
-    }
-
-    public function getModifierId(): ?int
-    {
-        return $this->modifierId;
-    }
-
-    public function setDeleterId(?int $deleterId): static
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    public function getDeleterId(): ?int
-    {
-        return $this->deleterId;
     }
 
     public function setCreationDate(DateTime $creationDate): static
@@ -224,15 +199,27 @@ class Discussionarticles
         return $this->extras;
     }
 
-    public function setPublic(bool $public): static
+    public function setPublic(int $public): static
     {
         $this->public = $public;
 
         return $this;
     }
 
-    public function getPublic(): bool
+    public function getPublic(): int
     {
         return $this->public;
+    }
+
+    /**
+     * Convenience predicate for the tombstone state set by
+     * {@see \App\Rubric\Discussion\DiscussionDeleter::deleteArticle}
+     * on articles whose content was overwritten because they had
+     * answers (`public = -2`). Mirrors
+     * `cs_discussionarticle_item::getHasOverwrittenContent()`.
+     */
+    public function hasOverwrittenContent(): bool
+    {
+        return $this->public === -2;
     }
 }

@@ -15,6 +15,7 @@ namespace App\Entity;
 
 use App\Repository\MaterialsRepository;
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +31,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Materials
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ORM\Id]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
@@ -43,18 +45,6 @@ class Materials
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?User $creator = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id')]
-    private ?User $deleter = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?User $modifier = null;
 
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
@@ -320,39 +310,4 @@ class Materials
         return null == $this->deleter && null == $this->deletionDate;
     }
 
-    public function setCreator(?User $creator): static
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setDeleter(?User $deleter): static
-    {
-        $this->deleter = $deleter;
-
-        return $this;
-    }
-
-    public function getDeleter(): ?User
-    {
-        return $this->deleter;
-    }
-
-    public function setModifier(?User $modifier): static
-    {
-        $this->modifier = $modifier;
-
-        return $this;
-    }
-
-    public function getModifier(): ?User
-    {
-        return $this->modifier;
-    }
 }

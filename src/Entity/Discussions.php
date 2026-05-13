@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Discussions
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -36,17 +38,6 @@ class Discussions
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?User $creator = null;
-
-    #[ORM\ManyToOne(targetEntity: 'User')]
-    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?User $modifier = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
 
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
     private ?DateTime $activationDate = null;
@@ -88,7 +79,7 @@ class Discussions
 
     public function isIndexable()
     {
-        return null == $this->deleterId && null == $this->deletionDate;
+        return null === $this->deleter && null === $this->deletionDate;
     }
 
     public function getItemId(): int
@@ -106,18 +97,6 @@ class Discussions
     public function getContextId(): ?int
     {
         return $this->contextId;
-    }
-
-    public function setDeleterId(?int $deleterId): static
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    public function getDeleterId(): ?int
-    {
-        return $this->deleterId;
     }
 
     public function setActivationDate(DateTime $activationDate): static
@@ -226,30 +205,6 @@ class Discussions
     public function getExtras(): ?array
     {
         return $this->extras;
-    }
-
-    public function setCreator(?User $creator): static
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setModifier(?User $modifier): static
-    {
-        $this->modifier = $modifier;
-
-        return $this;
-    }
-
-    public function getModifier(): ?User
-    {
-        return $this->modifier;
     }
 
     public function addDiscussionarticle(Discussionarticles $discussionarticle): Materials

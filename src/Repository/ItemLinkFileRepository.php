@@ -48,4 +48,31 @@ class ItemLinkFileRepository extends ServiceEntityRepository
 
         return $query->getSingleColumnResult();
     }
+
+    /**
+     * Returns the distinct item ids the file is linked to, dropping
+     * version duplicates. Active links only (deleter/deletion filter
+     * on item_link_file).
+     *
+     * Used by {@see \App\Files\FilePermissionChecker} to fan out the
+     * file's visibility / edit checks across its linked items.
+     *
+     * @return int[] item ids in ascending order
+     */
+    public function findLinkedItemIds(int $fileId): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT DISTINCT ilf.itemId
+            FROM App\Entity\ItemLinkFile ilf
+            JOIN ilf.file f
+            WHERE f.filesId = :fileId
+              AND ilf.deleterId IS NULL
+              AND ilf.deletionDate IS NULL
+            ORDER BY ilf.itemId
+        ');
+
+        $query->setParameter('fileId', $fileId);
+
+        return array_map('intval', $query->getSingleColumnResult());
+    }
 }

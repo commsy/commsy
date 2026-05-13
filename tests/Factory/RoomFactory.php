@@ -14,6 +14,8 @@
 namespace Tests\Factory;
 
 use App\Entity\Room;
+use App\Room\RoomStatus;
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
@@ -48,6 +50,67 @@ final class RoomFactory extends PersistentObjectFactory
             'title' => self::faker()->word(),
             'type' => self::faker()->randomElement(['project', 'community'])
         ];
+    }
+
+    public function project(): static
+    {
+        return $this->with(['type' => 'project']);
+    }
+
+    public function community(): static
+    {
+        return $this->with(['type' => 'community']);
+    }
+
+    public function groupRoom(): static
+    {
+        return $this->with(['type' => 'grouproom']);
+    }
+
+    public function userRoom(): static
+    {
+        return $this->with(['type' => 'userroom']);
+    }
+
+    public function privateRoom(): static
+    {
+        return $this->with(['type' => 'privateroom']);
+    }
+
+    public function archived(): static
+    {
+        return $this->with(['archived' => true]);
+    }
+
+    public function locked(): static
+    {
+        return $this->with(['status' => RoomStatus::LOCKED->value]);
+    }
+
+    /**
+     * status 4 — locked by a portal moderator. Distinct from {@see locked()}
+     * (status 3): only portal moderators can edit such rooms; room
+     * moderators cannot, even though they can normally edit anything in
+     * their room. See ItemVoter::canEdit + cs_context_item::isLockedByModerator.
+     */
+    public function lockedByModerator(): static
+    {
+        return $this->with(['status' => RoomStatus::LOCKED_PORTAL_MOD->value]);
+    }
+
+    public function closed(): static
+    {
+        return $this->with(['status' => RoomStatus::CLOSED->value]);
+    }
+
+    public function openForGuests(): static
+    {
+        return $this->with(['openForGuests' => true]);
+    }
+
+    public function deleted(): static
+    {
+        return $this->with(['deletionDate' => new DateTime()]);
     }
 
     /**

@@ -104,22 +104,6 @@ class cs_userroom_item extends cs_room_item
         return false;
     }
 
-    /**
-     * is the given user allowed to see this item?
-     */
-    public function maySee(cs_user_item $userItem)
-    {
-        if ($userItem->isRoot() || $userItem->isModerator()) {
-            return true;
-        }
-
-        if ($this->getLinkedUserItemID() == $userItem->getItemID()) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function getLinkedProjectItem(): ?cs_project_item
     {
         if (isset($this->_projectItem)) {

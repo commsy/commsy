@@ -13,6 +13,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
@@ -27,6 +28,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
@@ -40,7 +42,8 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
         private readonly RoomService $roomService,
         private readonly ItemService $itemService,
         private readonly TranslatorInterface $translator,
-        private readonly Breadcrumbs $breadcrumbs
+        private readonly Breadcrumbs $breadcrumbs,
+        private readonly Security $security,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -215,7 +218,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
             $title = $this->translator->trans('Archived room', [], 'room').': '.$title;
         }
 
-        $asZelda &= $roomItem->mayEnter($this->legacyEnvironment->getCurrentUserItem());
+        $asZelda &= $this->security->isGranted(ItemVoter::ENTER, $roomItem->getItemID());
 
         if ($asZelda) {
             $this->breadcrumbs->addRouteItem($title, 'app_room_home', [
@@ -241,7 +244,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
     private function addChildRoomListCrumb(cs_room_item $roomItem, string $childRoomClass): void
     {
         if ('project' == $childRoomClass || 'group' == $childRoomClass) {
-            $asLink = $roomItem->mayEnter($this->legacyEnvironment->getCurrentUserItem());
+            $asLink = $this->security->isGranted(ItemVoter::ENTER, $roomItem->getItemID());
             $title = ucfirst($this->translator->trans($childRoomClass, [], 'menu'));
             if ($asLink) {
                 $this->breadcrumbs->addRouteItem($title,

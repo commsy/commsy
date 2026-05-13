@@ -16,6 +16,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use App\Repository\UserRepository;
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,6 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class User
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
@@ -45,17 +47,6 @@ class User
     #[ORM\ManyToOne(targetEntity: Portal::class)]
     #[ORM\JoinColumn(name: 'portal_id', referencedColumnName: 'id', nullable: true)]
     private ?Portal $portal = null;
-
-    #[ORM\OneToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id')]
-    private ?User $creator = null;
-
-    #[ORM\OneToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id')]
-    private ?User $modifier = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
 
     #[ORM\Column(name: 'not_deleted', type: Types::BOOLEAN, insertable: false, updatable: false, columnDefinition: 'TINYINT(1) AS (IF (deleter_id IS NULL AND deletion_date IS NULL, 1, NULL)) PERSISTENT AFTER deletion_date', generated: 'ALWAYS')]
     private ?bool $isNotDeleted = null;
@@ -97,8 +88,19 @@ class User
     #[ORM\Column(name: 'lastlogin', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $lastlogin = null;
 
-    #[ORM\Column(name: 'visible', type: Types::BOOLEAN, nullable: false)]
-    private bool $visible = true;
+    /**
+     * Multi-state visibility flag, NOT a boolean (DB column is `tinyint`).
+     * Legacy values:
+     *   1 → visible for logged-in members only (default)
+     *   2 → visible for everyone including guests
+     *
+     * The legacy `cs_user_item::isVisibleForLoggedIn()` hard-codes
+     * `return true`, so for logged-in viewers the value is effectively
+     * irrelevant. The distinction matters in community rooms where a
+     * guest viewer is allowed to see `=== 2` users only.
+     */
+    #[ORM\Column(name: 'visible', type: Types::INTEGER, nullable: false)]
+    private int $visible = 1;
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
     private ?array $extras = null;
@@ -139,45 +141,9 @@ class User
         return $this->portal;
     }
 
-    public function setCreator(?User $creator = null): static
-    {
-        $this->creator = $creator;
-
-        return $this;
-    }
-
-    public function getCreator(): ?User
-    {
-        return $this->creator;
-    }
-
-    public function setModifier(?User $modifier = null): static
-    {
-        $this->modifier = $modifier;
-
-        return $this;
-    }
-
-    public function getModifier(): ?User
-    {
-        return $this->modifier;
-    }
-
-    public function setDeleterId(?int $deleterId): static
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    public function getDeleterId(): ?int
-    {
-        return $this->deleterId;
-    }
-
     public function isDeleted(): bool
     {
-        return null !== $this->deleterId && null !== $this->deletionDate;
+        return null !== $this->deleter && null !== $this->deletionDate;
     }
 
     public function getAccount(): ?Account
@@ -224,6 +190,61 @@ class User
     public function isModerator(): bool
     {
         return $this->status === 3;
+    }
+
+    /**
+     * Legacy-aligned: a "user" is anyone with status 2, 3 or 4 — i.e. user,
+     * moderator or read-only member. Mirrors `cs_user_item::isUser()`
+     * (status >= 2). Distinct from isPersistentGuest()/isRequested(), which
+     * are status 0 / 1 respectively.
+     */
+    public function isUser(): bool
+    {
+        return $this->status >= 2;
+    }
+
+    public function isReadOnlyUser(): bool
+    {
+        return $this->status === 4;
+    }
+
+    /**
+     * Status === 0 — "inactive" in the broadest sense: portal-level guest
+     * singleton, rejected member, or any other status-0 row. Mirrors
+     * `cs_user_item::isGuest()` (and `isRejected()`, which has the same
+     * legacy body — status alone, no userId check).
+     */
+    public function isGuest(): bool
+    {
+        return $this->status === 0;
+    }
+
+    /**
+     * The dedicated portal-level guest user_item (`status === 0` AND
+     * `user_id === 'guest'`). Distinct from a "rejected" member (status 0
+     * with a real userId). Mirrors `cs_user_item::isReallyGuest()`.
+     */
+    public function isReallyGuest(): bool
+    {
+        return $this->status === 0 && strtolower($this->userId) === 'guest';
+    }
+
+    /**
+     * The system "root" user_item: status === 3 (moderator) AND
+     * user_id === 'root'. Mirrors `cs_user_item::isRoot()` minus the
+     * legacy `context_id === SERVER_ID(99)` check — the new Doctrine
+     * entity exposes contextId via the Room relationship and the server
+     * context is neither a Room nor a Portal entity, so that part is
+     * not reachable here. status=3 + userId='root' is system-wide unique
+     * by convention.
+     *
+     * Production callers reach the root short-circuit at the Voter
+     * top-level (Account.username === 'root'), so this method exists
+     * mainly for defensive checks deeper in the permission stack.
+     */
+    public function isRoot(): bool
+    {
+        return $this->status === 3 && strtolower($this->userId) === 'root';
     }
 
     public function setIsContact(bool $isContact): static
@@ -298,16 +319,35 @@ class User
         return $this->lastlogin;
     }
 
-    public function setVisible(bool $visible): static
+    public function setVisible(int $visible): static
     {
         $this->visible = $visible;
 
         return $this;
     }
 
-    public function getVisible(): bool
+    public function getVisible(): int
     {
         return $this->visible;
+    }
+
+    /**
+     * Whether the user is visible for everyone, including unauthenticated
+     * guests. Mirrors `cs_user_item::isVisibleForAll()`.
+     */
+    public function isVisibleForAll(): bool
+    {
+        return $this->visible === 2;
+    }
+
+    /**
+     * Whether the user is visible for logged-in members. The legacy
+     * `cs_user_item::isVisibleForLoggedIn()` hard-codes `return true`
+     * regardless of the column value; we replicate that.
+     */
+    public function isVisibleForLoggedIn(): bool
+    {
+        return true;
     }
 
     public function setExtras(array $extras): static
@@ -439,7 +479,7 @@ class User
 
     public function isIndexable(): bool
     {
-        return null == $this->deleterId && null == $this->deletionDate;
+        return null === $this->deleter && null === $this->deletionDate;
     }
 
     public function getFullname(): string

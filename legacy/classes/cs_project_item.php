@@ -462,22 +462,6 @@ class cs_project_item extends cs_room_item
         return false;
     }
 
-    public function maySee($user_item)
-    {
-        $context_item = $this->_environment->getCurrentContextItem();
-        if ($user_item->isRoot() or
-             ($user_item->getContextID() == $this->_environment->getCurrentContextID()
-               and ($user_item->isGuest() or $user_item->isUser())
-             ) or $context_item->isOpenForGuests()
-        ) {
-            $access = true;
-        } else {
-            $access = false;
-        }
-
-        return $access;
-    }
-
     public function getUsageInfoTextForRubric($rubric)
     {
         if ($this->_issetExtra('USAGE_INFO_TEXT')) {

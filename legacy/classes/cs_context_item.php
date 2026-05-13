@@ -35,7 +35,6 @@ class cs_context_item extends cs_item
 
     public array $_rubric_support = [];
 
-    public array $_cache_may_enter = [];
 
     private array $cachePageImpressions = [];
 
@@ -876,83 +875,12 @@ class cs_context_item extends cs_item
         $this->_addExtra('DATEPRESENTATIONSTATUS', $value);
     }
 
-    /** returns a boolean, if the the user can enter the context
-     * true: user can enter project
-     * false: user can not enter project.
-     *
-     * @param object user item this user wants to enter the project
-     */
-    public function mayEnter($user_item): bool
-    {
-        return $this->mayEnterByUserID($user_item->getUserID(), $user_item->getAuthSource());
-    }
-
-    /**
-     * returns a boolean, if  the user can enter the context
-     * true: user can enter project
-     * false: user can not enter project.
-     *
-     * @param string $user_id id of user wants to enter the project
-     */
-    public function mayEnterByUserID($user_id, $auth_source): bool
-    {
-        if (isset($this->_cache_may_enter[$user_id . '_' . $auth_source])) {
-            return $this->_cache_may_enter[$user_id . '_' . $auth_source];
-        }
-
-        if ('root' == $user_id) {
-            return true;
-        }
-
-        if ($this->isLocked()) {
-            return false;
-        }
-
-        if ($this->isOpenForGuests()) {
-            return true;
-        }
-
-        $user_manager = $this->_environment->getUserManager();
-        if ($user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source)) {
-            $this->_cache_may_enter[$user_id . '_' . $auth_source] = true;
-
-            return true;
-        } else {
-            $this->_cache_may_enter[$user_id . '_' . $auth_source] = false;
-        }
-
-        return false;
-    }
-
     public function isSystemLabel(): bool
     {
         if ($this->_issetExtra('SYSTEM_LABEL')) {
             $value = $this->_getExtra('SYSTEM_LABEL');
             if (1 == $value) {
                 return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function mayEnterByUserItemID($user_item_id): bool
-    {
-        if ($this->isLocked()) {
-            return false;
-        } elseif (isset($this->_cache_may_enter[$user_item_id])) {
-            return $this->_cache_may_enter[$user_item_id];
-        } elseif ($this->isOpenForGuests()) {
-            return true;
-        } else {
-            $user_manager = $this->_environment->getUserManager();
-            $user_in_room = $user_manager->getItem($user_item_id);
-            if ($user_in_room->isUser() && $user_in_room->getContextID() == $this->getItemID()
-            ) {
-                $this->_cache_may_enter[$user_item_id] = true;
-                return true;
-            } else {
-                $this->_cache_may_enter[$user_item_id] = false;
             }
         }
 
@@ -2269,48 +2197,6 @@ class cs_context_item extends cs_item
         $this->_save($manager);
     }
 
-    public function mayEdit(cs_user_item $user): bool
-    {
-        if (!empty($user)) {
-            if (!$user->isOnlyReadUser()) {
-                if ($user->isRoot()
-                        or ($user->isUser()
-                                and ($user->getItemID() == $this->getCreatorID()
-                                        or $this->isPublic()
-                                        or $this->isModeratorByUserID($user->getUserID(), $user->getAuthSource())
-                                        or ($this->_environment->inCommunityRoom()
-                                                and $this->isProjectRoom()
-                                                and $user->isModerator()
-                                        )
-                                )
-                        )
-                ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public function mayEditRegular($user): bool
-    {
-        if (!empty($user)) {
-            if (!$user->isOnlyReadUser()) {
-                if ($user->isUser()
-                        and ($user->getItemID() == $this->getCreatorID()
-                                or $this->isPublic()
-                                or $this->isModeratorByUserID($user->getUserID(), $user->getAuthSource())
-                        )
-                ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public function isModeratorByUserID($user_id, $auth_source): bool
     {
         $mod_list = $this->getModeratorList();
@@ -2775,4 +2661,5 @@ class cs_context_item extends cs_item
 
           return false;
       }
+
 }

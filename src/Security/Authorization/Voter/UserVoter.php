@@ -13,6 +13,9 @@
 
 namespace App\Security\Authorization\Voter;
 
+use App\Entity\Account;
+use App\Entity\Portal;
+use App\Repository\UserRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use App\Utils\UserService;
@@ -35,7 +38,8 @@ class UserVoter extends Voter
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly UserService $userService,
-        private readonly RoomService $roomService
+        private readonly RoomService $roomService,
+        private readonly UserRepository $userRepository,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -52,15 +56,36 @@ class UserVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
+        // Account=root short-circuit (matches ItemVoter top-level). Root
+        // bypasses every UserVoter attribute — this is the same shortcut
+        // the now-deleted PortalModeratorVoter used for PORTAL_MODERATOR,
+        // generalized to all UserVoter attributes for consistency.
+        $tokenUser = $token->getUser();
+        if ($tokenUser instanceof Account && 'root' === $tokenUser->getUserIdentifier()) {
+            return true;
+        }
+
+        if (self::PORTAL_MODERATOR === $attribute) {
+            if (!$tokenUser instanceof Account) {
+                return false;
+            }
+            if ($subject !== null && !$subject instanceof Portal) {
+                return false;
+            }
+            return $this->isPortalModerator($tokenUser, $subject);
+        }
+
+        // The remaining attributes still ride on the legacy currentUserItem
+        // because their underlying logic (UserService::userIsParentModeratorForRoom,
+        // cs_user_item::getRelatedUserItemInContext, …) hasn't been ported yet.
+        // They will follow when we tackle ROOM_MODERATOR / PARENT_ROOM_MODERATOR
+        // in a later phase.
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         if (self::MODERATOR === $attribute) {
             return $this->isModerator($currentUser);
         }
-        if (self::PORTAL_MODERATOR === $attribute) {
-            return $this->isPortalModerator($currentUser);
-        }
-        
+
         /** @var cs_room_item|null $room */
         $room = $this->roomService->getRoomItem((int) $subject);
 
@@ -109,14 +134,35 @@ class UserVoter extends Voter
     }
 
     /**
-     * Checks whether the given user is the portal moderator of the user's portal.
+     * Whether the account is moderator of its own portal AND that portal
+     * is alive (not soft-deleted). Replaces the now-deleted
+     * PortalModeratorVoter — the deletion-date check used to live there
+     * but was effectively dead code: with Symfony's affirmative strategy
+     * this voter granted regardless of the subject's deletion state.
+     *
+     * Subject handling:
+     *   - {@see Portal} entity → cross-portal check against the account's
+     *     own portal; the entity itself is the deletion-date source of truth.
+     *   - null → no cross-portal check; deletion check on the account's
+     *     own portal.
      */
-    private function isPortalModerator(cs_user_item $user): bool
+    private function isPortalModerator(Account $account, ?Portal $subject = null): bool
     {
-        if (!$user) {
+        $accountPortal = $account->getPortal();
+        if ($accountPortal === null) {
             return false;
         }
 
-        return $this->userService->userIsPortalModerator($user);
+        if ($subject !== null && $subject->getId() !== $accountPortal->getId()) {
+            return false;
+        }
+
+        $portal = $subject ?? $accountPortal;
+        if ($portal->getDeletionDate() !== null) {
+            return false;
+        }
+
+        $portalUser = $this->userRepository->findInContext($account, $accountPortal->getId());
+        return $portalUser !== null && $portalUser->isModerator();
     }
 }

@@ -488,17 +488,4 @@ class cs_label_item extends cs_item
         $this->_changeCreatorItemAndModificatorItemTo($user, $this->_environment->getLabelManager());
     }
 
-     /** returns whether the given user may edit the label item or not,
-      * but will always prevent editing if the label item is a system label.
-      */
-     public function mayEdit(cs_user_item $user_item)
-     {
-         if ($this->isSystemLabel()) {
-             return false;
-         }
-
-         $mayEditItem = parent::mayEdit($user_item);
-
-         return $mayEditItem;
-     }
 }

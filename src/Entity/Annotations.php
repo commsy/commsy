@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Annotations
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -36,15 +38,6 @@ class Annotations
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER)]
-    private ?int $creatorId = 0;
-
-    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
-    private ?int $modifierId = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     private ?string $description = null;
@@ -64,5 +57,20 @@ class Annotations
     public function getItemId(): ?int
     {
         return $this->itemId ?? null;
+    }
+
+    public function getContextId(): ?int
+    {
+        return $this->contextId;
+    }
+
+    public function getLinkedItemId(): ?int
+    {
+        return $this->linkedItemId;
+    }
+
+    public function getPublic(): bool
+    {
+        return (bool) $this->public;
     }
 }

@@ -15,10 +15,10 @@ namespace App\Hash;
 
 use App\Entity\Hash;
 use App\Repository\HashRepository;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\LegacyEnvironment;
 use cs_context_item;
 use cs_environment;
-use cs_user_item;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 
@@ -28,7 +28,8 @@ class HashManager
 
     public function __construct(
         private HashRepository $hashRepository,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        private readonly LegacyPermissionBridge $legacyBridge,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -44,7 +45,7 @@ class HashManager
     {
         try {
             $hash = $this->hashRepository->findByRssHash($hash);
-            $canEnter = $context->mayEnterByUserItemID($hash->getUserId());
+            $canEnter = $this->legacyBridge->userItemIdCanEnter($context, (int) $hash->getUserId());
             if ($canEnter) {
                 return true;
             }
@@ -60,7 +61,7 @@ class HashManager
     {
         try {
             $hash = $this->hashRepository->findByICalHash($hash);
-            $canEnter = $context->mayEnterByUserItemID($hash->getUserId());
+            $canEnter = $this->legacyBridge->userItemIdCanEnter($context, (int) $hash->getUserId());
             if ($canEnter) {
                 return true;
             }

@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Utils\EntityDatesTrait;
+use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Step
 {
     use EntityDatesTrait;
+    use EntityUsersTrait;
 
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -36,15 +38,6 @@ class Step
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
-
-    #[ORM\Column(name: 'creator_id', type: Types::INTEGER, nullable: false)]
-    private ?int $creatorId = null;
-
-    #[ORM\Column(name: 'modifier_id', type: Types::INTEGER, nullable: true)]
-    private ?int $modifierId = null;
-
-    #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
-    private ?int $deleterId = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private string $title;
@@ -86,42 +79,6 @@ class Step
     public function getContextId(): ?int
     {
         return $this->contextId;
-    }
-
-    public function setCreatorId(?int $creatorId): static
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    public function getCreatorId(): ?int
-    {
-        return $this->creatorId;
-    }
-
-    public function setModifierId(?int $modifierId): static
-    {
-        $this->modifierId = $modifierId;
-
-        return $this;
-    }
-
-    public function getModifierId(): ?int
-    {
-        return $this->modifierId;
-    }
-
-    public function setDeleterId(?int $deleterId): static
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    public function getDeleterId(): ?int
-    {
-        return $this->deleterId;
     }
 
     public function setTitle(string $title): static

@@ -32,6 +32,7 @@ use App\Http\JsonDataResponse;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
 use App\Security\Authorization\Voter\CategoryVoter;
+use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -67,6 +68,8 @@ class GroupController extends BaseController
 
     private Mailer $mailer;
 
+    private LegacyPermissionBridge $legacyBridge;
+
     #[Required]
     public function setGroupService(GroupService $groupService): void
     {
@@ -83,6 +86,12 @@ class GroupController extends BaseController
     public function setUserService(UserService $userService): void
     {
         $this->userService = $userService;
+    }
+
+    #[Required]
+    public function setLegacyPermissionBridge(LegacyPermissionBridge $legacyBridge): void
+    {
+        $this->legacyBridge = $legacyBridge;
     }
 
     #[Route(path: '/room/{roomId}/group')]
@@ -1110,8 +1119,8 @@ class GroupController extends BaseController
 
                 if (('0' == $templateAvailability) or
                     ($this->legacyEnvironment->inCommunityRoom() and '3' == $templateAvailability) or
-                    ('1' == $templateAvailability and $item->mayEnter($currentUser)) or
-                    ('2' == $templateAvailability and $item->mayEnter($currentUser) and $item->isModeratorByUserID($currentUser->getUserID(),
+                    ('1' == $templateAvailability and $this->legacyBridge->userCanEnter($item, $currentUser)) or
+                    ('2' == $templateAvailability and $this->legacyBridge->userCanEnter($item, $currentUser) and $item->isModeratorByUserID($currentUser->getUserID(),
                         $currentUser->getAuthSource()))
                 ) {
                     if ($item->getItemID() != $defaultId or '0' != $item->getTemplateAvailability()) {

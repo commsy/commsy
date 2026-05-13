@@ -215,17 +215,7 @@ class cs_discussion_item extends cs_item
        $this->_data = $data_array;
    }
 
-   /* Checks access rights.
-   *  Access is granted, if the user has the rights to edit a discussion if it is open.
-   */
-   public function mayEditIgnoreClose($user_item)
-   {
-       return parent::mayEdit($user_item);
-   }
-
    /** asks if item is editable by everybody or just creator.
-    *
-    * @param value
     *
     * @author CommSy Development Group
     */

@@ -42,10 +42,39 @@ final class PortalFactory extends PersistentObjectFactory
         return [
             'authSources' => [AuthSourceLocalFactory::new()],
             'title' => self::faker()->word(),
-            'status' => 1,
+            'status' => '1',
             'descriptionEnglish' => self::faker()->text(),
             'descriptionGerman' => self::faker()->text(),
         ];
+    }
+
+    /**
+     * status='3' — locked. NOTE: due to a long-standing type-mismatch bug
+     * in PortalProxy::isLocked() (`3 === $portal->getStatus()` against a
+     * string column), Voter::canEnter does NOT actually block locked
+     * portals. The flag is still written to the DB; only the consumer
+     * misreads it. Pinned by ItemVoterEnterTest.
+     */
+    public function locked(): static
+    {
+        return $this->with(['status' => '3']);
+    }
+
+    public function closed(): static
+    {
+        return $this->with(['status' => '2']);
+    }
+
+    /**
+     * Adds an enabled AuthSourceGuest alongside the default Local source
+     * so PortalProxy::isOpenForGuests() returns true.
+     */
+    public function withGuestAuth(): static
+    {
+        return $this->with(['authSources' => [
+            AuthSourceLocalFactory::new(),
+            AuthSourceGuestFactory::new(),
+        ]]);
     }
 
     /**
