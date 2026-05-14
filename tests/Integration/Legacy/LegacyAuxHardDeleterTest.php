@@ -15,21 +15,32 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Legacy;
 
+use App\Entity\Account;
+use App\Entity\Room;
+use App\Entity\User;
 use App\Legacy\LegacyAuxHardDeleter;
+use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tests\Factory\RoomFactory;
+use Tests\Factory\RoomUserFactory;
+use Tests\Story\AccountStory;
+use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
  * Pins the bulk-SQL sweep on {@see LegacyAuxHardDeleter} across `items`,
- * `link_items`, `tag`, `tag2tag`, `tasks`: expired rows go, grace-window and
- * alive rows stay. Also pins the `type != 'user'` carve-out — soft-deleted
- * user items must survive until membership-leave nullifies authorship refs.
+ * `link_items`, `tag`, `tag2tag`, `tasks` and `user`: expired rows go,
+ * grace-window and alive rows stay. Also pins the FK-pruning step that
+ * runs before each `user` hard-delete (room.creator_id, room.modifier_id,
+ * and the `user` self-references).
  */
+#[WithStory(AccountStory::class)]
 final class LegacyAuxHardDeleterTest extends KernelTestCase
 {
     private Connection $connection;
     private LegacyAuxHardDeleter $deleter;
+    private Account $account;
 
     protected function setUp(): void
     {
@@ -39,9 +50,10 @@ final class LegacyAuxHardDeleterTest extends KernelTestCase
             ->get(EntityManagerInterface::class)
             ->getConnection();
         $this->deleter = self::getContainer()->get(LegacyAuxHardDeleter::class);
+        $this->account = AccountStory::get('account');
     }
 
-    public function testHardDeleteItemsRowsRemovesExpiredButPreservesUserType(): void
+    public function testHardDeleteItemsRowsRemovesExpiredIncludingUserType(): void
     {
         $expired = $this->insertItem('announcement', -40);
         $recent = $this->insertItem('announcement', -10);
@@ -53,9 +65,9 @@ final class LegacyAuxHardDeleterTest extends KernelTestCase
         self::assertFalse($this->itemExists($expired), 'expired announcement items row must be physically removed');
         self::assertTrue($this->itemExists($recent), 'recent soft-delete must survive the cutoff');
         self::assertTrue($this->itemExists($alive), 'alive row must survive');
-        self::assertTrue(
+        self::assertFalse(
             $this->itemExists($expiredUser),
-            'user items must stay pinned — membership-leave does not yet nullify authorship references'
+            'expired user items row must go too — hardDeleteUserRows runs first and the items twin follows here'
         );
     }
 
@@ -112,6 +124,65 @@ final class LegacyAuxHardDeleterTest extends KernelTestCase
 
         self::assertFalse($this->taskExists($expiredId));
         self::assertTrue($this->taskExists($recentId));
+    }
+
+    public function testHardDeleteUserRowsRespectsRetentionWindow(): void
+    {
+        $room = $this->createRoom();
+        $expired = $this->createUser($room, daysAgo: 40);
+        $recent = $this->createUser($room, daysAgo: 10);
+        $alive = $this->createUser($room, daysAgo: null);
+
+        $this->deleter->hardDeleteUserRows(30);
+
+        self::assertFalse($this->userRowExists($expired->getItemId()), 'expired user row must be physically removed');
+        self::assertTrue($this->userRowExists($recent->getItemId()), 'recent soft-delete is inside the retention window — must survive');
+        self::assertTrue($this->userRowExists($alive->getItemId()), 'alive row must survive');
+    }
+
+    public function testHardDeleteUserRowsNullifiesRoomCreatorAndModifierRefs(): void
+    {
+        $room = $this->createRoom();
+        $expired = $this->createUser($room, daysAgo: 40);
+
+        $this->connection->executeStatement(
+            'UPDATE room SET creator_id = :uid, modifier_id = :uid WHERE item_id = :rid',
+            ['uid' => $expired->getItemId(), 'rid' => $room->getItemId()]
+        );
+
+        $this->deleter->hardDeleteUserRows(30);
+
+        $row = $this->connection->fetchAssociative(
+            'SELECT creator_id, modifier_id FROM room WHERE item_id = :id',
+            ['id' => $room->getItemId()]
+        );
+
+        self::assertIsArray($row);
+        self::assertNull($row['creator_id'], 'room.creator_id pointing at a hard-deleted user must be nullified first');
+        self::assertNull($row['modifier_id'], 'room.modifier_id pointing at a hard-deleted user must be nullified first');
+    }
+
+    public function testHardDeleteUserRowsNullifiesUserSelfReferences(): void
+    {
+        $room = $this->createRoom();
+        $expired = $this->createUser($room, daysAgo: 40);
+        $surviving = $this->createUser($room, daysAgo: null);
+
+        $this->connection->executeStatement(
+            'UPDATE user SET creator_id = :cid, modifier_id = :cid WHERE item_id = :uid',
+            ['cid' => $expired->getItemId(), 'uid' => $surviving->getItemId()]
+        );
+
+        $this->deleter->hardDeleteUserRows(30);
+
+        $row = $this->connection->fetchAssociative(
+            'SELECT creator_id, modifier_id FROM user WHERE item_id = :id',
+            ['id' => $surviving->getItemId()]
+        );
+
+        self::assertIsArray($row);
+        self::assertNull($row['creator_id'], 'user.creator_id self-ref to a hard-deleted user must be nullified first');
+        self::assertNull($row['modifier_id'], 'user.modifier_id self-ref to a hard-deleted user must be nullified first');
     }
 
     // ------------------------------------------------------------------
@@ -233,5 +304,46 @@ final class LegacyAuxHardDeleterTest extends KernelTestCase
             'SELECT 1 FROM tasks WHERE item_id = :id',
             ['id' => $itemId]
         );
+    }
+
+    private function userRowExists(int $itemId): bool
+    {
+        return (bool) $this->connection->fetchOne(
+            'SELECT 1 FROM user WHERE item_id = :id',
+            ['id' => $itemId]
+        );
+    }
+
+    private function createRoom(): Room
+    {
+        $portal = $this->account->getPortal();
+
+        return RoomFactory::new()->project()->create([
+            'contextId' => $portal?->getId(),
+            'portal' => $portal,
+        ]);
+    }
+
+    /**
+     * Creates a user row + items twin via {@see RoomUserFactory}. When
+     * `$daysAgo` is set, the row is soft-deleted that many days in the past
+     * (the deleter stub mirrors what {@see RoomUserFactory::softDeleted}
+     * does, but with a custom deletion date).
+     */
+    private function createUser(Room $room, ?int $daysAgo): User
+    {
+        $attributes = [
+            'account' => $this->account,
+            'room' => $room,
+        ];
+
+        if ($daysAgo !== null) {
+            $deleterStub = new User();
+            $deleterStub->itemId = 1;
+            $attributes['deletionDate'] = new DateTimeImmutable("-{$daysAgo} days");
+            $attributes['deleter'] = $deleterStub;
+        }
+
+        return RoomUserFactory::createOne($attributes);
     }
 }

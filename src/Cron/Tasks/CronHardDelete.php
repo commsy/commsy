@@ -54,7 +54,12 @@ readonly class CronHardDelete implements CronTaskInterface
         // Legacy had no deleteReallyOlderThan on cs_assessments_manager,
         // so soft-deleted rows accumulated forever — this closes that gap.
         $this->assessmentDeleter->hardDeleteOlderThan($deleteDays);
-        // `items` last: referenced as shared twin by every rubric row above.
+        // `user` before `items`: the items twin (type='user') is the
+        // parent row, so deleting the user child first leaves items
+        // ready to drop in the items pass below.
+        $this->legacyAuxHardDeleter->hardDeleteUserRows($deleteDays);
+        // `items` last: referenced as shared twin by every rubric row above,
+        // and now also by the user rows just deleted.
         $this->legacyAuxHardDeleter->hardDeleteItemsRows($deleteDays);
 
         $this->roomHardDeleter->hardDeleteRoomsOlderThan($deleteDays);
