@@ -116,16 +116,6 @@ class cs_user_item extends cs_item
         ($value === null) ? $this->_unsetValue('portal_id') : $this->_setValue('portal_id', $value);
     }
 
-    public function getAuthSource()
-    {
-        return $this->_getValue('auth_source');
-    }
-
-    public function setAuthSource($value): void
-    {
-        $this->_setValue('auth_source', $value);
-    }
-
     /** set groups of a news item by id
      * this method sets a list of group item_ids which are linked to the user.
      *
@@ -1576,19 +1566,7 @@ class cs_user_item extends cs_item
 
     public function isOnlyReadUser(): bool
     {
-        if ($this->isReadOnlyUser()) {
-            return true;
-        }
-
-        $retour = false;
-        global $c_read_account_array;
-        if (isset($c_read_account_array)
-            and !empty($c_read_account_array[mb_strtolower($this->getUserID(), 'UTF-8').'_'.$this->getAuthSource()])
-        ) {
-            $retour = true;
-        }
-
-        return $retour;
+        return $this->isReadOnlyUser();
     }
 
     public function hasChanged($value): bool

@@ -134,14 +134,11 @@ class cs_room_manager extends cs_context_manager
         $this->_user_id_limit = (string) $limit;
     }
 
-    public function setAuthSourceLimit($limit)
-    {
-        $this->_auth_source_limit = (int) $limit;
-    }
-
     /**
      * Filters rooms to those where the given account has a non-deleted user
-     * row.
+     * row. Replaces the legacy `setUserIDLimit + setAuthSourceLimit`
+     * combination — both columns are gone after the user-consistency
+     * refactor.
      */
     public function setAccountIDLimit(int $accountId): void
     {
@@ -280,9 +277,6 @@ class cs_room_manager extends cs_context_manager
 
         if (!empty($this->_user_id_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB, $this->_user_id_limit).'"';
-        }
-        if (!empty($this->_auth_source_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB, $this->_auth_source_limit).'"';
         }
         if (isset($this->_account_id_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix('user').'.account_id="'.encode(AS_DB, $this->_account_id_limit).'"';

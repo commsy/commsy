@@ -85,7 +85,7 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
         );
 
         $username = $account->getUsername();
-        $authSourceId = $account->getAuthSource()->getId();
+        $portalId = $account->getPortal()->getId();
 
         // Synchronous delete — we want to inspect the DB state immediately,
         // not via the Messenger transport (parity with AccountLifecycleTest).
@@ -95,10 +95,10 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
             'SELECT item_id, context_id, account_id
                FROM user
               WHERE user_id     = :username
-                AND auth_source = :authSource
+                AND portal_id   = :portalId
                 AND deletion_date IS NULL
                 AND deleter_id  IS NULL',
-            ['username' => $username, 'authSource' => $authSourceId]
+            ['username' => $username, 'portalId' => $portalId]
         );
 
         self::assertSame(
@@ -151,6 +151,11 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
         // user row including the project-room one we care about, so A2 can be
         // registered cleanly afterwards without tripping the Facade guard.
         $this->getAccountDeleter()->delete($a1);
+
+        // Clear Doctrine's identity map — `$a1RoomUser` still references the
+        // detached A1 Account and would otherwise trip cascade-persist on the
+        // next flush when A2 is created.
+        $this->getEntityManager()->clear();
 
         // Register a new account with the very same username + auth_source.
         $a2 = AccountFactory::createOne([
@@ -243,6 +248,11 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
     private function getConnection(): Connection
     {
         return self::getContainer()->get(EntityManagerInterface::class)->getConnection();
+    }
+
+    private function getEntityManager(): EntityManagerInterface
+    {
+        return self::getContainer()->get(EntityManagerInterface::class);
     }
 
     /**

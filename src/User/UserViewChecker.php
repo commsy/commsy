@@ -132,14 +132,19 @@ final readonly class UserViewChecker
 
     /**
      * Same `(userId, authSource)` pair — the legacy "is the viewer the
-     * same person as the target?" check. Compared on Account-identity
-     * fields because the two User rows live in different contexts and
-     * therefore have different item ids.
+     * same person as the target?" check. Compared on the account_id FK
+     * because the two User rows live in different contexts and therefore
+     * have different item ids.
      */
     private function isSameAccountIdentity(User $actor, User $target): bool
     {
-        return $actor->getUserId() === $target->getUserId()
-            && $actor->getAuthSource() === $target->getAuthSource();
+        $actorAccount = $actor->getAccount();
+        $targetAccount = $target->getAccount();
+        if ($actorAccount === null || $targetAccount === null) {
+            return false;
+        }
+
+        return $actorAccount->getId() === $targetAccount->getId();
     }
 
     /**

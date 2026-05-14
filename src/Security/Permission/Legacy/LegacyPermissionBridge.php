@@ -70,25 +70,28 @@ final readonly class LegacyPermissionBridge
 
     /**
      * Legacy parity for `cs_context_item::mayEnter($userItem)` — looks
-     * up the room as a Doctrine entity, then defers to
-     * {@see RoomAccessChecker::canEnterByLegacyIdentity()} using the
-     * cs_user_item's (userId, authSource) identity triple.
+     * up the room as a Doctrine entity, resolves the user's Account via
+     * the `account_id` FK on the cs_user_item, and delegates to
+     * {@see RoomAccessChecker::canEnter()}.
      *
      * Returns false when the legacy item has no Doctrine `Room` row
-     * (portal / server / guide contexts).
+     * (portal / server / guide contexts) or when the cs_user_item is an
+     * orphan row (no account_id — cannot enter anything).
      */
     public function userCanEnter(cs_context_item $room, cs_user_item $user): bool
     {
+        if ($user->isRoot()) {
+            return true;
+        }
         $doctrineRoom = $this->roomFromLegacy($room);
         if ($doctrineRoom === null) {
             return false;
         }
-        $authSource = $user->getAuthSource();
-        return $this->roomAccessChecker->canEnterByLegacyIdentity(
-            (string) $user->getUserID(),
-            $authSource !== null ? (int) $authSource : null,
-            $doctrineRoom,
-        );
+        $account = $user->getAccount();
+        if ($account === null) {
+            return false;
+        }
+        return $this->roomAccessChecker->canEnter($account, $doctrineRoom);
     }
 
     /**
@@ -108,16 +111,20 @@ final readonly class LegacyPermissionBridge
 
     /**
      * Resolves a cs_user_item to its Doctrine `User` twin via the
-     * (userId, contextId, authSource) identity triple. Returns null
-     * when the lookup misses — caller decides what that means.
+     * `account_id` FK on the legacy row. Returns null for orphan rows
+     * (no account_id) or when no User row exists for the (account,
+     * context) tuple — caller decides what either means.
      */
     public function userFromLegacy(cs_user_item $user): ?User
     {
-        $authSource = $user->getAuthSource();
-        return $this->userRepository->findOneByLegacyIdentity(
-            (string) $user->getUserID(),
+        $accountId = $user->getAccountID();
+        if ($accountId === null) {
+            return null;
+        }
+
+        return $this->userRepository->findByAccountIdAndContext(
+            $accountId,
             (int) $user->getContextID(),
-            $authSource !== null ? (int) $authSource : null,
         );
     }
 

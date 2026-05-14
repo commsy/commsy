@@ -52,10 +52,12 @@ class AccountCreatorFacade
          */
         $this->legacyEnvironment->setCurrentPortalID($account->getPortal()?->getId());
 
-        // Create portal user
-        // The private room item will also be created
+        // Create portal user. The private room item will also be created.
+        // `setAccountID` must run before `save()`: the legacy save path
+        // resolves the linked Account via `cs_user_item::getAccountID()`
+        // to populate the row's `account_id` column on INSERT.
         $portalUser = $userManager->getNewItem();
-        $portalUser->setAuthSource($account->getAuthSource()->getId());
+        $portalUser->setAccountID($account->getId());
         $portalUser->setContextID($account->getPortal()?->getId());
         $portalUser->setUserID($account->getUsername());
         $portalUser->setFirstname($account->getFirstname());
@@ -86,14 +88,12 @@ class AccountCreatorFacade
     private function assertNoOrphanProfilesForNewAccount(Account $account): void
     {
         $portal = $account->getPortal();
-        $authSource = $account->getAuthSource();
-        if ($portal === null || $authSource === null) {
+        if ($portal === null) {
             return;
         }
 
-        $orphans = $this->userRepository->findActiveProfilesByUsernameInPortal(
+        $orphans = $this->userRepository->findActiveOrphansByUsernameInPortal(
             $account->getUsername(),
-            $authSource->getId(),
             $portal->getId(),
         );
 
@@ -108,7 +108,6 @@ class AccountCreatorFacade
             [
                 'username' => $account->getUsername(),
                 'portal_id' => $portal->getId(),
-                'auth_source_id' => $authSource->getId(),
                 'orphan_count' => count($orphans),
                 'orphan_item_ids' => $itemIds,
             ]

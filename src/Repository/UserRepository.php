@@ -105,13 +105,11 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('u')
             ->where('IDENTITY(u.room) = :contextId')
-            ->andWhere('u.authSource = :authSourceId')
-            ->andWhere('u.userId = :username')
+            ->andWhere('IDENTITY(u.account) = :accountId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $account->getPortal())
-            ->setParameter('authSourceId', $account->getAuthSource()->getId())
-            ->setParameter('username', $account->getUsername())
+            ->setParameter('accountId', $account->getId())
             ->getQuery()
             ->getOneOrNullResult();
     }
@@ -121,86 +119,73 @@ class UserRepository extends ServiceEntityRepository
      * Generalizes {@see findPortalUser()}: pass the portal id to find the
      * portal-level user, or a room item_id to find the room-level user.
      *
-     * Mirrors `cs_user_manager::getUserListByLimits` setup
-     * (context_id + user_id + auth_source + alive). Returns null when the
-     * account has no membership in that context.
+     * Returns null when the account has no membership in that context.
      *
-     * Used by the new {@see \App\Security\Permission} services as their
-     * primary "who is this Account in this context?" lookup — replaces
-     * `cs_user_item::getRelatedUserItemInContext()` in legacy-free code.
+     * Used by the {@see \App\Security\Permission} services as their primary
+     * "who is this Account in this context?" lookup.
      */
     public function findInContext(Account $account, int $contextId): ?User
     {
         return $this->createQueryBuilder('u')
             ->where('IDENTITY(u.room) = :contextId')
-            ->andWhere('u.authSource = :authSourceId')
-            ->andWhere('u.userId = :username')
+            ->andWhere('IDENTITY(u.account) = :accountId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleter IS NULL')
             ->setParameter('contextId', $contextId)
-            ->setParameter('authSourceId', $account->getAuthSource()?->getId())
-            ->setParameter('username', $account->getUsername())
+            ->setParameter('accountId', $account->getId())
             ->getQuery()
             ->getOneOrNullResult();
     }
 
     /**
-     * Looks up the Doctrine User entity matching a legacy cs_user_item's
-     * identity triple (userId + contextId + authSource). The new
-     * Permission services consume Doctrine entities only — this is the
-     * conversion seam used by the cs_item.may* wrappers during the
-     * Phase 2/Phase 5 transition. Goes away once the legacy methods are
-     * removed.
+     * Looks up the Doctrine User entity for a legacy {@see \cs_user_item}'s
+     * account binding in a given context. The new Permission services
+     * consume Doctrine entities only — this is the conversion seam used by
+     * the legacy bridge.
      */
-    public function findOneByLegacyIdentity(string $userId, int $contextId, ?int $authSourceId): ?User
+    public function findByAccountIdAndContext(int $accountId, int $contextId): ?User
     {
         return $this->createQueryBuilder('u')
-            ->where('u.userId = :userId')
+            ->where('IDENTITY(u.account) = :accountId')
             ->andWhere('IDENTITY(u.room) = :contextId')
-            ->andWhere('u.authSource = :authSourceId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleter IS NULL')
-            ->setParameter('userId', $userId)
+            ->setParameter('accountId', $accountId)
             ->setParameter('contextId', $contextId)
-            ->setParameter('authSourceId', $authSourceId)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
     /**
-     * Finds non-soft-deleted user rows matching a given (username, auth_source)
-     * tuple within a single portal — regardless of whether their `account_id`
-     * FK is set, NULL, or pointing to a different account.
+     * Finds non-soft-deleted **orphan** user rows for a given username inside
+     * a portal — rows whose `account_id` is NULL, i.e. that no specific
+     * account claims any more.
      *
-     * This is the building block for the Phase 1 orphan sweep in
-     * {@see \App\Account\AccountDeleter::delete} and the fail-loud sanity check
-     * in {@see \App\Facade\AccountCreatorFacade::persistNewAccount}.
+     * Building block for two safety nets:
+     *  - The Phase 1 sweep in {@see \App\Account\AccountDeleter::delete}
+     *    catches orphans that share the deleted account's username in its
+     *    portal before the account row is removed.
+     *  - The fail-loud guard in
+     *    {@see \App\Facade\AccountCreatorFacade::persistNewAccount} aborts
+     *    the signup when an orphan with the new account's username already
+     *    sits in the target portal.
      *
-     * `IDENTITY(u.portal) = :portalId` is the portal scope: `user.portal_id`
-     * is reliably populated since migration `Version20251128124048` (backfilled
-     * from `context_id`/`auth_source`), so this single predicate covers
-     * portal users AND room users in every room belonging to the portal.
-     *
-     * Callers must NOT use this for "active user in context" lookups — that's
-     * `findPortalUser()` / `findAllByRoomStatus()`. This method intentionally
-     * crosses account boundaries to catch rows that no specific account
-     * "owns" any more.
+     * Rows that legitimately belong to a *different* account in the same
+     * portal (possible when accounts share a username across different
+     * auth sources) are intentionally excluded — they are not orphans and
+     * must not be touched.
      *
      * @return User[]
      */
-    public function findActiveProfilesByUsernameInPortal(
-        string $username,
-        int $authSourceId,
-        int $portalId
-    ): array {
+    public function findActiveOrphansByUsernameInPortal(string $username, int $portalId): array
+    {
         return $this->createQueryBuilder('u')
             ->where('u.userId = :username')
-            ->andWhere('u.authSource = :authSourceId')
             ->andWhere('IDENTITY(u.portal) = :portalId')
+            ->andWhere('u.account IS NULL')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleter IS NULL')
             ->setParameter('username', $username)
-            ->setParameter('authSourceId', $authSourceId)
             ->setParameter('portalId', $portalId)
             ->getQuery()
             ->getResult();
@@ -218,11 +203,9 @@ class UserRepository extends ServiceEntityRepository
             ->innerJoin('u.room', 'r', Join::WITH)
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleter IS NULL')
-            ->andWhere('u.userId = :userId')
-            ->andWhere('u.authSource = :authSource')
+            ->andWhere('IDENTITY(u.account) = :accountId')
             ->setParameters(new ArrayCollection([
-                new Parameter('userId', $account->getUsername()),
-                new Parameter('authSource', $account->getAuthSource()),
+                new Parameter('accountId', $account->getId()),
             ]));
 
         if ($filterArchived !== 'all') {

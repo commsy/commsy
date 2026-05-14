@@ -150,9 +150,8 @@ class AccountDeleter
         // sweep and now (race condition, downstream side-effect we missed, …).
         // We soft-delete it and log loudly — drift = 0 is the invariant we
         // want monitored in Phase 4.
-        $stragglers = $this->userRepository->findActiveProfilesByUsernameInPortal(
+        $stragglers = $this->userRepository->findActiveOrphansByUsernameInPortal(
             $account->getUsername(),
-            $account->getAuthSource()->getId(),
             $account->getPortal()->getId(),
         );
         if ($stragglers !== []) {
@@ -173,12 +172,9 @@ class AccountDeleter
             }
         }
 
-        // NULL account_id on remaining soft-deleted user references
-        $usersWithAccountRef = $this->userRepository->findBy(['account' => $account]);
-        foreach ($usersWithAccountRef as $userWithAccountRef) {
-            $userWithAccountRef->setAccount(null);
-        }
-
+        // FK `user.account_id` is declared ON DELETE SET NULL — Doctrine
+        // removing the account row makes the DB null out every surviving
+        // (soft-deleted) user reference automatically.
         $this->entityManager->remove($account);
         $this->entityManager->flush();
 
@@ -203,14 +199,12 @@ class AccountDeleter
     private function collectOrphansForAccount(Account $account, cs_list $legacyList): array
     {
         $portal = $account->getPortal();
-        $authSource = $account->getAuthSource();
-        if ($portal === null || $authSource === null) {
+        if ($portal === null) {
             return [];
         }
 
-        $sweep = $this->userRepository->findActiveProfilesByUsernameInPortal(
+        $sweep = $this->userRepository->findActiveOrphansByUsernameInPortal(
             $account->getUsername(),
-            $authSource->getId(),
             $portal->getId(),
         );
         if ($sweep === []) {

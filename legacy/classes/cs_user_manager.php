@@ -104,14 +104,12 @@ class cs_user_manager extends cs_manager
 
     public $_context_array_limit = null;
 
-    public $_auth_source_limit = null;
-
     /**
-     * When set, limits selects to `user.account_id = <value>`. Preferred over
-     * `setUserIDLimit` + `setAuthSourceLimit` for identity-bound lookups:
-     * account_id is the actual primary join key since
-     * `Version20250514125210`, and using it sidesteps the username-reuse
-     * inheritance bug entirely.
+     * When set, limits selects to `user.account_id = <value>`. Since
+     * `Version20250514125210` the account_id FK is the identity key —
+     * filtering by it is the safe alternative to the (user_id,
+     * auth_source) tuple, which can collide across deprovisioned and
+     * freshly-registered accounts.
      */
     public ?int $_account_id_limit = null;
 
@@ -161,7 +159,6 @@ class cs_user_manager extends cs_manager
         $this->_id_array_limit = [];
         $this->_context_array_limit = null;
         $this->_contact_moderator_limit = null;
-        $this->_auth_source_limit = null;
         $this->_account_id_limit = null;
         $this->_limit_email = null;
     }
@@ -171,17 +168,11 @@ class cs_user_manager extends cs_manager
         $this->_limit_email = $value;
     }
 
-    public function setAuthSourceLimit($value)
-    {
-        $this->_auth_source_limit = (int)$value;
-    }
-
     /**
-     * Limits selects to a single account id. Use this for identity-bound
-     * lookups instead of combining `setUserIDLimit` with `setAuthSourceLimit`:
-     * the account_id FK is the actual identity key, while (user_id,
-     * auth_source) can collide across deprovisioned and freshly-registered
-     * accounts that share a username.
+     * Limits selects to a single account id. This is the identity-safe
+     * counterpart to the deprecated (user_id, auth_source) tuple lookup —
+     * the account_id FK was added in `Version20250514125210` and the
+     * `auth_source` column was dropped in the user-consistency refactor.
      */
     public function setAccountIDLimit(int $value): void
     {
@@ -456,10 +447,6 @@ class cs_user_manager extends cs_manager
             }
         }
 
-        if (isset($this->_auth_source_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.auth_source = "' . encode(AS_DB, $this->_auth_source_limit) . '"';
-        }
-
         if (true == $this->_delete_limit) {
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.deleter_id IS NULL';
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL';
@@ -676,10 +663,10 @@ class cs_user_manager extends cs_manager
         return $user;
     }
 
-    public function getAllUsersByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id)
+    public function getAllUsersByAccountAndRoomIDLimit(int $accountId, array $room_id_array): array
     {
         $retour = [];
-        $user_array = $this->getUserArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id);
+        $user_array = $this->getUserArrayByAccountAndRoomIDLimit($accountId, $room_id_array);
         if (!empty($user_array)) {
             foreach ($user_array as $key => $value) {
                 $retour[$key] = $this->_buildItem($value);
@@ -689,10 +676,10 @@ class cs_user_manager extends cs_manager
         return $retour;
     }
 
-    public function getMembershipContextIDArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id)
+    public function getMembershipContextIDArrayByAccountAndRoomIDLimit(int $accountId, array $room_id_array): array
     {
         $retour = [];
-        $user_array = $this->getUserArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id);
+        $user_array = $this->getUserArrayByAccountAndRoomIDLimit($accountId, $room_id_array);
         if (!empty($user_array)) {
             $room_id_array2 = [];
             foreach ($user_array as $value) {
@@ -710,15 +697,17 @@ class cs_user_manager extends cs_manager
         return $retour;
     }
 
-    public function getUserArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id)
+    public function getUserArrayByAccountAndRoomIDLimit(int $accountId, array $room_id_array): array
     {
         $user_array = [];
-        if (isset($room_id_array) and !empty($room_id_array)) {
-            $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user') . ' WHERE ' . $this->addDatabasePrefix('user') . '.context_id IN (' . implode(',', $room_id_array) . ') AND ' . $this->addDatabasePrefix('user') . '.user_id = "' . encode(AS_DB, $user_id) . '" AND ' . $this->addDatabasePrefix('user') . '.status >= "2"';
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.deleter_id IS NULL';
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL';
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.auth_source = "' . $auth_source_id . '"';
-            $query .= ' GROUP BY ' . $this->addDatabasePrefix('user') . '.item_id';
+        if (!empty($room_id_array)) {
+            $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user')
+                . ' WHERE ' . $this->addDatabasePrefix('user') . '.context_id IN (' . implode(',', $room_id_array) . ')'
+                . ' AND ' . $this->addDatabasePrefix('user') . '.account_id = "' . $accountId . '"'
+                . ' AND ' . $this->addDatabasePrefix('user') . '.status >= "2"'
+                . ' AND ' . $this->addDatabasePrefix('user') . '.deleter_id IS NULL'
+                . ' AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL'
+                . ' GROUP BY ' . $this->addDatabasePrefix('user') . '.item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 trigger_error('Problems selecting list of user items.', E_USER_WARNING);
@@ -822,7 +811,6 @@ class cs_user_manager extends cs_manager
             ->set('is_contact', ':isContact')
             ->set('account_id', ':accountId')
             ->set('user_id', ':userId')
-            ->set('auth_source', ':authSource')
             ->set('firstname', ':firstname')
             ->set('lastname', ':lastname')
             ->set('email', ':email')
@@ -838,7 +826,6 @@ class cs_user_manager extends cs_manager
             ->setParameter('isContact', $contact_status)
             ->setParameter('accountId', $item->getAccountID())
             ->setParameter('userId', $item->getUserID())
-            ->setParameter('authSource', $item->getAuthSource())
             ->setParameter('firstname', $item->getFirstname())
             ->setParameter('lastname', $item->getLastname())
             ->setParameter('email', $item->getRoomEmail())
@@ -924,7 +911,6 @@ class cs_user_manager extends cs_manager
             ->setValue('modification_date', ':modificationDate')
             ->setValue('account_id', ':accountId')
             ->setValue('user_id',  ':userId')
-            ->setValue('auth_source', ':authSource')
             ->setValue('status', ':status')
             ->setValue('firstname', ':firstname')
             ->setValue('lastname', ':lastname')
@@ -941,7 +927,6 @@ class cs_user_manager extends cs_manager
             ->setParameter('modificationDate', $now)
             ->setParameter('accountId', $account->getID())
             ->setParameter('userId', $item->getUserID())
-            ->setParameter('authSource', $item->getAuthSource())
             ->setParameter('status', $item->getStatus())
             ->setParameter('firstname', $item->getFirstname())
             ->setParameter('lastname', $item->getLastname())

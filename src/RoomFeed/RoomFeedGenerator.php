@@ -242,13 +242,12 @@ class RoomFeedGenerator
          */
         /** @var Account $account */
         $account = $this->security->getUser();
-        $authSource = $account->getAuthSource();
 
         $userManager = $this->legacyEnvironment->getUserManager();
         $roomIdsActivated = [];
 
         foreach ($roomIds as $roomId) {
-            $userList = $userManager->getUserArrayByUserAndRoomIDLimit($currentUser->getUserId(), [$roomId], $authSource->getId());
+            $userList = $userManager->getUserArrayByAccountAndRoomIDLimit($account->getId(), [$roomId]);
             if (!empty($userList)) {
                 $roomIdsActivated[] = $roomId;
             }

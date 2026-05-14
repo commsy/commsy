@@ -99,12 +99,11 @@ class InsertUserroomAction
         if (!empty($versionIdsByCopyIds) && !empty($userRoomIds)) {
             /** @var Account $account */
             $account = $this->security->getUser();
-            $authSource = $account->getAuthSource();
             $userManager = $this->legacyEnvironment->getUserManager();
 
             // for the current user, get his/her related users from the user rooms identified by the IDs in $userRoomIds
             /** @var cs_user_item[] $relatedUsers */
-            $relatedUsers = $userManager->getAllUsersByUserAndRoomIDLimit($currentUser->getUserId(), $userRoomIds, $authSource->getId());
+            $relatedUsers = $userManager->getAllUsersByAccountAndRoomIDLimit($account->getId(), $userRoomIds);
 
             // for all found related users, mark the copied items as read & noticed
             if (!empty($relatedUsers)) {

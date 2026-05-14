@@ -60,7 +60,12 @@ final readonly class UserEditChecker
 
     private function isSameAccountIdentity(User $actor, User $target): bool
     {
-        return $actor->getUserId() === $target->getUserId()
-            && $actor->getAuthSource() === $target->getAuthSource();
+        $actorAccount = $actor->getAccount();
+        $targetAccount = $target->getAccount();
+        if ($actorAccount === null || $targetAccount === null) {
+            return false;
+        }
+
+        return $actorAccount->getId() === $targetAccount->getId();
     }
 }

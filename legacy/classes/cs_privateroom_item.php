@@ -418,8 +418,12 @@ class cs_privateroom_item extends cs_room_item
             }
             $owner = $this->getOwnerUserItem();
             if (isset($owner)) {
+                $ownerAccountId = $owner->getAccountID();
+                if ($ownerAccountId === null) {
+                    return $array;
+                }
                 $user_manager = $this->_environment->getUserManager();
-                $room_id_array2 = $user_manager->getMembershipContextIDArrayByUserAndRoomIDLimit($owner->getUserID(), $room_id_array, $owner->getAuthSource());
+                $room_id_array2 = $user_manager->getMembershipContextIDArrayByAccountAndRoomIDLimit($ownerAccountId, $room_id_array);
 
                 foreach ($array as $value) {
                     if ($value < 0 or in_array($value, $room_id_array2)) {

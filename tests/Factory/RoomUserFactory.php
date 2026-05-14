@@ -125,7 +125,6 @@ final class RoomUserFactory extends PersistentObjectFactory
                 $user->setFirstname($account->getFirstname());
                 $user->setLastname($account->getLastname());
                 $user->setEmail($account->getEmail());
-                $user->setAuthSource($account->getAuthSource()?->getId());
                 $user->setPortal($account->getAuthSource()?->getPortal());
 
                 $conn = $this->entityManager->getConnection();
@@ -164,7 +163,6 @@ final class RoomUserFactory extends PersistentObjectFactory
                     'lastname' => $user->getLastname(),
                     'email' => $user->getEmail(),
                     'city' => $user->getCity(),
-                    'auth_source' => $user->getAuthSource(),
                     'visible' => 1,
                     'extras' => $user->getExtras() ? serialize($user->getExtras()) : null,
                     'description' => $user->getDescription(),
