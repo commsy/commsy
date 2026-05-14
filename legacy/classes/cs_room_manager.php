@@ -35,6 +35,15 @@ class cs_room_manager extends cs_context_manager
      */
     public $_user_id_limit = null;
 
+    /**
+     * When set, filters rooms to those that have a non-deleted user row with
+     * this account_id. Preferred over the legacy `setUserIDLimit +
+     * setAuthSourceLimit` combination, which is identity-fragile because the
+     * (user_id, auth_source) tuple can collide across deprovisioned and newly
+     * registered accounts that share a username.
+     */
+    public ?int $_account_id_limit = null;
+
     public $_all_room_limit = false;
 
     public $_time_limit = null;
@@ -75,6 +84,7 @@ class cs_room_manager extends cs_context_manager
         $this->_from_limit = null;
         $this->_interval_limit = null;
         $this->_user_id_limit = null;
+        $this->_account_id_limit = null;
         $this->_all_room_limit = false;
         $this->_order = null;
         $this->_deleted_limit = null;
@@ -124,9 +134,15 @@ class cs_room_manager extends cs_context_manager
         $this->_user_id_limit = (string) $limit;
     }
 
-    public function setAuthSourceLimit($limit)
+    /**
+     * Filters rooms to those where the given account has a non-deleted user
+     * row. Replaces the legacy `setUserIDLimit + setAuthSourceLimit`
+     * combination — both columns are gone after the user-consistency
+     * refactor.
+     */
+    public function setAccountIDLimit(int $accountId): void
     {
-        $this->_auth_source_limit = (int) $limit;
+        $this->_account_id_limit = $accountId;
     }
 
     public function setGetAllRoomLimit()
@@ -195,8 +211,10 @@ class cs_room_manager extends cs_context_manager
 
         $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
-        // user id limit
-        if (isset($this->_user_id_limit)) {
+        // membership filter — joins the user table so the WHERE clauses
+        // below can constrain to rooms where the given user has a
+        // non-deleted row.
+        if (isset($this->_user_id_limit) || isset($this->_account_id_limit)) {
             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
             if (!$this->_all_room_limit) {
                 $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
@@ -260,8 +278,8 @@ class cs_room_manager extends cs_context_manager
         if (!empty($this->_user_id_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB, $this->_user_id_limit).'"';
         }
-        if (!empty($this->_auth_source_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB, $this->_auth_source_limit).'"';
+        if (isset($this->_account_id_limit)) {
+            $query .= ' AND '.$this->addDatabasePrefix('user').'.account_id="'.encode(AS_DB, $this->_account_id_limit).'"';
         }
 
         // time (clock pulses)
@@ -384,7 +402,7 @@ class cs_room_manager extends cs_context_manager
 
     public function getRelatedRoomListForUser($user_item): cs_list
     {
-        return $this->getRelatedContextListForUserInt($user_item->getUserID(), $user_item->getAuthSource(), $this->_environment->getCurrentPortalID());
+        return $this->getRelatedContextListForUserInt($user_item->getAccountID(), $this->_environment->getCurrentPortalID());
     }
 
     public function getMaxActivityPoints()
@@ -532,6 +550,13 @@ class cs_room_manager extends cs_context_manager
             return $list;
         }
 
+        // Identity-bound filter via account_id. Orphan rows (no account_id)
+        // do not belong to any account and therefore have no member rooms.
+        $accountId = $user->getAccountID();
+        if ($accountId === null) {
+            return $list;
+        }
+
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
         $queryBuilder
@@ -544,13 +569,11 @@ class cs_room_manager extends cs_context_manager
             ->andWhere('r.deleter_id IS NULL')
             ->andWhere('r.deletion_date IS NULL')
             ->andWhere('r.type = :type')
-            ->andWhere('u.auth_source = :authSource')
+            ->andWhere('u.account_id = :accountId')
             ->andWhere('u.deleter_id IS NULL')
             ->andWhere('u.deletion_date IS NULL')
-            ->andWhere('u.user_id = :userId')
             ->setParameter('type', 'userroom')
-            ->setParameter('authSource', $user->getAuthSource())
-            ->setParameter('userId', $user->getUserID());
+            ->setParameter('accountId', $accountId);
 
         if ($withExtras) {
             $queryBuilder->addSelect('r.extras');

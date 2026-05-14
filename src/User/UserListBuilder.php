@@ -144,14 +144,15 @@ class UserListBuilder
         //       for some reason requires a _context_array_limit array to start with index 0
         $this->contextIds = array_values($this->contextIds);
 
-        // gather IDs of all related users
+        // gather IDs of all related users. Identity is keyed by account_id —
+        // see App\Account\AccountDeleter for the orphan sweep that handles
+        // rows outside this account_id-bound result.
         $userList = new cs_list();
         if ($this->contextIds) {
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->resetLimits();
             $userManager->setContextArrayLimit($this->contextIds);
-            $userManager->setUserIDLimit($this->account->getUsername());
-            $userManager->setAuthSourceLimit($this->account->getAuthSource()->getId());
+            $userManager->setAccountIDLimit($this->account->getId());
             $userManager->select();
 
             $userList = $userManager->get();

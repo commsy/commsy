@@ -109,12 +109,10 @@ class RoomRepository extends ServiceEntityRepository
             ->andWhere('r.contextId = :contextId')
             ->andWhere('u.deletionDate IS NULL')
             ->andWhere('u.deleter IS NULL')
-            ->andWhere('u.userId = :userId')
-            ->andWhere('u.authSource = :authSource')
+            ->andWhere('IDENTITY(u.account) = :accountId')
             ->andWhere($qb->expr()->in('r.type', $roomTypes))
             ->setParameter(':contextId', $account->getPortal()->getId())
-            ->setParameter(':userId', $account->getUsername())
-            ->setParameter(':authSource', $account->getAuthSource()->getId())
+            ->setParameter(':accountId', $account->getId())
             ->getQuery()
             ->getResult();
     }
@@ -126,20 +124,15 @@ class RoomRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
             ->select('r')
-            ->innerJoin(User::class, 'u', Join::WITH, 'u.room = r AND u.deleter IS NULL AND u.deletionDate IS NULL')
-            ->innerJoin(Account::class, 'a', Join::WITH, 'a.username = u.userId AND a.authSource = u.authSource')
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.room = r AND u.deleter IS NULL AND u.deletionDate IS NULL AND IDENTITY(u.account) = :accountId')
             ->where('r.contextId = :portalId')
             ->andWhere('r.deleter IS NULL')
             ->andWhere('r.deletionDate IS NULL')
             ->andWhere('r.type = :type')
-            ->andWhere('a.authSource = :authSource')
-            ->andWhere('a.portal = :portalId')
-            ->andWhere('a.username = :username')
             ->orderBy('r.creationDate', 'DESC')
             ->setParameters(new ArrayCollection([
                 new Parameter('portalId', $portalId),
-                new Parameter('username', $account->getUsername()),
-                new Parameter('authSource', $account->getAuthSource()->getId()),
+                new Parameter('accountId', $account->getId()),
                 new Parameter('type', 'privateroom'),
             ]))
             ->getQuery()

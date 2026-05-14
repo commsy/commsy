@@ -40,8 +40,6 @@ class cs_privateroom_manager extends cs_room2_manager
 
     private bool $_active_limit = false;
 
-    private ?string $_user_id_limit = null;
-
     private array $roomArrayCache = [];
 
     /** constructor
@@ -67,7 +65,6 @@ class cs_privateroom_manager extends cs_room2_manager
         $this->_interval_limit = null;
         $this->_order = null;
         $this->_time_limit = null;
-        $this->_user_id_limit = null;
         $this->_room_type = CS_PRIVATEROOM_TYPE;
         $this->_active_limit = false;
     }
@@ -114,20 +111,6 @@ class cs_privateroom_manager extends cs_room2_manager
         $this->_time_limit = $limit;
     }
 
-    /** set user id limit.
-     *
-     * @param string limit userid limit for selected project rooms
-     */
-    public function setUserIDLimit($limit)
-    {
-        $this->_user_id_limit = (string) $limit;
-    }
-
-    public function setAuthSourceLimit($limit)
-    {
-        $this->_auth_source_limit = (int) $limit;
-    }
-
     /** select privatrooms limited by limits
      * this method returns a list (cs_list) of privatrooms within the database limited by the limits. the select statement is a bit tricky, see source code for further information.
      */
@@ -142,17 +125,10 @@ class cs_privateroom_manager extends cs_room2_manager
         }
 
         $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
-        // user id limit
-        if (isset($this->_user_id_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
-            if (!$this->_all_room_limit) {
-                $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
-            }
-        }
 
         if ($this->_active_limit) {
             $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id = '.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
-            $query .= ' INNER JOIN '.$this->addDatabasePrefix('accounts').' ON '.$this->addDatabasePrefix('user').'.user_id = '.$this->addDatabasePrefix('accounts').'.username AND '.$this->addDatabasePrefix('user').'.auth_source = '.$this->addDatabasePrefix('accounts').'.auth_source_id';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('accounts').' ON '.$this->addDatabasePrefix('user').'.account_id = '.$this->addDatabasePrefix('accounts').'.id';
         }
 
         $query .= ' WHERE 1';
@@ -160,14 +136,6 @@ class cs_privateroom_manager extends cs_room2_manager
         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB,
                 $this->_room_type).'"';
 
-        if (isset($this->_user_id_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,
-                $this->_user_id_limit).'"';
-        }
-        if (isset($this->_auth_source_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB,
-                $this->_auth_source_limit).'"';
-        }
         // insert limits into the select statement
         if (true == $this->_delete_limit) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
@@ -334,6 +302,11 @@ class cs_privateroom_manager extends cs_room2_manager
             ) {
                 return $this->roomArrayCache[$user_item->getItemID()];
             } else {
+                $accountId = $user_item->getAccountID();
+                if ($accountId === null) {
+                    return null;
+                }
+
                 $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
                 $queryBuilder
@@ -342,14 +315,12 @@ class cs_privateroom_manager extends cs_room2_manager
                     ->innerJoin('r', $this->addDatabasePrefix('user'), 'u', 'u.context_id = r.item_id')
                     ->andWhere('r.deleter_id IS NULL')
                     ->andWhere('r.deletion_date IS NULL')
-                    ->andWhere('u.auth_source = :authSource')
+                    ->andWhere('u.account_id = :accountId')
                     ->andWhere('u.deleter_id IS NULL')
                     ->andWhere('u.deletion_date IS NULL')
-                    ->andWhere('u.user_id = :userId')
                     ->andWhere('r.type = :type')
                     ->andWhere('r.context_id = :contextId')
-                    ->setParameter('authSource', $user_item->getAuthSource())
-                    ->setParameter('userId', $user_item->getUserID())
+                    ->setParameter('accountId', $accountId)
                     ->setParameter('type', 'privateroom')
                     ->setParameter('contextId', $context_id);
 

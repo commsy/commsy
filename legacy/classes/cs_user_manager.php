@@ -104,7 +104,14 @@ class cs_user_manager extends cs_manager
 
     public $_context_array_limit = null;
 
-    public $_auth_source_limit = null;
+    /**
+     * When set, limits selects to `user.account_id = <value>`. Since
+     * `Version20250514125210` the account_id FK is the identity key —
+     * filtering by it is the safe alternative to the (user_id,
+     * auth_source) tuple, which can collide across deprovisioned and
+     * freshly-registered accounts.
+     */
+    public ?int $_account_id_limit = null;
 
     public $_cache_sql = [];
 
@@ -152,7 +159,7 @@ class cs_user_manager extends cs_manager
         $this->_id_array_limit = [];
         $this->_context_array_limit = null;
         $this->_contact_moderator_limit = null;
-        $this->_auth_source_limit = null;
+        $this->_account_id_limit = null;
         $this->_limit_email = null;
     }
 
@@ -161,9 +168,15 @@ class cs_user_manager extends cs_manager
         $this->_limit_email = $value;
     }
 
-    public function setAuthSourceLimit($value)
+    /**
+     * Limits selects to a single account id. This is the identity-safe
+     * counterpart to the deprecated (user_id, auth_source) tuple lookup —
+     * the account_id FK was added in `Version20250514125210` and the
+     * `auth_source` column was dropped in the user-consistency refactor.
+     */
+    public function setAccountIDLimit(int $value): void
     {
-        $this->_auth_source_limit = (int)$value;
+        $this->_account_id_limit = $value;
     }
 
     /** set age limit
@@ -334,45 +347,38 @@ class cs_user_manager extends cs_manager
         return $this->getIDArray();
     }
 
-    public function isUserInContext($user_id, $context_id, $auth_source): bool
+    public function isUserInContext(int $accountId, int $contextId): bool
     {
-        if (isset($this->_is_user_in_context_cache[$user_id . $auth_source])) {
-            if (isset($this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) and 'is_user' == $this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            $qb = $this->_db_connector->getConnection()->createQueryBuilder();
+        if (isset($this->_is_user_in_context_cache[$accountId])) {
+            return isset($this->_is_user_in_context_cache[$accountId][$contextId])
+                && 'is_user' === $this->_is_user_in_context_cache[$accountId][$contextId];
+        }
 
-            $qb
-                ->select('u.context_id')
-                ->distinct()
-                ->from($this->addDatabasePrefix('user'), 'u')
-                ->where('u.user_id = :userId')
-                ->andWhere('u.auth_source = :authSource')
-                ->andWhere('u.deleter_id IS NULL')
-                ->andWhere('u.deletion_date IS NULL')
-                ->andWhere('u.status >= :status')
-                ->setParameter('userId', $user_id)
-                ->setParameter('authSource', $auth_source)
-                ->setParameter('status', 2);
+        $qb = $this->_db_connector->getConnection()->createQueryBuilder();
+        $qb
+            ->select('u.context_id')
+            ->distinct()
+            ->from($this->addDatabasePrefix('user'), 'u')
+            ->where('u.account_id = :accountId')
+            ->andWhere('u.deleter_id IS NULL')
+            ->andWhere('u.deletion_date IS NULL')
+            ->andWhere('u.status >= :status')
+            ->setParameter('accountId', $accountId)
+            ->setParameter('status', 2);
 
-            try {
-                $result = $this->_db_connector->performQuery($qb->getSQL(), $qb->getParameters());
-            } catch (\Doctrine\DBAL\Exception) {
-                trigger_error('Problems selecting user.', E_USER_WARNING);
-            }
+        $result = null;
+        try {
+            $result = $this->_db_connector->performQuery($qb->getSQL(), $qb->getParameters());
+        } catch (\Doctrine\DBAL\Exception) {
+            trigger_error('Problems selecting user.', E_USER_WARNING);
+        }
 
-            if (isset($result)) {
-                foreach ($result as $r) {
-                    $this->_is_user_in_context_cache[$user_id . $auth_source][$r['context_id']] = 'is_user';
-                }
-                if (isset($this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) &&
-                    'is_user' == $this->_is_user_in_context_cache[$user_id . $auth_source][$context_id]) {
-                    return true;
-                }
+        if (isset($result)) {
+            foreach ($result as $r) {
+                $this->_is_user_in_context_cache[$accountId][$r['context_id']] = 'is_user';
             }
+            return isset($this->_is_user_in_context_cache[$accountId][$contextId])
+                && 'is_user' === $this->_is_user_in_context_cache[$accountId][$contextId];
         }
 
         return false;
@@ -422,6 +428,10 @@ class cs_user_manager extends cs_manager
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.user_id = "' . encode(AS_DB, $this->_user_limit) . '"';
         }
 
+        if (isset($this->_account_id_limit)) {
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.account_id = "' . encode(AS_DB, $this->_account_id_limit) . '"';
+        }
+
         if (empty($this->_id_array_limit)) {
             if (isset($this->_context_array_limit)
                 and !empty($this->_context_array_limit)
@@ -435,10 +445,6 @@ class cs_user_manager extends cs_manager
             } else {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id IS NULL';
             }
-        }
-
-        if (isset($this->_auth_source_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.auth_source = "' . encode(AS_DB, $this->_auth_source_limit) . '"';
         }
 
         if (true == $this->_delete_limit) {
@@ -657,10 +663,10 @@ class cs_user_manager extends cs_manager
         return $user;
     }
 
-    public function getAllUsersByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id)
+    public function getAllUsersByAccountAndRoomIDLimit(int $accountId, array $room_id_array): array
     {
         $retour = [];
-        $user_array = $this->getUserArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id);
+        $user_array = $this->getUserArrayByAccountAndRoomIDLimit($accountId, $room_id_array);
         if (!empty($user_array)) {
             foreach ($user_array as $key => $value) {
                 $retour[$key] = $this->_buildItem($value);
@@ -670,10 +676,10 @@ class cs_user_manager extends cs_manager
         return $retour;
     }
 
-    public function getMembershipContextIDArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id)
+    public function getMembershipContextIDArrayByAccountAndRoomIDLimit(int $accountId, array $room_id_array): array
     {
         $retour = [];
-        $user_array = $this->getUserArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id);
+        $user_array = $this->getUserArrayByAccountAndRoomIDLimit($accountId, $room_id_array);
         if (!empty($user_array)) {
             $room_id_array2 = [];
             foreach ($user_array as $value) {
@@ -691,15 +697,17 @@ class cs_user_manager extends cs_manager
         return $retour;
     }
 
-    public function getUserArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id)
+    public function getUserArrayByAccountAndRoomIDLimit(int $accountId, array $room_id_array): array
     {
         $user_array = [];
-        if (isset($room_id_array) and !empty($room_id_array)) {
-            $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user') . ' WHERE ' . $this->addDatabasePrefix('user') . '.context_id IN (' . implode(',', $room_id_array) . ') AND ' . $this->addDatabasePrefix('user') . '.user_id = "' . encode(AS_DB, $user_id) . '" AND ' . $this->addDatabasePrefix('user') . '.status >= "2"';
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.deleter_id IS NULL';
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL';
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.auth_source = "' . $auth_source_id . '"';
-            $query .= ' GROUP BY ' . $this->addDatabasePrefix('user') . '.item_id';
+        if (!empty($room_id_array)) {
+            $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user')
+                . ' WHERE ' . $this->addDatabasePrefix('user') . '.context_id IN (' . implode(',', $room_id_array) . ')'
+                . ' AND ' . $this->addDatabasePrefix('user') . '.account_id = "' . $accountId . '"'
+                . ' AND ' . $this->addDatabasePrefix('user') . '.status >= "2"'
+                . ' AND ' . $this->addDatabasePrefix('user') . '.deleter_id IS NULL'
+                . ' AND ' . $this->addDatabasePrefix('user') . '.deletion_date IS NULL'
+                . ' GROUP BY ' . $this->addDatabasePrefix('user') . '.item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 trigger_error('Problems selecting list of user items.', E_USER_WARNING);
@@ -803,7 +811,6 @@ class cs_user_manager extends cs_manager
             ->set('is_contact', ':isContact')
             ->set('account_id', ':accountId')
             ->set('user_id', ':userId')
-            ->set('auth_source', ':authSource')
             ->set('firstname', ':firstname')
             ->set('lastname', ':lastname')
             ->set('email', ':email')
@@ -819,7 +826,6 @@ class cs_user_manager extends cs_manager
             ->setParameter('isContact', $contact_status)
             ->setParameter('accountId', $item->getAccountID())
             ->setParameter('userId', $item->getUserID())
-            ->setParameter('authSource', $item->getAuthSource())
             ->setParameter('firstname', $item->getFirstname())
             ->setParameter('lastname', $item->getLastname())
             ->setParameter('email', $item->getRoomEmail())
@@ -905,7 +911,6 @@ class cs_user_manager extends cs_manager
             ->setValue('modification_date', ':modificationDate')
             ->setValue('account_id', ':accountId')
             ->setValue('user_id',  ':userId')
-            ->setValue('auth_source', ':authSource')
             ->setValue('status', ':status')
             ->setValue('firstname', ':firstname')
             ->setValue('lastname', ':lastname')
@@ -922,7 +927,6 @@ class cs_user_manager extends cs_manager
             ->setParameter('modificationDate', $now)
             ->setParameter('accountId', $account->getID())
             ->setParameter('userId', $item->getUserID())
-            ->setParameter('authSource', $item->getAuthSource())
             ->setParameter('status', $item->getStatus())
             ->setParameter('firstname', $item->getFirstname())
             ->setParameter('lastname', $item->getLastname())
@@ -1087,21 +1091,6 @@ class cs_user_manager extends cs_manager
         } catch (\Doctrine\DBAL\Exception $e) {
             trigger_error('Problems updating user_id: ' . $e->getMessage(), E_USER_WARNING);
         }
-    }
-
-    public function exists($user_id, $auth_source = ''): bool
-    {
-        $this->setUserIDLimit($user_id);
-        if (!empty($auth_source)) {
-            $this->setAuthSourceLimit($auth_source);
-        }
-        $this->select();
-        $count = $this->getCountAll();
-        if (!empty($count) and $count > 0) {
-            return true;
-        }
-
-        return false;
     }
 
     // #########################################################

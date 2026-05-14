@@ -46,8 +46,12 @@ class NewsletterGenerator
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $userroomManager = $this->legacyEnvironment->getUserRoomManager();
 
-        $roomList = $roomManager->getRelatedContextListForUserInt($user->getUserID(),
-            $user->getAuthSource(), $portal->getItemID(), true, true);
+        $roomList = $roomManager->getRelatedContextListForUserInt(
+            $user->getAccountID(),
+            $portal->getItemID(),
+            true,
+            true,
+        );
 
         $userroomList = $userroomManager->getRelatedUserroomListForUser($user);
 
@@ -121,7 +125,10 @@ class NewsletterGenerator
             $roomData['pageImpressionsCount'] = $roomItem->getPageImpressionsForNewsletter($dayLimit);
             $roomData['activeMembersCount'] = $roomItem->getActiveMembersForNewsletter($dayLimit);
 
-            $refUser = $roomItem->getUserByUserID($user->getUserID(), $user->getAuthSource());
+            $userAccountId = $user->getAccountID();
+            $refUser = $userAccountId !== null
+                ? $roomItem->getUserByAccountID($userAccountId)
+                : null;
             if (!isset($refUser) || !($refUser->getItemID() > 0)) {
                 continue;
             }

@@ -418,8 +418,12 @@ class cs_privateroom_item extends cs_room_item
             }
             $owner = $this->getOwnerUserItem();
             if (isset($owner)) {
+                $ownerAccountId = $owner->getAccountID();
+                if ($ownerAccountId === null) {
+                    return $array;
+                }
                 $user_manager = $this->_environment->getUserManager();
-                $room_id_array2 = $user_manager->getMembershipContextIDArrayByUserAndRoomIDLimit($owner->getUserID(), $room_id_array, $owner->getAuthSource());
+                $room_id_array2 = $user_manager->getMembershipContextIDArrayByAccountAndRoomIDLimit($ownerAccountId, $room_id_array);
 
                 foreach ($array as $value) {
                     if ($value < 0 or in_array($value, $room_id_array2)) {
@@ -487,13 +491,18 @@ class cs_privateroom_item extends cs_room_item
                 }
             }
 
-            // get room list
+            // get room list — membership filter via account_id. Orphan
+            // current users (no account_id) have no membership-filtered
+            // room list to return.
+            $accountId = $current_user_item->getAccountID();
+            if ($accountId === null) {
+                return null;
+            }
             $room_manager = $this->_environment->getRoomManager();
             $room_manager->setRoomTypeLimit('');
             $room_manager->setIDArrayLimit($room_id_array);
             $room_manager->setOrder('id_array');
-            $room_manager->setUserIDLimit($current_user_item->getUserID());
-            $room_manager->setAuthSourceLimit($current_user_item->getAuthSource());
+            $room_manager->setAccountIDLimit($accountId);
             $room_manager->select();
             $retour = $room_manager->get();
             unset($room_manager);

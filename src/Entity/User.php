@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Index(name: 'creator_idx', columns: ['creator_id'])]
 #[ORM\Index(name: 'deleted_idx', columns: ['deletion_date', 'deleter_id'])]
 #[ORM\Index(name: 'context_idx', columns: ['context_id'])]
-#[ORM\UniqueConstraint(name: 'unique_non_soft_deleted_idx', columns: ['user_id', 'auth_source', 'context_id', 'not_deleted'])]
+#[ORM\UniqueConstraint(name: 'unique_non_soft_deleted_idx', columns: ['account_id', 'context_id', 'not_deleted'])]
 class User
 {
     use EntityDatesTrait;
@@ -52,12 +52,15 @@ class User
     private ?bool $isNotDeleted = null;
 
     /*
-     * Currently, the account is still allowed to be null. When deleting an account it is removed from the accounts table
-     * (no soft-deletion), but the user entries will still remain in the user table. Right now they are not removed at
-     * all.
+     * `account_id` is nullable so that user rows can survive their account
+     * being hard-deleted: the FK is declared `ON DELETE SET NULL`, which
+     * automatically detaches the row from a vanishing account. A non-soft-
+     * deleted user row is expected to carry an account_id — that invariant
+     * is enforced at the application layer (AccountCreatorFacade guard,
+     * AccountDeleter sweep) rather than via a CHECK constraint.
      */
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Account $account = null;
 
     #[ORM\Column(name: 'user_id', type: Types::STRING, length: 100, nullable: false)]
@@ -104,9 +107,6 @@ class User
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
     private ?array $extras = null;
-
-    #[ORM\Column(name: 'auth_source', type: Types::INTEGER, nullable: true)]
-    private ?int $authSource = null;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 65535, nullable: true)]
     private ?string $description = null;
@@ -446,18 +446,6 @@ class User
     {
         $visible = $this->extras['EMAIL_VISIBILITY'] ?? '';
         return $visible != '-1';
-    }
-
-    public function setAuthSource(?int $authSource): static
-    {
-        $this->authSource = $authSource;
-
-        return $this;
-    }
-
-    public function getAuthSource(): ?int
-    {
-        return $this->authSource;
     }
 
     public function setDescription(?string $description): static

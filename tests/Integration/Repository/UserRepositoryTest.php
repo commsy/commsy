@@ -43,7 +43,7 @@ use Zenstruck\Foundry\Attribute\WithStory;
  *   - findActiveUsersAsQuery
  *   - getNumActiveUsersByContext
  *   - findPortalUser
- *   - findOneByLegacyIdentity
+ *   - findByAccountIdAndContext
  *   - findAllByRoomStatus
  */
 #[Group('permission-refactor')]
@@ -231,24 +231,23 @@ final class UserRepositoryTest extends KernelTestCase
         self::assertSame($other->getUsername(), $second->getUserId());
     }
 
-    // ---- findOneByLegacyIdentity
+    // ---- findByAccountIdAndContext
 
-    public function testFindOneByLegacyIdentityFindsRoomMembership(): void
+    public function testFindByAccountIdAndContextFindsRoomMembership(): void
     {
         $room = $this->createRoom();
         $member = $this->createMember($this->account, $room);
 
-        $found = $this->repository->findOneByLegacyIdentity(
-            $this->account->getUsername(),
+        $found = $this->repository->findByAccountIdAndContext(
+            $this->account->getId(),
             $room->getItemId(),
-            $this->account->getAuthSource()?->getId(),
         );
 
         self::assertNotNull($found);
         self::assertSame($member->getItemId(), $found->getItemId());
     }
 
-    public function testFindOneByLegacyIdentityFiltersSoftDeleted(): void
+    public function testFindByAccountIdAndContextFiltersSoftDeleted(): void
     {
         $room = $this->createRoom();
         RoomUserFactory::new()->softDeleted()->create([
@@ -258,10 +257,9 @@ final class UserRepositoryTest extends KernelTestCase
         ]);
 
         self::assertNull(
-            $this->repository->findOneByLegacyIdentity(
-                $this->account->getUsername(),
+            $this->repository->findByAccountIdAndContext(
+                $this->account->getId(),
                 $room->getItemId(),
-                $this->account->getAuthSource()?->getId(),
             ),
         );
     }

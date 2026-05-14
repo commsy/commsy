@@ -76,6 +76,19 @@ readonly class AccountManager
              */
             foreach ($relatedUsers as $relatedUser) {
                 /** @var cs_user_item $relatedUser */
+
+                // getRelatedUserList joins on account_id, so every returned
+                // row must belong to $account. A mismatch indicates the
+                // lookup contract was violated; abort before any write.
+                if ($relatedUser->getAccountID() !== $account->getId()) {
+                    throw new \LogicException(sprintf(
+                        'propagateAccountDataToProfiles received user.item_id=%d with account_id=%s for account %d — getRelatedUserList must only return rows of the same account.',
+                        $relatedUser->getItemID(),
+                        $relatedUser->getAccountID() === null ? 'NULL' : (string) $relatedUser->getAccountID(),
+                        $account->getId(),
+                    ));
+                }
+
                 if ($relatedUser->getFirstname() !== $account->getFirstname() ||
                     $relatedUser->getLastname() !== $account->getLastname() ||
                     $relatedUser->getEmail() !== $account->getEmail()
@@ -127,18 +140,17 @@ readonly class AccountManager
 
     public function getAccount(cs_user_item $user, int $portalId): ?Account
     {
-        $accountRepository = $this->entityManager->getRepository(Account::class);
-        $authSource = $this->entityManager->getRepository(AuthSource::class)->find($user->getAuthSource());
-
-        return $accountRepository->findOneByCredentials($user->getUserID(), $authSource->getPortal(), $authSource);
+        return $this->getAccountForUser($user);
     }
 
     public function getAccountForUser(cs_user_item $user): ?Account
     {
-        $accountRepository = $this->entityManager->getRepository(Account::class);
-        $authSource = $this->entityManager->getRepository(AuthSource::class)->find($user->getAuthSource());
+        $accountId = $user->getAccountID();
+        if ($accountId === null) {
+            return null;
+        }
 
-        return $accountRepository->findOneByCredentials($user->getUserID(), $authSource->getPortal(), $authSource);
+        return $this->entityManager->getRepository(Account::class)->find($accountId);
     }
 
     public function getAccounts(int $portalId, cs_user_item ...$users): iterable

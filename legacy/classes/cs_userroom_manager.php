@@ -116,7 +116,7 @@ class cs_userroom_manager extends cs_room2_manager
      */
     public function getRelatedUserroomListForUser(cs_user_item $userItem): cs_list
     {
-        return $this->getRelatedContextListForUserInt($userItem->getUserID(), $userItem->getAuthSource(), $this->_environment->getCurrentPortalID());
+        return $this->getRelatedContextListForUserInt($userItem->getAccountID(), $this->_environment->getCurrentPortalID());
     }
 
     /** select user rooms limited by limits

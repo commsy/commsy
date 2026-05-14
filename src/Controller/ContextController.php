@@ -70,7 +70,10 @@ class ContextController extends AbstractController
 
         // redirect to the room's detail page if a room membership (request) already exists for this user,
         // or if the room is locked
-        $userTestItem = $roomItem->getUserByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource());
+        $currentAccountId = $currentUserItem->getAccountID();
+        $userTestItem = $currentAccountId !== null
+            ? $roomItem->getUserByAccountID($currentAccountId)
+            : null;
         if ($userTestItem || $roomItem->isLocked()) {
             $route = $this->redirectToRoomDetailPage($legacyEnvironment, $roomId, $itemId);
 
@@ -157,7 +160,10 @@ class ContextController extends AbstractController
                 }
 
                 // check if user id already exists
-                $userTestItem = $roomItem->getUserByUserID($newUser->getUserID(), $newUser->getAuthSource());
+                $newUserAccountId = $newUser->getAccountID();
+                $userTestItem = $newUserAccountId !== null
+                    ? $roomItem->getUserByAccountID($newUserAccountId)
+                    : null;
                 if (!$userTestItem && !$newUser->isReallyGuest() && !$newUser->isRoot()) {
                     $newUser->save();
                     $newUser->setCreatorID2ItemID();

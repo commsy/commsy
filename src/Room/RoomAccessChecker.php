@@ -62,28 +62,6 @@ final class RoomAccessChecker
     }
 
     /**
-     * Identity-triple check used by ItemVoter ENTER — the voter holds
-     * a `cs_user_item`, not always an Account (hash-token flows).
-     * Mirrors `cs_context_item::mayEnterByUserID`.
-     */
-    public function canEnterByLegacyIdentity(string $userId, ?int $authSourceId, Room $room): bool
-    {
-        return $this->resolve(
-            rootHint: $userId,
-            room: $room,
-            // bin2hex(userId) guarantees PSR-6-safe characters without
-            // central sanitisation: userId is the only freeform input
-            // (auth source / room / account IDs are ints).
-            cacheSubkey: 'identity.' . bin2hex($userId) . '.' . ($authSourceId ?? '_'),
-            membershipLoader: fn(): ?User => $this->userRepository->findOneByLegacyIdentity(
-                $userId,
-                $room->getItemId(),
-                $authSourceId,
-            ),
-        );
-    }
-
-    /**
      * Identifier-only check (RSS / iCal hash logins). Mirrors
      * `cs_context_item::mayEnterByUserItemID` — no root short-circuit.
      */

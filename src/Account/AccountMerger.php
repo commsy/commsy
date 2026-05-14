@@ -111,8 +111,7 @@ class AccountMerger
     {
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->setContextLimit($contextId);
-        $userManager->setUserIDLimit($account->getUsername());
-        $userManager->setAuthSourceLimit($account->getAuthSource()->getId());
+        $userManager->setAccountIDLimit($account->getId());
         $userManager->select();
         $users = $userManager->get();
         if (1 === $users->getCount()) {
