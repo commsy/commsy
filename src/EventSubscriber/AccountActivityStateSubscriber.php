@@ -14,6 +14,7 @@
 namespace App\EventSubscriber;
 
 use App\Account\AccountDeleter;
+use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Mail\Factories\AccountMessageFactory;
 use App\Mail\Mailer;
@@ -28,6 +29,7 @@ use Symfony\Component\Workflow\Event\GuardEvent;
 readonly class AccountActivityStateSubscriber implements EventSubscriberInterface
 {
     public function __construct(
+        private AccountManager $accountManager,
         private AccountDeleter $accountDeleter,
         private AccountMessageFactory $accountMessageFactory,
         private Mailer $mailer
