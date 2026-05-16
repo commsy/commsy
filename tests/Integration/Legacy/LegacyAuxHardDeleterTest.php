@@ -185,6 +185,42 @@ final class LegacyAuxHardDeleterTest extends KernelTestCase
         self::assertNull($row['modifier_id'], 'user.modifier_id self-ref to a hard-deleted user must be nullified first');
     }
 
+    public function testHardDeleteUserRowsNullifiesNonFKCreatorRefs(): void
+    {
+        // `tasks` carries `creator_id` referencing `user.item_id` without an
+        // FK constraint — representative for every EntityUsersTrait table
+        // that's not `room` or `user` itself.
+        $room = $this->createRoom();
+        $expired = $this->createUser($room, daysAgo: 40);
+
+        $taskItemId = $this->insertItem('task', null);
+        $this->connection->executeStatement(
+            "INSERT INTO tasks
+                (item_id, creation_date, modification_date, creator_id,
+                 title, status, linked_item_id)
+                VALUES (:itemId, NOW(), NOW(), :creatorId,
+                        :title, 'OPEN', 0)",
+            [
+                'itemId' => $taskItemId,
+                'creatorId' => $expired->getItemId(),
+                'title' => 'task-with-doomed-creator',
+            ]
+        );
+
+        $this->deleter->hardDeleteUserRows(30);
+
+        $creatorId = $this->connection->fetchOne(
+            'SELECT creator_id FROM tasks WHERE item_id = :id',
+            ['id' => $taskItemId]
+        );
+
+        self::assertNull(
+            $creatorId,
+            'tasks.creator_id pointing at a hard-deleted user must be nullified — '
+            . 'otherwise Doctrine proxy on $task->getCreator() throws EntityNotFoundException'
+        );
+    }
+
     // ------------------------------------------------------------------
 
     private function insertItem(string $type, ?int $daysAgo): int
