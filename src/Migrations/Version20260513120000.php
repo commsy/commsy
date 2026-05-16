@@ -38,6 +38,14 @@ use Doctrine\Migrations\AbstractMigration;
  * Steps:
  *  1. Re-link orphan rows to the matching account where unambiguous.
  *  2. Soft-delete the remaining orphans (account gone or never existed).
+ *  3. Null dangling creator_id / modifier_id references across all
+ *     `EntityUsersTrait` tables. Years of legacy hard-deletes
+ *     (`cs_user_manager::deleteFromDb` and friends, plus the recent
+ *     retention-based hard-delete in Phase 5) left these refs pointing at
+ *     `user.item_id` values that no longer exist. Doctrine ORM proxies
+ *     throw `EntityNotFoundException` when accessed, which breaks
+ *     downstream code (e.g. Elastica reindex of an item whose creator was
+ *     hard-deleted years ago).
  *
  * Other cleanup work that one might expect here is intentionally elsewhere
  * — see the comment block at the end of `up()` for the rationale.
@@ -97,8 +105,70 @@ final class Version20260513120000 extends AbstractMigration
             $softDeletedOrphans,
         ));
 
-        // Nothing else to do here. Three pieces of cleanup were considered
-        // and consciously left out:
+        // 3. Null dangling creator_id / modifier_id refs across every table
+        //    that uses `App\Utils\EntityUsersTrait` and stores a creator or
+        //    modifier as `user.item_id`. The FKs added by
+        //    Version20241001121006 (room) and Version20250514125210
+        //    (user self-refs) cover four columns; the rest are not
+        //    FK-constrained and have been quietly accumulating dangling
+        //    pointers whenever a user row got hard-deleted. SQL mirrors the
+        //    repair lists in `App\Database\FixCreator` and `FixModifier` but
+        //    is inlined so the migration stays self-contained and immune to
+        //    future refactors of those helpers.
+        $tablesWithCreator = [
+            'annotations', 'announcement', 'assessments', 'dates', 'discussionarticles',
+            'discussions', 'files', 'labels', 'link_items', 'materials', 'room', 'section',
+            'server', 'step', 'tag', 'tag2tag', 'tasks', 'todos', 'user',
+            // `room` and `user` carry FK constraints on `creator_id`
+            // (Version20241001121006 / Version20250514125210) — for a clean
+            // schema the cleanup here finds nothing. Run anyway as defense
+            // in depth: historical `FOREIGN_KEY_CHECKS = 0` admin operations
+            // or DB states predating those constraints could still have left
+            // dangling refs that the FK creation would not have surfaced.
+        ];
+        $creatorCleaned = 0;
+        foreach ($tablesWithCreator as $table) {
+            $creatorCleaned += (int) $this->connection->executeStatement(<<<SQL
+                UPDATE `$table` AS t
+                LEFT JOIN `user` AS u ON t.creator_id = u.item_id
+                SET t.creator_id = NULL
+                WHERE t.creator_id IS NOT NULL AND u.item_id IS NULL
+            SQL);
+        }
+
+        $tablesWithModifier = [
+            'annotations', 'announcement', 'dates', 'discussionarticles',
+            'discussions', 'labels', 'materials', 'room', 'section',
+            'server', 'step', 'tag', 'tag2tag', 'todos', 'user',
+        ];
+        $modifierCleaned = 0;
+        foreach ($tablesWithModifier as $table) {
+            $modifierCleaned += (int) $this->connection->executeStatement(<<<SQL
+                UPDATE `$table` AS t
+                LEFT JOIN `user` AS u ON t.modifier_id = u.item_id
+                SET t.modifier_id = NULL
+                WHERE t.modifier_id IS NOT NULL AND u.item_id IS NULL
+            SQL);
+        }
+
+        // `link_modifier_item` is a pure join table — there is no domain row
+        // to keep alive without its user reference, so the right action is
+        // DELETE, not UPDATE-to-NULL.
+        $linkModifierCleaned = (int) $this->connection->executeStatement(<<<'SQL'
+            DELETE t FROM link_modifier_item AS t
+            LEFT JOIN `user` AS u ON t.modifier_id = u.item_id
+            WHERE t.modifier_id IS NOT NULL AND u.item_id IS NULL
+        SQL);
+
+        $this->write(sprintf(
+            'Step 3: nulled %d dangling creator_id and %d dangling modifier_id ref(s); '
+            . 'deleted %d link_modifier_item row(s) without a surviving user.',
+            $creatorCleaned,
+            $modifierCleaned,
+            $linkModifierCleaned,
+        ));
+
+        // Two pieces of cleanup were considered and consciously left out:
         //
         //  - Soft-deleting rows with a broken account_id FK: the FK from
         //    Version20250514125210 makes that state unreachable on a
@@ -112,19 +182,15 @@ final class Version20260513120000 extends AbstractMigration
         //    and firstname/lastname drift can simply be propagation lag from
         //    AccountManager::propagateAccountDataToProfiles. Surfacing that
         //    here would produce more noise than insight.
-        //
-        //  - Nulling dangling creator_id / modifier_id refs: the FKs added
-        //    by Version20241001121006 (room) and Version20250514125210
-        //    (user self-refs) make dangling refs impossible on the live
-        //    schema, and we never hard-delete user rows in this migration
-        //    — soft-delete keeps the user.item_id alive so FKs stay valid.
-        //    The retention-based hard-delete in Phase 5 will null incoming
-        //    refs in the same operation as the actual DELETE.
 
         $this->write(sprintf(
-            'Done. Summary: relinked=%d, softDeletedOrphans=%d.',
+            'Done. Summary: relinked=%d, softDeletedOrphans=%d, '
+            . 'creatorRefsNulled=%d, modifierRefsNulled=%d, linkModifierItemsDeleted=%d.',
             $relinked,
             $softDeletedOrphans,
+            $creatorCleaned,
+            $modifierCleaned,
+            $linkModifierCleaned,
         ));
     }
 
