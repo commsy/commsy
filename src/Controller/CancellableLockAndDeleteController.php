@@ -19,6 +19,7 @@ use App\Repository\PortalRepository;
 use App\Room\RoomDeleterRegistry;
 use App\Room\RoomDeletionOptions;
 use App\Room\RoomStatus;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,6 +45,7 @@ class CancellableLockAndDeleteController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         PortalRepository $portalRepository,
         RoomDeleterRegistry $roomDeleterRegistry,
+        CurrentUserResolver $currentUserResolver,
         $itemId
     ): Response {
         $this->denyAccessUnlessGranted(new Expression(
@@ -108,8 +110,7 @@ class CancellableLockAndDeleteController extends AbstractController
                 // room, see type-dependent branches above). The concrete
                 // deleter behind the registry handles sub-room cascade
                 // and dispatches WorkspaceDeletedEvent.
-                $deleterId = (int) ($legacyEnvironment->getEnvironment()
-                    ->getCurrentUserItem()?->getItemID() ?? 0);
+                $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
                 $roomDeleterRegistry->softDeleteLegacyRoom(
                     $roomItem,
                     $deleterId,

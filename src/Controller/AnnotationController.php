@@ -16,7 +16,7 @@ namespace App\Controller;
 use App\Form\DataTransformer\AnnotationTransformer;
 use App\Form\Type\AnnotationType;
 use App\Rubric\Annotation\AnnotationDeleter;
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentUserResolver;
 use App\Utils\AnnotationService;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
@@ -170,12 +170,12 @@ class AnnotationController extends AbstractController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function delete(
         AnnotationDeleter $annotationDeleter,
-        LegacyEnvironment $legacyEnvironment,
+        CurrentUserResolver $currentUserResolver,
         int $itemId,
         /** @noinspection PhpUnusedParameterInspection */
         int $roomId
     ): JsonResponse {
-        $deleterId = (int) $legacyEnvironment->getEnvironment()->getCurrentUserItem()?->getItemID();
+        $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
         $annotationDeleter->softDeleteItem($itemId, $deleterId);
 
         $response = new JsonResponse();

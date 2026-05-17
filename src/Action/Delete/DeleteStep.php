@@ -14,8 +14,7 @@
 namespace App\Action\Delete;
 
 use App\Rubric\Todo\TodoDeleter;
-use App\Services\LegacyEnvironment;
-use cs_environment;
+use App\Services\CurrentUserResolver;
 use cs_item;
 use cs_step_item;
 use Symfony\Component\Routing\RouterInterface;
@@ -25,19 +24,16 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class DeleteStep implements DeleteInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
         private readonly RouterInterface $router,
         private readonly TodoDeleter $todoDeleter,
-        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentUserResolver $currentUserResolver,
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function delete(cs_item $item): void
     {
-        $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+        $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
         $this->todoDeleter->deleteStep((int) $item->getItemId(), $deleterId);
     }
 

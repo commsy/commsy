@@ -19,6 +19,7 @@ use App\Files\FileDeleter;
 use App\Form\Type\UploadDropzoneType;
 use App\Office\OfficeFileFactory;
 use App\Repository\FilesRepository;
+use App\Services\CurrentUserResolver;
 use App\Services\FileUploader;
 use App\Services\LegacyEnvironment;
 use App\Twig\Components\DTO\FileDto;
@@ -152,7 +153,7 @@ final class FileList extends AbstractController
     #[LiveListener('FileListItem:fileRemoved')]
     public function removeFile(
         FileDeleter $fileDeleter,
-        LegacyEnvironment $legacyEnvironment,
+        CurrentUserResolver $currentUserResolver,
         #[LiveArg] int $fileId
     ): void
     {
@@ -160,7 +161,7 @@ final class FileList extends AbstractController
             $file->fileId != $fileId
         );
 
-        $deleterId = (int) ($legacyEnvironment->getEnvironment()->getCurrentUserItem()?->getItemID() ?: 0);
+        $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
         $fileDeleter->softDeleteFile($fileId, $deleterId);
         $this->updateIndex();
     }

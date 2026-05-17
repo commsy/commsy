@@ -14,9 +14,8 @@
 namespace App\Action\Delete;
 
 use App\Rubric\Discussion\DiscussionDeleter;
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentUserResolver;
 use cs_discussionarticle_item;
-use cs_environment;
 use cs_item;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -25,19 +24,16 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class DeleteDiscussionArticle implements DeleteInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
         private readonly RouterInterface $router,
         private readonly DiscussionDeleter $discussionDeleter,
-        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentUserResolver $currentUserResolver,
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function delete(cs_item $item): void
     {
-        $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+        $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
         $this->discussionDeleter->deleteArticle((int) $item->getItemId(), $deleterId);
     }
 

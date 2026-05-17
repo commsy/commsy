@@ -16,6 +16,7 @@ namespace App\Account;
 use App\Entity\Account;
 use App\Room\PrivateRoomDeleter;
 use App\Room\RoomDeletionOptions;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\User\UserMembershipDeleter;
 use App\Utils\ReaderService;
@@ -36,6 +37,7 @@ class AccountMerger
         private readonly ReaderService $readerService,
         private readonly UserMembershipDeleter $membershipDeleter,
         private readonly PrivateRoomDeleter $privateRoomDeleter,
+        private readonly CurrentUserResolver $currentUserResolver,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -253,6 +255,6 @@ class AccountMerger
      */
     private function currentDeleterId(): int
     {
-        return (int) ($this->legacyEnvironment->getCurrentUserItem()?->getItemID() ?? 0);
+        return (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
     }
 }

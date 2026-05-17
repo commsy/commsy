@@ -23,6 +23,7 @@ use App\Room\ProjectRoomDeleter;
 use App\Room\RoomDeletionOptions;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CalendarsService;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
@@ -322,6 +323,7 @@ class ProjectController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         ProjectRoomDeleter $projectRoomDeleter,
+        CurrentUserResolver $currentUserResolver,
         int $roomId,
         int $itemId
     ): Response {
@@ -337,8 +339,7 @@ class ProjectController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $deleterId = (int) ($legacyEnvironment->getEnvironment()
-                ->getCurrentUserItem()?->getItemID() ?? 0);
+            $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
             $projectRoomDeleter->softDeleteRoom(
                 (int) $roomItem->getItemID(),
                 $deleterId,

@@ -32,6 +32,7 @@ use App\Form\Type\DiscussionType;
 use App\Rubric\Discussion\DiscussionDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AssessmentService;
@@ -637,6 +638,7 @@ class DiscussionController extends BaseController
         Request $request,
         DiscussionarticleTransformer $transformer,
         DiscussionDeleter $discussionDeleter,
+        CurrentUserResolver $currentUserResolver,
         int $roomId,
         int $itemId
     ): RedirectResponse {
@@ -672,7 +674,7 @@ class DiscussionController extends BaseController
                     // links / link_items / file_links and the items-row are all
                     // soft-deleted uniformly (legacy $article->delete() left the
                     // items twin row behind).
-                    $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+                    $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
                     $discussionDeleter->deleteArticle((int) $article->getItemID(), $deleterId);
                 }
             }

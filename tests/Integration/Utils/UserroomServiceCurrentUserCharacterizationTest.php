@@ -17,13 +17,13 @@ namespace Tests\Integration\Utils;
 
 use App\Entity\Account;
 use App\Entity\Room;
-use App\Services\LegacyEnvironment;
-use App\Utils\UserService;
+use App\Entity\User;
 use App\Utils\UserroomService;
-use cs_environment;
-use cs_user_item;
 use ReflectionMethod;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Tests\Factory\RoomFactory;
 use Tests\Factory\RoomUserFactory;
 use Tests\Story\AccountStory;
@@ -34,19 +34,20 @@ use Zenstruck\Foundry\Attribute\WithStory;
  * the sole getCurrentUserItem callsite in UserroomService (line 56).
  *
  * The method is private and stamps the deleter_id on soft-deletes
- * triggered from this service. We pin the exact seam line via
- * reflection because that is precisely the line Schritt 4 reroutes
- * onto CurrentUserResolver — characterizing it directly is faithful
- * and avoids brittle end-to-end deletion choreography.
+ * triggered from this service. The exact seam line is pinned via
+ * reflection.
  *
- * Reuse-priority suite: UserroomService is a caller in lock 1 and 3.
+ * Schritt 4 / Welle A note: currentDeleterId() now sources from
+ * CurrentUserResolver instead of the legacy current user item. Per the
+ * agreed discipline the assertions are unchanged — only the priming was
+ * adjusted from "set legacy currentUserItem" to "set security token +
+ * push the request" (the resolver's real inputs). Both assertions stay
+ * green, which is the proof the migration was behaviour-neutral.
  */
 #[WithStory(AccountStory::class)]
 final class UserroomServiceCurrentUserCharacterizationTest extends KernelTestCase
 {
     private UserroomService $userroomService;
-    private UserService $userService;
-    private cs_environment $legacyEnvironment;
     private Account $account;
 
     protected function setUp(): void
@@ -54,10 +55,6 @@ final class UserroomServiceCurrentUserCharacterizationTest extends KernelTestCas
         self::bootKernel();
 
         $this->userroomService = self::getContainer()->get(UserroomService::class);
-        $this->userService = self::getContainer()->get(UserService::class);
-        $this->legacyEnvironment = self::getContainer()
-            ->get(LegacyEnvironment::class)
-            ->getEnvironment();
         $this->account = AccountStory::get('account');
     }
 
@@ -67,27 +64,35 @@ final class UserroomServiceCurrentUserCharacterizationTest extends KernelTestCas
             'contextId' => $this->account->getPortal()?->getId(),
             'portal' => $this->account->getPortal(),
         ]);
-        RoomUserFactory::createOne([
+        /** @var User $member */
+        $member = RoomUserFactory::createOne([
             'account' => $this->account,
             'room' => $room,
             'status' => 2,
         ]);
 
-        $userItem = $this->userService->getUserInContext($this->account, $room->getItemId());
-        self::assertInstanceOf(cs_user_item::class, $userItem);
-        $this->legacyEnvironment->setCurrentUserItem($userItem);
+        $this->actAs($this->account, $room);
 
-        self::assertSame($userItem->getItemID(), $this->currentDeleterId());
+        self::assertSame($member->getItemId(), $this->currentDeleterId());
     }
 
     public function testCurrentDeleterIdFallsBackToZeroWithoutACurrentUser(): void
     {
-        // The legacy env hands out an empty cs_user_item (itemID 0) when
-        // no user was primed — the `?: 0` sentinel path.
-        $empty = new cs_user_item($this->legacyEnvironment);
-        $this->legacyEnvironment->setCurrentUserItem($empty);
+        // No security token => resolver->getUser() is null => sentinel 0.
+        self::getContainer()->get('security.token_storage')->setToken(null);
 
         self::assertSame(0, $this->currentDeleterId());
+    }
+
+    private function actAs(Account $account, Room $room): void
+    {
+        self::getContainer()->get('security.token_storage')->setToken(
+            new UsernamePasswordToken($account, 'main', $account->getRoles()),
+        );
+
+        $request = new Request();
+        $request->attributes->set('roomId', $room->getItemId());
+        self::getContainer()->get(RequestStack::class)->push($request);
     }
 
     private function currentDeleterId(): int
