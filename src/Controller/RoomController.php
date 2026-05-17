@@ -21,6 +21,7 @@ use App\Form\Type\ContextType;
 use App\Hash\HashManager;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
+use App\Security\Authorization\Voter\ContextCreateVoter;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
@@ -316,7 +317,7 @@ class RoomController extends AbstractController
                 if ($portalUser->isModerator()) {
                     $userMayCreateContext = true;
                 } elseif ('all' == $portal->getCommunityRoomCreationStatus() || 'portal' == $portal->getProjectRoomCreationStatus()) {
-                    $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+                    $userMayCreateContext = $this->isGranted(ContextCreateVoter::CONTEXT_CREATE);
                 }
             }
         } else {
