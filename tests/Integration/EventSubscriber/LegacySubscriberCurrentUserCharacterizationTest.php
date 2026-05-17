@@ -22,6 +22,7 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -201,8 +202,10 @@ final class LegacySubscriberCurrentUserCharacterizationTest extends KernelTestCa
     /**
      * Drives the real subscriber exactly like the kernel would on a main
      * request: prime the security token (or leave it empty for a guest),
-     * then fire onKernelController with a ControllerEvent carrying the
-     * given request attributes.
+     * push the request onto the RequestStack (HttpKernel::handleRaw does
+     * this before the CONTROLLER event — CurrentUserResolver reads it via
+     * getCurrentRequest(), so omitting the push made the harness unfaithful),
+     * then fire onKernelController with the matching ControllerEvent.
      */
     private function dispatch(?Account $account, array $attributes): void
     {
@@ -219,6 +222,8 @@ final class LegacySubscriberCurrentUserCharacterizationTest extends KernelTestCa
         foreach ($attributes as $key => $value) {
             $request->attributes->set($key, $value);
         }
+
+        self::getContainer()->get(RequestStack::class)->push($request);
 
         $event = new ControllerEvent(
             self::$kernel,
