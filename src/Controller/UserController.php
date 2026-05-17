@@ -108,6 +108,7 @@ class UserController extends BaseController
         Request $request,
         ContactFormHelper $contactFormHelper,
         TranslatorInterface $translator,
+        CurrentUserResolver $currentUserResolver,
         $roomId,
         $itemId,
         $originPath,
@@ -138,7 +139,7 @@ class UserController extends BaseController
         }
 
         $message = '<br><br>--<br>' . $translator->trans($transUnit, [
-            'sender_name' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
+            'sender_name' => $currentUserResolver->getUser()?->getFullname() ?? '',
             'room_name' => $roomItem?->getTitle() ?? $portalItem->getTitle(),
             'recipients' => implode(', ', $recipientNames),
         ], 'mail');

@@ -16,17 +16,17 @@ namespace App\Mail\Factories;
 use App\Entity\Portal;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\InvitationMessage;
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentUserResolver;
 use cs_room_item;
 
 class InvitationMessageFactory
 {
-    public function __construct(private readonly LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly CurrentUserResolver $currentUserResolver)
     {
     }
 
     public function createInvitationMessage(Portal $portal, cs_room_item $room, string $token): MessageInterface
     {
-        return new InvitationMessage($this->legacyEnvironment, $portal, $room, $token);
+        return new InvitationMessage($this->currentUserResolver, $portal, $room, $token);
     }
 }
