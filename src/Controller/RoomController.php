@@ -26,6 +26,7 @@ use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\CalendarsService;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
@@ -71,6 +72,7 @@ class RoomController extends AbstractController
         ThemeRepositoryInterface $themeRepository,
         UserRepository $userRepository,
         HashManager $hashManager,
+        CurrentUserResolver $currentUserResolver,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -202,7 +204,7 @@ class RoomController extends AbstractController
             'serviceContact' => $serviceContact,
             'rss' => $rss,
             'header' => $header,
-            'isModerator' => $legacyEnvironment->getCurrentUserItem()->isModerator(),
+            'isModerator' => $currentUserResolver->getUser()?->isModerator() ?? false,
             'userTasks' => $userTasks,
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
             'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),

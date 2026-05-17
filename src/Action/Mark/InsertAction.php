@@ -15,6 +15,7 @@ namespace App\Action\Mark;
 
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use App\Utils\ItemService;
@@ -34,7 +35,8 @@ class InsertAction
         LegacyEnvironment $legacyEnvironment,
         private readonly ItemService $itemService,
         private readonly ReaderService $readerService,
-        private readonly MarkedService $markService
+        private readonly MarkedService $markService,
+        private readonly CurrentUserResolver $currentUserResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -49,7 +51,7 @@ class InsertAction
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>'.$this->translator->trans('copy items in portal is not allowed'));
         }
 
-        if ($this->legacyEnvironment->getCurrentUserItem()->isOnlyReadUser()) {
+        if ($this->currentUserResolver->getUser()?->isReadOnlyUser() ?? false) {
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>'.$this->translator->trans('copy items as read only user is not allowed'));
         }
 
