@@ -82,7 +82,6 @@ use App\Account\AccountDeleter;
 use App\Mail\Helper\ContactFormHelper;
 use App\Model\TimePulseTemplate;
 use App\Repository\AccountsRepository;
-use App\Repository\AuthSourceRepository;
 use App\Repository\LicenseRepository;
 use App\Repository\UserRepository;
 use App\Room\RoomManager;
@@ -1682,7 +1681,6 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         UserService $userService,
-        AuthSourceRepository $authSourceRepository,
         Security $security,
         AccountManager $accountManager,
         int $userId
@@ -1742,7 +1740,7 @@ class PortalSettingsController extends AbstractController
             'accountOfUser' => $accountOfUser,
             'user' => $user,
             'canImpersonate' => $canImpersonate,
-            'authSource' => $authSourceRepository->findOneBy(['id' => $user->getAuthSource()]),
+            'authSource' => $accountOfUser?->getAuthSource(),
             'form' => $form,
             'portal' => $portal,
         ]);
