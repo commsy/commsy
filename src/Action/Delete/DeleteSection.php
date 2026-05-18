@@ -14,8 +14,7 @@
 namespace App\Action\Delete;
 
 use App\Rubric\Material\MaterialDeleter;
-use App\Services\LegacyEnvironment;
-use cs_environment;
+use App\Services\CurrentUserResolver;
 use cs_item;
 use cs_section_item;
 use Symfony\Component\Routing\RouterInterface;
@@ -26,14 +25,11 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class DeleteSection implements DeleteInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
         private readonly RouterInterface $router,
         private readonly MaterialDeleter $materialDeleter,
-        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentUserResolver $currentUserResolver,
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function delete(cs_item $item): void
@@ -41,7 +37,7 @@ class DeleteSection implements DeleteInterface
         /** @var cs_section_item $section */
         $section = $item;
 
-        $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+        $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
         $materialVersionId = (int) $section->getLinkedItem()->getVersionID();
 
         $this->materialDeleter->deleteSection(

@@ -34,6 +34,7 @@ use App\Form\Type\TodoType;
 use App\Rubric\Todo\TodoDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -356,6 +357,7 @@ class TodoController extends BaseController
         Request $request,
         TodoTransformer $transformer,
         TodoDeleter $todoDeleter,
+        CurrentUserResolver $currentUserResolver,
         int $roomId,
         int $itemId
     ): Response {
@@ -405,7 +407,7 @@ class TodoController extends BaseController
                     // step's links / link_items / file_links and the items twin
                     // row are soft-deleted uniformly. Legacy $step->delete() +
                     // ->save() left the items row behind.
-                    $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+                    $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
                     $todoDeleter->deleteStep((int) $step->getItemID(), $deleterId);
 
                     return $this->redirectToRoute('app_todo_detail', [

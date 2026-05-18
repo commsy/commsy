@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Assessment\AssessmentDeleter;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use cs_assessments_manager;
 use cs_environment;
@@ -27,6 +28,7 @@ class AssessmentService
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly AssessmentDeleter $assessmentDeleter,
+        private readonly CurrentUserResolver $currentUserResolver,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
@@ -74,7 +76,7 @@ class AssessmentService
             return;
         }
 
-        $deleterId = (int) ($this->legacyEnvironment->getCurrentUserItem()?->getItemID() ?: 0);
+        $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
 
         $this->assessmentDeleter->softDelete($itemId, $deleterId);
     }

@@ -14,9 +14,8 @@
 namespace App\Action\Delete;
 
 use App\Rubric\Material\MaterialDeleter;
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentUserResolver;
 use App\Services\MarkedService;
-use cs_environment;
 use cs_item;
 
 /**
@@ -25,19 +24,16 @@ use cs_item;
  */
 class DeleteMaterial implements DeleteInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
         protected MarkedService $markedService,
         private readonly MaterialDeleter $materialDeleter,
-        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentUserResolver $currentUserResolver,
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function delete(cs_item $item): void
     {
-        $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+        $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
         $this->materialDeleter->softDeleteItem((int) $item->getItemId(), $deleterId);
 
         $this->markedService->removeItemFromClipboard($item->getItemId());

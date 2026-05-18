@@ -14,10 +14,9 @@
 namespace App\Action\Delete;
 
 use App\Rubric\Dates\DatesDeleter;
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentUserResolver;
 use App\Services\MarkedService;
 use cs_dates_item;
-use cs_environment;
 use cs_item;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -31,15 +30,12 @@ class DeleteDate implements DeleteInterface
 
     private string $dateMode = 'normal';
 
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
         private readonly RouterInterface $router,
         private readonly MarkedService $markedService,
         private readonly DatesDeleter $datesDeleter,
-        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentUserResolver $currentUserResolver,
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function setRecurring(bool $recurring): void
@@ -57,7 +53,7 @@ class DeleteDate implements DeleteInterface
         /** @var cs_dates_item $date */
         $date = $item;
 
-        $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+        $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
         $itemId = (int) $date->getItemId();
         $recurrenceId = (int) $date->getRecurrenceId();
 

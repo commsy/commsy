@@ -20,6 +20,7 @@ use App\Form\Type\HashtagEditType;
 use App\Form\Type\HashtagMergeType;
 use App\Repository\LabelRepository;
 use App\Rubric\Label\LabelDeleter;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\LabelService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -124,6 +125,7 @@ class HashtagController extends AbstractController
         LabelService $labelService,
         LabelRepository $labelRepository,
         LabelDeleter $labelDeleter,
+        CurrentUserResolver $currentUserResolver,
         int $roomId,
         ?int $labelId = null
     ): Response {
@@ -153,7 +155,7 @@ class HashtagController extends AbstractController
             $labelManager = $legacyEnvironment->getLabelManager();
 
             if ($editForm->has('delete') && $editForm->get('delete')->isClicked()) {
-                $deleterId = (int) ($legacyEnvironment->getCurrentUserItem()?->getItemID() ?: 0);
+                $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
                 $labelDeleter->softDeleteItem((int) $hashtag->getItemId(), $deleterId);
             }
 
@@ -219,7 +221,7 @@ class HashtagController extends AbstractController
                 $link_array['link_type'] = $link['link_type'];
                 $managerLink->save($link_array);
             }
-            $deleterId = (int) ($legacyEnvironment->getCurrentUserItem()?->getItemID() ?: 0);
+            $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
             $labelDeleter->softDeleteItem((int) $buzzwordItemTwo->getItemID(), $deleterId);
 
             return $this->redirectToRoute('app_hashtag_edit', [

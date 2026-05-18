@@ -16,6 +16,7 @@ namespace App\Utils;
 use App\Room\RoomDeletionOptions;
 use App\Room\RoomManager;
 use App\Room\UserRoomDeleter;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\User\UserMembershipDeleter;
 use cs_environment;
@@ -40,7 +41,8 @@ class UserroomService
         private readonly UserService $userService,
         private readonly RoomManager $roomManager,
         private readonly UserMembershipDeleter $membershipDeleter,
-        private readonly UserRoomDeleter $userRoomDeleter)
+        private readonly UserRoomDeleter $userRoomDeleter,
+        private readonly CurrentUserResolver $currentUserResolver)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -53,7 +55,7 @@ class UserroomService
      */
     private function currentDeleterId(): int
     {
-        return (int) ($this->legacyEnvironment->getCurrentUserItem()?->getItemID() ?? 0);
+        return (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
     }
 
     /**

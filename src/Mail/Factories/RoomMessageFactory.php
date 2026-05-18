@@ -19,6 +19,7 @@ use App\Mail\Messages\RoomActivityDeleteWarningMessage;
 use App\Mail\Messages\RoomActivityLockWarningMessage;
 use App\Mail\Messages\UserJoinedContextMessage;
 use App\Repository\PortalRepository;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use cs_user_item;
 use LogicException;
@@ -27,7 +28,8 @@ class RoomMessageFactory
 {
     public function __construct(
         private readonly LegacyEnvironment $legacyEnvironment,
-        private readonly PortalRepository $portalRepository
+        private readonly PortalRepository $portalRepository,
+        private readonly CurrentUserResolver $currentUserResolver
     ) {
     }
 
@@ -64,6 +66,6 @@ class RoomMessageFactory
     public function createUserJoinedContextMessage(Room $room, cs_user_item $newUser, ?string $comment): MessageInterface
     {
         $portal = $room->getPortal();
-        return new UserJoinedContextMessage($this->legacyEnvironment, $portal, $room, $newUser, $comment);
+        return new UserJoinedContextMessage($this->currentUserResolver, $portal, $room, $newUser, $comment);
     }
 }

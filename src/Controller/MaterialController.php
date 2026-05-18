@@ -37,6 +37,7 @@ use App\Repository\LicenseRepository;
 use App\Rubric\Material\MaterialDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -1118,6 +1119,7 @@ class MaterialController extends BaseController
     public function saveSection(
         Request $request,
         MaterialDeleter $materialDeleter,
+        CurrentUserResolver $currentUserResolver,
         int $roomId,
         int $itemId
     ): RedirectResponse {
@@ -1163,7 +1165,7 @@ class MaterialController extends BaseController
                     // Legacy $section->delete() + ->save() left the items twin
                     // row behind; MaterialDeleter::deleteSection() cleans it up
                     // alongside link_items / links / file_links.
-                    $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()?->getItemID();
+                    $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
                     $materialDeleter->deleteSection(
                         (int) $section->getItemID(),
                         $deleterId,

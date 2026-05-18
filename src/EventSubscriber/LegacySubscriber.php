@@ -14,11 +14,12 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Account;
+use App\Legacy\UserItemAdapter;
 use App\Security\Authorization\Voter\RootVoter;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use cs_environment;
-use cs_list;
 use cs_user_item;
 use Exception;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -35,7 +36,8 @@ class LegacySubscriber implements EventSubscriberInterface
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly Security $security,
-        private readonly FileService $fileService
+        private readonly FileService $fileService,
+        private readonly CurrentUserResolver $currentUserResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -92,47 +94,48 @@ class LegacySubscriber implements EventSubscriberInterface
 
     private function setupUser(?Account $account): void
     {
-        $userManager = $this->legacyEnvironment->getUserManager();
-
         if (null !== $account && $this->security->isGranted(RootVoter::ROOT)) {
+            $userManager = $this->legacyEnvironment->getUserManager();
             $this->legacyEnvironment->setCurrentUser($userManager->getRootUser());
 
             return;
         }
 
         if (null === $account) {
-            // guest
-            $legacyGuest = new cs_user_item($this->legacyEnvironment);
-            $legacyGuest->setStatus(0);
-            $legacyGuest->setUserID('guest');
-            $this->legacyEnvironment->setCurrentUser($legacyGuest);
+            $this->legacyEnvironment->setCurrentUser($this->buildGuestUserItem());
 
             return;
         }
 
-        $userManager->resetLimits();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-        $userManager->setAccountIDLimit($account->getId());
-        $userManager->setSortOrder('date');
-        $userManager->select();
-
-        /** @var cs_list $contextUserList */
-        $contextUserList = $userManager->get();
-
-        if (1 != $contextUserList->getCount()) {
-            /*
-             * TODO: We still cannot throw an exception here, because of the avatar user image url
-             * (requesting an project room image without membership from inside a community room)
-             */
-            // throw new AccessDeniedHttpException("Mandatory unique user item not found!");
-        } else {
-            $this->legacyEnvironment->setCurrentUser($contextUserList->getFirst());
+        // Identity decision is now Doctrine-native: the resolver owns the
+        // (account, context) -> which-row lookup; the legacy manager is
+        // reduced to a by-id hydrator via UserItemAdapter.
+        $user = $this->currentUserResolver->getUser();
+        if (null !== $user) {
+            $legacyUser = UserItemAdapter::userToLegacy($user, $this->legacyEnvironment);
+            if (null !== $legacyUser) {
+                $this->legacyEnvironment->setCurrentUser($legacyUser);
+            }
         }
+        /*
+         * No unique (account, context) user row -> mirror the historical
+         * "cannot throw" branch and leave the empty currentUserItem in
+         * place (avatar image url requested without membership, etc.).
+         */
 
         /*
          * TODO: MAKE A PROPER FIX FOR THIS
          * This fix was implemented as a workaround to get the right _current_user in the extension of cs_manager
          */
         $this->legacyEnvironment->unsetAllInstancesExceptTranslator();
+    }
+
+    private function buildGuestUserItem(): cs_user_item
+    {
+        $legacyGuest = new cs_user_item($this->legacyEnvironment);
+        $legacyGuest->setStatus(0);
+        $legacyGuest->setUserID('guest');
+
+        return $legacyGuest;
     }
 }

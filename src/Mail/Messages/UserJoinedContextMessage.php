@@ -16,22 +16,18 @@ namespace App\Mail\Messages;
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Mail\Message;
-use App\Services\LegacyEnvironment;
-use cs_environment;
+use App\Services\CurrentUserResolver;
 use cs_user_item;
 
 class UserJoinedContextMessage extends Message
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentUserResolver $currentUserResolver,
         private readonly Portal $portal,
         private readonly Room $room,
         private readonly cs_user_item $newUser,
         private readonly ?string $comment
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function getSubject(): string
@@ -57,7 +53,7 @@ class UserJoinedContextMessage extends Message
     public function getTranslationParameters(): array
     {
         return [
-            'fullname' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
+            'fullname' => $this->currentUserResolver->getUser()?->getFullname() ?? '',
             'room_title' => $this->room->getTitle(),
         ];
     }

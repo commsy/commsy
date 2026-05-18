@@ -39,6 +39,7 @@ use App\Repository\TermsRepository;
 use App\Room\RoomDeleterRegistry;
 use App\Room\RoomDeletionOptions;
 use App\Room\RoomStatus;
+use App\Services\CurrentUserResolver;
 use App\Services\InvitationsService;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
@@ -467,7 +468,8 @@ class SettingsController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         PortalRepository $portalRepository,
-        RoomDeleterRegistry $roomDeleterRegistry
+        RoomDeleterRegistry $roomDeleterRegistry,
+        CurrentUserResolver $currentUserResolver
     ): Response {
         $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         $portalId = $portalItem->getItemId();
@@ -499,8 +501,7 @@ class SettingsController extends AbstractController
                 // page. Type can be Project, Community, or GroupRoom —
                 // dispatched through the registry. Sub-room cascade +
                 // WorkspaceDeletedEvent fire from the concrete deleter.
-                $deleterId = (int) ($legacyEnvironment->getEnvironment()
-                    ->getCurrentUserItem()?->getItemID() ?? 0);
+                $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
                 $roomDeleterRegistry->softDeleteLegacyRoom(
                     $roomItem,
                     $deleterId,

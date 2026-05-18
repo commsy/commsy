@@ -21,11 +21,13 @@ use App\Form\Type\ContextType;
 use App\Hash\HashManager;
 use App\Repository\PortalRepository;
 use App\Repository\RoomRepository;
+use App\Security\Authorization\Voter\ContextCreateVoter;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\CalendarsService;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
@@ -71,6 +73,7 @@ class RoomController extends AbstractController
         ThemeRepositoryInterface $themeRepository,
         UserRepository $userRepository,
         HashManager $hashManager,
+        CurrentUserResolver $currentUserResolver,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -202,7 +205,7 @@ class RoomController extends AbstractController
             'serviceContact' => $serviceContact,
             'rss' => $rss,
             'header' => $header,
-            'isModerator' => $legacyEnvironment->getCurrentUserItem()->isModerator(),
+            'isModerator' => $currentUserResolver->getUser()?->isModerator() ?? false,
             'userTasks' => $userTasks,
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
             'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
@@ -314,7 +317,7 @@ class RoomController extends AbstractController
                 if ($portalUser->isModerator()) {
                     $userMayCreateContext = true;
                 } elseif ('all' == $portal->getCommunityRoomCreationStatus() || 'portal' == $portal->getProjectRoomCreationStatus()) {
-                    $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+                    $userMayCreateContext = $this->isGranted(ContextCreateVoter::CONTEXT_CREATE);
                 }
             }
         } else {

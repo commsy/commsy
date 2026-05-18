@@ -31,6 +31,7 @@ use App\Mail\Mailer;
 use App\Repository\UserRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -107,6 +108,7 @@ class UserController extends BaseController
         Request $request,
         ContactFormHelper $contactFormHelper,
         TranslatorInterface $translator,
+        CurrentUserResolver $currentUserResolver,
         $roomId,
         $itemId,
         $originPath,
@@ -137,7 +139,7 @@ class UserController extends BaseController
         }
 
         $message = '<br><br>--<br>' . $translator->trans($transUnit, [
-            'sender_name' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
+            'sender_name' => $currentUserResolver->getUser()?->getFullname() ?? '',
             'room_name' => $roomItem?->getTitle() ?? $portalItem->getTitle(),
             'recipients' => implode(', ', $recipientNames),
         ], 'mail');
@@ -383,6 +385,7 @@ class UserController extends BaseController
         Mailer $mailer,
         AccountMail $accountMail,
         UserMembershipDeleter $membershipDeleter,
+        CurrentUserResolver $currentUserResolver,
         int $roomId
     ): Response {
         $room = $this->getRoom($roomId);
@@ -434,7 +437,7 @@ class UserController extends BaseController
                             // deleter; falls back to the targeted user's
                             // own id when no moderator session is bound
                             // (mirrors legacy `cs_user_item::delete()`).
-                            $deleterId = (int) ($this->userService->getCurrentUserItem()?->getItemID() ?? 0);
+                            $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
                             foreach ($users as $user) {
                                 $membershipDeleter->softDeleteMembership(
                                     (int) $user->getItemID(),

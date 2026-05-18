@@ -21,8 +21,10 @@ use App\Form\Type\Room\DeleteType;
 use App\Room\Copy\LegacyCopy;
 use App\Room\ProjectRoomDeleter;
 use App\Room\RoomDeletionOptions;
+use App\Security\Authorization\Voter\ContextCreateVoter;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CalendarsService;
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
@@ -126,7 +128,7 @@ class ProjectController extends AbstractController
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('project');
         }
 
-        return $this->render('project/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'project', 'itemsCountArray' => $itemsCountArray, 'usageInfo' => $usageInfo, 'userCanCreateContext' => $legacyEnvironment->getCurrentUserItem()->isAllowedToCreateContext()]);
+        return $this->render('project/list.html.twig', ['roomId' => $roomId, 'form' => $filterForm, 'module' => 'project', 'itemsCountArray' => $itemsCountArray, 'usageInfo' => $usageInfo]);
     }
 
     #[Route(path: '/room/{roomId}/project/{itemId}', requirements: ['itemId' => '\d+'])]
@@ -170,6 +172,7 @@ class ProjectController extends AbstractController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/project/create', requirements: ['itemId' => '\d+'])]
+    #[IsGranted(ContextCreateVoter::CONTEXT_CREATE)]
     public function create(
         Request $request,
         CalendarsService $calendarsService,
@@ -182,11 +185,6 @@ class ProjectController extends AbstractController
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
-
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-        if (!$currentUser->isAllowedToCreateContext()) {
-            throw $this->createAccessDeniedException();
-        }
 
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -322,6 +320,7 @@ class ProjectController extends AbstractController
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
         ProjectRoomDeleter $projectRoomDeleter,
+        CurrentUserResolver $currentUserResolver,
         int $roomId,
         int $itemId
     ): Response {
@@ -337,8 +336,7 @@ class ProjectController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $deleterId = (int) ($legacyEnvironment->getEnvironment()
-                ->getCurrentUserItem()?->getItemID() ?? 0);
+            $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
             $projectRoomDeleter->softDeleteRoom(
                 (int) $roomItem->getItemID(),
                 $deleterId,

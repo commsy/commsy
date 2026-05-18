@@ -15,21 +15,17 @@ namespace App\Mail\Messages;
 
 use App\Entity\Portal;
 use App\Mail\Message;
-use App\Services\LegacyEnvironment;
-use cs_environment;
+use App\Services\CurrentUserResolver;
 use cs_room_item;
 
 class InvitationMessage extends Message
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentUserResolver $currentUserResolver,
         private readonly Portal $portal,
         private readonly cs_room_item $room,
         private readonly string $token
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function getSubject(): string
@@ -48,7 +44,7 @@ class InvitationMessage extends Message
             'room' => $this->room,
             'portal' => $this->portal,
             'token' => $this->token,
-            'senderName' => $this->legacyEnvironment->getCurrentUserItem()->getFullName(),
+            'senderName' => $this->currentUserResolver->getUser()?->getFullname() ?? '',
         ];
     }
 

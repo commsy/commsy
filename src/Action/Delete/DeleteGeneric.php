@@ -15,10 +15,9 @@ namespace App\Action\Delete;
 
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentUserResolver;
 use App\Services\MarkedService;
 use App\User\UserMembershipDeleter;
-use cs_environment;
 use cs_item;
 use LogicException;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -35,8 +34,6 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  */
 class DeleteGeneric implements DeleteInterface
 {
-    protected cs_environment $legacyEnvironment;
-
     /** @var array<string, RubricDeleter>|null Lazy index by rubricType()->value. */
     private ?array $deleterMap = null;
 
@@ -44,13 +41,12 @@ class DeleteGeneric implements DeleteInterface
      * @param iterable<RubricDeleter> $rubricDeleters
      */
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentUserResolver $currentUserResolver,
         protected MarkedService $markedService,
         private readonly UserMembershipDeleter $userMembershipDeleter,
         #[AutowireIterator('app.rubric.deleter')]
         private readonly iterable $rubricDeleters,
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function delete(cs_item $item): void
@@ -58,10 +54,10 @@ class DeleteGeneric implements DeleteInterface
         $rubricType = RubricType::tryFromLegacyString($item->getItemType());
 
         if ($rubricType !== null && ($deleter = $this->findDeleter($rubricType)) !== null) {
-            $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()->getItemID();
+            $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
             $deleter->softDeleteItem($item->getItemId(), $deleterId);
         } elseif ($item->getItemType() === CS_USER_TYPE) {
-            $deleterId = (int) $this->legacyEnvironment->getCurrentUserItem()->getItemID();
+            $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
             $this->userMembershipDeleter->softDeleteMembership($item->getItemId(), $deleterId);
         } else {
             throw new LogicException(sprintf(

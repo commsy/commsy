@@ -25,6 +25,7 @@ use App\Form\Type\ItemWorkflowType;
 use App\Form\Type\SendType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
+use App\Services\CurrentUserResolver;
 use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
 use App\Utils\DateService;
@@ -720,7 +721,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/stepper')]
-    public function stepper($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment): Response
+    public function stepper($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment, CurrentUserResolver $currentUserResolver): Response
     {
         $environment = $legacyEnvironment->getEnvironment();
 
@@ -747,7 +748,7 @@ class ItemController extends AbstractController
             $rubricManager->setTypeLimit($item->getLabelType());
         }
 
-        if (!$environment->getCurrentUserItem()->isModerator()) {
+        if (!($currentUserResolver->getUser()?->isModerator() ?? false)) {
             $rubricManager->setInactiveEntriesLimit(cs_manager::SHOW_ENTRIES_ONLY_ACTIVATED);
         }
 

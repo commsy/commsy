@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Tag\TagDeleter;
 use cs_tag_item;
@@ -22,6 +23,7 @@ class CategoryService
     public function __construct(
         private readonly LegacyEnvironment $legacyEnvironment,
         private readonly TagDeleter $tagDeleter,
+        private readonly CurrentUserResolver $currentUserResolver,
     ) {
     }
 
@@ -100,7 +102,7 @@ class CategoryService
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);
 
-        $deleterId = (int) ($environment->getCurrentUserItem()?->getItemID() ?: 0);
+        $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
 
         $this->tagDeleter->softDelete((int) $tagId, $deleterId);
     }
@@ -140,7 +142,7 @@ class CategoryService
         $childrenIdsOne = $tag2tagManager->getChildrenItemIDArray($tagIdOne);
         $childrenIdsTwo = $tag2tagManager->getChildrenItemIDArray($tagIdTwo);
 
-        $deleterId = (int) ($environment->getCurrentUserItem()?->getItemID() ?: 0);
+        $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
 
         // Non-recursive: children survive to be re-parented below.
         // Parity: tag_manager->delete($id, false).
