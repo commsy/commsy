@@ -27,9 +27,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Mirrors the Schloss 2 Phase 0 characterization for the Doctrine path:
- * request-attribute context vs account-portal fallback, room vs portal
- * context, request-scoped memoisation, and reset().
+ * Mirrors the Schloss 2 Phase 0 characterization for the Doctrine path.
+ *
+ * getContextId() reads the legacy attribute precedence directly
+ * (roomId, portalId, fileId) and deliberately ignores the generic
+ * `context` attribute (legacy setupContext never honoured it; the
+ * `/portal/{context}/enter` route would otherwise feed a non-id into
+ * cs_environment). getRoom()/getPortal() still delegate to
+ * RequestContext.
  */
 final class CurrentContextResolverTest extends TestCase
 {
@@ -52,12 +57,12 @@ final class CurrentContextResolverTest extends TestCase
 
     public function testRoomContextResolvesIdRoomAndPortal(): void
     {
-        $request = $this->createMock(Request::class);
+        $request = new Request();
+        $request->attributes->set('roomId', 42);
         $room = $this->createMock(Room::class);
         $portal = $this->createMock(Portal::class);
 
         $this->requestStack->method('getCurrentRequest')->willReturn($request);
-        $this->requestContext->method('fetchContextId')->with($request)->willReturn(42);
         $this->requestContext->method('fetchRoom')->with($request)->willReturn($room);
         $this->requestContext->method('fetchPortal')->with($request)->willReturn($portal);
 
@@ -68,11 +73,11 @@ final class CurrentContextResolverTest extends TestCase
 
     public function testPortalContextHasNoRoom(): void
     {
-        $request = $this->createMock(Request::class);
+        $request = new Request();
+        $request->attributes->set('portalId', 7);
         $portal = $this->createMock(Portal::class);
 
         $this->requestStack->method('getCurrentRequest')->willReturn($request);
-        $this->requestContext->method('fetchContextId')->willReturn(7);
         $this->requestContext->method('fetchRoom')->willReturn(null);
         $this->requestContext->method('fetchPortal')->willReturn($portal);
 
@@ -81,16 +86,39 @@ final class CurrentContextResolverTest extends TestCase
         self::assertSame($portal, $this->resolver->getPortal());
     }
 
+    public function testGenericContextAttributeIsIgnored(): void
+    {
+        // Regression guard: `/portal/{context}/enter` binds {context}.
+        // Legacy setupContext ignored it; so must we (else cs_environment
+        // gets a non-resolvable id -> E_USER_ERROR).
+        $request = new Request();
+        $request->attributes->set('context', '1');
+        // A normal portal id — NOT 99 (that is the legacy server-context
+        // sentinel, getServerID(); reusing it as a portal id would
+        // conflate the two, see the Phase 0 collision note).
+        $portal = $this->createMock(Portal::class);
+        $portal->method('getId')->willReturn(55);
+        $account = $this->createMock(Account::class);
+        $account->method('getPortal')->willReturn($portal);
+
+        $this->requestStack->method('getCurrentRequest')->willReturn($request);
+        $this->requestContext->method('fetchRoom')->willReturn(null);
+        $this->requestContext->method('fetchPortal')->willReturn(null);
+        $this->currentUserResolver->method('getAccount')->willReturn($account);
+
+        // not 1 (the `context` value) — falls back to the account portal
+        self::assertSame(55, $this->resolver->getContextId());
+    }
+
     public function testFallsBackToAccountPortalWhenRequestHasNoContext(): void
     {
-        $request = $this->createMock(Request::class);
+        $request = new Request();
         $portal = $this->createMock(Portal::class);
         $portal->method('getId')->willReturn(9);
         $account = $this->createMock(Account::class);
         $account->method('getPortal')->willReturn($portal);
 
         $this->requestStack->method('getCurrentRequest')->willReturn($request);
-        $this->requestContext->method('fetchContextId')->willReturn(null);
         $this->requestContext->method('fetchRoom')->willReturn(null);
         $this->requestContext->method('fetchPortal')->willReturn(null);
         $this->currentUserResolver->method('getAccount')->willReturn($account);
@@ -130,7 +158,7 @@ final class CurrentContextResolverTest extends TestCase
 
     public function testEachResolutionIsMemoisedAndResetClearsIt(): void
     {
-        $request = $this->createMock(Request::class);
+        $request = new Request();
         $room = $this->createMock(Room::class);
 
         $this->requestStack->method('getCurrentRequest')->willReturn($request);

@@ -16,15 +16,14 @@ namespace App\EventSubscriber;
 use App\Entity\Account;
 use App\Legacy\UserItemAdapter;
 use App\Security\Authorization\Voter\RootVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
-use App\Utils\FileService;
 use cs_environment;
 use cs_user_item;
 use Exception;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -36,7 +35,7 @@ class LegacySubscriber implements EventSubscriberInterface
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly Security $security,
-        private readonly FileService $fileService,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly CurrentUserResolver $currentUserResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -65,30 +64,25 @@ class LegacySubscriber implements EventSubscriberInterface
 
         // NOTE: for guests, $account is null but setupUser() will handle this
         if ($account instanceof Account || null === $account) {
-            $request = $event->getRequest();
-            $this->setupContext($request, $account);
+            $this->setupContext();
 
             $this->setupUser($account);
         }
     }
 
-    private function setupContext(Request $request, ?Account $account): void
+    /**
+     * Context decision is now Doctrine-native: CurrentContextResolver
+     * owns the (request attributes -> account portal fallback) lookup,
+     * 1:1 with the former hand-rolled logic. cs_environment is reduced
+     * to a consumer of the resolved id. Resolver null (guest / no
+     * context) leaves the LegacyEnvironment ctor default (server 99) in
+     * place — the Phase 0 pinned behaviour.
+     */
+    private function setupContext(): void
     {
-        $contextId = null;
-        $contextId ??= $request->attributes->get('roomId');
-        $contextId ??= $request->attributes->get('portalId');
-
-        if ($request->attributes->has('fileId')) {
-            $file = $this->fileService->getFile($request->attributes->get('fileId'));
-            $contextId = $file?->getContextID();
-        }
-
-        if ($contextId) {
+        $contextId = $this->currentContextResolver->getContextId();
+        if (null !== $contextId) {
             $this->legacyEnvironment->setCurrentContextID($contextId);
-        } else {
-            if (null !== $account) {
-                $this->legacyEnvironment->setCurrentContextID($account->getPortal()?->getId());
-            }
         }
     }
 

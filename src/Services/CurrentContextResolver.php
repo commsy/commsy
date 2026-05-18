@@ -61,8 +61,17 @@ final class CurrentContextResolver implements ResetInterface
     }
 
     /**
-     * Current context id: request attributes first, then the logged-in
-     * account's portal — 1:1 with LegacySubscriber::setupContext().
+     * Current context id, 1:1 with the legacy LegacySubscriber::
+     * setupContext() precedence: roomId, then portalId, then a fileId's
+     * context, then the logged-in account's portal.
+     *
+     * Deliberately does NOT honour RequestContext's leading generic
+     * `context` attribute: the legacy setupContext never did, and routes
+     * like `/portal/{context}/enter` bind `{context}` to a non-id token
+     * ('server' / a selector number). Feeding that into cs_environment
+     * makes getCurrentContextItem() blow up with E_USER_ERROR. The fileId
+     * branch is reused from RequestContext (only when no room/portal id
+     * is present, so the generic `context` cannot leak in there).
      */
     public function getContextId(): ?int
     {
@@ -73,9 +82,18 @@ final class CurrentContextResolver implements ResetInterface
         $this->contextIdResolved = true;
 
         $request = $this->requestStack->getCurrentRequest();
-        $contextId = null !== $request
-            ? $this->requestContext->fetchContextId($request)
-            : null;
+        $contextId = null;
+
+        if (null !== $request) {
+            $roomId = $request->attributes->get('roomId');
+            $portalId = $request->attributes->get('portalId');
+            $contextId = null !== $roomId ? (int) $roomId
+                : (null !== $portalId ? (int) $portalId : null);
+
+            if (null === $contextId && $request->attributes->has('fileId')) {
+                $contextId = $this->requestContext->fetchContextId($request);
+            }
+        }
 
         return $this->contextIdCache = $contextId
             ?? $this->currentUserResolver->getAccount()?->getPortal()?->getId();
