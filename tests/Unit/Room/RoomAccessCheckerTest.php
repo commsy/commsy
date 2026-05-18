@@ -240,20 +240,6 @@ final class RoomAccessCheckerTest extends TestCase
         self::assertTrue($this->checker->canEnter($account, $room));
     }
 
-    public function testRepeatedCanEnterByLegacyIdentityCallsHitTheCache(): void
-    {
-        $room = $this->room(itemId: 42, type: 'project');
-
-        $this->userRepository
-            ->expects(self::once())
-            ->method('findOneByLegacyIdentity')
-            ->with('alice', 42, 7)
-            ->willReturn($this->member(status: 2));
-
-        self::assertTrue($this->checker->canEnterByLegacyIdentity('alice', 7, $room));
-        self::assertTrue($this->checker->canEnterByLegacyIdentity('alice', 7, $room));
-    }
-
     public function testRepeatedCanEnterByUserItemIdCallsHitTheCache(): void
     {
         $room = $this->room(itemId: 42, type: 'project');
@@ -266,26 +252,6 @@ final class RoomAccessCheckerTest extends TestCase
 
         self::assertTrue($this->checker->canEnterByUserItemId(7, $room));
         self::assertTrue($this->checker->canEnterByUserItemId(7, $room));
-    }
-
-    public function testCacheKeyIsolatesDifferentRoomsForSameUser(): void
-    {
-        $roomA = $this->room(itemId: 42, type: 'project');
-        $roomB = $this->room(itemId: 99, type: 'project');
-
-        // Two distinct rooms ⇒ two repository calls. If the cache key
-        // collapsed across rooms, the second call would not happen and
-        // assertions would fire incorrectly.
-        $this->userRepository
-            ->expects(self::exactly(2))
-            ->method('findOneByLegacyIdentity')
-            ->willReturnOnConsecutiveCalls(
-                $this->member(status: 2),
-                null,
-            );
-
-        self::assertTrue($this->checker->canEnterByLegacyIdentity('alice', 7, $roomA));
-        self::assertFalse($this->checker->canEnterByLegacyIdentity('alice', 7, $roomB));
     }
 
     // ---- helpers ----

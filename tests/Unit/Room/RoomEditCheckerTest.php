@@ -136,8 +136,7 @@ final class RoomEditCheckerTest extends TestCase
     {
         $u = (new User())
             ->setStatus($status)
-            ->setUserId('user-' . $itemId)
-            ->setAuthSource(1);
+            ->setUserId('user-' . $itemId);
         $u->itemId = $itemId;
         $u->setRoom((new Room())->setItemId($contextId));
         return $u;

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Tests\Unit\User;
 
 use App\Entity\Room;
+use App\Entity\Account;
 use App\Entity\User;
 use App\User\UserEditChecker;
 use PHPUnit\Framework\TestCase;
@@ -95,7 +96,7 @@ final class UserEditCheckerTest extends TestCase
         $u = (new User())
             ->setStatus($status)
             ->setUserId($userId)
-            ->setAuthSource($authSource);
+            ->setAccount((new Account())->setId(crc32($userId)));
         $u->itemId = $itemId;
         $u->setRoom((new Room())->setItemId($contextId));
         return $u;

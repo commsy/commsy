@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Tests\Unit\User;
 
 use App\Entity\Room;
+use App\Entity\Account;
 use App\Entity\User;
 use App\Security\Permission\Checker\ItemViewChecker;
 use App\Security\Permission\Subject\ItemViewSubject;
@@ -217,7 +218,7 @@ final class UserViewCheckerTest extends TestCase
         $u = (new User())
             ->setStatus($status)
             ->setUserId($userId)
-            ->setAuthSource($authSource)
+            ->setAccount((new Account())->setId(crc32($userId)))
             ->setVisible($visible);
         $u->itemId = $itemId !== 0 ? $itemId : crc32($userId . '-' . $contextId);
         $u->setRoom((new Room())->setItemId($contextId));
