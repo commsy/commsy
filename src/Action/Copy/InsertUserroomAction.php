@@ -16,6 +16,7 @@ namespace App\Action\Copy;
 use App\Entity\Account;
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
 use App\Utils\ReaderService;
@@ -36,7 +37,8 @@ class InsertUserroomAction
         LegacyEnvironment $legacyEnvironment,
         private readonly MarkedService $markService,
         private readonly ReaderService $readerService,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly CurrentContextResolver $currentContextResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -79,7 +81,7 @@ class InsertUserroomAction
                 /** @var cs_item $import */
 
                 // copy item
-                $oldContextId = $this->legacyEnvironment->getCurrentContextID();
+                $oldContextId = $this->currentContextResolver->getContextId() ?? 0;
                 $this->legacyEnvironment->setCurrentContextID($userRoomId);
                 $copy = $import->copy();
                 $this->legacyEnvironment->setCurrentContextID($oldContextId);

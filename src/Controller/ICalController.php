@@ -15,6 +15,7 @@ namespace App\Controller;
 
 use App\Hash\HashManager;
 use App\Repository\HashRepository;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_dates_item;
 use cs_environment;
@@ -54,12 +55,20 @@ class ICalController extends AbstractController
 {
     protected cs_environment $legacyEnvironment;
 
+    protected CurrentContextResolver $currentContextResolver;
+
     protected TranslatorInterface $translator;
 
     #[Required]
     public function setLegacyEnvironment(LegacyEnvironment $legacyEnvironment): void
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+    }
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
     }
 
     public function setTranslator(TranslatorInterface $translator): void
@@ -205,7 +214,7 @@ class ICalController extends AbstractController
 
         // query user manager
         $userManager = $this->legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+        $userManager->setContextLimit($this->currentContextResolver->getContextId() ?? 0);
         $userManager->setIDArrayLimit($userIdArray);
         $userManager->select();
         $userList = $userManager->get();

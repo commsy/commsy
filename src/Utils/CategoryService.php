@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Tag\TagDeleter;
@@ -24,6 +25,7 @@ class CategoryService
         private readonly LegacyEnvironment $legacyEnvironment,
         private readonly TagDeleter $tagDeleter,
         private readonly CurrentUserResolver $currentUserResolver,
+        private readonly CurrentContextResolver $currentContextResolver,
     ) {
     }
 
@@ -155,7 +157,7 @@ class CategoryService
 
         $newTag = $tagManager->getNewItem();
         $newTag->setTitle($titleOne.'/'.$titleTwo);
-        $newTag->setContextID($environment->getCurrentContextID());
+        $newTag->setContextID($this->currentContextResolver->getContextId() ?? 0);
         $newTag->setCreatorItem($environment->getCurrentUserItem());
         $newTag->setCreationDate(getCurrentDateTimeInMySQL());
         $newTag->setLinkedItemsByIDArray($mergedLinkedIds);

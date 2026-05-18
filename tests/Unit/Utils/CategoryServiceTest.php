@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Utils;
 
 use App\Entity\User;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Tag\TagDeleter;
@@ -63,7 +64,9 @@ final class CategoryServiceTest extends TestCase
             ->method('softDelete')
             ->with($tagId, $userId);
 
-        $service = new CategoryService($legacyEnvironment, $tagDeleter, $currentUserResolver);
+        $currentContextResolver = $this->createMock(CurrentContextResolver::class);
+
+        $service = new CategoryService($legacyEnvironment, $tagDeleter, $currentUserResolver, $currentContextResolver);
         $service->removeTag((string) $tagId, $roomId);
     }
 
@@ -87,7 +90,9 @@ final class CategoryServiceTest extends TestCase
             ->method('softDelete')
             ->with($tagId, 0);
 
-        $service = new CategoryService($legacyEnvironment, $tagDeleter, $currentUserResolver);
+        $currentContextResolver = $this->createMock(CurrentContextResolver::class);
+
+        $service = new CategoryService($legacyEnvironment, $tagDeleter, $currentUserResolver, $currentContextResolver);
         $service->removeTag($tagId, $roomId);
     }
 }

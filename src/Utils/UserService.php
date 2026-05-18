@@ -19,6 +19,7 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\UserRepository;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_context_item;
 use cs_environment;
@@ -58,6 +59,7 @@ class UserService
         private readonly UserRepository $userRepository,
         private readonly Security $security,
         private readonly LegacyPermissionBridge $legacyBridge,
+        private readonly CurrentContextResolver $currentContextResolver,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
@@ -393,7 +395,7 @@ class UserService
 
     public function grantAccessToAllPendingApplications(): void
     {
-        $this->userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+        $this->userManager->setContextLimit($this->currentContextResolver->getContextId() ?? 0);
         $this->userManager->setRegisteredLimit();
         $this->userManager->select();
         $requested_user_list = $this->userManager->get();

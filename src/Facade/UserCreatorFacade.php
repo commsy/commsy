@@ -20,6 +20,7 @@ use App\Entity\RoomSlug;
 use App\Event\UserJoinedRoomEvent;
 use App\Form\Model\Csv\CsvUserDataset;
 use App\Mail\Mailer;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\AccountMail;
 use App\Utils\UserService;
@@ -42,7 +43,8 @@ class UserCreatorFacade
         private readonly UserPasswordHasherInterface $passwordEncoder,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly Mailer $mailer,
-        private readonly AccountMail $accountMail
+        private readonly AccountMail $accountMail,
+        private readonly CurrentContextResolver $currentContextResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -194,7 +196,7 @@ class UserCreatorFacade
                 // NOTE: userroom creation (plus the involved user cloning) & choosing appropriate email texts when
                 //       sending info emails requires the current context to be set, so we set the context explicitly
                 //       here (otherwise it may not have been set (yet), e.g. when auto-creating room users on login)
-                $oldContextId = $this->legacyEnvironment->getCurrentContextID();
+                $oldContextId = $this->currentContextResolver->getContextId() ?? 0;
                 $this->legacyEnvironment->setCurrentContextID($roomId);
 
                 $relatedUserInContext = $user->getRelatedUserItemInContext($roomId);

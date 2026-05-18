@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_user_item;
@@ -27,7 +28,7 @@ class AccountMail
 {
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RouterInterface $router)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RouterInterface $router, private readonly CurrentContextResolver $currentContextResolver)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -72,7 +73,7 @@ class AccountMail
         $moderator = $this->legacyEnvironment->getCurrentUserItem();
 
         $absoluteRoomUrl = $this->router->generate('app_room_home', [
-            'roomId' => $this->legacyEnvironment->getCurrentContextID(),
+            'roomId' => $this->currentContextResolver->getContextId() ?? 0,
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $body .= match ($action) {

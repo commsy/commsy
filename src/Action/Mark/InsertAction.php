@@ -15,6 +15,7 @@ namespace App\Action\Mark;
 
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\MarkedService;
@@ -36,7 +37,8 @@ class InsertAction
         private readonly ItemService $itemService,
         private readonly ReaderService $readerService,
         private readonly MarkedService $markService,
-        private readonly CurrentUserResolver $currentUserResolver
+        private readonly CurrentUserResolver $currentUserResolver,
+        private readonly CurrentContextResolver $currentContextResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -63,7 +65,7 @@ class InsertAction
                     /** @var cs_item $import */
                     $import = $this->itemService->getTypedItem($import->getItemId());
 
-                    $oldContextId = $this->legacyEnvironment->getCurrentContextID();
+                    $oldContextId = $this->currentContextResolver->getContextId() ?? 0;
                     $this->legacyEnvironment->setCurrentContextID($roomItem->getItemID());
                     $copy = $import->copy();
                     $this->legacyEnvironment->setCurrentContextID($oldContextId);

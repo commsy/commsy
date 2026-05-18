@@ -19,6 +19,7 @@ use App\Files\FileDeleter;
 use App\Form\Type\UploadDropzoneType;
 use App\Office\OfficeFileFactory;
 use App\Repository\FilesRepository;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\FileUploader;
 use App\Services\LegacyEnvironment;
@@ -199,6 +200,7 @@ final class FileList extends AbstractController
         OfficeFileFactory $fileFactory,
         FileUploader $fileUploader,
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         EntityManagerInterface $entityManager,
         #[LiveArg] string $type,
         /** @noinspection PhpUnusedParameterInspection */
@@ -210,7 +212,7 @@ final class FileList extends AbstractController
         try {
             $file = $fileFactory->create($type);
             $uploadedFile = new UploadedFile($file->getPathname(), $file->getFilename());
-            $fileId = $fileUploader->upload($uploadedFile, $environment->getCurrentPortalID(), $environment->getCurrentContextID());
+            $fileId = $fileUploader->upload($uploadedFile, $currentContextResolver->getPortal()?->getId() ?? 0, $currentContextResolver->getContextId() ?? 0);
 
             // rename
             /** @var FilesRepository $filesRepository */

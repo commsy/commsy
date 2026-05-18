@@ -16,6 +16,7 @@ namespace App\Utils;
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Mail\Mailer;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_dates_item;
 use cs_environment;
@@ -35,7 +36,8 @@ class MailAssistant
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly Mailer $mailer,
-        private readonly Environment $twig
+        private readonly Environment $twig,
+        private readonly CurrentContextResolver $currentContextResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -131,7 +133,7 @@ class MailAssistant
             $userManager = $this->legacyEnvironment->getUserManager();
             $userManager->resetLimits();
             $userManager->setUserLimit();
-            $userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+            $userManager->setContextLimit($this->currentContextResolver->getContextId() ?? 0);
             $userManager->select();
 
             $recipients->addList($userManager->get());
@@ -223,7 +225,7 @@ class MailAssistant
     {
         $labelManager = $this->legacyEnvironment->getLabelManager();
         $labelManager->resetLimits();
-        $labelManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+        $labelManager->setContextLimit($this->currentContextResolver->getContextId() ?? 0);
         $labelManager->setTypeLimit($type);
         $labelManager->select();
         $labelList = $labelManager->get();

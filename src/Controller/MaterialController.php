@@ -37,6 +37,7 @@ use App\Repository\LicenseRepository;
 use App\Rubric\Material\MaterialDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -76,6 +77,14 @@ class MaterialController extends BaseController
     private MaterialTransformer $materialTransformer;
 
     private AssessmentService $assessmentService;
+
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
 
     #[Required]
     public function setCategoryService(CategoryService $categoryService): void
@@ -554,7 +563,7 @@ class MaterialController extends BaseController
 
             if ('1' == $current_context->getWorkflowReaderGroup()) {
                 $group_manager = $this->legacyEnvironment->getGroupManager();
-                $group_manager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+                $group_manager->setContextLimit($this->currentContextResolver->getContextId() ?? 0);
                 $group_manager->setTypeLimit('group');
                 $group_manager->select();
                 $group_list = $group_manager->get();

@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Form\Type\AnnotationType;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use cs_environment;
@@ -42,7 +43,8 @@ class DownloadService
         private readonly FormFactoryInterface $formFactory,
         private readonly Environment $environment,
         private readonly ParameterBagInterface $parameterBag,
-        private readonly CategoryService $categoryService
+        private readonly CategoryService $categoryService,
+        private readonly CurrentContextResolver $currentContextResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -283,7 +285,7 @@ class DownloadService
 
             if ('1' == $current_context->getWorkflowReaderGroup()) {
                 $group_manager = $this->legacyEnvironment->getGroupManager();
-                $group_manager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+                $group_manager->setContextLimit($this->currentContextResolver->getContextId() ?? 0);
                 $group_manager->setTypeLimit('group');
                 $group_manager->select();
                 $group_list = $group_manager->get();
