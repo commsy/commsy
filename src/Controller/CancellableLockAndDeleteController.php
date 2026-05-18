@@ -19,6 +19,7 @@ use App\Repository\PortalRepository;
 use App\Room\RoomDeleterRegistry;
 use App\Room\RoomDeletionOptions;
 use App\Room\RoomStatus;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
@@ -43,6 +44,7 @@ class CancellableLockAndDeleteController extends AbstractController
         RoomService $roomService,
         TranslatorInterface $translator,
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         PortalRepository $portalRepository,
         RoomDeleterRegistry $roomDeleterRegistry,
         CurrentUserResolver $currentUserResolver,
@@ -134,7 +136,7 @@ class CancellableLockAndDeleteController extends AbstractController
             if ('cancel' === $buttonName) {
                 return $detailRedirectResponse;
             } elseif ('lock' === $buttonName) {
-                $portal = $portalRepository->find($legacyEnvironment->getEnvironment()->getCurrentPortalID());
+                $portal = $portalRepository->find($currentContextResolver->getPortal()?->getId() ?? 0);
                 $status = $this->isGranted('PORTAL_MODERATOR', $portal) ?
                     RoomStatus::LOCKED_PORTAL_MOD : RoomStatus::LOCKED;
 
@@ -158,6 +160,7 @@ class CancellableLockAndDeleteController extends AbstractController
         $roomId,
         RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         PortalRepository $portalRepository,
         $itemId
     ): Response {
@@ -171,7 +174,7 @@ class CancellableLockAndDeleteController extends AbstractController
         }
 
         if ($roomItem->isLockedByModerator()) {
-            $portal = $portalRepository->find($legacyEnvironment->getEnvironment()->getCurrentPortalID());
+            $portal = $portalRepository->find($currentContextResolver->getPortal()?->getId() ?? 0);
             $this->denyAccessUnlessGranted('PORTAL_MODERATOR', $portal);
         }
 

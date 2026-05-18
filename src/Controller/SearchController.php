@@ -40,6 +40,7 @@ use App\Search\QueryConditions\TitleQueryCondition;
 use App\Search\SearchManager;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CalendarsService;
+use App\Services\CurrentContextResolver;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use cs_item;
@@ -68,8 +69,10 @@ class SearchController extends BaseController
     /**
      * SearchController constructor.
      */
-    public function __construct(private readonly UrlGeneratorInterface $router)
-    {
+    public function __construct(
+        private readonly UrlGeneratorInterface $router,
+        private readonly CurrentContextResolver $currentContextResolver,
+    ) {
     }
 
     /**
@@ -933,7 +936,7 @@ class SearchController extends BaseController
                     $routeName = 'app_'.$type.'_detail';
                 }
 
-                $portalId = $this->legacyEnvironment->getCurrentPortalID();
+                $portalId = $this->currentContextResolver->getPortal()?->getId() ?? 0;
 
                 if ($this->router->getRouteCollection()->get($routeName)) {
                     $url = $this->generateUrl($routeName, [
@@ -997,7 +1000,7 @@ class SearchController extends BaseController
                     $routeName = 'app_'.$type.'_detail';
                 }
 
-                $portalId = $this->legacyEnvironment->getCurrentPortalID();
+                $portalId = $this->currentContextResolver->getPortal()?->getId() ?? 0;
 
                 $results[] = [
                     'allowedActions' => $allowedActions,

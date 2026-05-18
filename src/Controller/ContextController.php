@@ -20,6 +20,7 @@ use App\Mail\Factories\RoomMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\RoomRepository;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\GroupService;
 use App\Utils\UserService;
@@ -37,6 +38,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class ContextController.
@@ -44,6 +46,14 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class ContextController extends AbstractController
 {
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
+
     #[Route(path: '/room/{roomId}/context/{itemId}/request', requirements: ['itemId' => '\d+'])]
     public function request(
         Request $request,
@@ -332,7 +342,7 @@ class ContextController extends AbstractController
             } else {
                 // in private room context -> redirect to detail view of all rooms list.
                 $route = $this->redirectToRoute('app_roomall_detail', [
-                    'portalId' => $legacyEnvironment->getCurrentPortalID(),
+                    'portalId' => $this->currentContextResolver->getPortal()?->getId() ?? 0,
                     'itemId' => $itemId,
                 ]);
             }

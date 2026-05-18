@@ -25,6 +25,7 @@ use App\Form\Type\ItemWorkflowType;
 use App\Form\Type\SendType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
@@ -721,7 +722,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/stepper')]
-    public function stepper($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment, CurrentUserResolver $currentUserResolver): Response
+    public function stepper($roomId, $itemId, ItemService $itemService, LegacyEnvironment $legacyEnvironment, CurrentUserResolver $currentUserResolver, CurrentContextResolver $currentContextResolver): Response
     {
         $environment = $legacyEnvironment->getEnvironment();
 
@@ -735,7 +736,7 @@ class ItemController extends AbstractController
 
         if ('project' == $baseItem->getItemType()) {
             $rubricManager->setCommunityroomLimit($roomId);
-            $rubricManager->setContextLimit($environment->getCurrentPortalID());
+            $rubricManager->setContextLimit($currentContextResolver->getPortal()?->getId() ?? 0);
         } else {
             $rubricManager->setContextLimit($roomId);
         }

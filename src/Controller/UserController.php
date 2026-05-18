@@ -31,6 +31,7 @@ use App\Mail\Mailer;
 use App\Repository\UserRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -66,6 +67,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserController extends BaseController
 {
     private UserService $userService;
+
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
 
     #[Required]
     public function setUserService(UserService $userService): void
@@ -939,7 +948,7 @@ class UserController extends BaseController
         $file = 'user_unknown.gif';
         if ('' != $picture) {
             $disc_manager = $this->legacyEnvironment->getDiscManager();
-            $portalId = $this->legacyEnvironment->getCurrentPortalID();
+            $portalId = $this->currentContextResolver->getPortal()?->getId() ?? 0;
             $filePath = $disc_manager->getAbsoluteFilePath($portalId, $roomId, $picture);
             $relativePath = Path::makeRelative($filePath, getcwd());
 

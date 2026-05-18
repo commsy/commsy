@@ -24,6 +24,7 @@ use App\Room\RoomDeletionOptions;
 use App\Security\Authorization\Voter\ContextCreateVoter;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CalendarsService;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -180,6 +181,7 @@ class ProjectController extends AbstractController
         RoomService $roomService,
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         EventDispatcherInterface $eventDispatcher,
         LegacyCopy $legacyCopy,
         int $roomId
@@ -228,8 +230,8 @@ class ProjectController extends AbstractController
                 $legacyRoom->setCreatorItem($currentUser);
                 $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
                 $legacyRoom->setModificatorItem($currentUser);
-                $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
-                $legacyRoom->setPortalID($legacyEnvironment->getCurrentPortalID());
+                $legacyRoom->setContextID($currentContextResolver->getPortal()?->getId() ?? 0);
+                $legacyRoom->setPortalID($currentContextResolver->getPortal()?->getId() ?? 0);
                 $legacyRoom->open();
                 $legacyRoom->setCommunityListByID([$roomId]);
 

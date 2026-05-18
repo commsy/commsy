@@ -16,6 +16,7 @@ namespace App\Controller;
 use App\Dto\TempUserFileDto;
 use App\Entity\Account;
 use App\Services\FileUploader;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use App\Utils\ItemService;
@@ -66,6 +67,7 @@ class UploadController extends AbstractController
         ItemService $itemService,
         FileUploader $fileUploader,
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         int $roomId,
         ?int $itemId = null
     ): JsonResponse {
@@ -87,7 +89,7 @@ class UploadController extends AbstractController
                     return $response->setData(['fileIds' => [], 'error' => $error]);
                 }
 
-                $fileId = $fileUploader->upload($file, $environment->getCurrentPortalID(), $roomId);
+                $fileId = $fileUploader->upload($file, $currentContextResolver->getPortal()?->getId() ?? 0, $roomId);
                 $tempFile = $fileService->getFile($fileId);
                 $responseData[$fileId] = htmlentities((string) $tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
             }
@@ -133,7 +135,8 @@ class UploadController extends AbstractController
         ItemService $itemService,
         FileUploader $fileUploader,
         FileService $fileService,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver
     ): JsonResponse {
         if ($this->uploadSizeValidator->isPostMaxSizeExceeded($request)) {
             return $this->postMaxSizeErrorResponse(['fileIds' => []]);
@@ -157,7 +160,7 @@ class UploadController extends AbstractController
                 return $response->setData(['fileIds' => [], 'error' => $error]);
             }
 
-            $fileId = $fileUploader->upload($file, $environment->getCurrentPortalID(), $roomId);
+            $fileId = $fileUploader->upload($file, $currentContextResolver->getPortal()?->getId() ?? 0, $roomId);
             $tempFile = $fileService->getFile($fileId);
             $responseData[$fileId] = htmlentities((string) $tempFile->getFilename()).' ('.$tempFile->getCreationDate().')';
         }
@@ -181,7 +184,8 @@ class UploadController extends AbstractController
         int $itemId,
         Request $request,
         ItemService $itemService,
-        LegacyEnvironment $environment
+        LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
         $item = $itemService->getTypedItem($itemId);
@@ -220,7 +224,7 @@ class UploadController extends AbstractController
 
                 $fileManager = $legacyEnvironment->getFileManager();
                 $fileItem = $fileManager->getNewItem();
-                $fileItem->setPortalId($legacyEnvironment->getCurrentPortalID());
+                $fileItem->setPortalId($currentContextResolver->getPortal()?->getId() ?? 0);
                 $fileItem->setTempKey($fileInfo['file_id']);
                 $fileItem->setPostFile($fileInfo);
                 $fileItem->save();

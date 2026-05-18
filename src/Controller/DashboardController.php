@@ -22,6 +22,7 @@ use App\Repository\SavedSearchRepository;
 use App\Repository\ServerRepository;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Security\Authorization\Voter\ContextCreateVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
@@ -48,6 +49,7 @@ class DashboardController extends AbstractController
     public function overview(
          ItemService $itemService,
          LegacyEnvironment $environment,
+         CurrentContextResolver $currentContextResolver,
          PortalRepository $portalRepository,
          ServerRepository $serverRepository,
          CalendarsRepository $calendarsRepository,
@@ -64,7 +66,7 @@ class DashboardController extends AbstractController
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
+        $portal = $portalRepository->find($currentContextResolver->getPortal()?->getId() ?? 0);
         $server = $serverRepository->getServer();
 
         // iCal

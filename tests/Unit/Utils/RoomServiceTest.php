@@ -15,6 +15,7 @@ namespace Tests\Unit\Utils;
 
 use App\Room\Copy\LegacyCopy;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
@@ -37,11 +38,13 @@ class RoomServiceTest extends TestCase
         ]);
         $legacyCopy = $this->createStub(LegacyCopy::class);
         $legacyBridge = $this->createStub(LegacyPermissionBridge::class);
+        $currentContextResolver = $this->createStub(CurrentContextResolver::class);
 
         $roomService = new RoomService(
             $legacyEnvironment,
             $legacyCopy,
             $legacyBridge,
+            $currentContextResolver,
         );
         $rubrics = $roomService->getRubricInformation(1, false);
 

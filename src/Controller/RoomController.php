@@ -27,6 +27,7 @@ use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
 use App\Services\CalendarsService;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
@@ -270,12 +271,13 @@ class RoomController extends AbstractController
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
         LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver,
         PortalRepository $portalRepository,
         RoomRepository $roomRepository,
         int $roomId
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
-        $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
+        $portal = $portalRepository->find($currentContextResolver->getPortal()?->getId() ?? 0);
 
         $showRooms = $portal->getShowRoomsOnHome();
         $roomTypes = match ($showRooms) {
@@ -343,6 +345,7 @@ class RoomController extends AbstractController
         RoomService $roomService,
         FilterBuilderUpdater $filterBuilderUpdater,
         LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver,
         UserRepository $userRepository,
         PortalRepository $portalRepository,
         RoomRepository $roomRepository,
@@ -352,7 +355,7 @@ class RoomController extends AbstractController
         int $start = 0
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
-        $portal = $portalRepository->find($legacyEnvironment->getCurrentPortalID());
+        $portal = $portalRepository->find($currentContextResolver->getPortal()?->getId() ?? 0);
 
         $showRooms = $portal->getShowRoomsOnHome();
         $roomTypes = match ($showRooms) {
@@ -438,6 +441,7 @@ class RoomController extends AbstractController
         UserService $userService,
         RoomCategoriesService $roomCategoriesService,
         LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver,
         EventDispatcherInterface $eventDispatcher,
         CalendarsService $calendarsService,
         LegacyCopy $legacyCopy,
@@ -540,8 +544,8 @@ class RoomController extends AbstractController
                 $legacyRoom->setCreatorItem($currentUser);
                 $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
                 $legacyRoom->setModificatorItem($currentUser);
-                $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
-                $legacyRoom->setPortalID($legacyEnvironment->getCurrentPortalID());
+                $legacyRoom->setContextID($currentContextResolver->getPortal()?->getId() ?? 0);
+                $legacyRoom->setPortalID($currentContextResolver->getPortal()?->getId() ?? 0);
                 $legacyRoom->open();
 
                 if ('project' == $formData['type_select'] && isset($context['type_sub']['community_rooms'])) {
@@ -607,7 +611,7 @@ class RoomController extends AbstractController
 
                 // redirect to the project detail page
                 return $this->redirectToRoute('app_roomall_detail', [
-                    'portalId' => $legacyEnvironment->getCurrentPortalID(),
+                    'portalId' => $currentContextResolver->getPortal()?->getId() ?? 0,
                     'itemId' => $legacyRoom->getItemId(),
                 ]);
             }

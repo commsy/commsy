@@ -15,6 +15,7 @@ namespace App\Utils;
 
 use App\Room\Copy\LegacyCopy;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
 use cs_environment;
@@ -30,6 +31,7 @@ class RoomService
         LegacyEnvironment $legacyEnvironment,
         private readonly LegacyCopy $legacyCopy,
         private readonly LegacyPermissionBridge $legacyBridge,
+        private readonly CurrentContextResolver $currentContextResolver,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -282,7 +284,7 @@ class RoomService
     {
         $roomDir = implode('/', array_filter(explode("\r\n", chunk_split(strval($roomId), '4')), 'strlen'));
 
-        return $this->legacyEnvironment->getCurrentPortalID().'/'.$roomDir.'_';
+        return ($this->currentContextResolver->getPortal()?->getId() ?? 0).'/'.$roomDir.'_';
     }
 
     public function getRoomsInTimePulse($timeId)
