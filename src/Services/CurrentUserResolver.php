@@ -21,6 +21,7 @@ use App\Repository\UserRepository;
 use App\Utils\RequestContext;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * The Doctrine-native answer to "who is acting in the current request,
@@ -38,10 +39,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * to the logged-in account's portal — exactly the legacy behaviour the
  * Phase 0 characterization pinned.
  *
- * Not `readonly`: the per-request user lookup is memoised. The resolver
- * is request-scoped, so the cache lives exactly as long as it should.
+ * Not `readonly`: the per-request user lookup is memoised. The service
+ * is a shared singleton, so the memo MUST be cleared between requests —
+ * otherwise the first request's resolution (e.g. a portal-context
+ * membership) leaks into later requests in any runtime that serves more
+ * than one request per process (Symfony test client, worker mode,
+ * messenger). {@see reset()} is invoked via the `kernel.reset` tag
+ * (autoconfigured for {@see ResetInterface}).
  */
-final class CurrentUserResolver
+final class CurrentUserResolver implements ResetInterface
 {
     private ?User $userCache = null;
     private bool $userResolved = false;
@@ -67,6 +73,17 @@ final class CurrentUserResolver
     public function isGuest(): bool
     {
         return null === $this->getAccount();
+    }
+
+    /**
+     * Clears the per-request memo. Invoked between requests via the
+     * `kernel.reset` tag — without it the singleton would serve a stale
+     * user across requests in multi-request runtimes.
+     */
+    public function reset(): void
+    {
+        $this->userCache = null;
+        $this->userResolved = false;
     }
 
     /**
