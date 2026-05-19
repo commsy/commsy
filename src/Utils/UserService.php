@@ -806,8 +806,19 @@ class UserService
         $action
     ): void {
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $contextItem = $this->legacyEnvironment->getCurrentContextItem()->getContextItem();
-        $fromSender = $contextItem ? $contextItem->getTitle() : 'CommSy';
+
+        // The "from" display name is the current context's own title when
+        // we are in a room (consistent with the mail subject/body, which
+        // also use the room title), otherwise the portal title, otherwise
+        // 'CommSy'. The old `getCurrentContextItem()->getContextItem()`
+        // double-climb wrongly yielded the portal title even inside a room
+        // and fataled with "Call to undefined method
+        // PortalProxy::getContextItem()" when the current context was
+        // itself a portal/server (e.g. account-creation flows).
+        $currentContext = $this->legacyEnvironment->getCurrentContextItem();
+        $fromSender = $currentContext instanceof cs_room_item
+            ? $currentContext->getTitle()
+            : ($this->legacyEnvironment->getCurrentPortalItem()?->getTitle() ?? 'CommSy');
 
         $validator = new EmailValidator();
         $replyTo = [];
