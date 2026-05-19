@@ -15,6 +15,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
@@ -33,6 +34,7 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly Security $security,
         private readonly EntityManagerInterface $entityManager,
@@ -104,7 +106,7 @@ class TermsOfUseSubscriber implements EventSubscriberInterface
         }
 
         // Room terms
-        $currentContext = $this->legacyEnvironment->getCurrentContextItem();
+        $currentContext = $this->currentContextResolver->getContextItem();
         if ($currentContext->isProjectRoom() || $currentContext->isCommunityRoom() || $currentContext->isGroupRoom()) {
             if ($currentContext->withAGB()) {
                 $contextUser = $this->legacyEnvironment->getCurrentUserItem();

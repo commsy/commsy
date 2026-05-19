@@ -14,6 +14,7 @@
 namespace App\Feed;
 
 use App\Hash\HashManager;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_manager;
@@ -33,6 +34,7 @@ readonly class CommsyFeedContentProvider implements FeedProviderInterface
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private CurrentContextResolver $currentContextResolver,
         private TranslatorInterface $translator,
         private FeedCreatorFactory $feedCreatorFactory,
         private HashManager $hashManager
@@ -47,7 +49,7 @@ readonly class CommsyFeedContentProvider implements FeedProviderInterface
     {
         $contextId = $request->attributes->get('contextId');
         $this->legacyEnvironment->setCurrentContextID($contextId);
-        $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+        $currentContextItem = $this->currentContextResolver->getContextItem();
 
         if ($this->isGranted($currentContextItem, $request)) {
             $isGuestAccess = true;

@@ -17,6 +17,7 @@ namespace Tests\Integration\Services;
 
 use App\Entity\Account;
 use App\Entity\Room;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\PrintService;
 use App\Utils\FileService;
@@ -115,6 +116,7 @@ final class PrintServiceCurrentContextCharacterizationTest extends KernelTestCas
 
         $service = new PrintService(
             $legacyEnvironment,
+            self::getContainer()->get(CurrentContextResolver::class),
             $pdf,
             $requestStack,
             self::getContainer()->get(FilesRepository::class),

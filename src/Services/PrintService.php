@@ -31,6 +31,7 @@ class PrintService
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly Pdf $pdf,
         private readonly RequestStack $requestStack,
         private readonly FilesRepository $filesRepository,
@@ -86,7 +87,7 @@ class PrintService
      */
     private function setOptions(): void
     {
-        $roomItem = $this->legacyEnvironment->getCurrentContextItem();
+        $roomItem = $this->currentContextResolver->getContextItem();
         if (CS_PRIVATEROOM_TYPE === $roomItem->getRoomType()) {
             $roomItem = $this->legacyEnvironment->getCurrentPortalItem();
         }

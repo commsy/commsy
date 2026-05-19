@@ -13,7 +13,7 @@
 
 namespace App\Validator\Constraints;
 
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentContextResolver;
 use App\Utils\UserService;
 use cs_room_item;
 use Symfony\Component\Validator\Constraint;
@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UniqueModeratorConstraintValidator extends ConstraintValidator
 {
-    public function __construct(private readonly UserService $userService, private readonly LegacyEnvironment $legacyEnvironment, private readonly TranslatorInterface $translator)
+    public function __construct(private readonly UserService $userService, private readonly CurrentContextResolver $currentContextResolver, private readonly TranslatorInterface $translator)
     {
     }
 
@@ -49,9 +49,8 @@ class UniqueModeratorConstraintValidator extends ConstraintValidator
             return;
         }
 
-        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
         /** @var cs_room_item $roomItem */
-        $roomItem = $legacyEnvironment->getCurrentContextItem();
+        $roomItem = $this->currentContextResolver->getContextItem();
         $roomId = $roomItem->getItemID();
 
         // error if removing moderator status for all of the affected users would leave no other moderators

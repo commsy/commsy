@@ -15,6 +15,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\Portal;
 use App\Room\RoomManager;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\RequestLogging;
 use cs_environment;
@@ -29,6 +30,7 @@ class ActivitySubscriber implements EventSubscriberInterface
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly EntityManagerInterface $entityManager,
         private readonly RoomManager $roomManager
     ) {
@@ -53,7 +55,7 @@ class ActivitySubscriber implements EventSubscriberInterface
                     }
                 }
 
-                $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+                $currentContextItem = $this->currentContextResolver->getContextItem();
 
                 if ($currentContextItem) {
                     if ($currentContextItem->isPortal()) {
