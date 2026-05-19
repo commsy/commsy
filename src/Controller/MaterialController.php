@@ -164,7 +164,7 @@ class MaterialController extends BaseController
         // get material list from manager service
         $materials = $this->materialService->getListMaterials($roomId, $max, $start, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$materials);
 
@@ -286,7 +286,7 @@ class MaterialController extends BaseController
         }
         $materials = $this->materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$materials);
 
@@ -422,7 +422,7 @@ class MaterialController extends BaseController
                 $read = $payload['read'];
 
                 $itemManager = $this->legacyEnvironment->getItemManager();
-                $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+                $currentContextItem = $this->currentContextResolver->getContextItem();
                 $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
                 if ($currentContextItem->withWorkflow()) {
@@ -487,7 +487,7 @@ class MaterialController extends BaseController
         $itemArray = [$material];
         $itemArray = array_merge($itemArray, $sectionList);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($material);
 
@@ -607,7 +607,7 @@ class MaterialController extends BaseController
                 }
             }
 
-            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+            $currentContextItem = $this->currentContextResolver->getContextItem();
             $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
             if ($currentContextItem->withWorkflow()) {
@@ -847,7 +847,7 @@ class MaterialController extends BaseController
         // TODO: move handling of sections into a dedicated `editSectionAction()`
         $item = $this->itemService->getItem($itemId);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $typedItem = null;
         $isMaterial = false;

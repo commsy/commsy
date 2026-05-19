@@ -667,7 +667,7 @@ class UserController extends BaseController
         $item = $user;
         $this->readerService->markItemAsRead($item);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($user);
 
@@ -729,7 +729,7 @@ class UserController extends BaseController
         }
 
         $groups = [];
-        $context_item = $this->legacyEnvironment->getCurrentContextItem();
+        $context_item = $this->currentContextResolver->getContextItem();
         $conf = $context_item->getHomeConf();
         if (strpos((string) $conf, 'group_show')) {
             $groups = $this->userService->getUser($itemId)->getGroupList()->to_array();
