@@ -254,6 +254,31 @@ final class RoomAccessCheckerTest extends TestCase
         self::assertTrue($this->checker->canEnterByUserItemId(7, $room));
     }
 
+    /**
+     * Regression for the request-scoped cache key: it must include the
+     * room id, so a verdict cached for one room is never served for a
+     * different room that happens to share the same user_item id.
+     * (Replaces the cross-room isolation coverage lost when the
+     * legacy-identity cache tests were removed.)
+     */
+    public function testCanEnterByUserItemIdCacheKeyIsolatesDifferentRoomsForSameUser(): void
+    {
+        $roomA = $this->room(itemId: 42, type: 'project');
+        $roomB = $this->room(itemId: 99, type: 'project');
+
+        // Same user_item id 7, but the row belongs to room A only.
+        $this->userRepository
+            ->method('find')
+            ->with(7)
+            ->willReturn($this->member(status: 2, contextRoom: $roomA));
+
+        self::assertTrue($this->checker->canEnterByUserItemId(7, $roomA));
+        self::assertFalse(
+            $this->checker->canEnterByUserItemId(7, $roomB),
+            'A verdict cached for one room must not leak to another room with the same user_item id',
+        );
+    }
+
     // ---- helpers ----
 
     private function account(string $username): Account
