@@ -13,9 +13,8 @@
 
 namespace App\Privacy;
 
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentContextResolver;
 use App\Utils\UserService;
-use cs_environment;
 use cs_privateroom_item;
 use cs_user_item;
 use DateTime;
@@ -27,14 +26,11 @@ use DateTime;
  */
 class PersonalDataCollector
 {
-    private readonly cs_environment $legacyEnvironment;
-
     /**
      * PersonalDataCollector constructor.
      */
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly UserService $userService)
+    public function __construct(private readonly CurrentContextResolver $currentContextResolver, private readonly UserService $userService)
     {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
@@ -126,7 +122,7 @@ class PersonalDataCollector
      */
     private function getAccountDataForUser(cs_user_item $user): ?AccountData
     {
-        $portal = $this->legacyEnvironment->getCurrentPortalItem();
+        $portal = $this->currentContextResolver->getPortalItem();
         $portalUser = $user->getRelatedPortalUserItem();
         if (!$portal || !$portalUser) {
             return null;

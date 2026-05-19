@@ -17,6 +17,7 @@ use App\Entity\Account;
 use App\Entity\Portal;
 use App\Repository\PortalRepository;
 use App\Services\InvitationsService;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
@@ -36,6 +37,7 @@ final readonly class MenuBuilder
         private FactoryInterface $factory,
         private RoomService $roomService,
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private AuthorizationCheckerInterface $authorizationChecker,
         private InvitationsService $invitationsService,
         private PortalRepository $portalRepository,
@@ -261,7 +263,7 @@ final readonly class MenuBuilder
         $currentStack = $requestStack->getCurrentRequest();
         $roomId = $currentStack->attributes->get('roomId');
 
-        $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
         $portalId = $portalItem->getItemId();
 
         /** @var Portal $portal */

@@ -17,6 +17,7 @@ use App\Entity\Account;
 use App\Room\PrivateRoomDeleter;
 use App\Room\RoomDeletionOptions;
 use App\Services\CurrentUserResolver;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\User\UserMembershipDeleter;
 use App\Utils\ReaderService;
@@ -33,6 +34,7 @@ class AccountMerger
     public function __construct(
         private readonly UserService $userService,
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly EntityManagerInterface $entityManager,
         private readonly ReaderService $readerService,
         private readonly UserMembershipDeleter $membershipDeleter,
@@ -55,7 +57,7 @@ class AccountMerger
         $this->rewritePrivateRoom($from, $into);
 
         // merge portal
-        $this->rewriteContextUserAndContent($from, $into, $this->legacyEnvironment->getCurrentPortalItem()->getId());
+        $this->rewriteContextUserAndContent($from, $into, $this->currentContextResolver->getPortalItem()->getId());
 
         // delete the merged account
         $this->entityManager->remove($from);

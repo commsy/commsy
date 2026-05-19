@@ -13,6 +13,7 @@
 
 namespace App\Twig\Extension;
 
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
@@ -27,6 +28,7 @@ class PageTitleExtension extends AbstractExtension
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly RoomService $roomService,
         private readonly TranslatorInterface $translator,
         private readonly RequestStack $requestStack,
@@ -66,7 +68,7 @@ class PageTitleExtension extends AbstractExtension
         }
 
         // portal name
-        $portal = $this->legacyEnvironment->getCurrentPortalItem();
+        $portal = $this->currentContextResolver->getPortalItem();
         if ($portal) {
             $pageTitleElements[] = $portal->getTitle();
         }
@@ -87,7 +89,7 @@ class PageTitleExtension extends AbstractExtension
 
     public function shortPageTitle(): string
     {
-        $portal = $this->legacyEnvironment->getCurrentPortalItem();
+        $portal = $this->currentContextResolver->getPortalItem();
         if ($portal) {
             return htmlentities(
                 $portal->getTitle(),

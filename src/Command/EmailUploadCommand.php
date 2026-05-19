@@ -17,6 +17,7 @@ use App\Entity\Portal;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\PortalRepository;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use PhpImap\Mailbox;
@@ -41,6 +42,7 @@ class EmailUploadCommand extends Command
      */
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly Mailer $mailer,
         private readonly PortalRepository $portalRepository,
         private $projectDir,
@@ -218,7 +220,7 @@ class EmailUploadCommand extends Command
                         $fileManager = $this->legacyEnvironment->getFileManager();
                         $fileManager->setContextLimit($privateRoomId);
 
-                        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+                        $portalItem = $this->currentContextResolver->getPortalItem();
                         $portalMaxFileSize = $portalItem->getMaxUploadSizeInBytes();
 
                         $fileIdArray = [];
@@ -271,7 +273,7 @@ class EmailUploadCommand extends Command
                             'Upload2CommSy - erfolgreich',
                             $body,
                             $recipient,
-                            $this->legacyEnvironment->getCurrentPortalItem()->getTitle()
+                            $this->currentContextResolver->getPortalItem()->getTitle()
                         );
                     } else {
                         // send e-mail with 'password or subject not correct' back to sender
@@ -282,7 +284,7 @@ class EmailUploadCommand extends Command
                             'Upload2CommSy - fehlgeschlagen',
                             $body,
                             $recipient,
-                            $this->legacyEnvironment->getCurrentPortalItem()->getTitle()
+                            $this->currentContextResolver->getPortalItem()->getTitle()
                         );
                     }
                 }

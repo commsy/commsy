@@ -16,6 +16,7 @@ namespace Tests\Integration\Menu;
 use App\Menu\MenuBuilder;
 use App\Repository\PortalRepository;
 use App\Services\InvitationsService;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\RoomService;
 use cs_environment;
@@ -49,6 +50,7 @@ class MenuBuilderTest extends KernelTestCase
                 'getCurrentUserItem' => $cs_user_item,
             ]),
         ]);
+        $currentContextResolver = $this->createStub(CurrentContextResolver::class);
         $authorizationChecker = $this->createConfiguredMock(AuthorizationCheckerInterface::class, [
             'isGranted' => false,
         ]);
@@ -67,6 +69,7 @@ class MenuBuilderTest extends KernelTestCase
             $factory,
             $roomService,
             $legacyEnvironment,
+            $currentContextResolver,
             $authorizationChecker,
             $invitationsService,
             $portalRepository,

@@ -14,6 +14,7 @@
 namespace App\EventSubscriber;
 
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
@@ -39,6 +40,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly RoomService $roomService,
         private readonly ItemService $itemService,
         private readonly TranslatorInterface $translator,
@@ -82,7 +84,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
 
         $this->addPortalCrumb();
 
-        $portal = $this->legacyEnvironment->getCurrentPortalItem();
+        $portal = $this->currentContextResolver->getPortalItem();
         if ($portal && $request->attributes->get('_route') === 'app_room_listall') {
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser(
@@ -129,7 +131,7 @@ class BreadcrumbSubscriber implements EventSubscriberInterface
 
     private function addPortalCrumb(): void
     {
-        $portal = $this->legacyEnvironment->getCurrentPortalItem();
+        $portal = $this->currentContextResolver->getPortalItem();
         if ($portal) {
             $this->breadcrumbs->addRouteItem($portal->getTitle(), 'app_helper_portalenter',
                 ['context' => $portal->getItemId()]);

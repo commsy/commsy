@@ -13,21 +13,17 @@
 
 namespace App\Validator\Constraints;
 
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentContextResolver;
 use cs_community_item;
-use cs_environment;
 use cs_room_item;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class MandatoryProjectRoomAssignmentValidator extends ConstraintValidator
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $legacyEnvironment
+        private readonly CurrentContextResolver $currentContextResolver
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
@@ -35,7 +31,7 @@ class MandatoryProjectRoomAssignmentValidator extends ConstraintValidator
      */
     public function validate($unused, Constraint $constraint): void
     {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
         if ('mandatory' !== $portalItem->getProjectRoomLinkStatus()) {
             return;
         }
