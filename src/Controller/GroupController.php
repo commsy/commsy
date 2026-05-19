@@ -844,7 +844,7 @@ class GroupController extends BaseController
 
             if ('save' == $saveType) {
                 $formData = $form->getData();
-                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+                $portalItem = $this->currentContextResolver->getPortalItem();
 
                 // send mail
                 $sendStatus = $contactFormHelper->handleContactFormSending(
@@ -933,7 +933,7 @@ class GroupController extends BaseController
 
             if ('save' == $saveType) {
                 $formData = $form->getData();
-                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+                $portalItem = $this->currentContextResolver->getPortalItem();
 
                 // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
                 $users = $this->userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
@@ -1102,7 +1102,7 @@ class GroupController extends BaseController
     {
         $templates = [];
 
-        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
+        $currentPortal = $this->currentContextResolver->getPortalItem();
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomManager->setContextLimit($currentPortal->getItemID());
         $roomManager->setOnlyGrouproom();
@@ -1110,7 +1110,7 @@ class GroupController extends BaseController
         $roomManager->select();
         $roomList = $roomManager->get();
 
-        $defaultId = $this->legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        $defaultId = $this->currentContextResolver->getPortalItem()->getDefaultProjectTemplateID();
         if ($roomList->isNotEmpty() or '-1' != $defaultId) {
             $currentUser = $this->legacyEnvironment->getCurrentUser();
             if ('-1' != $defaultId) {

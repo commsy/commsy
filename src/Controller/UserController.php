@@ -123,7 +123,7 @@ class UserController extends BaseController
         $originPath,
         $moderatorIds = null
     ): Response {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
 
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -807,7 +807,7 @@ class UserController extends BaseController
 
             if ('save' == $saveType) {
                 $formData = $form->getData();
-                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+                $portalItem = $this->currentContextResolver->getPortalItem();
 
                 // send mail
                 $sendStatus = $contactFormHelper->handleContactFormSending(
@@ -990,7 +990,7 @@ class UserController extends BaseController
 
         $portalItem = $entityManager->getRepository(Portal::class)->find($contextId);
         if (!$portalItem) {
-            $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+            $portalItem = $this->currentContextResolver->getPortalItem();
         }
 
         $currentClipboardIds = $session->get('clipboard_ids', []);
@@ -1272,7 +1272,7 @@ class UserController extends BaseController
 
             if ('save' == $saveType) {
                 $formData = $form->getData();
-                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+                $portalItem = $this->currentContextResolver->getPortalItem();
 
                 // send mail
                 $sendStatus = $contactFormHelper->handleContactFormSending(
