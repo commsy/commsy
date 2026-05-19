@@ -14,6 +14,7 @@
 namespace App\Security\Authorization\Voter;
 
 use App\Entity\Account;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use cs_environment;
@@ -32,7 +33,8 @@ class CategoryVoter extends Voter
     public function __construct(
         private Security $security,
         private UserService $userService,
-        LegacyEnvironment $legacyEnvironment
+        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -44,7 +46,7 @@ class CategoryVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
-        $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+        $currentRoom = $this->currentContextResolver->getContextItem();
         $account = $this->security->getUser();
         if (!$account instanceof Account) {
             return false;
@@ -76,7 +78,7 @@ class CategoryVoter extends Voter
         // categories are editable if tags are editable by all or
         // the user is moderator
         if ($currentUser->isUser()) {
-            $currentContext = $this->legacyEnvironment->getCurrentContextItem();
+            $currentContext = $this->currentContextResolver->getContextItem();
 
             if ($currentContext->isTagEditedByAll() || $currentUser->isModerator()) {
                 return true;

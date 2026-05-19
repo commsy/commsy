@@ -22,6 +22,7 @@ use App\Repository\FilesRepository;
 use App\Security\Permission\Checker\ItemEditChecker;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Security\Permission\Resolver\PermissionResolver;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
@@ -66,6 +67,7 @@ class ItemVoter extends Voter
         private readonly ItemEditChecker $itemEditChecker,
         private readonly PermissionResolver $permissionResolver,
         private readonly LegacyPermissionBridge $legacyBridge,
+        private readonly CurrentContextResolver $currentContextResolver,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -193,7 +195,7 @@ class ItemVoter extends Voter
                     return false;
                 }
 
-                $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+                $currentRoom = $this->currentContextResolver->getContextItem();
 
                 return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
             }
@@ -261,7 +263,7 @@ class ItemVoter extends Voter
     {
         $userStatus = $currentUser->getStatus();
         if (2 == $userStatus || 3 == $userStatus) { // user & moderator
-            $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+            $currentRoom = $this->currentContextResolver->getContextItem();
 
             return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
         }
@@ -273,7 +275,7 @@ class ItemVoter extends Voter
     {
         $userStatus = $currentUser->getStatus();
         if (2 == $userStatus || 3 == $userStatus || 4 == $userStatus) { // user, moderator & read-only user
-            $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+            $currentRoom = $this->currentContextResolver->getContextItem();
 
             return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
         }

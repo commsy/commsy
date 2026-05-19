@@ -13,6 +13,7 @@
 
 namespace App\Security\Authorization\Voter;
 
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use LogicException;
@@ -25,8 +26,10 @@ class HashtagVoter extends Voter
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -37,7 +40,7 @@ class HashtagVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
-        $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+        $currentRoom = $this->currentContextResolver->getContextItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         return match ($attribute) {
