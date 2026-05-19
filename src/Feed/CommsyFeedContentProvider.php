@@ -118,7 +118,7 @@ readonly class CommsyFeedContentProvider implements FeedProviderInterface
     private function getTitle($currentContextItem): string
     {
         if ($currentContextItem->isPrivateRoom()) {
-            $currentPortalItem = $this->legacyEnvironment->getCurrentPortalItem();
+            $currentPortalItem = $this->currentContextResolver->getPortalItem();
             $title = $currentPortalItem->getTitle();
 
             $ownerUserItem = $currentContextItem->getOwnerUserItem();

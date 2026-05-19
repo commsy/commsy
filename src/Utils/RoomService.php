@@ -306,7 +306,7 @@ class RoomService
      */
     public function getTimePulses($reverseOrder = false): array
     {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
         if (!$portalItem->showTime()) {
             return [];
         }
@@ -337,7 +337,7 @@ class RoomService
 
     public function buildServiceLink()
     {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
 
         $remoteServiceLink = '';
         if ($portalItem) {
@@ -372,7 +372,7 @@ class RoomService
      */
     public function getServiceEmail(): string
     {
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
         $serviceEmail = null;
 
         if ($portalItem) {
@@ -401,7 +401,7 @@ class RoomService
         $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomManager->setContextLimit($this->legacyEnvironment->getCurrentPortalItem()->getItemID());
+        $roomManager->setContextLimit($this->currentContextResolver->getPortalItem()->getItemID());
         $roomManager->setTemplateLimit();
         $roomManager->select();
 

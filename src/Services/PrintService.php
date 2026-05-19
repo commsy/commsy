@@ -89,7 +89,7 @@ class PrintService
     {
         $roomItem = $this->currentContextResolver->getContextItem();
         if (CS_PRIVATEROOM_TYPE === $roomItem->getRoomType()) {
-            $roomItem = $this->legacyEnvironment->getCurrentPortalItem();
+            $roomItem = $this->currentContextResolver->getPortalItem();
         }
 
         if ('en' == $this->legacyEnvironment->getSelectedLanguage()) {

@@ -135,7 +135,7 @@ class UserService
             $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
         }
 
-        if ($this->legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+        if ($this->currentContextResolver->getPortalItem()->getConfigurationHideMailByDefault()) {
             $newUser->setEmailNotVisible();
         }
 

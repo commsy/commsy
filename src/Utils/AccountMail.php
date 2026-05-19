@@ -61,7 +61,7 @@ class AccountMail
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->currentContextResolver->getContextItem();
-        $portal = $this->legacyEnvironment->getCurrentPortalItem();
+        $portal = $this->currentContextResolver->getPortalItem();
 
         $oldContextType = $legacyTranslator->getContext();
         $legacyTranslator->setContext($room->getType());
