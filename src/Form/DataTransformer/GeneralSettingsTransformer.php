@@ -15,6 +15,7 @@ namespace App\Form\DataTransformer;
 
 use App\Entity\Room;
 use App\Repository\RoomRepository;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\RoomService;
@@ -33,6 +34,7 @@ class GeneralSettingsTransformer extends AbstractTransformer
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly RoomService $roomService,
         private readonly UserService $userService,
         private readonly RoomRepository $roomRepository,
@@ -177,7 +179,7 @@ class GeneralSettingsTransformer extends AbstractTransformer
             /*
              * if assignment is mandatory, the array must not be empty
              */
-            if ('mandatory' !== $this->legacyEnvironment->getCurrentPortalItem()->getProjectRoomLinkStatus() || sizeof($roomData['community_rooms']) > 0) {
+            if ('mandatory' !== $this->currentContextResolver->getPortalItem()->getProjectRoomLinkStatus() || sizeof($roomData['community_rooms']) > 0) {
                 $roomObject->setCommunityListByID(array_values($roomData['community_rooms']));
             }
         } elseif ($roomObject instanceof cs_community_item) {

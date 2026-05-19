@@ -14,6 +14,7 @@
 namespace App\Filter;
 
 use App\Room\RoomStatus;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use Doctrine\ORM\QueryBuilder;
@@ -28,8 +29,10 @@ class RoomFilterType extends AbstractType
 {
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -164,7 +167,7 @@ class RoomFilterType extends AbstractType
             ])
         ;
 
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
         $showRooms = $portalItem->getShowRoomsOnHome();
         if ('onlyprojectrooms' !== $showRooms && 'onlycommunityrooms' !== $showRooms) {
             $builder

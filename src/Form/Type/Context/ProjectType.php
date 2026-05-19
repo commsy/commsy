@@ -13,6 +13,7 @@
 
 namespace App\Form\Type\Context;
 
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
 use cs_environment;
@@ -35,6 +36,7 @@ class ProjectType extends AbstractType
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -82,7 +84,7 @@ class ProjectType extends AbstractType
         $builder->add('community_rooms', ChoiceType::class, [
             'autocomplete' => true,
             'choice_loader' => new CallbackChoiceLoader(function () {
-                $currentPortalItem = $this->legacyEnvironment->getCurrentPortalItem();
+                $currentPortalItem = $this->currentContextResolver->getPortalItem();
                 $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
                 $communityManager = $this->legacyEnvironment->getCommunityManager();

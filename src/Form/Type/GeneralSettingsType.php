@@ -15,6 +15,7 @@ namespace App\Form\Type;
 
 use App\Form\DataTransformer\RoomSlugCollectionToStringTransformer;
 use App\Repository\TranslationRepository;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
 use cs_environment;
@@ -42,6 +43,7 @@ class GeneralSettingsType extends AbstractType
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
         private readonly TranslatorInterface  $translator,
         private readonly RoomSlugCollectionToStringTransformer $roomSlugToStringTransformer,
         private readonly TranslationRepository $translationRepository,
@@ -62,7 +64,7 @@ class GeneralSettingsType extends AbstractType
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($options['roomId']);
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
 
         $builder
             ->add('title', TextType::class, ['constraints' => [new Assert\NotBlank()], 'attr' => ['style' => 'width: 250px;']])
@@ -153,7 +155,7 @@ class GeneralSettingsType extends AbstractType
             }
 
             // check if time intervals are active in portal
-            $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+            $portalItem = $this->currentContextResolver->getPortalItem();
             if ($portalItem->showTime() &&
                 ($roomItem->isProjectRoom() || $roomItem->isGroupRoom())) {
                 $form
@@ -191,7 +193,7 @@ class GeneralSettingsType extends AbstractType
      */
     private function getTimeIntervalsDisplayName()
     {
-        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
+        $currentPortal = $this->currentContextResolver->getPortalItem();
         $displayName = $currentPortal->getCurrentTimeName();
         if (empty($displayName)) {
             $displayName = 'Time context';
@@ -206,7 +208,7 @@ class GeneralSettingsType extends AbstractType
 
         $translator = $this->legacyEnvironment->getTranslationObject();
 
-        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $this->currentContextResolver->getPortalItem();
         if ($portalItem->showTime()) {
             $timeList = $portalItem->getTimeList();
             if ($timeList->isNotEmpty()) {
@@ -230,7 +232,7 @@ class GeneralSettingsType extends AbstractType
     {
         $results = [$this->translator->trans('Select some options') => ''];
 
-        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
+        $currentPortal = $this->currentContextResolver->getPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $assignableRooms = array_filter(
