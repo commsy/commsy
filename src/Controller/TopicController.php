@@ -30,6 +30,7 @@ use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AssessmentService;
@@ -56,6 +57,14 @@ use Symfony\Contracts\Service\Attribute\Required;
 #[IsGranted('RUBRIC_TOPIC')]
 class TopicController extends BaseController
 {
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
+
     private TopicService $topicService;
 
     /**
@@ -110,7 +119,7 @@ class TopicController extends BaseController
             'showCategories' => $roomItem->withTags(),
             'buzzExpanded' => $roomItem->isBuzzwordShowExpanded(),
             'catzExpanded' => $roomItem->isTagsShowExpanded(),
-            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'language' => $this->currentContextResolver->getContextItem()->getLanguage(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->getArchived(),
             'user' => $this->legacyEnvironment->getCurrentUserItem(),
@@ -168,7 +177,7 @@ class TopicController extends BaseController
         int $roomId,
         int $itemId
     ): Response {
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
         $topic = $this->topicService->getTopic($itemId);
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -244,7 +253,7 @@ class TopicController extends BaseController
         $item = $topic;
         $this->readerService->markItemAsRead($item);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($topic);
 
@@ -318,7 +327,7 @@ class TopicController extends BaseController
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
-        $infoArray['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
+        $infoArray['language'] = $this->currentContextResolver->getContextItem()->getLanguage();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['buzzExpanded'] = $current_context->isBuzzwordShowExpanded();
         $infoArray['catzExpanded'] = $current_context->isTagsShowExpanded();
@@ -353,7 +362,7 @@ class TopicController extends BaseController
         int $itemId
     ): Response {
         $item = $this->itemService->getItem($itemId);
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $isDraft = $item->isDraft();
 
@@ -366,7 +375,7 @@ class TopicController extends BaseController
         $formData = $transformer->transform($topicItem);
         $formData['category_mapping']['categories'] = $labelService->getLinkedCategoryIds($item);
         $formData['hashtag_mapping']['hashtags'] = $labelService->getLinkedHashtagIds($itemId, $roomId);
-        $formData['language'] = $this->legacyEnvironment->getCurrentContextItem()->getLanguage();
+        $formData['language'] = $this->currentContextResolver->getContextItem()->getLanguage();
         $formData['draft'] = $isDraft;
         $form = $this->createForm(TopicType::class, $formData, ['action' => $this->generateUrl('app_topic_edit', ['roomId' => $roomId, 'itemId' => $itemId]), 'placeholderText' => '['.$this->translator->trans('insert title').']', 'categoryMappingOptions' => [
             'categories' => $labelService->getCategories($roomId),
@@ -424,7 +433,7 @@ class TopicController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($topicItem), CommsyEditEvent::EDIT);
 
-        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage()]);
+        return $this->render('topic/edit.html.twig', ['form' => $form, 'topic' => $topicItem, 'isDraft' => $isDraft, 'language' => $this->currentContextResolver->getContextItem()->getLanguage()]);
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/save')]
@@ -523,7 +532,7 @@ class TopicController extends BaseController
         }
         // get announcement list from manager service
         $topics = $this->topicService->getListTopics($roomId);
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$topics);
 
