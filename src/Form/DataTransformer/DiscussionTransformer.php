@@ -13,6 +13,7 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_discussion_item;
 use cs_environment;
@@ -23,8 +24,10 @@ class DiscussionTransformer extends AbstractTransformer
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -55,7 +58,7 @@ class DiscussionTransformer extends AbstractTransformer
             }
 
             // external viewer
-            if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+            if ($this->currentContextResolver->getContextItem()->isPrivateRoom()) {
                 $discussionData['external_viewer_enabled'] = true;
                 $discussionData['external_viewer'] = $discussionItem->getExternalViewerString();
             } else {
@@ -109,7 +112,7 @@ class DiscussionTransformer extends AbstractTransformer
         }
 
         // external viewer
-        if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+        if ($this->currentContextResolver->getContextItem()->isPrivateRoom()) {
             if (!empty(trim((string) $discussionData['external_viewer']))) {
                 $userIds = explode(' ', (string) $discussionData['external_viewer']);
                 $discussionObject->setExternalViewerAccounts($userIds);

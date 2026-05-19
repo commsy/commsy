@@ -13,6 +13,7 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_material_item;
@@ -25,8 +26,10 @@ class MaterialTransformer extends AbstractTransformer
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -92,7 +95,7 @@ class MaterialTransformer extends AbstractTransformer
                 }
 
                 // external viewer
-                if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+                if ($this->currentContextResolver->getContextItem()->isPrivateRoom()) {
                     $materialData['external_viewer_enabled'] = true;
                     $materialData['external_viewer'] = $materialItem->getExternalViewerString();
                 } else {
@@ -165,7 +168,7 @@ class MaterialTransformer extends AbstractTransformer
             }
 
             // external viewer
-            if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+            if ($this->currentContextResolver->getContextItem()->isPrivateRoom()) {
                 if (!empty(trim((string) $materialData['external_viewer']))) {
                     $userIds = explode(' ', (string) $materialData['external_viewer']);
                     $materialObject->setExternalViewerAccounts($userIds);

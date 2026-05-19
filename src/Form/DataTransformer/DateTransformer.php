@@ -13,6 +13,7 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_dates_item;
 use cs_environment;
@@ -24,8 +25,10 @@ class DateTransformer extends AbstractTransformer
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -73,7 +76,7 @@ class DateTransformer extends AbstractTransformer
             }
 
             // external viewer
-            if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+            if ($this->currentContextResolver->getContextItem()->isPrivateRoom()) {
                 $dateData['external_viewer_enabled'] = true;
                 $dateData['external_viewer'] = $dateItem->getExternalViewerString();
             } else {
@@ -150,7 +153,7 @@ class DateTransformer extends AbstractTransformer
         }
 
         // external viewer
-        if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+        if ($this->currentContextResolver->getContextItem()->isPrivateRoom()) {
             if (!empty(trim((string) $dateData['external_viewer']))) {
                 $userIds = explode(' ', (string) $dateData['external_viewer']);
                 $dateObject->setExternalViewerAccounts($userIds);

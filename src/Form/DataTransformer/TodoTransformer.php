@@ -13,6 +13,7 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_todo_item;
@@ -24,8 +25,10 @@ class TodoTransformer extends AbstractTransformer
 
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -83,7 +86,7 @@ class TodoTransformer extends AbstractTransformer
             }
 
             // external viewer
-            if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+            if ($this->currentContextResolver->getContextItem()->isPrivateRoom()) {
                 $todoData['external_viewer_enabled'] = true;
                 $todoData['external_viewer'] = $todoItem->getExternalViewerString();
             } else {
@@ -165,7 +168,7 @@ class TodoTransformer extends AbstractTransformer
         }
 
         // external viewer
-        if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+        if ($this->currentContextResolver->getContextItem()->isPrivateRoom()) {
             if (!empty(trim((string) $todoData['external_viewer']))) {
                 $userIds = explode(' ', (string) $todoData['external_viewer']);
                 $todoObject->setExternalViewerAccounts($userIds);
