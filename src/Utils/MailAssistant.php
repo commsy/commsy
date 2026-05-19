@@ -44,7 +44,7 @@ class MailAssistant
 
     public function prepareMessage($item)
     {
-        $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+        $currentContextItem = $this->currentContextResolver->getContextItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         return $this->twig->render('mail/send.html.twig', [
@@ -60,7 +60,7 @@ class MailAssistant
         $groupArray = $this->getChoicesByLabelType('group');
 
         if ($this->legacyEnvironment->inProjectRoom() && !empty($groupArray)) {
-            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+            $currentContextItem = $this->currentContextResolver->getContextItem();
 
             if ($currentContextItem->withRubric('group') && !$currentContextItem->withRubric('project')) {
                 return true;
@@ -75,7 +75,7 @@ class MailAssistant
         $institutionArray = $this->getChoicesByLabelType('institution');
 
         if ($this->legacyEnvironment->inCommunityRoom() && !empty($institutionArray)) {
-            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+            $currentContextItem = $this->currentContextResolver->getContextItem();
 
             if ($currentContextItem->withRubric('institution')) {
                 return true;
@@ -87,7 +87,7 @@ class MailAssistant
 
     public function showGroupAllRecipients($item)
     {
-        $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+        $currentContextItem = $this->currentContextResolver->getContextItem();
 
         if ($currentContextItem->isProjectRoom() && !$currentContextItem->withRubric('group')) {
             return true;
@@ -112,7 +112,7 @@ class MailAssistant
 
     public function showAllMembersRecipients($item)
     {
-        $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+        $currentContextItem = $this->currentContextResolver->getContextItem();
 
         if ($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('project') ||
             $currentContextItem->isGroupRoom()) {
@@ -161,7 +161,7 @@ class MailAssistant
         $isSendToGroupAll = (Send::class == $formData::class ? (is_null($formData->getSendToGroupAll()) ? false : $formData->getSendToGroupAll()) : $form->has('send_to_group_all') && $formData['send_to_group_all']);
 
         if ($isSendToGroupAll) {
-            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+            $currentContextItem = $this->currentContextResolver->getContextItem();
             $recipients->addList($currentContextItem->getUserList());
         }
 

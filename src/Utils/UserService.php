@@ -816,11 +816,12 @@ class UserService
         // double-climb wrongly yielded the portal title even inside a room
         // and fataled with "Call to undefined method
         // PortalProxy::getContextItem()" when the current context was
-        // itself a portal/server (e.g. account-creation flows).
-        $currentContext = $this->legacyEnvironment->getCurrentContextItem();
+        // itself a portal/server (e.g. account-creation flows). Routed
+        // through the CurrentContextResolver seam (Schloss 2 Welle 4d).
+        $currentContext = $this->currentContextResolver->getContextItem();
         $fromSender = $currentContext instanceof cs_room_item
             ? $currentContext->getTitle()
-            : ($this->legacyEnvironment->getCurrentPortalItem()?->getTitle() ?? 'CommSy');
+            : ($this->currentContextResolver->getPortalItem()?->getTitle() ?? 'CommSy');
 
         $validator = new EmailValidator();
         $replyTo = [];

@@ -36,7 +36,7 @@ class AccountMail
     public function generateSubject(string $action): string
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
-        $room = $this->legacyEnvironment->getCurrentContextItem();
+        $room = $this->currentContextResolver->getContextItem();
 
         return match ($action) {
             'user-delete' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE', $room->getTitle()),
@@ -60,7 +60,7 @@ class AccountMail
     public function generateBody(cs_user_item $user, string $action, $multipleRecipients = false): string
     {
         $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
-        $room = $this->legacyEnvironment->getCurrentContextItem();
+        $room = $this->currentContextResolver->getContextItem();
         $portal = $this->legacyEnvironment->getCurrentPortalItem();
 
         $oldContextType = $legacyTranslator->getContext();

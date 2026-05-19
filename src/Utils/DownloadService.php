@@ -210,7 +210,7 @@ class DownloadService
             $itemArray = array_merge($itemArray, $sectionList);
         }
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($item);
 
@@ -329,7 +329,7 @@ class DownloadService
                 }
             }
 
-            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+            $currentContextItem = $this->currentContextResolver->getContextItem();
             $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
 
             if ($currentContextItem->withWorkflow()) {
