@@ -26,6 +26,7 @@ use App\Form\Type\Profile\RoomProfileNotificationsType;
 use App\Room\RoomDeleterRegistry;
 use App\Room\RoomDeletionOptions;
 use App\Rubric\Label\LabelDeleter;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\DiscService;
 use App\Utils\GroupService;
@@ -370,6 +371,7 @@ class ProfileController extends AbstractController
     public function deleteRoomProfile(
         Request $request,
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         UserService $userService,
         ParameterBagInterface $parameterBag,
         TranslatorInterface $translator,
@@ -396,7 +398,7 @@ class ProfileController extends AbstractController
         $currentUser = $userService->getCurrentUserItem();
 
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $portal = $legacyEnvironment->getCurrentPortalItem();
+        $portal = $currentContextResolver->getPortalItem();
 
         $portalUrl = $this->generateUrl('app_helper_portalenter', [
             'context' => $portal->getItemId(),

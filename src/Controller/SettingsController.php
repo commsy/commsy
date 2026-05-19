@@ -41,6 +41,7 @@ use App\Room\RoomDeletionOptions;
 use App\Room\RoomStatus;
 use App\Services\CurrentUserResolver;
 use App\Services\InvitationsService;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\RoomService;
@@ -72,11 +73,12 @@ class SettingsController extends AbstractController
         RoomService $roomService,
         GeneralSettingsTransformer $transformer,
         LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver,
         EventDispatcherInterface $eventDispatcher,
         int $roomId
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
-        $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
+        $currentPortalItem = $currentContextResolver->getPortalItem();
 
         // get room from RoomService
         /** @var cs_room_item $roomItem */
@@ -172,10 +174,11 @@ class SettingsController extends AbstractController
         AdditionalSettingsTransformer $transformer,
         EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         TermsRepository $termsRepository,
         int $roomId
     ): Response {
-        $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+        $portalItem = $currentContextResolver->getPortalItem();
         $portalId = $portalItem->getItemId();
 
         /** @var cs_room_item $roomItem */
@@ -469,9 +472,10 @@ class SettingsController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         PortalRepository $portalRepository,
         RoomDeleterRegistry $roomDeleterRegistry,
-        CurrentUserResolver $currentUserResolver
+        CurrentUserResolver $currentUserResolver,
+        CurrentContextResolver $currentContextResolver
     ): Response {
-        $portalItem = $legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+        $portalItem = $currentContextResolver->getPortalItem();
         $portalId = $portalItem->getItemId();
 
         $roomItem = $roomService->getRoomItem($roomId);
@@ -547,6 +551,7 @@ class SettingsController extends AbstractController
         RoomService $roomService,
         TranslatorInterface $translator,
         LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver,
         PortalRepository $portalRepository,
         InvitationMessageFactory $invitationMessageFactory,
         Mailer $mailer,
@@ -560,7 +565,7 @@ class SettingsController extends AbstractController
 
         $legacyEnvironment = $environment->getEnvironment();
 
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $currentContextResolver->getPortalItem();
         $portalId = $portalItem->getItemId();
 
         /** @var Portal $portal */

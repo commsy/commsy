@@ -86,6 +86,7 @@ use App\Repository\LicenseRepository;
 use App\Repository\UserRepository;
 use App\Room\RoomManager;
 use App\Security\Authorization\Voter\RootVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
 use App\Utils\AccountMail;
@@ -1156,6 +1157,7 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         Request $request,
         LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver,
         ManagerRegistry $managerRegistry,
         ?int $termId = null
     ): Response {
@@ -1200,7 +1202,7 @@ class PortalSettingsController extends AbstractController
             'portalId' => $portal->getId(),
             'terms' => $terms,
             'termId' => $termId,
-            'item' => $legacyEnvironment->getCurrentPortalItem(),
+            'item' => $currentContextResolver->getPortalItem(),
         ]);
     }
 
