@@ -34,6 +34,7 @@ use App\Form\Type\TodoType;
 use App\Rubric\Todo\TodoDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -65,6 +66,14 @@ use Symfony\Contracts\Service\Attribute\Required;
 #[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class TodoController extends BaseController
 {
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
+
     private TodoService $todoService;
 
     #[Required]
@@ -189,7 +198,7 @@ class TodoController extends BaseController
         /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId, $max, $start, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$todos);
 
@@ -249,7 +258,7 @@ class TodoController extends BaseController
 
         $itemArray = [$todo];
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($todo);
 
@@ -437,7 +446,7 @@ class TodoController extends BaseController
         /** @var cs_item $item */
         $item = $this->itemService->getItem($itemId);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
         $roomItem = $this->roomService->getRoomItem($roomId);
 
         $isDraft = $item->isDraft();
@@ -650,7 +659,7 @@ class TodoController extends BaseController
         /** @var cs_todo_item[] $todos */
         $todos = $this->todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$todos);
 
@@ -1013,7 +1022,7 @@ class TodoController extends BaseController
 
         $itemArray = [$todo];
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($todo);
 

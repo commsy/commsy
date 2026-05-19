@@ -34,6 +34,7 @@ use App\Mail\Mailer;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\CategoryService;
@@ -62,6 +63,14 @@ use Symfony\Contracts\Service\Attribute\Required;
 #[IsGranted('RUBRIC_GROUP')]
 class GroupController extends BaseController
 {
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
+
     private GroupService $groupService;
 
     private UserService $userService;
@@ -415,7 +424,7 @@ class GroupController extends BaseController
 
         $this->readerService->markItemAsRead($group);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($group);
 
@@ -527,7 +536,7 @@ class GroupController extends BaseController
         int $itemId
     ): Response {
         $item = $this->itemService->getItem($itemId);
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $isDraft = $item->isDraft();
 

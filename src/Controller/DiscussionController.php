@@ -32,6 +32,7 @@ use App\Form\Type\DiscussionType;
 use App\Rubric\Discussion\DiscussionDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
@@ -56,6 +57,14 @@ use Symfony\Contracts\Service\Attribute\Required;
 #[IsGranted('RUBRIC_DISCUSSION')]
 class DiscussionController extends BaseController
 {
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
+
     private DiscussionService $discussionService;
 
     #[Required]
@@ -107,7 +116,7 @@ class DiscussionController extends BaseController
         // get discussion list from manager service
         $discussions = $this->discussionService->getListDiscussions($roomId, $max, $start, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$discussions);
 
@@ -222,7 +231,7 @@ class DiscussionController extends BaseController
         }
         $discussions = $this->discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$discussions);
 
@@ -339,7 +348,7 @@ class DiscussionController extends BaseController
 
         $itemArray = array_merge([$discussion], $articleList->to_array());
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($discussion);
 
@@ -701,7 +710,7 @@ class DiscussionController extends BaseController
         $form = null;
         $item = $this->itemService->getItem($itemId);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $discussionItem = null;
         $discussionArticleItem = null;
