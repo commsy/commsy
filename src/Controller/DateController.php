@@ -37,6 +37,7 @@ use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\DateVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CalendarsService;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -72,6 +73,14 @@ use Symfony\Contracts\Service\Attribute\Required;
 #[IsGranted('RUBRIC_DATE')]
 class DateController extends BaseController
 {
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
+
     private DateService $dateService;
 
     #[Required]
@@ -382,7 +391,7 @@ class DateController extends BaseController
 
         $itemArray = [$date];
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($date);
 
@@ -439,7 +448,7 @@ class DateController extends BaseController
             'pinned' => $this->itemService->getItem($itemId)->isPinned(),
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
-            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'language' => $this->currentContextResolver->getContextItem()->getLanguage(),
             'showAssociations' => $current_context->isAssociationShowExpanded(),
             'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
             'catzExpanded' => $current_context->isTagsShowExpanded(),
@@ -884,7 +893,7 @@ class DateController extends BaseController
     ): Response {
         $item = $this->itemService->getItem($itemId);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $isDraft = $item->isDraft();
 
@@ -1018,7 +1027,7 @@ class DateController extends BaseController
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($dateItem), CommsyEditEvent::EDIT);
 
-        return $this->render('date/edit.html.twig', ['form' => $form, 'isDraft' => $isDraft, 'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(), 'withRecurrence' => '' != $dateItem->getRecurrencePattern(), 'date' => $dateItem]);
+        return $this->render('date/edit.html.twig', ['form' => $form, 'isDraft' => $isDraft, 'language' => $this->currentContextResolver->getContextItem()->getLanguage(), 'withRecurrence' => '' != $dateItem->getRecurrencePattern(), 'date' => $dateItem]);
     }
 
     private function getTagDetailArray($baseCategories, $itemCategories)
@@ -1360,7 +1369,7 @@ class DateController extends BaseController
 
         $itemArray = [$date];
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($date);
 
@@ -1395,7 +1404,7 @@ class DateController extends BaseController
             'showCategories' => $current_context->withTags(),
             'showAssociations' => $current_context->isAssociationShowExpanded(),
             'showHashtags' => $current_context->withBuzzwords(),
-            'language' => $this->legacyEnvironment->getCurrentContextItem()->getLanguage(),
+            'language' => $this->currentContextResolver->getContextItem()->getLanguage(),
             'buzzExpanded' => $current_context->isBuzzwordShowExpanded(),
             'catzExpanded' => $current_context->isTagsShowExpanded(),
             'roomCategories' => $categories,

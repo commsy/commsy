@@ -30,6 +30,7 @@ use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\Utils\AnnotationService;
@@ -60,6 +61,14 @@ use Symfony\Contracts\Service\Attribute\Required;
 #[IsGranted('RUBRIC_ANNOUNCEMENT')]
 class AnnouncementController extends BaseController
 {
+    protected CurrentContextResolver $currentContextResolver;
+
+    #[Required]
+    public function setCurrentContextResolver(CurrentContextResolver $currentContextResolver): void
+    {
+        $this->currentContextResolver = $currentContextResolver;
+    }
+
     protected AnnouncementService $announcementService;
 
     protected AnnotationService $annotationService;
@@ -140,7 +149,7 @@ class AnnouncementController extends BaseController
         /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$announcements);
 
@@ -193,7 +202,7 @@ class AnnouncementController extends BaseController
         /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$announcements);
 
@@ -298,7 +307,7 @@ class AnnouncementController extends BaseController
         /** @var cs_announcement_item[] $announcements */
         $announcements = $this->announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$announcements);
 
@@ -479,7 +488,7 @@ class AnnouncementController extends BaseController
         /** @var cs_item $item */
         $item = $this->itemService->getItem($itemId);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $announcementItem = null;
 
@@ -817,7 +826,7 @@ class AnnouncementController extends BaseController
 
         $this->readerService->markItemAsRead($item);
 
-        $current_context = $this->legacyEnvironment->getCurrentContextItem();
+        $current_context = $this->currentContextResolver->getContextItem();
 
         $readCountDescription = $this->readerService->getReadCountDescriptionForItem($announcement);
 
