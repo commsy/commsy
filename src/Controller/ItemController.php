@@ -289,6 +289,7 @@ class ItemController extends AbstractController
         TranslatorInterface $translator,
         EventDispatcherInterface $eventDispatcher,
         LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver,
         Request $request,
         int $roomId,
         int $itemId,
@@ -299,7 +300,7 @@ class ItemController extends AbstractController
         $item = $itemService->getTypedItem($itemId);
         $roomItem = $roomService->getRoomItem($roomId);
 
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $currentContextResolver->getContextItem();
 
         $formData = [];
         $optionsData = [];

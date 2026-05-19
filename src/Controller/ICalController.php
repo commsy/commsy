@@ -90,7 +90,7 @@ class ICalController extends AbstractController
         $legacyEnvironment = $environment->getEnvironment();
 
         $legacyEnvironment->setCurrentContextID($contextId);
-        $currentContextItem = $legacyEnvironment->getCurrentContextItem();
+        $currentContextItem = $this->currentContextResolver->getContextItem();
 
         $granted = false;
         if ($currentContextItem->isOpenForGuests()) {

@@ -16,6 +16,7 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Entity\Portal;
 use App\Form\Type\TouAcceptType;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\UserService;
 use DateTimeImmutable;
@@ -80,11 +81,12 @@ class TouController extends AbstractController
     #[Route(path: '/room/{roomId}/terms')]
     public function room(
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         Request $request,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $currentContext = $legacyEnvironment->getCurrentContextItem();
+        $currentContext = $currentContextResolver->getContextItem();
 
         $touText = $currentContext->getAGBTextArray()[strtoupper((string) $legacyEnvironment->getUserLanguage())];
 

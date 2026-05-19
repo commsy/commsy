@@ -220,6 +220,7 @@ class RoomController extends AbstractController
         ReaderService $readerService,
         RoomFeedGenerator $roomFeedGenerator,
         LegacyEnvironment $environment,
+        CurrentContextResolver $currentContextResolver,
         RoomService $roomService,
         int $roomId,
         int $max = 10
@@ -248,7 +249,7 @@ class RoomController extends AbstractController
 
         $feedList = $roomFeedGenerator->getRoomFeedList($roomId, $max, $lastId);
         $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_context = $currentContextResolver->getContextItem();
 
         $readerList = $this->readerService->getChangeStatusForItems(...$feedList);
 
