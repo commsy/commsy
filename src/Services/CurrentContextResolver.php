@@ -17,7 +17,9 @@ namespace App\Services;
 
 use App\Entity\Portal;
 use App\Entity\Room;
+use App\Proxy\PortalProxy;
 use App\Utils\RequestContext;
+use cs_context_item;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -57,6 +59,7 @@ final class CurrentContextResolver implements ResetInterface
         private readonly RequestContext $requestContext,
         private readonly RequestStack $requestStack,
         private readonly CurrentUserResolver $currentUserResolver,
+        private readonly LegacyEnvironment $legacyEnvironment,
     ) {
     }
 
@@ -138,6 +141,35 @@ final class CurrentContextResolver implements ResetInterface
 
         return $this->portalCache = $portal
             ?? $this->currentUserResolver->getAccount()?->getPortal();
+    }
+
+    /**
+     * The legacy context item (cs_room_item / cs_*_item, or a PortalProxy
+     * for portal/server contexts) for the current context.
+     *
+     * This is the Schloss 2 single seam for the ~78 scattered
+     * `legacyEnvironment->getCurrentContextItem()` call sites: it is
+     * behaviour-identical by construction, because LegacySubscriber's
+     * Schritt-3 setupContext already feeds cs_environment's
+     * current_context_id from {@see getContextId()}, so the legacy getter
+     * derives the item from a resolver-sourced id. Delegated (not
+     * memoized) on purpose — cs_environment already memoizes internally,
+     * and a second memo here would risk diverging if the legacy context
+     * is re-pointed mid-request. Schloss 3 replaces the legacy item type
+     * itself behind exactly this seam.
+     */
+    public function getContextItem(): cs_context_item|PortalProxy
+    {
+        return $this->legacyEnvironment->getEnvironment()->getCurrentContextItem();
+    }
+
+    /**
+     * The legacy portal item (PortalProxy) for the current context, or
+     * null. Same seam rationale as {@see getContextItem()}.
+     */
+    public function getPortalItem(): ?PortalProxy
+    {
+        return $this->legacyEnvironment->getEnvironment()->getCurrentPortalItem();
     }
 
     /**

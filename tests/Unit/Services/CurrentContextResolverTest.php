@@ -18,9 +18,13 @@ namespace Tests\Unit\Services;
 use App\Entity\Account;
 use App\Entity\Portal;
 use App\Entity\Room;
+use App\Proxy\PortalProxy;
 use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
+use App\Services\LegacyEnvironment;
 use App\Utils\RequestContext;
+use cs_context_item;
+use cs_environment;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +45,7 @@ final class CurrentContextResolverTest extends TestCase
     private RequestContext&MockObject $requestContext;
     private RequestStack&MockObject $requestStack;
     private CurrentUserResolver&MockObject $currentUserResolver;
+    private LegacyEnvironment&MockObject $legacyEnvironment;
     private CurrentContextResolver $resolver;
 
     protected function setUp(): void
@@ -48,10 +53,12 @@ final class CurrentContextResolverTest extends TestCase
         $this->requestContext = $this->createMock(RequestContext::class);
         $this->requestStack = $this->createMock(RequestStack::class);
         $this->currentUserResolver = $this->createMock(CurrentUserResolver::class);
+        $this->legacyEnvironment = $this->createMock(LegacyEnvironment::class);
         $this->resolver = new CurrentContextResolver(
             $this->requestContext,
             $this->requestStack,
             $this->currentUserResolver,
+            $this->legacyEnvironment,
         );
     }
 
@@ -174,5 +181,38 @@ final class CurrentContextResolverTest extends TestCase
         // reset() clears the memo -> next call resolves again (2nd fetch)
         $this->resolver->reset();
         self::assertSame($room, $this->resolver->getRoom());
+    }
+
+    public function testGetContextItemDelegatesToLegacyEnvironmentSeam(): void
+    {
+        $contextItem = $this->createMock(cs_context_item::class);
+        $legacy = $this->createMock(cs_environment::class);
+        $legacy->expects($this->once())
+            ->method('getCurrentContextItem')
+            ->willReturn($contextItem);
+        $this->legacyEnvironment->method('getEnvironment')->willReturn($legacy);
+
+        self::assertSame($contextItem, $this->resolver->getContextItem());
+    }
+
+    public function testGetPortalItemDelegatesToLegacyEnvironmentSeam(): void
+    {
+        $portalItem = $this->createMock(PortalProxy::class);
+        $legacy = $this->createMock(cs_environment::class);
+        $legacy->expects($this->once())
+            ->method('getCurrentPortalItem')
+            ->willReturn($portalItem);
+        $this->legacyEnvironment->method('getEnvironment')->willReturn($legacy);
+
+        self::assertSame($portalItem, $this->resolver->getPortalItem());
+    }
+
+    public function testGetPortalItemPropagatesNull(): void
+    {
+        $legacy = $this->createMock(cs_environment::class);
+        $legacy->method('getCurrentPortalItem')->willReturn(null);
+        $this->legacyEnvironment->method('getEnvironment')->willReturn($legacy);
+
+        self::assertNull($this->resolver->getPortalItem());
     }
 }
