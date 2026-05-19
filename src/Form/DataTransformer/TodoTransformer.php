@@ -66,8 +66,6 @@ class TodoTransformer extends AbstractTransformer
                 $todoData['due_date']['date'] = $datetimeDueDate;
                 $todoData['due_date']['time'] = $datetimeDueDate;
 
-                // $this->legacyEnvironment->getCurrentContextItem()->getLanguage()
-
                 $todoData['steps'] = [];
                 foreach ($todoItem->getStepItemList()->to_array() as $id => $item) {
                     $todoData['steps'][$id] = $item->getTitle();

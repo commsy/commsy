@@ -14,7 +14,7 @@
 namespace App\EventSubscriber;
 
 use App\Proxy\PortalProxy;
-use App\Services\LegacyEnvironment;
+use App\Services\CurrentContextResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -27,7 +27,7 @@ final readonly class LocaleSubscriber implements EventSubscriberInterface
         private string $defaultLocale,
         #[Autowire(param: 'kernel.enabled_locales')]
         private array $enabledLocales,
-        private LegacyEnvironment $legacyEnvironment
+        private CurrentContextResolver $currentContextResolver
     ) {
     }
 
@@ -43,7 +43,7 @@ final readonly class LocaleSubscriber implements EventSubscriberInterface
         $resolvedLocale = $request->getSession()->get('_locale', $this->defaultLocale);
 
         // The locale might be enforced by a workspace
-        $contextItem = $this->legacyEnvironment->getEnvironment()->getCurrentContextItem();
+        $contextItem = $this->currentContextResolver->getContextItem();
         if (!$contextItem instanceof PortalProxy) {
             if ($contextItem->getLanguage() !== 'user') {
                 $resolvedLocale = $contextItem->getLanguage();
