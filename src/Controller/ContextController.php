@@ -165,7 +165,7 @@ class ContextController extends AbstractController
                     $newUser->setAGBAcceptanceDate(new DateTimeImmutable());
                 }
 
-                if ($legacyEnvironment->getCurrentPortalItem()->getConfigurationHideMailByDefault()) {
+                if ($this->currentContextResolver->getPortalItem()->getConfigurationHideMailByDefault()) {
                     $newUser->setEmailNotVisible();
                 }
 
@@ -232,7 +232,7 @@ class ContextController extends AbstractController
                         }
                     }
 
-                    if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
+                    if ($this->currentContextResolver->getPortalItem()->getHideAccountname()) {
                         $userId = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
                     } else {
                         $userId = $newUser->getUserID();

@@ -188,16 +188,16 @@ class ProjectController extends AbstractController
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
 
-        $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
+        $currentPortalItem = $currentContextResolver->getPortalItem();
 
-        $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        $defaultId = $currentContextResolver->getPortalItem()->getDefaultProjectTemplateID();
         $defaultTemplateIDs = ('-1' === $defaultId) ? [] : [$defaultId];
 
         $timesDisplay = ucfirst((string) $currentPortalItem->getCurrentTimeName());
         $times = $roomService->getTimePulses(true);
 
         $room = new Room();
-        $templates = $this->getAvailableTemplates($legacyEnvironment);
+        $templates = $this->getAvailableTemplates($legacyEnvironment, $currentContextResolver);
         $roomCategories = [];
         foreach ($roomCategoriesService->getListRoomCategories($currentPortalItem->getItemId()) as $roomCategory) {
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
@@ -412,14 +412,14 @@ class ProjectController extends AbstractController
     /**
      * @param string $type
      */
-    private function getAvailableTemplates(cs_environment $legacyEnvironment, $type = 'project'): array
+    private function getAvailableTemplates(cs_environment $legacyEnvironment, CurrentContextResolver $currentContextResolver, $type = 'project'): array
     {
         $templates = [];
 
         $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $legacyEnvironment->getRoomManager();
-        $roomManager->setContextLimit($legacyEnvironment->getCurrentPortalItem()->getItemID());
+        $roomManager->setContextLimit($currentContextResolver->getPortalItem()->getItemID());
         $roomManager->setTemplateLimit();
         $roomManager->select();
 

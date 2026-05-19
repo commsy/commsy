@@ -491,6 +491,7 @@ class ItemController extends AbstractController
         ContactFormHelper $contactFormHelper,
         MailAssistant $mailAssistant,
         LegacyEnvironment $legacyEnvironment,
+        CurrentContextResolver $currentContextResolver,
         int $roomId,
         int $itemId
     ): Response {
@@ -502,7 +503,7 @@ class ItemController extends AbstractController
         }
 
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $currentContextResolver->getPortalItem();
 
         // prepare form
         $groupChoices = $mailAssistant->getGroupChoices($item);

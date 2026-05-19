@@ -75,6 +75,7 @@ class RoomController extends AbstractController
         UserRepository $userRepository,
         HashManager $hashManager,
         CurrentUserResolver $currentUserResolver,
+        CurrentContextResolver $currentContextResolver,
         int $roomId
     ): Response {
         $legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -137,7 +138,7 @@ class RoomController extends AbstractController
         $serviceContact = [
             'show' => false,
         ];
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        $portalItem = $currentContextResolver->getPortalItem();
         if ($portalItem->showServiceLink()) {
             $serviceContact['show'] = true;
             $serviceContact['link'] = $roomService->buildServiceLink();
@@ -449,7 +450,7 @@ class RoomController extends AbstractController
         int $roomId
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
-        $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
+        $currentPortalItem = $currentContextResolver->getPortalItem();
 
         $type = '';
         $context = $request->request->all('context');
