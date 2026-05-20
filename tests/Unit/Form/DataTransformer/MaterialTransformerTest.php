@@ -14,6 +14,7 @@
 namespace Tests\Unit\Form\DataTransformer;
 
 use App\Form\DataTransformer\MaterialTransformer;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_section_item;
 use PHPUnit\Framework\TestCase;
@@ -26,8 +27,9 @@ class MaterialTransformerTest extends TestCase
         /** @var cs_section_item $section */
         $section = $this->createStub(cs_section_item::class);
         $environment = $this->createStub(LegacyEnvironment::class);
+        $currentContextResolver = $this->createStub(CurrentContextResolver::class);
 
-        $transformer = new MaterialTransformer($environment);
+        $transformer = new MaterialTransformer($environment, $currentContextResolver);
         $dataArray = $transformer->transform($section);
 
         $this->assertNotEmpty($dataArray);
