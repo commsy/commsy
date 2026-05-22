@@ -37,7 +37,7 @@ class RoomProfileGeneralType extends AbstractType
             ->addDependent('upload', 'useProfileImage', function (DependentField $field, bool $checked) use ($options) {
                 if ($checked) {
                     $field->add(UploadDropzoneType::class, [
-                        'uploadUrl' => $options['uploadUrl'],
+                        'upload_url' => $options['uploadUrl'],
                         'mapped' => false,
                     ]);
                 }
