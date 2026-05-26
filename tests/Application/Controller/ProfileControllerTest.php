@@ -38,6 +38,49 @@ class ProfileControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * Containment pin for issue #5420: when the user already has a
+     * profile picture set, the ProfileImageForm live component flips
+     * `useProfileImage` to true on mount and instantiates the
+     * UploadDropzoneType subfield via the `addDependent` closure. A
+     * mismatch between the form type's option name (`uploadUrl`) and
+     * UploadDropzoneType's required option (`upload_url`) crashed the
+     * page render here. Keeping this branch covered as the
+     * controller-level fallback for live-component scenarios that the
+     * Live Component test helper cannot drive past mount-time auth.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testGeneralViewWithExistingPictureRendersDropzone(): void
+    {
+        $account = RoomWithMemberStory::get('account');
+        $room = RoomWithMemberStory::get('room');
+        $roomUser = RoomWithMemberStory::get('roomUser');
+
+        // Simulate a stored profile picture by writing the legacy
+        // USERPICTURE extras marker. Picture filename is not loaded
+        // from disk during render — only its non-empty presence flips
+        // `useProfileImage`.
+        $connection = static::getContainer()
+            ->get(\Doctrine\ORM\EntityManagerInterface::class)
+            ->getConnection();
+        $extras = serialize(['USERPICTURE' => 'placeholder.jpg']);
+        $connection->executeStatement(
+            'UPDATE user SET extras = :extras WHERE item_id = :id',
+            ['extras' => $extras, 'id' => $roomUser->getItemId()],
+        );
+
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $this->client->request(
+            'GET',
+            sprintf('/room/%d/user/%d/general', $room->getItemId(), $roomUser->getItemId()),
+        );
+
+        $this->assertResponseIsSuccessful(
+            'general view must render even when the upload dropzone subfield is active',
+        );
+    }
+
     #[WithStory(RoomWithMemberStory::class)]
     public function testAddressSave(): void
     {
