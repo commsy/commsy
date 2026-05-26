@@ -213,13 +213,14 @@ class UserRepository extends ServiceEntityRepository
             $qb->setParameter('archived', $filterArchived === 'only');
         }
 
-        if ($filterLocked !== 'all') {
-            if ($filterLocked === 'only') {
-                $qb->andWhere($qb->expr()->in('r.status', ':statusValues'));
-            } else if ($filterLocked === 'except') {
-                $qb->andWhere($qb->expr()->notIn('r.status', ':statusValues'));
-            }
-            $qb->setParameter('statusValues', [RoomStatus::LOCKED->value, RoomStatus::LOCKED_PORTAL_MOD->value]);
+        // Explicit allowlist — bare `!== 'all'` previously bound
+        // :statusValues even when no WHERE consumed it (Doctrine crash).
+        if ($filterLocked === 'only' || $filterLocked === 'except') {
+            $expr = $filterLocked === 'only'
+                ? $qb->expr()->in('r.status', ':statusValues')
+                : $qb->expr()->notIn('r.status', ':statusValues');
+            $qb->andWhere($expr)
+                ->setParameter('statusValues', [RoomStatus::LOCKED->value, RoomStatus::LOCKED_PORTAL_MOD->value]);
         }
 
         if ($filterType !== 'all') {
