@@ -441,6 +441,26 @@
                 <source>mail.newsletter_body_new_additional_annotations</source>
                 <target>Additional new annotations</target>
             </trans-unit>
+            <trans-unit id="mail_account_merge_subject">
+                <source>mail.account_merge_subject</source>
+                <target>Combine accounts in CommSy portal "{portal}"</target>
+            </trans-unit>
+            <trans-unit id="mail_account_merge_opening">
+                <source>mail.account_merge_opening</source>
+                <target>a request was made to combine the account "{oldUsername}" into the account "{newUsername}" in the CommSy portal "{portal}". This e-mail was sent to the address of account "{oldUsername}" to confirm the merge.</target>
+            </trans-unit>
+            <trans-unit id="mail_account_merge_link_pre">
+                <source>mail.account_merge_link_pre</source>
+                <target>If you want to authorise merging into the account "{newUsername}", please confirm via the following link:</target>
+            </trans-unit>
+            <trans-unit id="mail_account_merge_link_post">
+                <source>mail.account_merge_link_post</source>
+                <target>Note: the account "{oldUsername}" will be deleted and its content reassigned to the other account. For security reasons the link is valid for a short time only.</target>
+            </trans-unit>
+            <trans-unit id="mail_account_merge_ignore">
+                <source>mail.account_merge_ignore</source>
+                <target>If you did not request this merge, please ignore this e-mail. Nothing will be changed.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
