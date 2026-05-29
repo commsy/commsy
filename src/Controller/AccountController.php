@@ -16,6 +16,10 @@ namespace App\Controller;
 use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Account\AccountMerger;
+use App\Hash\HashManager;
+use App\Mail\Factories\AccountMessageFactory;
+use App\Mail\Mailer;
+use App\Mail\RecipientFactory;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
@@ -250,7 +254,11 @@ class AccountController extends AbstractController
         UserService $userService,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
-        AccountMerger $accountMerger
+        AccountMerger $accountMerger,
+        HashManager $hashManager,
+        AccountMessageFactory $accountMessageFactory,
+        Mailer $mailer,
+        TranslatorInterface $translator
     ): Response {
         /** @var Account $account */
         $account = $security->getUser();
@@ -264,15 +272,15 @@ class AccountController extends AbstractController
         if ($form->isSubmitted()) {
             $formData = $form->getData();
 
+            /** @var AuthSource $selectedAuthSource */
+            $selectedAuthSource = $formData['auth_source'];
+
             if (strtolower($portalUser->getUserID()) == strtolower((string) $formData['combineUserId']) &&
-                $formData['auth_source'] === $account->getAuthSource()
+                $selectedAuthSource === $account->getAuthSource()
             ) {
                 $form->get('combineUserId')->addError(new FormError('Invalid user'));
             } else {
                 $accountRepository = $entityManager->getRepository(Account::class);
-
-                /** @var AuthSource $selectedAuthSource */
-                $selectedAuthSource = $formData['auth_source'];
 
                 try {
                     $accountToMerge = $accountRepository->findOneByCredentials(
@@ -285,17 +293,39 @@ class AccountController extends AbstractController
                         throw new UnexpectedValueException();
                     }
 
-                    // We only support merging local accounts
-                    if (!$selectedAuthSource instanceof AuthSourceLocal) {
-                        throw new UnexpectedValueException();
-                    }
+                    if ($selectedAuthSource instanceof AuthSourceLocal) {
+                        // Local account: legitimise by verifying the password, then merge directly.
+                        if (!$passwordHasher->isPasswordValid($accountToMerge, (string) $formData['combinePassword'])) {
+                            $form->get('combinePassword')->addError(new FormError('Invalid credentials.'));
+                        }
 
-                    if (!$passwordHasher->isPasswordValid($accountToMerge, $formData['combinePassword'])) {
-                        $form->get('combineUserId')->addError(new FormError('Invalid credentials.'));
-                    }
+                        if ($form->isValid()) {
+                            $accountMerger->mergeAccounts($accountToMerge, $account);
+                            $this->addFlash('success', $translator->trans('mergeAccountsDone', [], 'profile'));
 
-                    if ($form->isSubmitted() && $form->isValid()) {
-                        $accountMerger->mergeAccounts($accountToMerge, $account);
+                            return $this->redirectToRoute('app_account_mergeaccounts', [
+                                'portalId' => $portal->getId(),
+                            ]);
+                        }
+                    } elseif ($form->isValid()) {
+                        // External account: there is no local password to verify, so legitimise
+                        // the merge via an e-mail token sent to account A's address. The actual
+                        // merge runs only once that link is confirmed.
+                        $token = $hashManager->createMergeHash(
+                            (int) $portalUser->getItemID(),
+                            $accountToMerge->getId(),
+                            $account->getId()
+                        );
+
+                        $message = $accountMessageFactory->createAccountMergeConfirmMessage(
+                            $accountToMerge,
+                            $account,
+                            $portal,
+                            $token
+                        );
+                        $mailer->send($message, RecipientFactory::createFromAccount($accountToMerge), $portal->getTitle());
+
+                        $this->addFlash('success', $translator->trans('mergeAccountsMailSent', [], 'profile'));
 
                         return $this->redirectToRoute('app_account_mergeaccounts', [
                             'portalId' => $portal->getId(),
@@ -309,6 +339,69 @@ class AccountController extends AbstractController
 
         return $this->render('account/merge_accounts.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    /**
+     * Confirms an e-mail-token account merge: the link is mailed to the old
+     * account A, so possession of A's mailbox legitimises the merge into N.
+     * GET only shows a confirmation page; the (destructive) merge runs on POST
+     * to keep mail-scanner link prefetching from triggering it.
+     */
+    #[Route(path: '/portal/{portalId}/account/merge/confirm/{token}', name: 'app_account_mergeaccountsconfirm')]
+    public function mergeAccountsConfirm(
+        Request $request,
+        #[MapEntity(id: 'portalId')]
+        Portal $portal,
+        string $token,
+        HashManager $hashManager,
+        EntityManagerInterface $entityManager,
+        AccountMerger $accountMerger,
+        LegacyEnvironment $legacyEnvironment
+    ): Response {
+        $hash = $hashManager->findValidMergeHash($token);
+
+        $accountRepository = $entityManager->getRepository(Account::class);
+        $oldAccount = $hash ? $accountRepository->find($hash->getMergeFromAccountId()) : null;
+        $newAccount = $hash ? $accountRepository->find($hash->getMergeIntoAccountId()) : null;
+
+        // Unknown/expired token, or one of the bound accounts no longer exists.
+        if (null === $hash || null === $oldAccount || null === $newAccount) {
+            if (null !== $hash) {
+                $hashManager->consumeMergeHash($hash);
+            }
+
+            return $this->render('account/merge_accounts_confirm.html.twig', [
+                'portal' => $portal,
+                'state' => 'invalid',
+            ]);
+        }
+
+        if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('merge_confirm'.$token, (string) $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException();
+            }
+
+            // The merge derives its portal context from the legacy environment; prime it
+            // explicitly because the token flow may run without an authenticated session.
+            $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
+
+            $accountMerger->mergeAccounts($oldAccount, $newAccount);
+            $hashManager->consumeMergeHash($hash);
+
+            return $this->render('account/merge_accounts_confirm.html.twig', [
+                'portal' => $portal,
+                'state' => 'done',
+                'newUsername' => $newAccount->getUsername(),
+            ]);
+        }
+
+        return $this->render('account/merge_accounts_confirm.html.twig', [
+            'portal' => $portal,
+            'state' => 'confirm',
+            'token' => $token,
+            'oldUsername' => $oldAccount->getUsername(),
+            'newUsername' => $newAccount->getUsername(),
         ]);
     }
 

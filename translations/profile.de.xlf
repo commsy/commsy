@@ -311,7 +311,47 @@
             </trans-unit>
             <trans-unit id="merge_accounts_text_2">
                 <source>mergeAccountsTextSecondLine</source>
-                <target>Bitte geben Sie hier die Zugangsdaten des Accounts ein, mit dem Ihr Account verbunden werden soll.</target>
+                <target>Bitte geben Sie die Kennung und die Authentifizierungsquelle des Accounts ein, mit dem Ihr aktueller Account zusammengelegt werden soll.</target>
+            </trans-unit>
+            <trans-unit id="merge_accounts_text_3">
+                <source>mergeAccountsTextThirdLine</source>
+                <target>Bei lokalen Kennungen geben Sie zusätzlich das Passwort an. Bei extern authentifizierten Kennungen wird stattdessen eine Bestätigungs-E-Mail an die andere Kennung gesendet; das Zusammenlegen erfolgt erst nach Bestätigung des Links.</target>
+            </trans-unit>
+            <trans-unit id="merge_accounts_mail_sent">
+                <source>mergeAccountsMailSent</source>
+                <target>Es wurde eine Bestätigungs-E-Mail an die angegebene Kennung gesendet. Das Zusammenlegen erfolgt, sobald der Link in der E-Mail bestätigt wurde.</target>
+            </trans-unit>
+            <trans-unit id="merge_accounts_done">
+                <source>mergeAccountsDone</source>
+                <target>Die Kennungen wurden erfolgreich zusammengelegt.</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_title">
+                <source>mergeConfirmTitle</source>
+                <target>Zusammenlegen von Kennungen bestätigen</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_explain">
+                <source>mergeConfirmExplain</source>
+                <target>Es wurde beantragt, die Kennung "%old%" mit der Kennung "%new%" zusammenzulegen.</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_warning">
+                <source>mergeConfirmWarning</source>
+                <target>Achtung: Die Kennung "%old%" wird dabei gelöscht und ihre Inhalte der anderen Kennung zugeordnet. Dieser Schritt kann nicht rückgängig gemacht werden.</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_button">
+                <source>mergeConfirmButton</source>
+                <target>Zusammenlegen jetzt bestätigen</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_done">
+                <source>mergeConfirmDone</source>
+                <target>Die Kennungen wurden erfolgreich zusammengelegt. Sie können sich nun mit der Kennung "%new%" anmelden.</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_invalid">
+                <source>mergeConfirmInvalid</source>
+                <target>Dieser Bestätigungslink ist ungültig oder abgelaufen. Bitte starten Sie das Zusammenlegen erneut.</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_login_link">
+                <source>mergeConfirmLoginLink</source>
+                <target>Zur Anmeldung</target>
             </trans-unit>
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>

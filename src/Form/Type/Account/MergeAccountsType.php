@@ -43,18 +43,23 @@ class MergeAccountsType extends AbstractType
                 'label' => 'combineUserId',
                 'required' => true,
             ])
+            // Optional: only the local-account path verifies a password; external
+            // accounts are legitimised via an e-mail token instead.
             ->add('combinePassword', PasswordType::class, [
                 'label' => 'combinePassword',
-                'required' => true,
+                'required' => false,
             ])
+            // All enabled auth sources of the portal except guest: the old account A
+            // may be local (password flow) or external (e-mail-token flow). Username
+            // alone is not unique across auth sources, so this selector is required.
             ->add('auth_source', EntityType::class, [
                 'class' => AuthSource::class,
                 'query_builder' => fn (AuthSourceRepository $er) => $er->createQueryBuilder('a')
                     ->where('a.portal = :portal')
                     ->andWhere('a.enabled = true')
-                    ->andWhere('a INSTANCE OF :type')
+                    ->andWhere('a NOT INSTANCE OF :guestType')
                     ->setParameter('portal', $portal)
-                    ->setParameter('type', 'local'),
+                    ->setParameter('guestType', 'guest'),
                 'choice_label' => fn (AuthSource $authSource) => $authSource->getTitle().'('.$authSource->getType().')',
                 'label' => 'authSource',
             ])
