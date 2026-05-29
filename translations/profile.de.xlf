@@ -315,7 +315,7 @@
             </trans-unit>
             <trans-unit id="merge_accounts_text_3">
                 <source>mergeAccountsTextThirdLine</source>
-                <target>Bei lokalen Kennungen geben Sie zusätzlich das Passwort an. Bei extern authentifizierten Kennungen wird stattdessen eine Bestätigungs-E-Mail an die andere Kennung gesendet; das Zusammenlegen erfolgt erst nach Bestätigung des Links.</target>
+                <target>Zur Bestätigung wird eine E-Mail an die angegebene Kennung gesendet; das Zusammenlegen erfolgt erst, nachdem der darin enthaltene Link bestätigt wurde.</target>
             </trans-unit>
             <trans-unit id="merge_accounts_mail_sent">
                 <source>mergeAccountsMailSent</source>

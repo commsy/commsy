@@ -253,8 +253,6 @@ class AccountController extends AbstractController
         Security $security,
         UserService $userService,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
-        AccountMerger $accountMerger,
         AccountMergeTokenManager $mergeTokenManager,
         AccountMessageFactory $accountMessageFactory,
         Mailer $mailer,
@@ -269,7 +267,7 @@ class AccountController extends AbstractController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
 
             /** @var AuthSource $selectedAuthSource */
@@ -293,40 +291,23 @@ class AccountController extends AbstractController
                         throw new UnexpectedValueException();
                     }
 
-                    if ($selectedAuthSource instanceof AuthSourceLocal) {
-                        // Local account: legitimise by verifying the password, then merge directly.
-                        if (!$passwordHasher->isPasswordValid($accountToMerge, (string) $formData['combinePassword'])) {
-                            $form->get('combinePassword')->addError(new FormError('Invalid credentials.'));
-                        }
+                    // Always legitimise the merge via an e-mail token sent to the old
+                    // account A's address; the merge runs only once the link is confirmed.
+                    $token = $mergeTokenManager->create($accountToMerge, $account);
 
-                        if ($form->isValid()) {
-                            $accountMerger->mergeAccounts($accountToMerge, $account);
-                            $this->addFlash('success', $translator->trans('mergeAccountsDone', [], 'profile'));
+                    $message = $accountMessageFactory->createAccountMergeConfirmMessage(
+                        $accountToMerge,
+                        $account,
+                        $portal,
+                        $token
+                    );
+                    $mailer->send($message, RecipientFactory::createFromAccount($accountToMerge), $portal->getTitle());
 
-                            return $this->redirectToRoute('app_account_mergeaccounts', [
-                                'portalId' => $portal->getId(),
-                            ]);
-                        }
-                    } elseif ($form->isValid()) {
-                        // External account: there is no local password to verify, so legitimise
-                        // the merge via an e-mail token sent to account A's address. The actual
-                        // merge runs only once that link is confirmed.
-                        $token = $mergeTokenManager->create($accountToMerge, $account);
+                    $this->addFlash('success', $translator->trans('mergeAccountsMailSent', [], 'profile'));
 
-                        $message = $accountMessageFactory->createAccountMergeConfirmMessage(
-                            $accountToMerge,
-                            $account,
-                            $portal,
-                            $token
-                        );
-                        $mailer->send($message, RecipientFactory::createFromAccount($accountToMerge), $portal->getTitle());
-
-                        $this->addFlash('success', $translator->trans('mergeAccountsMailSent', [], 'profile'));
-
-                        return $this->redirectToRoute('app_account_mergeaccounts', [
-                            'portalId' => $portal->getId(),
-                        ]);
-                    }
+                    return $this->redirectToRoute('app_account_mergeaccounts', [
+                        'portalId' => $portal->getId(),
+                    ]);
                 } catch (NonUniqueResultException|UnexpectedValueException) {
                     $form->get('combineUserId')->addError(new FormError('User not found'));
                 }

@@ -315,7 +315,7 @@
             </trans-unit>
             <trans-unit id="merge_accounts_text_3">
                 <source>mergeAccountsTextThirdLine</source>
-                <target>For local accounts, also enter the password. For externally authenticated accounts a confirmation e-mail is sent to the other account instead; the merge only happens once that link is confirmed.</target>
+                <target>A confirmation e-mail is sent to the specified account; the merge only happens after the link it contains has been confirmed.</target>
             </trans-unit>
             <trans-unit id="merge_accounts_mail_sent">
                 <source>mergeAccountsMailSent</source>

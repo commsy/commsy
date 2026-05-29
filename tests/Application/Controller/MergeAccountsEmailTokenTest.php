@@ -24,9 +24,9 @@ use Tests\Factory\AuthSourceShibbolethFactory;
 use Tests\Factory\PortalFactory;
 
 /**
- * End-to-end coverage of the e-mail-token account-merge flow: an externally
- * authenticated "old" account A is legitimised by a token mailed to A, not by
- * a password. The local-account path keeps verifying the password.
+ * End-to-end coverage of the e-mail-token account-merge flow: every merge —
+ * regardless of the old account's auth source — is legitimised by a token
+ * mailed to that account; there is no password path.
  */
 class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
 {
@@ -129,7 +129,7 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
         $this->assertSame(0, $this->mergeTokenCount(), 'merge token must be consumed');
     }
 
-    public function testLocalAccountMergeUsesPasswordAndMergesDirectly(): void
+    public function testLocalSourceAlsoSendsConfirmationMailAndDoesNotMergeDirectly(): void
     {
         $localSource = AuthSourceLocalFactory::createOne(['enabled' => true, 'default' => true]);
         $portal = PortalFactory::createOne(['authSources' => [$localSource]]);
@@ -145,7 +145,7 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
             'portal' => $portal,
             'authSource' => $localSource,
             'username' => 'old.local',
-            'plainPassword' => 'zfCbzLm9h4$h',
+            'email' => 'old-local@example.test',
             'activityState' => Account::ACTIVITY_ACTIVE,
             'locked' => false,
         ]);
@@ -158,64 +158,26 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
         $crawler = $this->client->request('GET', "/portal/{$portalId}/account/merge");
         $form = $crawler->selectButton('profile_mergeaccounts[save]')->form();
         $form['profile_mergeaccounts[combineUserId]'] = 'old.local';
-        $form['profile_mergeaccounts[combinePassword]'] = 'zfCbzLm9h4$h';
         $form['profile_mergeaccounts[auth_source]'] = (string) $localSource->getId();
         $this->client->submit($form);
 
         $this->assertResponseRedirects("/portal/{$portalId}/account/merge");
-        // Local path legitimises by password, not by mail.
-        $this->assertEmailCount(0);
 
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $entityManager->clear();
-        $this->assertNull(
-            $entityManager->getRepository(Account::class)->find($oldAccountId),
-            'local account must be merged (deleted) directly after a valid password'
-        );
-    }
-
-    public function testLocalAccountMergeWithWrongPasswordDoesNotMerge(): void
-    {
-        $localSource = AuthSourceLocalFactory::createOne(['enabled' => true, 'default' => true]);
-        $portal = PortalFactory::createOne(['authSources' => [$localSource]]);
-
-        $newAccount = AccountFactory::createOne([
-            'portal' => $portal,
-            'authSource' => $localSource,
-            'username' => 'new.local',
-            'activityState' => Account::ACTIVITY_ACTIVE,
-            'locked' => false,
-        ]);
-        $oldAccount = AccountFactory::createOne([
-            'portal' => $portal,
-            'authSource' => $localSource,
-            'username' => 'old.local',
-            'plainPassword' => 'zfCbzLm9h4$h',
-            'activityState' => Account::ACTIVITY_ACTIVE,
-            'locked' => false,
-        ]);
-
-        $portalId = $portal->getId();
-        $oldAccountId = $oldAccount->getId();
-
-        $this->loginAsUser($portalId, $newAccount->getUsername(), $newAccount->getPlainPassword());
-
-        $crawler = $this->client->request('GET', "/portal/{$portalId}/account/merge");
-        $form = $crawler->selectButton('profile_mergeaccounts[save]')->form();
-        $form['profile_mergeaccounts[combineUserId]'] = 'old.local';
-        $form['profile_mergeaccounts[combinePassword]'] = 'wrong-password';
-        $form['profile_mergeaccounts[auth_source]'] = (string) $localSource->getId();
-        $this->client->submit($form);
-
-        // Invalid form re-renders with status 422 (Symfony); no merge, no mail.
-        $this->assertResponseStatusCodeSame(422);
-        $this->assertEmailCount(0);
+        // Even a local source now goes through the e-mail confirmation: a mail is
+        // sent to the old account and nothing is merged yet.
+        $this->assertEmailCount(1);
+        $this->assertEmailAddressContains($this->getMailerMessage(0), 'To', 'old-local@example.test');
 
         $entityManager = static::getContainer()->get(EntityManagerInterface::class);
         $this->assertNotNull(
             $entityManager->getRepository(Account::class)->find($oldAccountId),
-            'wrong password must not merge the account'
+            'no direct merge: the local account must still exist before confirmation'
         );
+
+        $mergeToken = $this->singleMergeToken();
+        $this->assertNotNull($mergeToken);
+        $this->assertSame($oldAccountId, $mergeToken->getFromAccount()->getId());
+        $this->assertSame($newAccount->getId(), $mergeToken->getIntoAccount()->getId());
     }
 
     public function testInvalidTokenShowsInvalidPageAndDoesNotMerge(): void
