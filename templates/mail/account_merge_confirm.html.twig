@@ -1,0 +1,9 @@
+{{ 'mail.account_merge_opening'|trans({ 'oldUsername': oldUsername, 'newUsername': newUsername, 'portal': portal.title }, 'mail') }}<br/>
+<br/>
+{{ 'mail.account_merge_link_pre'|trans({ 'newUsername': newUsername }, 'mail') }}<br/>
+<a href="{{ confirmUrl }}">{{ confirmUrl }}</a><br/>
+{{ 'mail.account_merge_link_post'|trans({ 'oldUsername': oldUsername }, 'mail') }}<br/>
+<br/>
+{{ 'mail.account_merge_ignore'|trans({}, 'mail') }}<br/>
+<br/>
+{{ 'regards'|trans({}, 'email') }}

@@ -441,6 +441,26 @@
                 <source>mail.newsletter_body_new_additional_annotations</source>
                 <target>Weitere neue Anmerkungen</target>
             </trans-unit>
+            <trans-unit id="mail_account_merge_subject">
+                <source>mail.account_merge_subject</source>
+                <target>Kennungen zusammenlegen im CommSy-Portal "{portal}"</target>
+            </trans-unit>
+            <trans-unit id="mail_account_merge_opening">
+                <source>mail.account_merge_opening</source>
+                <target>für die Kennung "{newUsername}" im CommSy-Portal "{portal}" wurde beantragt, die Kennung "{oldUsername}" mit ihr zusammenzulegen. Diese E-Mail wurde an die Adresse der Kennung "{oldUsername}" gesendet, um das Zusammenlegen zu bestätigen.</target>
+            </trans-unit>
+            <trans-unit id="mail_account_merge_link_pre">
+                <source>mail.account_merge_link_pre</source>
+                <target>Wenn Sie das Zusammenlegen in die Kennung "{newUsername}" autorisieren möchten, bestätigen Sie es über folgenden Link:</target>
+            </trans-unit>
+            <trans-unit id="mail_account_merge_link_post">
+                <source>mail.account_merge_link_post</source>
+                <target>Achtung: Die Kennung "{oldUsername}" wird dabei gelöscht und ihre Inhalte der anderen Kennung zugeordnet. Aus Sicherheitsgründen ist der Link nur kurze Zeit gültig.</target>
+            </trans-unit>
+            <trans-unit id="mail_account_merge_ignore">
+                <source>mail.account_merge_ignore</source>
+                <target>Falls Sie dieses Zusammenlegen nicht angefordert haben, ignorieren Sie diese E-Mail bitte. Es wird dann nichts verändert.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -15,11 +15,13 @@ namespace App\Mail\Factories;
 
 use App\Account\AccountManager;
 use App\Entity\Account;
+use App\Entity\Portal;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\AccountActivityDeletedMessage;
 use App\Mail\Messages\AccountActivityDeleteWarningMessage;
 use App\Mail\Messages\AccountActivityLockedMessage;
 use App\Mail\Messages\AccountActivityLockWarningMessage;
+use App\Mail\Messages\AccountMergeConfirmMessage;
 use App\Services\LegacyEnvironment;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -70,5 +72,20 @@ class AccountMessageFactory
         }
 
         return null;
+    }
+
+    /**
+     * Confirmation mail sent to the old account A legitimising its merge into N.
+     *
+     * @param Account $oldAccount account A (mailbox owner; will be merged in and deleted)
+     * @param Account $newAccount surviving account N
+     */
+    public function createAccountMergeConfirmMessage(
+        Account $oldAccount,
+        Account $newAccount,
+        Portal $portal,
+        string $token
+    ): MessageInterface {
+        return new AccountMergeConfirmMessage($this->urlGenerator, $portal, $oldAccount, $newAccount, $token);
     }
 }

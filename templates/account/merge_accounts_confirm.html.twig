@@ -1,0 +1,39 @@
+{% extends 'layout.html.twig' %}
+
+{% block top_navigation_left %}
+    <div class="uk-navbar-item uk-text-large">
+        <div class="uk-navbar-item">
+            <a class="uk-text-large" href="{{ path('app_server_show') }}">
+                {{ 'Portal overview'|trans([], 'portal') }}
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'mergeConfirmTitle'|trans({}, 'profile') }}{% endblock %}
+        {% block body %}
+            {% if state == 'confirm' %}
+                <p>{{ 'mergeConfirmExplain'|trans({ '%old%': oldUsername, '%new%': newUsername }, 'profile') }}</p>
+                <p class="uk-text-warning">{{ 'mergeConfirmWarning'|trans({ '%old%': oldUsername }, 'profile') }}</p>
+                <form method="post" action="{{ path('app_account_mergeaccountsconfirm', { portalId: portal.id, token: token }) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('merge_confirm' ~ token) }}">
+                    <button type="submit" class="uk-button uk-button-primary">
+                        {{ 'mergeConfirmButton'|trans({}, 'profile') }}
+                    </button>
+                </form>
+            {% elseif state == 'done' %}
+                <p>{{ 'mergeConfirmDone'|trans({ '%new%': newUsername }, 'profile') }}</p>
+                <a class="uk-button uk-button-default" href="{{ path('app_login', { context: portal.id }) }}">
+                    {{ 'mergeConfirmLoginLink'|trans({}, 'profile') }}
+                </a>
+            {% else %}
+                <p>{{ 'mergeConfirmInvalid'|trans({}, 'profile') }}</p>
+                <a class="uk-button uk-button-default" href="{{ path('app_login', { context: portal.id }) }}">
+                    {{ 'mergeConfirmLoginLink'|trans({}, 'profile') }}
+                </a>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

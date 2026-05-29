@@ -311,7 +311,47 @@
             </trans-unit>
             <trans-unit id="merge_accounts_text_2">
                 <source>mergeAccountsTextSecondLine</source>
-                <target>Please enter the login data of the account you want to combine your current account with.</target>
+                <target>Please enter the username and authentication source of the account you want to combine your current account with.</target>
+            </trans-unit>
+            <trans-unit id="merge_accounts_text_3">
+                <source>mergeAccountsTextThirdLine</source>
+                <target>A confirmation e-mail is sent to the specified account; the merge only happens after the link it contains has been confirmed.</target>
+            </trans-unit>
+            <trans-unit id="merge_accounts_mail_sent">
+                <source>mergeAccountsMailSent</source>
+                <target>If a matching account exists, a confirmation e-mail has been sent to its address. The merge happens once the link in that e-mail is confirmed.</target>
+            </trans-unit>
+            <trans-unit id="merge_accounts_done">
+                <source>mergeAccountsDone</source>
+                <target>The accounts were combined successfully.</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_title">
+                <source>mergeConfirmTitle</source>
+                <target>Confirm combining accounts</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_explain">
+                <source>mergeConfirmExplain</source>
+                <target>A request was made to combine the account "%old%" into the account "%new%".</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_warning">
+                <source>mergeConfirmWarning</source>
+                <target>Note: the account "%old%" will be deleted and its content reassigned to the other account. This step cannot be undone.</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_button">
+                <source>mergeConfirmButton</source>
+                <target>Confirm merge now</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_done">
+                <source>mergeConfirmDone</source>
+                <target>The accounts were combined successfully. You can now sign in with the account "%new%".</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_invalid">
+                <source>mergeConfirmInvalid</source>
+                <target>This confirmation link is invalid or has expired. Please start the merge again.</target>
+            </trans-unit>
+            <trans-unit id="merge_confirm_login_link">
+                <source>mergeConfirmLoginLink</source>
+                <target>Go to sign in</target>
             </trans-unit>
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>

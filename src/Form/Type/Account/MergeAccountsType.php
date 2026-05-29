@@ -18,7 +18,6 @@ use App\Entity\Portal;
 use App\Repository\AuthSourceRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -43,18 +42,18 @@ class MergeAccountsType extends AbstractType
                 'label' => 'combineUserId',
                 'required' => true,
             ])
-            ->add('combinePassword', PasswordType::class, [
-                'label' => 'combinePassword',
-                'required' => true,
-            ])
+            // All enabled auth sources of the portal except guest. The merge is always
+            // legitimised via an e-mail token sent to the old account, so no password
+            // is collected here. Username alone is not unique across auth sources, so
+            // this selector is required.
             ->add('auth_source', EntityType::class, [
                 'class' => AuthSource::class,
                 'query_builder' => fn (AuthSourceRepository $er) => $er->createQueryBuilder('a')
                     ->where('a.portal = :portal')
                     ->andWhere('a.enabled = true')
-                    ->andWhere('a INSTANCE OF :type')
+                    ->andWhere('a NOT INSTANCE OF :guestType')
                     ->setParameter('portal', $portal)
-                    ->setParameter('type', 'local'),
+                    ->setParameter('guestType', 'guest'),
                 'choice_label' => fn (AuthSource $authSource) => $authSource->getTitle().'('.$authSource->getType().')',
                 'label' => 'authSource',
             ])
