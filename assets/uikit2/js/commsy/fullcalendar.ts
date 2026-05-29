@@ -17,7 +17,7 @@ export function setup(id: string, editable: boolean = true): void {
           end: '16:00',
           dow: [1, 2, 3, 4, 5]
         },
-        initialView: calendarEl.dataset.defaultView ?? null,
+        initialView: calendarEl.dataset.defaultView ?? 'dayGridMonth',
         editable: editable,
         events: calendarEl.dataset.eventsUrl,
         headerToolbar: {
