@@ -16,7 +16,7 @@ namespace App\Controller;
 use App\Account\AccountLanguage;
 use App\Account\AccountManager;
 use App\Account\AccountMerger;
-use App\Hash\HashManager;
+use App\Account\AccountMergeTokenManager;
 use App\Mail\Factories\AccountMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
@@ -255,7 +255,7 @@ class AccountController extends AbstractController
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
         AccountMerger $accountMerger,
-        HashManager $hashManager,
+        AccountMergeTokenManager $mergeTokenManager,
         AccountMessageFactory $accountMessageFactory,
         Mailer $mailer,
         TranslatorInterface $translator
@@ -311,11 +311,7 @@ class AccountController extends AbstractController
                         // External account: there is no local password to verify, so legitimise
                         // the merge via an e-mail token sent to account A's address. The actual
                         // merge runs only once that link is confirmed.
-                        $token = $hashManager->createMergeHash(
-                            (int) $portalUser->getItemID(),
-                            $accountToMerge->getId(),
-                            $account->getId()
-                        );
+                        $token = $mergeTokenManager->create($accountToMerge, $account);
 
                         $message = $accountMessageFactory->createAccountMergeConfirmMessage(
                             $accountToMerge,
@@ -354,28 +350,25 @@ class AccountController extends AbstractController
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         string $token,
-        HashManager $hashManager,
-        EntityManagerInterface $entityManager,
+        Security $security,
+        AccountMergeTokenManager $mergeTokenManager,
         AccountMerger $accountMerger,
-        LegacyEnvironment $legacyEnvironment
+        EntityManagerInterface $entityManager,
+        LegacyEnvironment $legacyEnvironment,
+        TranslatorInterface $translator
     ): Response {
-        $hash = $hashManager->findValidMergeHash($token);
-
-        $accountRepository = $entityManager->getRepository(Account::class);
-        $oldAccount = $hash ? $accountRepository->find($hash->getMergeFromAccountId()) : null;
-        $newAccount = $hash ? $accountRepository->find($hash->getMergeIntoAccountId()) : null;
-
-        // Unknown/expired token, or one of the bound accounts no longer exists.
-        if (null === $hash || null === $oldAccount || null === $newAccount) {
-            if (null !== $hash) {
-                $hashManager->consumeMergeHash($hash);
-            }
-
+        // The raw token from the link is resolved via its stored SHA-256 hash;
+        // a non-null result guarantees both bound accounts still exist (FK).
+        $mergeToken = $mergeTokenManager->findValid($token);
+        if (null === $mergeToken) {
             return $this->render('account/merge_accounts_confirm.html.twig', [
                 'portal' => $portal,
                 'state' => 'invalid',
             ]);
         }
+
+        $oldAccount = $mergeToken->getFromAccount();
+        $newAccount = $mergeToken->getIntoAccount();
 
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('merge_confirm'.$token, (string) $request->request->get('_token'))) {
@@ -386,13 +379,36 @@ class AccountController extends AbstractController
             // explicitly because the token flow may run without an authenticated session.
             $legacyEnvironment->getEnvironment()->setCurrentPortalID($portal->getId());
 
-            $accountMerger->mergeAccounts($oldAccount, $newAccount);
-            $hashManager->consumeMergeHash($hash);
+            $fromId = $oldAccount->getId();
+            $intoId = $newAccount->getId();
+            $newUsername = $newAccount->getUsername();
+
+            // Consume the token first (single-use) so the now-removed token no longer
+            // references account A when the merge deletes it. The FK ON DELETE CASCADE
+            // remains as a safety net for out-of-band account deletions.
+            $mergeTokenManager->consume($mergeToken);
+
+            // Reload as managed entities for the merge.
+            $accountRepository = $entityManager->getRepository(Account::class);
+            $from = $accountRepository->find($fromId);
+            $into = $accountRepository->find($intoId);
+            $accountMerger->mergeAccounts($from, $into);
+
+            $this->addFlash('success', $translator->trans('mergeAccountsDone', [], 'profile'));
+
+            // Logged-in initiator (typically the surviving account N): drop them
+            // straight into the portal, exactly where a login lands. Otherwise show
+            // the confirmation page with a link to sign in.
+            if (null !== $security->getUser()) {
+                return $this->redirectToRoute('app_helper_portalenter', [
+                    'context' => $portal->getId(),
+                ]);
+            }
 
             return $this->render('account/merge_accounts_confirm.html.twig', [
                 'portal' => $portal,
                 'state' => 'done',
-                'newUsername' => $newAccount->getUsername(),
+                'newUsername' => $newUsername,
             ]);
         }
 

@@ -50,18 +50,24 @@ class AccountMerger
             return;
         }
 
-        // merge rooms
-        $this->doMerge($from, $into);
+        // Run the whole merge atomically. The legacy DB layer and the ORM share
+        // the same connection (database_connection), so legacy performQuery()
+        // writes and Doctrine operations commit — or roll back — together.
+        // wrapInTransaction() flushes before committing, so no explicit flush
+        // is needed here.
+        $this->entityManager->wrapInTransaction(function () use ($from, $into): void {
+            // merge rooms
+            $this->doMerge($from, $into);
 
-        // merge private room
-        $this->rewritePrivateRoom($from, $into);
+            // merge private room
+            $this->rewritePrivateRoom($from, $into);
 
-        // merge portal
-        $this->rewriteContextUserAndContent($from, $into, $this->currentContextResolver->getPortalItem()->getId());
+            // merge portal
+            $this->rewriteContextUserAndContent($from, $into, $this->currentContextResolver->getPortalItem()->getId());
 
-        // delete the merged account
-        $this->entityManager->remove($from);
-        $this->entityManager->flush();
+            // delete the merged account
+            $this->entityManager->remove($from);
+        });
     }
 
     private function doMerge(Account $from, Account $into): void

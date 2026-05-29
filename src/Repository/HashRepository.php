@@ -75,27 +75,6 @@ class HashRepository extends ServiceEntityRepository
         return $query->getSingleResult();
     }
 
-    /**
-     * @throws NonUniqueResultException
-     */
-    public function findByMergeToken(string $mergeToken): ?Hash
-    {
-        $query = $this->getEntityManager()
-            ->createQuery("
-                SELECT h FROM App\Entity\Hash h where h.mergeToken = :mergeToken
-            ")
-            ->setParameter('mergeToken', $mergeToken);
-
-        return $query->getOneOrNullResult();
-    }
-
-    public function save(Hash $hash): void
-    {
-        $em = $this->getEntityManager();
-        $em->persist($hash);
-        $em->flush();
-    }
-
     public function createHash(int $userId): Hash
     {
         $hash = new Hash();

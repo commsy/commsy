@@ -14,7 +14,7 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
-use App\Entity\Hash;
+use App\Entity\AccountMergeToken;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Tests\Application\AbstractApplicationTestCase;
@@ -65,14 +65,17 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
         );
 
         // A pending merge token has been stored, bound to (A -> N).
-        $hash = $this->findPendingMergeHash();
-        $this->assertNotNull($hash);
-        $this->assertSame($oldAccountId, $hash->getMergeFromAccountId());
-        $this->assertSame($newAccount->getId(), $hash->getMergeIntoAccountId());
+        $mergeToken = $this->singleMergeToken();
+        $this->assertNotNull($mergeToken);
+        $this->assertSame($oldAccountId, $mergeToken->getFromAccount()->getId());
+        $this->assertSame($newAccount->getId(), $mergeToken->getIntoAccount()->getId());
 
-        // The mail body links to the confirmation route carrying that token.
+        // The raw token lives only in the mail link; the DB stores its SHA-256 hash.
+        $rawToken = $this->extractTokenFromLastMail();
+        $this->assertSame(hash('sha256', $rawToken), $mergeToken->getTokenHash());
+        $this->assertNotSame($rawToken, $mergeToken->getTokenHash());
         $this->assertStringContainsString(
-            "/account/merge/confirm/{$hash->getMergeToken()}",
+            "/account/merge/confirm/{$rawToken}",
             $email->getHtmlBody() ?? ''
         );
     }
@@ -94,12 +97,13 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
         $form['profile_mergeaccounts[auth_source]'] = (string) $shibSource->getId();
         $this->client->submit($form);
 
-        $token = $this->findPendingMergeHash()->getMergeToken();
+        // The raw token is only in the mail (DB stores its hash).
+        $rawToken = $this->extractTokenFromLastMail();
 
         // GET shows the confirmation page (does NOT merge yet).
         $confirmCrawler = $this->client->request(
             'GET',
-            "/portal/{$portalId}/account/merge/confirm/{$token}"
+            "/portal/{$portalId}/account/merge/confirm/{$rawToken}"
         );
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form button[type=submit]');
@@ -109,18 +113,20 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
             $entityManager->getRepository(Account::class)->find($oldAccountId),
             'GET on the confirmation link must not merge'
         );
+        $this->assertSame(1, $this->mergeTokenCount());
 
-        // POST confirms: the merge runs and the token is consumed.
+        // POST confirms: the merge runs; the logged-in initiator (N) is sent into the portal.
         $confirmForm = $confirmCrawler->filter('form')->form();
         $this->client->submit($confirmForm);
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseRedirects("/portal/{$portalId}/enter");
 
         $entityManager->clear();
         $this->assertNull(
             $entityManager->getRepository(Account::class)->find($oldAccountId),
             'old account A must be deleted after a confirmed merge'
         );
-        $this->assertNull($this->findPendingMergeHash(), 'merge token must be consumed');
+        // Single-use: the token row is gone (FK ON DELETE CASCADE on the deleted account A).
+        $this->assertSame(0, $this->mergeTokenCount(), 'merge token must be consumed');
     }
 
     public function testLocalAccountMergeUsesPasswordAndMergesDirectly(): void
@@ -261,12 +267,30 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
         ];
     }
 
-    private function findPendingMergeHash(): ?Hash
+    private function singleMergeToken(): ?AccountMergeToken
     {
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-
-        return $entityManager
-            ->createQuery('SELECT h FROM App\Entity\Hash h WHERE h.mergeToken IS NOT NULL')
+        return static::getContainer()->get(EntityManagerInterface::class)
+            ->createQuery('SELECT t FROM App\Entity\AccountMergeToken t')
             ->getOneOrNullResult();
+    }
+
+    private function mergeTokenCount(): int
+    {
+        return (int) static::getContainer()->get(EntityManagerInterface::class)
+            ->createQuery('SELECT COUNT(t.id) FROM App\Entity\AccountMergeToken t')
+            ->getSingleScalarResult();
+    }
+
+    private function extractTokenFromLastMail(): string
+    {
+        $email = $this->getMailerMessage(0);
+        self::assertNotNull($email);
+        self::assertSame(
+            1,
+            preg_match('~/account/merge/confirm/([0-9a-f]{64})~', (string) $email->getHtmlBody(), $matches),
+            'confirmation link with a 64-char token must be present in the mail'
+        );
+
+        return $matches[1];
     }
 }
