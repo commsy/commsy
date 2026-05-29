@@ -180,6 +180,52 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
         $this->assertSame($newAccount->getId(), $mergeToken->getIntoAccount()->getId());
     }
 
+    public function testUnknownAccountGivesNeutralResponseAndSendsNoMail(): void
+    {
+        ['portal' => $portal, 'new' => $newAccount, 'shib' => $shibSource] = $this->createScenario();
+        $portalId = $portal->getId();
+
+        $this->loginAsUser($portalId, $newAccount->getUsername(), $newAccount->getPlainPassword());
+
+        $crawler = $this->client->request('GET', "/portal/{$portalId}/account/merge");
+        $form = $crawler->selectButton('profile_mergeaccounts[save]')->form();
+        $form['profile_mergeaccounts[combineUserId]'] = 'does.not.exist';
+        $form['profile_mergeaccounts[auth_source]'] = (string) $shibSource->getId();
+        $this->client->submit($form);
+
+        // Same neutral outcome as a successful request (no account enumeration) ...
+        $this->assertResponseRedirects("/portal/{$portalId}/account/merge");
+        // ... but nothing happened: no mail, no token.
+        $this->assertEmailCount(0);
+        $this->assertSame(0, $this->mergeTokenCount());
+    }
+
+    public function testSelfMergeIsNoOpAndSendsNoMail(): void
+    {
+        ['portal' => $portal, 'new' => $newAccount, 'local' => $localSource] = $this->createScenario();
+        $portalId = $portal->getId();
+        $newAccountId = $newAccount->getId();
+
+        $this->loginAsUser($portalId, $newAccount->getUsername(), $newAccount->getPlainPassword());
+
+        $crawler = $this->client->request('GET', "/portal/{$portalId}/account/merge");
+        $form = $crawler->selectButton('profile_mergeaccounts[save]')->form();
+        // The logged-in account's own username + own source -> would be a no-op.
+        $form['profile_mergeaccounts[combineUserId]'] = $newAccount->getUsername();
+        $form['profile_mergeaccounts[auth_source]'] = (string) $localSource->getId();
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects("/portal/{$portalId}/account/merge");
+        $this->assertEmailCount(0);
+        $this->assertSame(0, $this->mergeTokenCount());
+
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $this->assertNotNull(
+            $entityManager->getRepository(Account::class)->find($newAccountId),
+            'self-merge must not touch the account'
+        );
+    }
+
     public function testInvalidTokenShowsInvalidPageAndDoesNotMerge(): void
     {
         ['portal' => $portal] = $this->createScenario();

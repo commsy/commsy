@@ -62,7 +62,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use UnexpectedValueException;
 
 class AccountController extends AbstractController
 {
@@ -251,7 +250,6 @@ class AccountController extends AbstractController
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         Security $security,
-        UserService $userService,
         EntityManagerInterface $entityManager,
         AccountMergeTokenManager $mergeTokenManager,
         AccountMessageFactory $accountMessageFactory,
@@ -260,7 +258,6 @@ class AccountController extends AbstractController
     ): Response {
         /** @var Account $account */
         $account = $security->getUser();
-        $portalUser = $userService->getPortalUser($account);
 
         $form = $this->createForm(MergeAccountsType::class, [], [
             'portal' => $portal,
@@ -272,27 +269,22 @@ class AccountController extends AbstractController
 
             /** @var AuthSource $selectedAuthSource */
             $selectedAuthSource = $formData['auth_source'];
+            $accountRepository = $entityManager->getRepository(Account::class);
 
-            if (strtolower($portalUser->getUserID()) == strtolower((string) $formData['combineUserId']) &&
-                $selectedAuthSource === $account->getAuthSource()
-            ) {
-                $form->get('combineUserId')->addError(new FormError('Invalid user'));
-            } else {
-                $accountRepository = $entityManager->getRepository(Account::class);
+            try {
+                $accountToMerge = $accountRepository->findOneByCredentials(
+                    $formData['combineUserId'],
+                    $selectedAuthSource->getPortal(),
+                    $selectedAuthSource
+                );
 
-                try {
-                    $accountToMerge = $accountRepository->findOneByCredentials(
-                        $formData['combineUserId'],
-                        $selectedAuthSource->getPortal(),
-                        $selectedAuthSource
-                    );
-
-                    if (null === $accountToMerge) {
-                        throw new UnexpectedValueException();
-                    }
-
-                    // Always legitimise the merge via an e-mail token sent to the old
-                    // account A's address; the merge runs only once the link is confirmed.
+                // Act only on a real, *different* account. An unknown account or a
+                // self-merge (which would be a no-op) does nothing. Combined with the
+                // uniform response below, the form cannot be used to probe which
+                // accounts exist.
+                if (null !== $accountToMerge && $accountToMerge->getId() !== $account->getId()) {
+                    // Legitimise via an e-mail token sent to the old account A's address;
+                    // the merge runs only once the link is confirmed.
                     $token = $mergeTokenManager->create($accountToMerge, $account);
 
                     $message = $accountMessageFactory->createAccountMergeConfirmMessage(
@@ -302,16 +294,17 @@ class AccountController extends AbstractController
                         $token
                     );
                     $mailer->send($message, RecipientFactory::createFromAccount($accountToMerge), $portal->getTitle());
-
-                    $this->addFlash('success', $translator->trans('mergeAccountsMailSent', [], 'profile'));
-
-                    return $this->redirectToRoute('app_account_mergeaccounts', [
-                        'portalId' => $portal->getId(),
-                    ]);
-                } catch (NonUniqueResultException|UnexpectedValueException) {
-                    $form->get('combineUserId')->addError(new FormError('User not found'));
                 }
+            } catch (NonUniqueResultException) {
+                // Ambiguous credentials — stay neutral and do nothing.
             }
+
+            // Neutral, identical response in every case (no account enumeration).
+            $this->addFlash('success', $translator->trans('mergeAccountsMailSent', [], 'profile'));
+
+            return $this->redirectToRoute('app_account_mergeaccounts', [
+                'portalId' => $portal->getId(),
+            ]);
         }
 
         return $this->render('account/merge_accounts.html.twig', [

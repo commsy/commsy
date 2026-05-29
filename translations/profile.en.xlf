@@ -319,7 +319,7 @@
             </trans-unit>
             <trans-unit id="merge_accounts_mail_sent">
                 <source>mergeAccountsMailSent</source>
-                <target>A confirmation e-mail has been sent to the specified account. The merge will happen as soon as the link in the e-mail is confirmed.</target>
+                <target>If a matching account exists, a confirmation e-mail has been sent to its address. The merge happens once the link in that e-mail is confirmed.</target>
             </trans-unit>
             <trans-unit id="merge_accounts_done">
                 <source>mergeAccountsDone</source>

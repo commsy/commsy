@@ -319,7 +319,7 @@
             </trans-unit>
             <trans-unit id="merge_accounts_mail_sent">
                 <source>mergeAccountsMailSent</source>
-                <target>Es wurde eine Bestätigungs-E-Mail an die angegebene Kennung gesendet. Das Zusammenlegen erfolgt, sobald der Link in der E-Mail bestätigt wurde.</target>
+                <target>Falls eine passende Kennung existiert, wurde eine Bestätigungs-E-Mail an deren Adresse gesendet. Das Zusammenlegen erfolgt, sobald der Link in der E-Mail bestätigt wurde.</target>
             </trans-unit>
             <trans-unit id="merge_accounts_done">
                 <source>mergeAccountsDone</source>
