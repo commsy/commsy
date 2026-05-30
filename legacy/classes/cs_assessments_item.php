@@ -184,7 +184,7 @@ class cs_assessments_item extends cs_item
      *
      * @return string a value the link
      */
-    public function _getValue($key)
+    public function _getValue($key): mixed
     {
         if (!empty($this->_data[$key])) {
             $value = $this->_data[$key];
