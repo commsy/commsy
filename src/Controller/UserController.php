@@ -1043,14 +1043,15 @@ class UserController extends BaseController
         $userManager->resetLimits();
 
         $account = $security->getUser();
-        $notificationCount = $account instanceof Account
-            ? $notificationRepository->countUnreadForAccount($account)
-            : 0;
+        $isAccount = $account instanceof Account;
+        $notificationCount = $isAccount ? $notificationRepository->countUnreadForAccount($account) : 0;
+        $latestNotifications = $isAccount ? $notificationRepository->findLatestForAccount($account, 6) : [];
 
         return $this->render('user/global_navbar.html.twig', [
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
             'notificationCount' => $notificationCount,
+            'latestNotifications' => $latestNotifications,
             'roomId' => $this->legacyEnvironment->getCurrentContextId(),
             'supportLink' => $portalItem ? $portalItem->getSupportPageLink() : '',
             'tooltip' => $portalItem ? $portalItem->getSupportPageLinkTooltip() : '',

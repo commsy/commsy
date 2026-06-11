@@ -27,7 +27,7 @@
                     </a>
                 </li>
 
-                <li>
+                <li class="uk-parent" data-uk-dropdown="{mode:'click'}">
                     <a href="{{ path('app_notification_list', {'portalId': portal.id}) }}" title="{{ 'notifications'|trans({}, 'menu') }}">
                         <i class="uk-icon-bell-o"></i>
                         <small id="cs-nav-notification-indicator">
@@ -36,6 +36,27 @@
                             {% endif %}
                         </small>
                     </a>
+                    <div class="uk-dropdown uk-dropdown-navbar">
+                        <ul class="uk-nav uk-nav-navbar">
+                            {% for notification in latestNotifications %}
+                                <li{% if notification.unread %} class="cs-notification-unread"{% endif %}>
+                                    <a href="{{ path('app_notification_open', {'portalId': portal.id, 'id': notification.id}) }}">{{ notification.title }}</a>
+                                </li>
+                            {% else %}
+                                <li class="uk-nav-header">{{ 'noNotifications'|trans({}, 'notification') }}</li>
+                            {% endfor %}
+                            <li class="uk-nav-divider"></li>
+                            <li><a href="{{ path('app_notification_list', {'portalId': portal.id}) }}">{{ 'showAllNotifications'|trans({}, 'notification') }}</a></li>
+                            {% if notificationCount > 0 %}
+                                <li>
+                                    <form method="post" action="{{ path('app_notification_read_all', {'portalId': portal.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('notification_read_all') }}">
+                                        <button type="submit" class="uk-button uk-button-link">{{ 'markAllRead'|trans({}, 'notification') }}</button>
+                                    </form>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </li>
 
                 <li>
@@ -88,6 +109,27 @@
                     {% endif %}
                 </small>
             </a>
+            <div uk-dropdown="mode: click" class="uk-navbar-dropdown">
+                <ul class="uk-nav uk-navbar-dropdown-nav">
+                    {% for notification in latestNotifications %}
+                        <li{% if notification.unread %} class="cs-notification-unread"{% endif %}>
+                            <a href="{{ path('app_notification_open', {'portalId': portal.id, 'id': notification.id}) }}">{{ notification.title }}</a>
+                        </li>
+                    {% else %}
+                        <li class="uk-nav-header">{{ 'noNotifications'|trans({}, 'notification') }}</li>
+                    {% endfor %}
+                    <li class="uk-nav-divider"></li>
+                    <li><a href="{{ path('app_notification_list', {'portalId': portal.id}) }}">{{ 'showAllNotifications'|trans({}, 'notification') }}</a></li>
+                    {% if notificationCount > 0 %}
+                        <li>
+                            <form method="post" action="{{ path('app_notification_read_all', {'portalId': portal.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('notification_read_all') }}">
+                                <button type="submit" class="uk-button uk-button-link">{{ 'markAllRead'|trans({}, 'notification') }}</button>
+                            </form>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </li>
 
         <li>
