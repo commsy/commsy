@@ -204,8 +204,8 @@ class AccountMerger
 
         $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
 
-        $fromPrivateRoom = $privateRoomManager->getRelatedOwnRoomForUser($fromPortalUser, $from->getContextId());
-        $intoPrivateRoom = $privateRoomManager->getRelatedOwnRoomForUser($intoPortalUser, $into->getContextId());
+        $fromPrivateRoom = $privateRoomManager->getRelatedOwnRoomForUser($fromPortalUser, $from->getPortal()?->getId());
+        $intoPrivateRoom = $privateRoomManager->getRelatedOwnRoomForUser($intoPortalUser, $into->getPortal()?->getId());
 
         $intoPrivateRoomUser = $this->getUserInContext($into, $intoPrivateRoom->getItemID());
 
