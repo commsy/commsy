@@ -1,0 +1,33 @@
+{% extends 'base/profile.html.twig' %}
+
+{% block side_navigation %}
+    <nav aria-label="{{ 'notifications'|trans({}, 'menu') }}">
+    {{ knp_menu_render('account') }}
+    </nav>
+{% endblock %}
+
+{% block content %}
+    {% set panelName = 'notifications' %}
+    <main id="main-content" aria-labelledby="{{ panelName }}-heading">
+    {% component 'v2:panel' with { name: panelName, title: 'notifications'|trans({}, 'menu') } %}
+        {% block content %}
+            {% if notifications is empty %}
+                <p class="uk-text-muted">{{ 'noNotifications'|trans({}, 'notification') }}</p>
+            {% else %}
+                <ul class="uk-list uk-list-striped">
+                    {% for notification in notifications %}
+                        <li class="{{ notification.unread ? 'cs-notification-unread' : '' }}">
+                            <div class="uk-text-bold">{{ notification.title }}</div>
+                            <div class="uk-text-meta">
+                                {{ notification.roomTitle }}
+                                {%- if notification.actorName %} &middot; {{ notification.actorName }}{% endif -%}
+                                &middot; {{ notification.createdAt|date('Y-m-d H:i') }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endblock %}
+    {% endcomponent %}
+    </main>
+{% endblock content %}

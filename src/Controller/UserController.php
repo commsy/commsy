@@ -17,6 +17,7 @@ use App\Action\Copy\InsertUserroomAction;
 use App\Action\MarkRead\MarkReadAction;
 use App\Action\Pin\PinAction;
 use App\Action\Pin\UnpinAction;
+use App\Entity\Account;
 use App\Entity\Portal;
 use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
@@ -29,6 +30,7 @@ use App\Form\Type\UserStatusChangeType;
 use App\Item\ItemType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
+use App\Repository\NotificationRepository;
 use App\Repository\UserRepository;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
@@ -39,6 +41,7 @@ use App\Services\LegacyMarkup;
 use App\Services\PrintService;
 use App\User\UserMembershipDeleter;
 use App\Utils\AccountMail;
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Utils\ItemService;
 use App\Utils\TopicService;
 use App\Utils\UserService;
@@ -1010,6 +1013,8 @@ class UserController extends BaseController
         $contextId,
         SessionInterface $session,
         EntityManagerInterface $entityManager,
+        Security $security,
+        NotificationRepository $notificationRepository,
         bool $uikit3 = false
     ): Response {
         $currentUserItem = $this->userService->getCurrentUserItem();
@@ -1037,9 +1042,15 @@ class UserController extends BaseController
         $userManager = $this->legacyEnvironment->getUserManager();
         $userManager->resetLimits();
 
+        $account = $security->getUser();
+        $notificationCount = $account instanceof Account
+            ? $notificationRepository->countUnreadForAccount($account)
+            : 0;
+
         return $this->render('user/global_navbar.html.twig', [
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
+            'notificationCount' => $notificationCount,
             'roomId' => $this->legacyEnvironment->getCurrentContextId(),
             'supportLink' => $portalItem ? $portalItem->getSupportPageLink() : '',
             'tooltip' => $portalItem ? $portalItem->getSupportPageLinkTooltip() : '',

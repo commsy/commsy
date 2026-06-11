@@ -28,6 +28,17 @@
                 </li>
 
                 <li>
+                    <a href="{{ path('app_notification_list', {'portalId': portal.id}) }}" title="{{ 'notifications'|trans({}, 'menu') }}">
+                        <i class="uk-icon-bell-o"></i>
+                        <small id="cs-nav-notification-indicator">
+                            {% if notificationCount > 0 %}
+                                {{ notificationCount }}
+                            {% endif %}
+                        </small>
+                    </a>
+                </li>
+
+                <li>
                     <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}">
                         <i class="uk-icon-folder-open-o"></i>
                     </a>
@@ -63,6 +74,17 @@
                 <small id="cs-nav-mark-indicator">
                     {% if count > 0 %}
                         {{ count }}
+                    {% endif %}
+                </small>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ path('app_notification_list', {'portalId': portal.id}) }}" title="{{ 'notifications'|trans({}, 'menu') }}">
+                <span uk-icon="bell"></span>
+                <small id="cs-nav-notification-indicator">
+                    {% if notificationCount > 0 %}
+                        {{ notificationCount }}
                     {% endif %}
                 </small>
             </a>
