@@ -13,8 +13,8 @@
 
 namespace App\EventSubscriber;
 
-use App\Event\CommsyEditEvent;
 use App\Event\ItemDeletedEvent;
+use App\Event\ItemPublishedEvent;
 use App\Message\NotifyNewEntryMessage;
 use App\Repository\NotificationRepository;
 use cs_item;
@@ -23,13 +23,16 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * Bridges item lifecycle events into the notifications feature:
- *  - on save of a published top-level entry, dispatches an async
+ *  - when a top-level entry is published (undrafted), dispatches an async
  *    NotifyNewEntryMessage (the handler fans it out to the room members);
  *  - on item deletion, drops any notifications pointing at that item.
  *
- * Purely additive — it only reads the existing CommsyEditEvent /
- * ItemDeletedEvent and never touches a legacy write path. First-publish
- * idempotency lives in the manager, so a re-saved entry never re-notifies.
+ * Hooks ItemPublishedEvent rather than CommsyEditEvent::SAVE on purpose: SAVE
+ * fires while the entry is still a draft (ItemService::undraft defers elastic
+ * indexing for the same reason), so a new entry only becomes notification-worthy
+ * at publish time. Purely additive — it reads existing events and never touches
+ * a legacy write path. First-publish idempotency lives in the manager, so a
+ * re-published entry never re-notifies.
  */
 final readonly class NotificationEventSubscriber implements EventSubscriberInterface
 {
@@ -50,20 +53,16 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
     public static function getSubscribedEvents(): array
     {
         return [
-            CommsyEditEvent::SAVE => 'onSave',
+            ItemPublishedEvent::NAME => 'onPublished',
             ItemDeletedEvent::NAME => 'onItemDeleted',
         ];
     }
 
-    public function onSave(CommsyEditEvent $event): void
+    public function onPublished(ItemPublishedEvent $event): void
     {
         $item = $event->getItem();
 
         if (!in_array($item->getItemType(), self::NOTIFIABLE_TYPES, true)) {
-            return;
-        }
-
-        if ($item->isDraft()) {
             return;
         }
 

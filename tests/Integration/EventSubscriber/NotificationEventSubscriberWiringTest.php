@@ -13,27 +13,27 @@
 
 namespace Tests\Integration\EventSubscriber;
 
-use App\Event\CommsyEditEvent;
 use App\Event\ItemDeletedEvent;
+use App\Event\ItemPublishedEvent;
 use App\EventSubscriber\NotificationEventSubscriber;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Confirms autoconfiguration actually subscribes the notification subscriber
- * to the save and delete events (the wiring the unit test cannot see).
+ * to the publish and delete events (the wiring the unit test cannot see).
  */
 class NotificationEventSubscriberWiringTest extends KernelTestCase
 {
-    public function testSubscribesToSaveAndDeleteEvents(): void
+    public function testSubscribesToPublishAndDeleteEvents(): void
     {
         self::bootKernel();
         /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = self::getContainer()->get('event_dispatcher');
 
         self::assertTrue(
-            $this->isWired($dispatcher, CommsyEditEvent::SAVE),
-            'subscriber must listen on CommsyEditEvent::SAVE'
+            $this->isWired($dispatcher, ItemPublishedEvent::NAME),
+            'subscriber must listen on ItemPublishedEvent'
         );
         self::assertTrue(
             $this->isWired($dispatcher, ItemDeletedEvent::NAME),

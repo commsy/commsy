@@ -13,8 +13,8 @@
 
 namespace Tests\Unit\EventSubscriber;
 
-use App\Event\CommsyEditEvent;
 use App\Event\ItemDeletedEvent;
+use App\Event\ItemPublishedEvent;
 use App\EventSubscriber\NotificationEventSubscriber;
 use App\Message\NotifyNewEntryMessage;
 use App\Repository\NotificationRepository;
@@ -26,12 +26,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class NotificationEventSubscriberTest extends TestCase
 {
-    public function testPublishedEntrySaveDispatchesSignalWithSnapshot(): void
+    public function testPublishedEntryDispatchesSignalWithSnapshot(): void
     {
         $creator = $this->createMock(cs_user_item::class);
         $creator->method('getFullName')->willReturn('Jane Doe');
 
-        $item = $this->item('material', draft: false, notActivated: true);
+        $item = $this->item('material', notActivated: true);
         $item->method('getItemID')->willReturn(123);
         $item->method('getContextID')->willReturn(45);
         $item->method('getTitle')->willReturn('My entry');
@@ -52,15 +52,7 @@ class NotificationEventSubscriberTest extends TestCase
             }))
             ->willReturn(new Envelope(new \stdClass()));
 
-        $this->subscriber($bus)->onSave(new CommsyEditEvent($item));
-    }
-
-    public function testDraftSaveDispatchesNothing(): void
-    {
-        $bus = $this->createMock(MessageBusInterface::class);
-        $bus->expects($this->never())->method('dispatch');
-
-        $this->subscriber($bus)->onSave(new CommsyEditEvent($this->item('material', draft: true)));
+        $this->subscriber($bus)->onPublished(new ItemPublishedEvent($item));
     }
 
     public function testNonNotifiableTypeDispatchesNothing(): void
@@ -69,7 +61,7 @@ class NotificationEventSubscriberTest extends TestCase
         $bus->expects($this->never())->method('dispatch');
 
         // A sub-item such as a discussion article must not notify.
-        $this->subscriber($bus)->onSave(new CommsyEditEvent($this->item('discussionarticle', draft: false)));
+        $this->subscriber($bus)->onPublished(new ItemPublishedEvent($this->item('discussionarticle')));
     }
 
     public function testItemDeletedRemovesItsNotifications(): void
@@ -84,11 +76,10 @@ class NotificationEventSubscriberTest extends TestCase
         $subscriber->onItemDeleted(new ItemDeletedEvent($item));
     }
 
-    private function item(string $type, bool $draft, bool $notActivated = false): cs_item
+    private function item(string $type, bool $notActivated = false): cs_item
     {
         $item = $this->createMock(cs_item::class);
         $item->method('getItemType')->willReturn($type);
-        $item->method('isDraft')->willReturn($draft);
         $item->method('isNotActivated')->willReturn($notActivated);
 
         return $item;
