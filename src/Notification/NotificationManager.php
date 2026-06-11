@@ -20,31 +20,32 @@ use App\Message\NotifyNewEntryMessage;
 use App\Repository\NotificationRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
+use App\Security\Permission\Checker\ItemViewChecker;
+use App\Security\Permission\Subject\ItemViewSubject;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Fans a "new entry published" signal out into per-recipient notification rows:
- * one row for every active room member except the entry's creator.
+ * one row for every active room member who may actually see the entry, except
+ * the entry's creator.
  *
  * Pure modern persistence — no legacy environment is touched, so it runs safely
- * from an async message handler. The signal already carries the item-derived
- * snapshot (captured in-request by the subscriber), so the fan-out only needs
- * Doctrine lookups for the room title and the member list.
+ * from an async message handler. Recipient visibility is gated through the same
+ * {@see ItemViewChecker} the UI uses (ITEM_SEE), so a member who cannot see the
+ * entry never gets notified about it. The view subject is built straight from
+ * the signal snapshot rather than re-loading the rubric entity (which may
+ * already be gone by the time the async handler runs): top-level rubric items
+ * never carry overwritten content, and the room is looked up once for both the
+ * title and the deleted-context flag.
  */
 class NotificationManager
 {
-    /**
-     * Lowest room-membership status that should receive notifications: status
-     * 0 (rejected) and 1 (pending request) are excluded, 2+ (member, moderator,
-     * read-only) are included.
-     */
-    private const MIN_MEMBER_STATUS = 2;
-
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly NotificationRepository $notificationRepository,
         private readonly UserRepository $userRepository,
         private readonly RoomRepository $roomRepository,
+        private readonly ItemViewChecker $itemViewChecker,
     ) {
     }
 
@@ -55,13 +56,24 @@ class NotificationManager
             return;
         }
 
-        $recipients = $this->resolveRecipients($signal->contextId, $signal->creatorUserItemId);
+        $room = $this->roomRepository->find($signal->contextId);
+
+        $subject = new ItemViewSubject(
+            itemId: $signal->sourceItemId,
+            contextId: $signal->contextId,
+            creatorId: $signal->creatorUserItemId,
+            isDeactivated: $signal->isDeactivated,
+            contextIsDeleted: $room === null || $room->getDeletionDate() !== null,
+            hasOverwrittenContent: false,
+        );
+
+        $recipients = $this->resolveRecipients($signal->contextId, $signal->creatorUserItemId, $subject);
         if ($recipients === []) {
             return;
         }
 
         $now = new \DateTimeImmutable();
-        $roomTitle = $this->roomRepository->find($signal->contextId)?->getTitle() ?? '';
+        $roomTitle = $room?->getTitle() ?? '';
 
         foreach ($recipients as $recipient) {
             $this->entityManager->persist(new Notification(
@@ -81,11 +93,12 @@ class NotificationManager
     }
 
     /**
-     * Active members of the room minus the creator, de-duplicated per account.
+     * Active members of the room who may see the entry, minus the creator,
+     * de-duplicated per account.
      *
      * @return Account[]
      */
-    private function resolveRecipients(int $contextId, int $creatorUserItemId): array
+    private function resolveRecipients(int $contextId, int $creatorUserItemId, ItemViewSubject $subject): array
     {
         $recipients = [];
 
@@ -93,8 +106,8 @@ class NotificationManager
             if ($user->getItemId() === $creatorUserItemId) {
                 continue; // never notify the author about their own entry
             }
-            if ($user->getStatus() < self::MIN_MEMBER_STATUS) {
-                continue; // skip rejected / not-yet-approved membership requests
+            if (!$this->itemViewChecker->canSee($user, $subject)) {
+                continue; // respect ITEM_SEE: only notify members who may see it
             }
             $account = $user->getAccount();
             if ($account === null) {

@@ -109,6 +109,24 @@ class NotificationManagerTest extends KernelTestCase
         self::assertSame($confirmed->getAccount()->getId(), $rows[0]->getRecipient()->getId());
     }
 
+    public function testDeactivatedEntryNotifiesModeratorsButNotRegularMembers(): void
+    {
+        $room = $this->createRoom();
+        $creator = $this->member($room, $this->account);
+        $this->member($room, $this->newAccount());                 // regular member (status 2)
+        $moderator = $this->member($room, $this->newAccount(), status: 3);
+
+        // A not-yet-activated entry is only visible to moderators and the
+        // creator; ITEM_SEE must keep it from the regular member.
+        $this->manager()->notifyNewEntry(
+            $this->signal($room, $creator, sourceItemId: 4, isDeactivated: true)
+        );
+
+        $rows = $this->repository()->findAll();
+        self::assertCount(1, $rows);
+        self::assertSame($moderator->getAccount()->getId(), $rows[0]->getRecipient()->getId());
+    }
+
     private function manager(): NotificationManager
     {
         return self::getContainer()->get(NotificationManager::class);
@@ -154,6 +172,7 @@ class NotificationManagerTest extends KernelTestCase
         int $sourceItemId,
         string $title = 'Title',
         string $type = 'material',
+        bool $isDeactivated = false,
     ): NotifyNewEntryMessage {
         return new NotifyNewEntryMessage(
             $sourceItemId,
@@ -162,6 +181,7 @@ class NotificationManagerTest extends KernelTestCase
             $title,
             $creator->getItemId(),
             'Creator Name',
+            $isDeactivated,
         );
     }
 }

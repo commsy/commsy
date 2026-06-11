@@ -84,6 +84,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
             $item->getTitle(),
             $item->getCreatorID(),
             $item->getCreatorItem()?->getFullName(),
+            (bool) $item->isNotActivated(),
         );
     }
 }

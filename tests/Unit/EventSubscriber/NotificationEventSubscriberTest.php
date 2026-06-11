@@ -31,7 +31,7 @@ class NotificationEventSubscriberTest extends TestCase
         $creator = $this->createMock(cs_user_item::class);
         $creator->method('getFullName')->willReturn('Jane Doe');
 
-        $item = $this->item('material', draft: false);
+        $item = $this->item('material', draft: false, notActivated: true);
         $item->method('getItemID')->willReturn(123);
         $item->method('getContextID')->willReturn(45);
         $item->method('getTitle')->willReturn('My entry');
@@ -47,7 +47,8 @@ class NotificationEventSubscriberTest extends TestCase
                     && 'material' === $message->sourceItemType
                     && 'My entry' === $message->title
                     && 7 === $message->creatorUserItemId
-                    && 'Jane Doe' === $message->actorName;
+                    && 'Jane Doe' === $message->actorName
+                    && true === $message->isDeactivated;
             }))
             ->willReturn(new Envelope(new \stdClass()));
 
@@ -83,11 +84,12 @@ class NotificationEventSubscriberTest extends TestCase
         $subscriber->onItemDeleted(new ItemDeletedEvent($item));
     }
 
-    private function item(string $type, bool $draft): cs_item
+    private function item(string $type, bool $draft, bool $notActivated = false): cs_item
     {
         $item = $this->createMock(cs_item::class);
         $item->method('getItemType')->willReturn($type);
         $item->method('isDraft')->willReturn($draft);
+        $item->method('isNotActivated')->willReturn($notActivated);
 
         return $item;
     }

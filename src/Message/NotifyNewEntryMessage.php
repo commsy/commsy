@@ -30,6 +30,7 @@ final readonly class NotifyNewEntryMessage
         public string $title,
         public int $creatorUserItemId,
         public ?string $actorName = null,
+        public bool $isDeactivated = false,
     ) {
     }
 }
