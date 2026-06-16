@@ -157,7 +157,7 @@ $('#material_license_id').on('change', function(){
         $('#licensesContents').removeClass('uk-hidden');
     }
 
-    $('#licensesContents').find('span').each(function() {
+    $('#licensesContents').children('span').each(function() {
         $(this).addClass('uk-hidden');
     });
     $('#licensesContents_'+$this.val()).removeClass('uk-hidden');
