@@ -75,6 +75,8 @@
 
 {% if parentContext is defined and parentContext.isPortal %}
     {{ 'mail.footer.why_portal'|trans({}, 'mail') }}
+{% elseif parentContext is defined and parentContext %}
+    {{ 'You received this email as one of the moderator/s in the workspace "{room_name}".'|trans({ 'room_name': parentContext.title }, 'mail') }}
 {% else %}
     {{ 'You received this email as one of the moderator/s in the workspace "{room_name}".'|trans({ 'room_name': room.title }, 'mail') }}
 {% endif %}
