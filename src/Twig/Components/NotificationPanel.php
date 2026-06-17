@@ -44,6 +44,10 @@ final class NotificationPanel
     #[LiveProp]
     public ?int $contextId = null;
 
+    /** Panel heading, passed in by the embedding page (keeps the old feed titles). */
+    #[LiveProp]
+    public ?string $title = null;
+
     private const LIMIT = 50;
 
     public function __construct(
@@ -106,7 +110,19 @@ final class NotificationPanel
      */
     public function scheduledStart(Notification $notification): ?\DateTimeImmutable
     {
-        $raw = $notification->getPayload()->dateStart;
+        return $this->parseDate($notification->getPayload()->dateStart);
+    }
+
+    /**
+     * A date entry's scheduled end as a real date object, or null.
+     */
+    public function scheduledEnd(Notification $notification): ?\DateTimeImmutable
+    {
+        return $this->parseDate($notification->getPayload()->dateEnd);
+    }
+
+    private function parseDate(?string $raw): ?\DateTimeImmutable
+    {
         if ($raw === null) {
             return null;
         }

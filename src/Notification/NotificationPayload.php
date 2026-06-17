@@ -29,6 +29,7 @@ final readonly class NotificationPayload
 {
     public function __construct(
         public ?string $creatorName = null,
+        public ?int $actorId = null,
         public ?string $place = null,
         public ?string $dateStart = null,
         public ?string $dateEnd = null,
@@ -47,6 +48,7 @@ final readonly class NotificationPayload
     {
         return new self(
             creatorName: $data['creatorName'] ?? null,
+            actorId: isset($data['actorId']) ? (int) $data['actorId'] : null,
             place: $data['place'] ?? null,
             dateStart: $data['dateStart'] ?? null,
             dateEnd: $data['dateEnd'] ?? null,
@@ -67,6 +69,7 @@ final readonly class NotificationPayload
     {
         return array_filter([
             'creatorName' => $this->creatorName,
+            'actorId' => $this->actorId,
             'place' => $this->place,
             'dateStart' => $this->dateStart,
             'dateEnd' => $this->dateEnd,

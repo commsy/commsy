@@ -232,7 +232,7 @@
                 </div>
             {% endif %}
 
-            <twig:NotificationPanel :account="app.user" :contextId="roomItem.itemId" />
+            <twig:NotificationPanel :account="app.user" :contextId="roomItem.itemId" :title="header|trans({}, 'room')" />
         </main>
 {% endblock %}
 

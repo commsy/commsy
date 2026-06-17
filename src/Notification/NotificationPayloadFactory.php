@@ -28,12 +28,16 @@ class NotificationPayloadFactory
 {
     public function fromItem(cs_item $item): NotificationPayload
     {
+        // Common, rubric-independent fields. The actor id (the modificator's
+        // user id) lets the panel render the actor's avatar via app_user_image.
         $creatorName = $item->getCreatorItem()?->getFullName();
+        $actorId = $item->getModificatorItem()?->getItemID();
         $hasAttachments = $item->getFileList()->getCount() > 0;
 
         if ($item instanceof cs_dates_item) {
             return new NotificationPayload(
                 creatorName: $creatorName,
+                actorId: $actorId,
                 place: $this->clean($item->getPlace()),
                 dateStart: $this->clean($item->getDateTime_start()),
                 dateEnd: $this->clean($item->getDateTime_end()),
@@ -45,6 +49,7 @@ class NotificationPayloadFactory
         if ($item instanceof cs_material_item) {
             return new NotificationPayload(
                 creatorName: $creatorName,
+                actorId: $actorId,
                 materialAuthor: $this->clean($item->getAuthor()),
                 publishingDate: $this->clean($item->getPublishingDate()),
                 hasAttachments: $hasAttachments,
@@ -53,6 +58,7 @@ class NotificationPayloadFactory
 
         return new NotificationPayload(
             creatorName: $creatorName,
+            actorId: $actorId,
             hasAttachments: $hasAttachments,
         );
     }

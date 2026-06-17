@@ -74,6 +74,10 @@
                 <source>byCreator</source>
                 <target>by %name%</target>
             </trans-unit>
+            <trans-unit id="attachments">
+                <source>attachments</source>
+                <target>Attachments</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -31,6 +31,7 @@ class NotificationPayloadFactoryTest extends TestCase
         $payload = (new NotificationPayloadFactory())->fromItem($item);
 
         self::assertSame('Ada Lovelace', $payload->creatorName);
+        self::assertSame(77, $payload->actorId);
         self::assertTrue($payload->hasAttachments);
         self::assertNull($payload->place);
         self::assertNull($payload->materialAuthor);
@@ -95,6 +96,10 @@ class NotificationPayloadFactoryTest extends TestCase
         } else {
             $item->method('getCreatorItem')->willReturn(null);
         }
+
+        $modificator = $this->createMock(cs_user_item::class);
+        $modificator->method('getItemID')->willReturn(77);
+        $item->method('getModificatorItem')->willReturn($modificator);
 
         $list = $this->createMock(cs_list::class);
         $list->method('getCount')->willReturn($fileCount);
