@@ -208,6 +208,27 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Mark every unread notification an account holds for one source item read.
+     * Backs "opening the entry's detail page marks it read", regardless of how
+     * the page was reached. Covers all events for the item (create and edits).
+     *
+     * @return int number of rows updated
+     */
+    public function markReadForAccountAndSourceItem(Account $account, int $sourceItemId, \DateTimeImmutable $now): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQuery(
+                'UPDATE App\Entity\Notification n
+                 SET n.readAt = :now
+                 WHERE n.recipient = :account AND n.sourceItemId = :item AND n.readAt IS NULL'
+            )
+            ->setParameter('now', $now)
+            ->setParameter('account', $account)
+            ->setParameter('item', $sourceItemId)
+            ->execute();
+    }
+
+    /**
      * Drop notifications pointing at an item that no longer exists.
      *
      * @return int number of rows deleted

@@ -243,6 +243,24 @@ class NotificationRepositoryTest extends KernelTestCase
         self::assertSame(1, $this->repository()->countUnreadForAccount($account, 10));
     }
 
+    public function testMarkReadForAccountAndSourceItemTouchesOnlyThatItemAndAccount(): void
+    {
+        self::bootKernel();
+        $mine = AccountFactory::createOne();
+        $other = AccountFactory::createOne();
+
+        $this->persist($mine, sourceItemId: 42);   // unread, item 42
+        $this->persist($mine, sourceItemId: 42);   // a second event for item 42 (e.g. an edit)
+        $this->persist($mine, sourceItemId: 99);    // a different item
+        $this->persist($other, sourceItemId: 42);   // another account, same item
+
+        $marked = $this->repository()->markReadForAccountAndSourceItem($mine, 42, new \DateTimeImmutable());
+
+        self::assertSame(2, $marked, 'both of my events for item 42 are marked read');
+        self::assertSame(1, $this->repository()->countUnreadForAccount($mine), 'my item 99 stays unread');
+        self::assertSame(1, $this->repository()->countUnreadForAccount($other), 'the other account is untouched');
+    }
+
     private function repository(): NotificationRepository
     {
         return self::getContainer()->get(NotificationRepository::class);
