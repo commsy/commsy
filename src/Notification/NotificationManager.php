@@ -90,6 +90,7 @@ class NotificationManager
                 $signal->sourceItemType,
                 $signal->actorName,
                 $signal->action,
+                NotificationPayload::fromArray($signal->payload),
             ));
         }
 

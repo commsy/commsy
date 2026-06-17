@@ -19,6 +19,8 @@ use App\Event\ItemDeletedEvent;
 use App\Event\ItemPublishedEvent;
 use App\EventSubscriber\NotificationEventSubscriber;
 use App\Message\NotifyNewEntryMessage;
+use App\Notification\NotificationPayload;
+use App\Notification\NotificationPayloadFactory;
 use App\Repository\NotificationRepository;
 use cs_item;
 use cs_user_item;
@@ -30,21 +32,23 @@ class NotificationEventSubscriberTest extends TestCase
 {
     public function testPublishedEntryDispatchesCreatedSignalWithSnapshot(): void
     {
-        $creator = $this->createMock(cs_user_item::class);
-        $creator->method('getFullName')->willReturn('Jane Doe');
+        $modificator = $this->createMock(cs_user_item::class);
+        $modificator->method('getFullName')->willReturn('Jane Doe');
 
         $item = $this->item('material', notActivated: true);
         $item->method('getItemID')->willReturn(123);
         $item->method('getContextID')->willReturn(45);
         $item->method('getTitle')->willReturn('My entry');
         $item->method('getCreatorID')->willReturn(7);
-        $item->method('getCreatorItem')->willReturn($creator);
+        $item->method('getModificatorItem')->willReturn($modificator);
         $item->method('getModificationDate')->willReturn('2026-06-15 12:00:00');
+
+        $payload = new NotificationPayload(creatorName: 'Jane Doe', hasAttachments: true);
 
         $bus = $this->createMock(MessageBusInterface::class);
         $bus->expects($this->once())
             ->method('dispatch')
-            ->with($this->callback(function (NotifyNewEntryMessage $message): bool {
+            ->with($this->callback(function (NotifyNewEntryMessage $message) use ($payload): bool {
                 return 123 === $message->sourceItemId
                     && 45 === $message->contextId
                     && 'material' === $message->sourceItemType
@@ -52,11 +56,12 @@ class NotificationEventSubscriberTest extends TestCase
                     && 7 === $message->creatorUserItemId
                     && 'Jane Doe' === $message->actorName
                     && true === $message->isDeactivated
-                    && NotificationAction::Created === $message->action;
+                    && NotificationAction::Created === $message->action
+                    && $message->payload === $payload->toArray();
             }))
             ->willReturn(new Envelope(new \stdClass()));
 
-        $this->subscriber($bus)->onPublished(new ItemPublishedEvent($item));
+        $this->subscriber($bus, $this->factory($payload))->onPublished(new ItemPublishedEvent($item));
     }
 
     public function testSavingPublishedEntryDispatchesEditedSignal(): void
@@ -66,7 +71,7 @@ class NotificationEventSubscriberTest extends TestCase
         $item->method('getContextID')->willReturn(9);
         $item->method('getTitle')->willReturn('Edited title');
         $item->method('getCreatorID')->willReturn(3);
-        $item->method('getCreatorItem')->willReturn(null);
+        $item->method('getModificatorItem')->willReturn(null);
         $item->method('getModificationDate')->willReturn('2026-06-16 09:30:00');
 
         $bus = $this->createMock(MessageBusInterface::class);
@@ -108,18 +113,6 @@ class NotificationEventSubscriberTest extends TestCase
         $this->subscriber($bus)->onPublished(new ItemPublishedEvent($this->item('discussionarticle')));
     }
 
-    public function testItemDeletedRemovesItsNotifications(): void
-    {
-        $item = $this->createMock(cs_item::class);
-        $item->method('getItemID')->willReturn(99);
-
-        $repository = $this->createMock(NotificationRepository::class);
-        $repository->expects($this->once())->method('removeForSourceItem')->with(99);
-
-        $subscriber = new NotificationEventSubscriber($this->createMock(MessageBusInterface::class), $repository);
-        $subscriber->onItemDeleted(new ItemDeletedEvent($item));
-    }
-
     public function testGroupsAndTopicsNotifyForFeedParity(): void
     {
         // Groups and topics surface in the room/dashboard feed, so they notify too.
@@ -129,7 +122,7 @@ class NotificationEventSubscriberTest extends TestCase
             $item->method('getContextID')->willReturn(22);
             $item->method('getTitle')->willReturn('Org entry');
             $item->method('getCreatorID')->willReturn(3);
-            $item->method('getCreatorItem')->willReturn(null);
+            $item->method('getModificatorItem')->willReturn(null);
             $item->method('getModificationDate')->willReturn('2026-06-16 09:30:00');
 
             $bus = $this->createMock(MessageBusInterface::class);
@@ -142,6 +135,22 @@ class NotificationEventSubscriberTest extends TestCase
         }
     }
 
+    public function testItemDeletedRemovesItsNotifications(): void
+    {
+        $item = $this->createMock(cs_item::class);
+        $item->method('getItemID')->willReturn(99);
+
+        $repository = $this->createMock(NotificationRepository::class);
+        $repository->expects($this->once())->method('removeForSourceItem')->with(99);
+
+        $subscriber = new NotificationEventSubscriber(
+            $this->createMock(MessageBusInterface::class),
+            $repository,
+            $this->factory(),
+        );
+        $subscriber->onItemDeleted(new ItemDeletedEvent($item));
+    }
+
     private function item(string $type, bool $notActivated = false, bool $isDraft = false): cs_item
     {
         $item = $this->createMock(cs_item::class);
@@ -152,8 +161,20 @@ class NotificationEventSubscriberTest extends TestCase
         return $item;
     }
 
-    private function subscriber(MessageBusInterface $bus): NotificationEventSubscriber
+    private function subscriber(MessageBusInterface $bus, ?NotificationPayloadFactory $factory = null): NotificationEventSubscriber
     {
-        return new NotificationEventSubscriber($bus, $this->createMock(NotificationRepository::class));
+        return new NotificationEventSubscriber(
+            $bus,
+            $this->createMock(NotificationRepository::class),
+            $factory ?? $this->factory(),
+        );
+    }
+
+    private function factory(NotificationPayload $payload = new NotificationPayload()): NotificationPayloadFactory
+    {
+        $factory = $this->createMock(NotificationPayloadFactory::class);
+        $factory->method('fromItem')->willReturn($payload);
+
+        return $factory;
     }
 }

@@ -23,11 +23,18 @@ use App\Enum\NotificationAction;
  * request-scoped legacy environment. {@see $action} says whether the event was
  * a create or an edit; {@see $occurredAt} is the event time and makes the
  * handler idempotent against messenger retries (a real edit happens at a new
- * time and is logged as another event). Routed to the async transport by the
- * `App\Message\*` routing rule in config/packages/messenger.yaml.
+ * time and is logged as another event). {@see $actorName} is the event actor
+ * (the modificator), while {@see $payload} carries the rubric-specific display
+ * snapshot. Routed to the async transport by the `App\Message\*` routing rule
+ * in config/packages/messenger.yaml.
+ *
+ * @see \App\Notification\NotificationPayload for the payload shape
  */
 final readonly class NotifyNewEntryMessage
 {
+    /**
+     * @param array<string, mixed> $payload
+     */
     public function __construct(
         public int $sourceItemId,
         public int $contextId,
@@ -38,6 +45,7 @@ final readonly class NotifyNewEntryMessage
         public bool $isDeactivated = false,
         public NotificationAction $action = NotificationAction::Created,
         public ?\DateTimeImmutable $occurredAt = null,
+        public array $payload = [],
     ) {
     }
 }

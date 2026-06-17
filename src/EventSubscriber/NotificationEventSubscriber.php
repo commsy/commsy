@@ -18,6 +18,7 @@ use App\Event\CommsyEditEvent;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemPublishedEvent;
 use App\Message\NotifyNewEntryMessage;
+use App\Notification\NotificationPayloadFactory;
 use App\Repository\NotificationRepository;
 use cs_item;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -55,6 +56,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
     public function __construct(
         private MessageBusInterface $messageBus,
         private NotificationRepository $notificationRepository,
+        private NotificationPayloadFactory $payloadFactory,
     ) {
     }
 
@@ -107,10 +109,13 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
             $item->getItemType(),
             $item->getTitle(),
             $item->getCreatorID(),
-            $item->getCreatorItem()?->getFullName(),
+            // The actor is whoever caused this event: the modificator (on a
+            // create that is the creator, on an edit the editor).
+            $item->getModificatorItem()?->getFullName(),
             (bool) $item->isNotActivated(),
             $action,
             $this->occurredAt($item),
+            $this->payloadFactory->fromItem($item)->toArray(),
         );
     }
 

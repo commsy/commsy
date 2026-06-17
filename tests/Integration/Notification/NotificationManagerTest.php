@@ -106,6 +106,24 @@ class NotificationManagerTest extends KernelTestCase
         self::assertSame(1, $this->repository()->count([]), 're-publish must be idempotent');
     }
 
+    public function testFanOutSnapshotsThePayload(): void
+    {
+        $room = $this->createRoom();
+        $creator = $this->member($room, $this->account);
+        $this->member($room, $this->newAccount());
+
+        $this->manager()->notifyNewEntry($this->signal(
+            $room,
+            $creator,
+            sourceItemId: 321,
+            payload: ['creatorName' => 'Ada Lovelace', 'hasAttachments' => true],
+        ));
+
+        $row = $this->repository()->findAll()[0];
+        self::assertSame('Ada Lovelace', $row->getPayload()->creatorName);
+        self::assertTrue($row->getPayload()->hasAttachments);
+    }
+
     public function testRoomWithOnlyTheCreatorNotifiesNobody(): void
     {
         $room = $this->createRoom();
@@ -197,6 +215,7 @@ class NotificationManagerTest extends KernelTestCase
         bool $isDeactivated = false,
         NotificationAction $action = NotificationAction::Created,
         ?\DateTimeImmutable $occurredAt = null,
+        array $payload = [],
     ): NotifyNewEntryMessage {
         return new NotifyNewEntryMessage(
             $sourceItemId,
@@ -208,6 +227,7 @@ class NotificationManagerTest extends KernelTestCase
             $isDeactivated,
             $action,
             $occurredAt ?? new \DateTimeImmutable('2026-06-15 12:00:00'),
+            $payload,
         );
     }
 }
