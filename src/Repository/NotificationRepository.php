@@ -44,16 +44,78 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Unread count for the bell badge.
+     * Unread count for the activity indicator, optionally scoped to one room.
      */
-    public function countUnreadForAccount(Account $account): int
+    public function countUnreadForAccount(Account $account, ?int $contextId = null): int
     {
-        return (int) $this->createQueryBuilder('n')
+        $qb = $this->createQueryBuilder('n')
             ->select('COUNT(n.id)')
             ->andWhere('n.recipient = :account')->setParameter('account', $account)
-            ->andWhere('n.readAt IS NULL')
+            ->andWhere('n.readAt IS NULL');
+
+        if ($contextId !== null) {
+            $qb->andWhere('n.contextId = :ctx')->setParameter('ctx', $contextId);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Notifications for the activity panel, newest first, optionally scoped to
+     * one room. Every stored row is undismissed (dismiss deletes the row), so no
+     * extra state filter is needed.
+     *
+     * @return Notification[]
+     */
+    public function findForAccount(Account $account, ?int $contextId = null, int $limit = 50): array
+    {
+        return $this->accountQuery($account, false, $contextId)
+            ->orderBy('n.createdAt', 'DESC')->addOrderBy('n.id', 'DESC')
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getResult();
+    }
+
+    /**
+     * Dismiss (delete) a single notification, scoped to its owner so a recipient
+     * can only ever drop their own.
+     *
+     * @return int number of rows deleted (0 or 1)
+     */
+    public function dismiss(Account $account, int $id): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQuery('DELETE App\Entity\Notification n WHERE n.id = :id AND n.recipient = :account')
+            ->setParameter('id', $id)
+            ->setParameter('account', $account)
+            ->execute();
+    }
+
+    /**
+     * Dismiss (delete) every notification of an account.
+     *
+     * @return int number of rows deleted
+     */
+    public function dismissAllForAccount(Account $account): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQuery('DELETE App\Entity\Notification n WHERE n.recipient = :account')
+            ->setParameter('account', $account)
+            ->execute();
+    }
+
+    /**
+     * Dismiss (delete) every notification of an account within one room.
+     *
+     * @return int number of rows deleted
+     */
+    public function dismissAllForAccountAndContext(Account $account, int $contextId): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQuery('DELETE App\Entity\Notification n WHERE n.recipient = :account AND n.contextId = :ctx')
+            ->setParameter('account', $account)
+            ->setParameter('ctx', $contextId)
+            ->execute();
     }
 
     /**
@@ -153,6 +215,20 @@ class NotificationRepository extends ServiceEntityRepository
                 'DELETE App\Entity\Notification n
                  WHERE n.readAt IS NOT NULL AND n.readAt < :cutoff'
             )
+            ->setParameter('cutoff', $cutoff)
+            ->execute();
+    }
+
+    /**
+     * Active dismissal: drop notifications created before a cutoff, regardless of
+     * read state. Backs the 30-day auto-dismiss cron.
+     *
+     * @return int number of rows deleted
+     */
+    public function removeOlderThan(\DateTimeImmutable $cutoff): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQuery('DELETE App\Entity\Notification n WHERE n.createdAt < :cutoff')
             ->setParameter('cutoff', $cutoff)
             ->execute();
     }

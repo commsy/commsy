@@ -151,6 +151,98 @@ class NotificationRepositoryTest extends KernelTestCase
         self::assertSame(3, $this->repository()->countForAccount($account));
     }
 
+    public function testDismissDeletesOnlyTheOwnedRow(): void
+    {
+        self::bootKernel();
+        $mine = AccountFactory::createOne();
+        $other = AccountFactory::createOne();
+
+        $a = $this->persist($mine, sourceItemId: 1);
+        $this->persist($mine, sourceItemId: 2);
+        $foreign = $this->persist($other, sourceItemId: 1);
+
+        self::assertSame(1, $this->repository()->dismiss($mine, (int) $a->getId()));
+        self::assertSame(0, $this->repository()->dismiss($mine, (int) $foreign->getId()), 'cannot dismiss another account\'s notification');
+
+        self::assertSame(1, $this->repository()->countForAccount($mine));
+        self::assertSame(1, $this->repository()->countForAccount($other));
+    }
+
+    public function testDismissAllForAccountClearsOnlyThatAccount(): void
+    {
+        self::bootKernel();
+        $mine = AccountFactory::createOne();
+        $other = AccountFactory::createOne();
+
+        $this->persist($mine, sourceItemId: 1);
+        $this->persist($mine, sourceItemId: 2);
+        $this->persist($other, sourceItemId: 1);
+
+        self::assertSame(2, $this->repository()->dismissAllForAccount($mine));
+        self::assertSame(0, $this->repository()->countForAccount($mine));
+        self::assertSame(1, $this->repository()->countForAccount($other));
+    }
+
+    public function testDismissAllForAccountAndContextScopesToRoom(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+
+        $this->persist($account, sourceItemId: 1, contextId: 10);
+        $this->persist($account, sourceItemId: 2, contextId: 10);
+        $this->persist($account, sourceItemId: 3, contextId: 20);
+
+        self::assertSame(2, $this->repository()->dismissAllForAccountAndContext($account, 10));
+        self::assertSame(1, $this->repository()->countForAccount($account));
+        self::assertSame(0, $this->repository()->countForAccount($account, contextId: 10));
+        self::assertSame(1, $this->repository()->countForAccount($account, contextId: 20));
+    }
+
+    public function testFindForAccountNewestFirstWithContextFilter(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+
+        $this->persist($account, sourceItemId: 1, contextId: 10, createdAt: new \DateTimeImmutable('2026-06-01 10:00:00'), title: 'old-10');
+        $this->persist($account, sourceItemId: 2, contextId: 20, createdAt: new \DateTimeImmutable('2026-06-02 10:00:00'), title: 'mid-20');
+        $this->persist($account, sourceItemId: 3, contextId: 10, createdAt: new \DateTimeImmutable('2026-06-03 10:00:00'), title: 'new-10');
+
+        $all = $this->repository()->findForAccount($account);
+        self::assertSame(['new-10', 'mid-20', 'old-10'], array_map(static fn ($n) => $n->getTitle(), $all));
+
+        $room10 = $this->repository()->findForAccount($account, contextId: 10);
+        self::assertSame(['new-10', 'old-10'], array_map(static fn ($n) => $n->getTitle(), $room10));
+    }
+
+    public function testRemoveOlderThanDeletesRegardlessOfReadState(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+
+        $this->persist($account, sourceItemId: 1, createdAt: new \DateTimeImmutable('2026-01-01 00:00:00')); // old, unread
+        $oldRead = $this->persist($account, sourceItemId: 2, createdAt: new \DateTimeImmutable('2026-01-02 00:00:00'));
+        $oldRead->markRead(new \DateTimeImmutable('2026-01-03 00:00:00'));
+        $this->repository()->save($oldRead);
+        $this->persist($account, sourceItemId: 3, createdAt: new \DateTimeImmutable('2026-06-10 00:00:00')); // recent
+
+        $removed = $this->repository()->removeOlderThan(new \DateTimeImmutable('2026-03-01 00:00:00'));
+
+        self::assertSame(2, $removed, 'both old rows go regardless of read state');
+        self::assertSame(1, $this->repository()->countForAccount($account));
+    }
+
+    public function testCountUnreadCanScopeToContext(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+
+        $this->persist($account, sourceItemId: 1, contextId: 10);
+        $this->persist($account, sourceItemId: 2, contextId: 20);
+
+        self::assertSame(2, $this->repository()->countUnreadForAccount($account));
+        self::assertSame(1, $this->repository()->countUnreadForAccount($account, 10));
+    }
+
     private function repository(): NotificationRepository
     {
         return self::getContainer()->get(NotificationRepository::class);
