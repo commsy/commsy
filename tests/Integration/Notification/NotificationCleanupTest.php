@@ -25,24 +25,25 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Retention and account-deletion cleanup: the cron prunes only read, aged-out
- * notifications, and deleting an account removes its notifications via the FK
- * cascade.
+ * Retention and account-deletion cleanup: the cron prunes every notification
+ * older than the retention window (read or not), and deleting an account removes
+ * its notifications via the FK cascade.
  */
 class NotificationCleanupTest extends KernelTestCase
 {
-    public function testCronPrunesOnlyReadNotificationsOlderThanRetention(): void
+    public function testCronPrunesNotificationsOlderThanRetentionRegardlessOfReadState(): void
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
 
-        $this->persistRead($account, 1, new \DateTimeImmutable('-200 days')); // pruned
-        $this->persistRead($account, 2, new \DateTimeImmutable('-10 days'));   // kept: recently read
-        $this->persistUnread($account, 3);                                     // kept: unread
+        $this->persist($account, 1, new \DateTimeImmutable('-40 days'));                                          // pruned: old, unread
+        $this->persist($account, 2, new \DateTimeImmutable('-40 days'), new \DateTimeImmutable('-39 days'));      // pruned: old, read
+        $this->persist($account, 3, new \DateTimeImmutable('-10 days'));                                          // kept: recent, unread
+        $this->persist($account, 4, new \DateTimeImmutable('-10 days'), new \DateTimeImmutable('-9 days'));       // kept: recent, read
 
         self::getContainer()->get(CronCleanNotifications::class)->run(null);
 
-        self::assertSame(2, $this->repository()->count([]), 'only the aged-out read notification is pruned');
+        self::assertSame(2, $this->repository()->count([]), 'everything older than the retention window is pruned, read or not');
     }
 
     #[WithStory(RoomWithMemberStory::class)]
@@ -65,19 +66,16 @@ class NotificationCleanupTest extends KernelTestCase
         return self::getContainer()->get(NotificationRepository::class);
     }
 
-    private function persistRead(Account $account, int $sourceItemId, \DateTimeImmutable $readAt): void
+    private function persist(Account $account, int $sourceItemId, \DateTimeImmutable $createdAt, ?\DateTimeImmutable $readAt = null): void
     {
-        $notification = $this->newNotification($account, $sourceItemId);
-        $notification->markRead($readAt);
+        $notification = $this->newNotification($account, $sourceItemId, $createdAt);
+        if ($readAt !== null) {
+            $notification->markRead($readAt);
+        }
         $this->repository()->save($notification);
     }
 
-    private function persistUnread(Account $account, int $sourceItemId): void
-    {
-        $this->repository()->save($this->newNotification($account, $sourceItemId));
-    }
-
-    private function newNotification(Account $account, int $sourceItemId): Notification
+    private function newNotification(Account $account, int $sourceItemId, ?\DateTimeImmutable $createdAt = null): Notification
     {
         return new Notification(
             $account,
@@ -85,7 +83,7 @@ class NotificationCleanupTest extends KernelTestCase
             10,
             'Title',
             'Room',
-            new \DateTimeImmutable(),
+            $createdAt ?? new \DateTimeImmutable(),
             $sourceItemId,
             'material',
             null,

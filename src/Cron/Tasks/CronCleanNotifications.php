@@ -17,15 +17,15 @@ use App\Repository\NotificationRepository;
 use DateTimeImmutable;
 
 /**
- * Nightly cron pruning notifications the recipient has already read and that
- * are older than the retention window. Defence-in-depth against unbounded
- * growth: unread notifications are always kept, and deleting an account
- * already removes its notifications via the recipient FK's ON DELETE CASCADE.
+ * Nightly cron that actively dismisses aged-out notifications: anything older
+ * than the retention window is deleted, read or not, mirroring the room/dashboard
+ * feed which only ever showed recent activity. Deleting an account already
+ * removes its notifications via the recipient FK's ON DELETE CASCADE.
  */
 class CronCleanNotifications implements CronTaskInterface
 {
-    /** Read notifications older than this are pruned. */
-    private const RETENTION = '-90 days';
+    /** Notifications older than this are deleted, regardless of read state. */
+    private const RETENTION = '-30 days';
 
     public function __construct(
         private readonly NotificationRepository $notificationRepository,
@@ -34,11 +34,11 @@ class CronCleanNotifications implements CronTaskInterface
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        $this->notificationRepository->removeReadOlderThan(new DateTimeImmutable(self::RETENTION));
+        $this->notificationRepository->removeOlderThan(new DateTimeImmutable(self::RETENTION));
     }
 
     public function getSummary(): string
     {
-        return 'Delete read notifications older than 90 days';
+        return 'Delete notifications older than 30 days';
     }
 }
