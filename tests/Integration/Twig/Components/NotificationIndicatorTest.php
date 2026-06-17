@@ -24,41 +24,37 @@ use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 use Tests\Factory\AccountFactory;
 
 /**
- * Pins the {@see \App\Twig\Components\NotificationBell} live component: it
- * renders the recipient's latest notifications and unread count, and the
- * mark-all-read live action clears the unread count in place.
+ * Pins the {@see \App\Twig\Components\NotificationIndicator} live component: it
+ * exposes the account-wide unread count and links to the dashboard (no popup).
  */
-final class NotificationBellTest extends KernelTestCase
+final class NotificationIndicatorTest extends KernelTestCase
 {
     use InteractsWithLiveComponents;
 
-    public function testRendersUnreadAndMarksAllReadInPlace(): void
+    public function testExposesUnreadCountAndLinksToDashboard(): void
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
         $this->repository()->save(new Notification(
             $account,
             NotificationType::NewEntry,
-            10,
+            105,
             'Fresh entry',
             'Project room',
             new \DateTimeImmutable(),
             1,
             'material',
-            null,
+            'Actor',
         ));
 
-        $component = $this->createLiveComponent(
-            name: 'NotificationBell',
-            data: ['account' => $account],
-        );
+        $component = $this->createLiveComponent('NotificationIndicator', [
+            'account' => $account,
+            'uikit3' => true,
+            'roomId' => 112,
+        ]);
 
-        self::assertStringContainsString('Fresh entry', (string) $component->render());
         self::assertSame(1, $component->component()->getUnreadCount());
-
-        $component->call('markAllRead');
-
-        self::assertSame(0, $component->component()->getUnreadCount(), 'mark-all-read clears the badge in place');
+        self::assertStringContainsString('/dashboard/112', (string) $component->render());
     }
 
     private function repository(): NotificationRepository

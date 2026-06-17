@@ -14,21 +14,20 @@
 namespace App\Twig\Components;
 
 use App\Entity\Account;
-use App\Entity\Notification;
 use App\Repository\NotificationRepository;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
-use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
 /**
- * The global-navbar notification bell: unread badge, a dropdown of the latest
- * notifications, and mark-all-read — as a Live Component so the badge/list
- * stay current via polling and mark-all-read happens in place. The recipient
- * is passed in as the logged-in account; rendering and reads stay scoped to it.
+ * The global-navbar dashboard icon with an unread-notification badge. Replaces
+ * the former notification bell + dropdown: there is no popup — the icon links to
+ * the dashboard (where the activity panel lives) and only carries the unread
+ * count, kept current by polling. The count is account-wide (all of the
+ * recipient's rooms), matching the dashboard panel it points at.
  */
 #[AsLiveComponent]
-final class NotificationBell
+final class NotificationIndicator
 {
     use DefaultActionTrait;
 
@@ -39,17 +38,13 @@ final class NotificationBell
     #[LiveProp]
     public bool $uikit3 = false;
 
+    /** Room id the dashboard link is built for (the user's private room). */
+    #[LiveProp]
+    public ?int $roomId = null;
+
     public function __construct(
         private readonly NotificationRepository $notificationRepository,
     ) {
-    }
-
-    #[LiveAction]
-    public function markAllRead(): void
-    {
-        if ($this->account !== null) {
-            $this->notificationRepository->markAllReadForAccount($this->account, new \DateTimeImmutable());
-        }
     }
 
     public function getUnreadCount(): int
@@ -57,20 +52,5 @@ final class NotificationBell
         return $this->account !== null
             ? $this->notificationRepository->countUnreadForAccount($this->account)
             : 0;
-    }
-
-    /**
-     * @return Notification[]
-     */
-    public function getLatest(): array
-    {
-        return $this->account !== null
-            ? $this->notificationRepository->findLatestForAccount($this->account, 6)
-            : [];
-    }
-
-    public function getPortalId(): ?int
-    {
-        return $this->account?->getPortal()?->getId();
     }
 }

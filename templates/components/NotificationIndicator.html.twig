@@ -1,0 +1,15 @@
+{% if uikit3 %}
+    <li{{ attributes.defaults({'data-poll': 'delay(60000)|$render'}) }}>
+        <a href="{{ path('app_dashboard_overview', {'roomId': this.roomId}) }}" title="{{ 'dashboard'|trans({}, 'rubric') }}">
+            <span uk-icon="world"></span>
+            <small id="cs-nav-notification-indicator">{% if this.unreadCount > 0 %}{{ this.unreadCount }}{% endif %}</small>
+        </a>
+    </li>
+{% else %}
+    <li{{ attributes.defaults({'data-poll': 'delay(60000)|$render'}) }}>
+        <a href="{{ path('app_dashboard_overview', {'roomId': this.roomId}) }}" title="{{ 'dashboard'|trans({}, 'rubric') }}">
+            <i class="uk-icon-qrcode"></i>
+            <small id="cs-nav-notification-indicator">{% if this.unreadCount > 0 %}{{ this.unreadCount }}{% endif %}</small>
+        </a>
+    </li>
+{% endif %}

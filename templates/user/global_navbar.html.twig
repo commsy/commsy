@@ -27,19 +27,13 @@
                     </a>
                 </li>
 
-                <twig:NotificationBell :account="app.user" :uikit3="false" />
-
                 <li>
                     <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}">
                         <i class="uk-icon-folder-open-o"></i>
                     </a>
                 </li>
 
-                <li>
-                    <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}">
-                        <i class="uk-icon-qrcode"></i>
-                    </a>
-                </li>
+                <twig:NotificationIndicator :account="app.user" :uikit3="false" :roomId="privateRoomItem.itemId" />
             {% endif %}
         </ul>
     </div>
@@ -70,14 +64,10 @@
             </a>
         </li>
 
-        <twig:NotificationBell :account="app.user" :uikit3="true" />
-
         <li>
             <a href="{{ path('app_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}" uk-icon="folder"></a>
         </li>
 
-        <li>
-            <a href="{{ path('app_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard'|trans({}, "rubric")}}" uk-icon="world"></a>
-        </li>
+        <twig:NotificationIndicator :account="app.user" :uikit3="true" :roomId="privateRoomItem.itemId" />
     {% endif %}
 {% endif %}
