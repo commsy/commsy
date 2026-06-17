@@ -1,0 +1,118 @@
+<?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace App\Twig\Components;
+
+use App\Entity\Account;
+use App\Entity\Notification;
+use App\Notification\NotificationLinkResolver;
+use App\Repository\NotificationRepository;
+use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+use Symfony\UX\LiveComponent\Attribute\LiveAction;
+use Symfony\UX\LiveComponent\Attribute\LiveArg;
+use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\DefaultActionTrait;
+
+/**
+ * The room/dashboard activity panel that replaces the legacy "newest entries"
+ * feed: it lists the account's notifications newest-first, lets the user dismiss
+ * a single entry or all of them, and polls so fresh activity appears. With
+ * {@see $contextId} set it scopes to one room (the room start page); without it
+ * it spans all of the account's rooms (the dashboard). Every read and write
+ * stays scoped to the logged-in account, so {@see $contextId} only narrows the
+ * view and never widens what a user can reach.
+ */
+#[AsLiveComponent]
+final class NotificationPanel
+{
+    use DefaultActionTrait;
+
+    #[LiveProp]
+    public ?Account $account = null;
+
+    /** Set to scope the panel to one room; null spans all of the account's rooms. */
+    #[LiveProp]
+    public ?int $contextId = null;
+
+    private const LIMIT = 50;
+
+    public function __construct(
+        private readonly NotificationRepository $notificationRepository,
+        private readonly NotificationLinkResolver $linkResolver,
+    ) {
+    }
+
+    #[LiveAction]
+    public function dismiss(#[LiveArg] int $id): void
+    {
+        if ($this->account !== null) {
+            $this->notificationRepository->dismiss($this->account, $id);
+        }
+    }
+
+    #[LiveAction]
+    public function dismissAll(): void
+    {
+        if ($this->account === null) {
+            return;
+        }
+
+        if ($this->contextId !== null) {
+            $this->notificationRepository->dismissAllForAccountAndContext($this->account, $this->contextId);
+        } else {
+            $this->notificationRepository->dismissAllForAccount($this->account);
+        }
+    }
+
+    /**
+     * @return Notification[]
+     */
+    public function getNotifications(): array
+    {
+        return $this->account !== null
+            ? $this->notificationRepository->findForAccount($this->account, $this->contextId, self::LIMIT)
+            : [];
+    }
+
+    public function getUnreadCount(): int
+    {
+        return $this->account !== null
+            ? $this->notificationRepository->countUnreadForAccount($this->account, $this->contextId)
+            : 0;
+    }
+
+    /**
+     * The entry's detail URL, or null when it can no longer be resolved (the
+     * row then renders without a link, e.g. after the item was removed).
+     */
+    public function linkFor(Notification $notification): ?string
+    {
+        return $this->linkResolver->resolve($notification);
+    }
+
+    /**
+     * A date entry's scheduled start as a real date object for locale-aware
+     * formatting, or null for non-date entries / unset dates.
+     */
+    public function scheduledStart(Notification $notification): ?\DateTimeImmutable
+    {
+        $raw = $notification->getPayload()->dateStart;
+        if ($raw === null) {
+            return null;
+        }
+
+        $parsed = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $raw);
+
+        return $parsed instanceof \DateTimeImmutable ? $parsed : null;
+    }
+}

@@ -1,0 +1,72 @@
+<div{{ attributes.defaults({'data-poll': 'delay(60000)|$render'}) }}>
+    {% component 'v2:panel' with { name: 'room-activity', title: 'notifications'|trans({}, 'menu') } %}
+        {% block content %}
+            {# Inside the panel block `this` is the panel component; `outerScope.this` is the NotificationPanel. #}
+            {% set panel = outerScope.this %}
+            {# Rubric icons mirror MenuBuilder::getRubricIcon (UIKit 2 / FontAwesome). #}
+            {% set rubricIcons = {
+                announcement: 'uk-icon-comment-o',
+                material: 'uk-icon-file-o',
+                date: 'uk-icon-calendar',
+                discussion: 'uk-icon-comments-o',
+                todo: 'uk-icon-check-square-o',
+                group: 'uk-icon-group',
+                topic: 'uk-icon-book'
+            } %}
+
+            {% if panel.notifications is empty %}
+                <p class="uk-text-muted uk-margin-remove">{{ 'noNotifications'|trans({}, 'notification') }}</p>
+            {% else %}
+                <div class="uk-text-right uk-margin-small-bottom">
+                    <a href="#" class="uk-text-muted uk-text-small" data-action="live#action" data-live-action-param="dismissAll">
+                        <i class="uk-icon-close uk-margin-small-right"></i>{{ 'dismissAll'|trans({}, 'notification') }}
+                    </a>
+                </div>
+                <ul class="uk-list">
+                    {% for notification in panel.notifications %}
+                        {% set icon = rubricIcons[notification.sourceItemType]|default('uk-icon-bell-o') %}
+                        {% set link = panel.linkFor(notification) %}
+                        {% set p = notification.payload %}
+                        {% set titlePart %}<strong>{{ notification.title }}</strong>{% endset %}
+                        {% set actionKey = notification.action.value == 'edited' ? 'event.edited' : 'event.newEntry' %}
+                        {% set anonKey = notification.action.value == 'edited' ? 'event.editedAnonymous' : 'event.newEntryAnonymous' %}
+                        <li class="{{ notification.unread ? 'cs-notification-unread' : '' }}" style="border-bottom: 1px solid rgba(0,0,0,.07);">
+                            <div class="uk-flex uk-flex-top" style="gap: 12px; padding: 10px 2px;">
+                                <span class="uk-flex-item-none uk-flex uk-flex-middle uk-flex-center" style="width: 32px; height: 32px;" aria-hidden="true">
+                                    <i class="{{ icon }} uk-icon-small {{ notification.unread ? 'uk-text-primary' : 'uk-text-muted' }}"></i>
+                                </span>
+                                <span class="uk-flex-item-1">
+                                    <span style="display: block; {{ notification.unread ? 'font-weight: 600;' : '' }}">
+                                        {% if link %}<a href="{{ link }}" class="uk-link-reset">{% endif %}
+                                        {%- if notification.actorName -%}
+                                            {% set actorPart %}<strong>{{ notification.actorName }}</strong>{% endset %}
+                                            {{ actionKey|trans({'%actor%': actorPart, '%title%': titlePart}, 'notification')|raw }}
+                                        {%- else -%}
+                                            {{ anonKey|trans({'%title%': titlePart}, 'notification')|raw }}
+                                        {%- endif -%}
+                                        {% if link %}</a>{% endif %}
+                                    </span>
+                                    <span class="uk-text-muted uk-text-small" style="display: block; margin-top: 2px;">
+                                        {{ ('rubric.' ~ notification.sourceItemType)|trans({}, 'notification') }}
+                                        &middot; {{ notification.roomTitle }}
+                                        &middot; {{ notification.createdAt|format_date }}, {{ notification.createdAt|format_time('short') }}
+                                        {%- set start = panel.scheduledStart(notification) %}
+                                        {%- if start %} &middot; {{ start|format_date }}{% if not p.wholeDay %}, {{ start|format_time('short') }}{% endif %}{% endif %}
+                                        {%- if p.place %} &middot; {{ p.place }}{% endif %}
+                                        {%- if p.materialAuthor %} &middot; {{ 'byCreator'|trans({'%name%': p.materialAuthor}, 'notification') }}{% endif %}
+                                        {%- if p.hasAttachments %} &middot; <i class="uk-icon-paperclip"></i>{% endif %}
+                                    </span>
+                                </span>
+                                <a href="#" class="uk-flex-item-none uk-text-muted" style="align-self: center;"
+                                   data-action="live#action" data-live-action-param="dismiss" data-live-id-param="{{ notification.id }}"
+                                   title="{{ 'dismiss'|trans({}, 'notification') }}">
+                                    <i class="uk-icon-close"></i>
+                                </a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endblock %}
+    {% endcomponent %}
+</div>

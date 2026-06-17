@@ -14,6 +14,66 @@
                 <source>markAllRead</source>
                 <target>Alle als gelesen markieren</target>
             </trans-unit>
+            <trans-unit id="event.newEntry">
+                <source>event.newEntry</source>
+                <target>%actor% hat „%title%“ veröffentlicht</target>
+            </trans-unit>
+            <trans-unit id="event.newEntryAnonymous">
+                <source>event.newEntryAnonymous</source>
+                <target>Neuer Eintrag: „%title%“</target>
+            </trans-unit>
+            <trans-unit id="rubric.announcement">
+                <source>rubric.announcement</source>
+                <target>Ankündigung</target>
+            </trans-unit>
+            <trans-unit id="rubric.material">
+                <source>rubric.material</source>
+                <target>Material</target>
+            </trans-unit>
+            <trans-unit id="rubric.date">
+                <source>rubric.date</source>
+                <target>Termin</target>
+            </trans-unit>
+            <trans-unit id="rubric.discussion">
+                <source>rubric.discussion</source>
+                <target>Diskussion</target>
+            </trans-unit>
+            <trans-unit id="rubric.todo">
+                <source>rubric.todo</source>
+                <target>Aufgabe</target>
+            </trans-unit>
+            <trans-unit id="unread">
+                <source>unread</source>
+                <target>Ungelesen</target>
+            </trans-unit>
+            <trans-unit id="event.edited">
+                <source>event.edited</source>
+                <target>%actor% hat „%title%“ bearbeitet</target>
+            </trans-unit>
+            <trans-unit id="event.editedAnonymous">
+                <source>event.editedAnonymous</source>
+                <target>Eintrag bearbeitet: „%title%“</target>
+            </trans-unit>
+            <trans-unit id="rubric.group">
+                <source>rubric.group</source>
+                <target>Gruppe</target>
+            </trans-unit>
+            <trans-unit id="rubric.topic">
+                <source>rubric.topic</source>
+                <target>Thema</target>
+            </trans-unit>
+            <trans-unit id="dismiss">
+                <source>dismiss</source>
+                <target>Verwerfen</target>
+            </trans-unit>
+            <trans-unit id="dismissAll">
+                <source>dismissAll</source>
+                <target>Alle verwerfen</target>
+            </trans-unit>
+            <trans-unit id="byCreator">
+                <source>byCreator</source>
+                <target>von %name%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
