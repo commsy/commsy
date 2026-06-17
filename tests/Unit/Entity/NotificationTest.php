@@ -15,7 +15,9 @@ namespace Tests\Unit\Entity;
 
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Enum\NotificationAction;
 use App\Enum\NotificationType;
+use App\Notification\NotificationPayload;
 use PHPUnit\Framework\TestCase;
 
 class NotificationTest extends TestCase
@@ -46,6 +48,35 @@ class NotificationTest extends TestCase
         self::assertSame(1234, $notification->getSourceItemId());
         self::assertSame('material', $notification->getSourceItemType());
         self::assertSame('Ada Lovelace', $notification->getActorName());
+    }
+
+    public function testDefaultsToCreatedActionWithEmptyPayload(): void
+    {
+        $notification = $this->newNotification();
+
+        self::assertSame(NotificationAction::Created, $notification->getAction());
+        self::assertTrue($notification->getPayload()->isEmpty());
+    }
+
+    public function testCarriesEditedActionAndPayload(): void
+    {
+        $notification = new Notification(
+            $this->createMock(Account::class),
+            NotificationType::NewEntry,
+            1,
+            'Title',
+            'Room',
+            new \DateTimeImmutable('2026-06-01 10:00:00'),
+            10,
+            'date',
+            'Editor',
+            NotificationAction::Edited,
+            new NotificationPayload(place: 'Room 7', hasAttachments: true),
+        );
+
+        self::assertSame(NotificationAction::Edited, $notification->getAction());
+        self::assertSame('Room 7', $notification->getPayload()->place);
+        self::assertTrue($notification->getPayload()->hasAttachments);
     }
 
     public function testIsUnreadByDefault(): void

@@ -13,20 +13,31 @@
 
 namespace App\Entity;
 
+use App\Enum\NotificationAction;
 use App\Enum\NotificationType;
+use App\Notification\NotificationPayload;
 use App\Repository\NotificationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * A single notification addressed to one {@see Account}.
+ * A single activity event addressed to one {@see Account}.
  *
- * Rows are materialised at the moment the source event happens (fan-out: one
- * row per recipient), not derived on read. Display-relevant data is snapshotted
- * ({@see $title}, {@see $roomTitle}, {@see $actorName}) so the render path needs
- * no legacy item lookups. The read state ({@see $readAt}) is owned by the
- * notification itself and is intentionally decoupled from the item read tracking
- * in {@see Reader}.
+ * Backs the room/dashboard activity panel: every create and every edit of a
+ * feed-relevant entry is logged as its own row (fan-out: one row per recipient
+ * per event), so there is intentionally no per-item uniqueness — re-editing an
+ * entry adds another notification. {@see $action} says whether the event was a
+ * create or an edit.
+ *
+ * Display data is snapshotted at event time so the render path needs no legacy
+ * item lookups and shows the entry as it was when the event happened: the stable
+ * columns ({@see $title}, {@see $roomTitle}, {@see $actorName}) plus the variable
+ * rubric-specific extras in {@see $payload} (see {@see NotificationPayload}).
+ *
+ * Two independent states: "read" is owned here via {@see $readAt} (set when the
+ * recipient opens the entry's detail page, regardless of path) and is decoupled
+ * from the item read tracking in {@see Reader}; "dismiss" is not a flag but the
+ * removal of the row (handled by the repository).
  *
  * {@see $recipient} is FK-bound with ON DELETE CASCADE, so deleting an account
  * removes its notifications automatically.
@@ -35,7 +46,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'notification')]
 #[ORM\Index(name: 'notification_recipient_idx', columns: ['recipient_id', 'read_at', 'created_at'])]
 #[ORM\Index(name: 'notification_source_item_idx', columns: ['source_item_id'])]
-#[ORM\UniqueConstraint(name: 'notification_recipient_item_idx', columns: ['recipient_id', 'type', 'source_item_id'])]
 class Notification
 {
     #[ORM\Id]
@@ -49,6 +59,12 @@ class Notification
 
     #[ORM\Column(name: 'type', type: Types::STRING, length: 32, enumType: NotificationType::class)]
     private NotificationType $type;
+
+    /**
+     * Whether the reported event created or edited the source item.
+     */
+    #[ORM\Column(name: 'action', type: Types::STRING, length: 16, enumType: NotificationAction::class)]
+    private NotificationAction $action;
 
     /**
      * Room (context) the event happened in.
@@ -78,6 +94,14 @@ class Notification
     #[ORM\Column(name: 'actor_name', type: Types::STRING, length: 255, nullable: true)]
     private ?string $actorName;
 
+    /**
+     * Rubric-specific, display-only extras (see {@see NotificationPayload}).
+     *
+     * @var array<string, mixed>|null
+     */
+    #[ORM\Column(name: 'payload', type: Types::JSON, nullable: true)]
+    private ?array $payload = [];
+
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $createdAt;
 
@@ -94,6 +118,8 @@ class Notification
         ?int $sourceItemId = null,
         ?string $sourceItemType = null,
         ?string $actorName = null,
+        NotificationAction $action = NotificationAction::Created,
+        NotificationPayload $payload = new NotificationPayload(),
     ) {
         $this->recipient = $recipient;
         $this->type = $type;
@@ -104,6 +130,8 @@ class Notification
         $this->sourceItemId = $sourceItemId;
         $this->sourceItemType = $sourceItemType;
         $this->actorName = $actorName;
+        $this->action = $action;
+        $this->payload = $payload->toArray();
     }
 
     public function getId(): ?int
@@ -119,6 +147,11 @@ class Notification
     public function getType(): NotificationType
     {
         return $this->type;
+    }
+
+    public function getAction(): NotificationAction
+    {
+        return $this->action;
     }
 
     public function getContextId(): int
@@ -149,6 +182,11 @@ class Notification
     public function getActorName(): ?string
     {
         return $this->actorName;
+    }
+
+    public function getPayload(): NotificationPayload
+    {
+        return NotificationPayload::fromArray($this->payload ?? []);
     }
 
     public function getCreatedAt(): \DateTimeImmutable
