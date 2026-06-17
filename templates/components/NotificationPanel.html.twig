@@ -1,4 +1,4 @@
-<div{{ attributes.defaults({'data-poll': 'delay(60000)|$render'}) }}>
+<section{{ attributes.defaults({'data-poll': 'delay(60000)|$render'}) }} aria-label="{{ this.title|default('notifications'|trans({}, 'menu')) }}">
     {% component 'v2:panel' with { name: 'room-activity', title: this.title|default('notifications'|trans({}, 'menu')) } %}
         {% block content %}
             {# Inside the panel block `this` is the panel component; `outerScope.this` is the NotificationPanel. #}
@@ -90,4 +90,4 @@
             {% endif %}
         {% endblock %}
     {% endcomponent %}
-</div>
+</section>
