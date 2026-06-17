@@ -76,6 +76,10 @@ class AutoRoomMembershipSubscriber implements EventSubscriberInterface
         }
 
         // for the given account, create users in the specified rooms
-        $this->userCreator->addUserToRoomsWithSlugs($account, $membershipIdentifiers);
+        try {
+            $this->userCreator->addUserToRoomsWithSlugs($account, $membershipIdentifiers);
+        } catch (\Throwable) {
+            // auto-membership failure must not prevent the login from completing
+        }
     }
 }

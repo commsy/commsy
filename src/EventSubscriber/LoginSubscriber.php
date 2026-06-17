@@ -37,7 +37,7 @@ readonly class LoginSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST => 'onKernelRequest',
-            LoginSuccessEvent::class => 'onLoginSuccess',
+            LoginSuccessEvent::class => ['onLoginSuccess', 100],
         ];
     }
 
