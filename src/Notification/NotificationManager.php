@@ -51,8 +51,12 @@ class NotificationManager
 
     public function notifyNewEntry(NotifyNewEntryMessage $signal): void
     {
-        // First-publish idempotency: re-saving an entry must not re-notify.
-        if ($this->notificationRepository->existsForSourceItem($signal->sourceItemId)) {
+        $occurredAt = $signal->occurredAt ?? new \DateTimeImmutable();
+
+        // Per-event idempotency: a messenger retry of the same event must not
+        // duplicate the fan-out, while a genuine edit (a new event time) is
+        // logged as another notification.
+        if ($this->notificationRepository->existsForSourceItemAt($signal->sourceItemId, $occurredAt)) {
             return;
         }
 
@@ -72,7 +76,6 @@ class NotificationManager
             return;
         }
 
-        $now = new \DateTimeImmutable();
         $roomTitle = $room?->getTitle() ?? '';
 
         foreach ($recipients as $recipient) {
@@ -82,10 +85,11 @@ class NotificationManager
                 $signal->contextId,
                 $signal->title,
                 $roomTitle,
-                $now,
+                $occurredAt,
                 $signal->sourceItemId,
                 $signal->sourceItemType,
                 $signal->actorName,
+                $signal->action,
             ));
         }
 

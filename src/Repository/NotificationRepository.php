@@ -173,6 +173,23 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Per-event idempotency guard: has the event for this item at this exact
+     * time already been fanned out? Distinct edits happen at distinct times and
+     * are logged separately; only a messenger retry of the same event matches.
+     */
+    public function existsForSourceItemAt(int $sourceItemId, \DateTimeImmutable $occurredAt): bool
+    {
+        $count = (int) $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
+            ->andWhere('n.sourceItemId = :id')->setParameter('id', $sourceItemId)
+            ->andWhere('n.createdAt = :at')->setParameter('at', $occurredAt)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $count > 0;
+    }
+
+    /**
      * Mark every unread notification of an account read in one statement.
      *
      * @return int number of rows updated

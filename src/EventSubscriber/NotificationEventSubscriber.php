@@ -13,6 +13,8 @@
 
 namespace App\EventSubscriber;
 
+use App\Enum\NotificationAction;
+use App\Event\CommsyEditEvent;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemPublishedEvent;
 use App\Message\NotifyNewEntryMessage;
@@ -22,25 +24,28 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * Bridges item lifecycle events into the notifications feature:
- *  - when a top-level entry is published (undrafted), dispatches an async
- *    NotifyNewEntryMessage (the handler fans it out to the room members);
- *  - on item deletion, drops any notifications pointing at that item.
+ * Bridges item lifecycle events into the activity-notifications feature, mirroring
+ * what the room/dashboard feed surfaces:
+ *  - publishing (undrafting) a top-level entry is a "created" event;
+ *  - saving an already-published top-level entry is an "edited" event — each
+ *    edit is logged as its own notification;
+ *  - deleting an item drops its notifications.
  *
- * Hooks ItemPublishedEvent rather than CommsyEditEvent::SAVE on purpose: SAVE
- * fires while the entry is still a draft (ItemService::undraft defers elastic
- * indexing for the same reason), so a new entry only becomes notification-worthy
- * at publish time. Purely additive — it reads existing events and never touches
- * a legacy write path. First-publish idempotency lives in the manager, so a
- * re-published entry never re-notifies.
+ * Create vs edit hinges on the draft flag. The create flow saves while the entry
+ * is still a draft (CommsyEditEvent::SAVE, skipped here) and only becomes
+ * notification-worthy at publish time (ItemPublishedEvent); a SAVE on a
+ * non-draft entry is therefore a genuine edit. First-publish never double-fires
+ * because the undraft step emits ItemPublishedEvent, not SAVE. Only top-level
+ * content rubrics notify; sub-items (discussion article, step, section, …) are
+ * intentionally absent. Purely additive — it reads existing events and never
+ * touches a legacy write path.
  */
 final readonly class NotificationEventSubscriber implements EventSubscriberInterface
 {
     /**
-     * Top-level rubrics that produce a "new entry" notification. Mirrors the
+     * Top-level rubrics that produce an activity notification. Mirrors the
      * CS_*_TYPE constants but kept as literals so this modern subscriber does
-     * not depend on the legacy constant bootstrap. Sub-items (section, step,
-     * discussion article, …) are intentionally absent.
+     * not depend on the legacy constant bootstrap.
      */
     private const NOTIFIABLE_TYPES = ['announcement', 'material', 'date', 'discussion', 'todo'];
 
@@ -54,19 +59,27 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
     {
         return [
             ItemPublishedEvent::NAME => 'onPublished',
+            CommsyEditEvent::SAVE => 'onSaved',
             ItemDeletedEvent::NAME => 'onItemDeleted',
         ];
     }
 
     public function onPublished(ItemPublishedEvent $event): void
     {
+        $this->dispatchFor($event->getItem(), NotificationAction::Created);
+    }
+
+    public function onSaved(CommsyEditEvent $event): void
+    {
         $item = $event->getItem();
 
-        if (!in_array($item->getItemType(), self::NOTIFIABLE_TYPES, true)) {
+        // A draft save belongs to the create flow (it notifies via
+        // ItemPublishedEvent); only saving an already-published entry is an edit.
+        if ($item->isDraft()) {
             return;
         }
 
-        $this->messageBus->dispatch($this->signalFor($item));
+        $this->dispatchFor($item, NotificationAction::Edited);
     }
 
     public function onItemDeleted(ItemDeletedEvent $event): void
@@ -74,7 +87,16 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
         $this->notificationRepository->removeForSourceItem($event->getItem()->getItemID());
     }
 
-    private function signalFor(cs_item $item): NotifyNewEntryMessage
+    private function dispatchFor(cs_item $item, NotificationAction $action): void
+    {
+        if (!in_array($item->getItemType(), self::NOTIFIABLE_TYPES, true)) {
+            return;
+        }
+
+        $this->messageBus->dispatch($this->signalFor($item, $action));
+    }
+
+    private function signalFor(cs_item $item, NotificationAction $action): NotifyNewEntryMessage
     {
         return new NotifyNewEntryMessage(
             $item->getItemID(),
@@ -84,6 +106,15 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
             $item->getCreatorID(),
             $item->getCreatorItem()?->getFullName(),
             (bool) $item->isNotActivated(),
+            $action,
+            $this->occurredAt($item),
         );
+    }
+
+    private function occurredAt(cs_item $item): \DateTimeImmutable
+    {
+        $parsed = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', (string) $item->getModificationDate());
+
+        return $parsed instanceof \DateTimeImmutable ? $parsed : new \DateTimeImmutable();
     }
 }

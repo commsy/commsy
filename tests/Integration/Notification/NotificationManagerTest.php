@@ -17,6 +17,7 @@ use App\Entity\Account;
 use App\Entity\Notification;
 use App\Entity\Room;
 use App\Entity\User;
+use App\Enum\NotificationAction;
 use App\Message\NotifyNewEntryMessage;
 use App\Notification\NotificationManager;
 use App\Repository\NotificationRepository;
@@ -69,6 +70,27 @@ class NotificationManagerTest extends KernelTestCase
         self::assertSame($room->getItemId(), $row->getContextId());
         self::assertSame($room->getTitle(), $row->getRoomTitle());
         self::assertSame('Creator Name', $row->getActorName());
+        self::assertSame(NotificationAction::Created, $row->getAction());
+    }
+
+    public function testEditAtNewTimestampLogsAnotherEvent(): void
+    {
+        $room = $this->createRoom();
+        $creator = $this->member($room, $this->account);
+        $this->member($room, $this->newAccount());
+
+        $created = $this->signal($room, $creator, sourceItemId: 888, occurredAt: new \DateTimeImmutable('2026-06-15 12:00:00'));
+        $edited = $this->signal($room, $creator, sourceItemId: 888, action: NotificationAction::Edited, occurredAt: new \DateTimeImmutable('2026-06-16 09:30:00'));
+
+        $this->manager()->notifyNewEntry($created);
+        $this->manager()->notifyNewEntry($edited);
+
+        $rows = $this->repository()->findAll();
+        self::assertCount(2, $rows, 'an edit at a new time is logged as a second event');
+
+        $actions = array_map(static fn (Notification $n): NotificationAction => $n->getAction(), $rows);
+        self::assertContains(NotificationAction::Created, $actions);
+        self::assertContains(NotificationAction::Edited, $actions);
     }
 
     public function testRepublishDoesNotDuplicate(): void
@@ -173,6 +195,8 @@ class NotificationManagerTest extends KernelTestCase
         string $title = 'Title',
         string $type = 'material',
         bool $isDeactivated = false,
+        NotificationAction $action = NotificationAction::Created,
+        ?\DateTimeImmutable $occurredAt = null,
     ): NotifyNewEntryMessage {
         return new NotifyNewEntryMessage(
             $sourceItemId,
@@ -182,6 +206,8 @@ class NotificationManagerTest extends KernelTestCase
             $creator->getItemId(),
             'Creator Name',
             $isDeactivated,
+            $action,
+            $occurredAt ?? new \DateTimeImmutable('2026-06-15 12:00:00'),
         );
     }
 }
