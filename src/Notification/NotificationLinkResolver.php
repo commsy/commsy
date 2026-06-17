@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Resolves the room-entry URL a notification should open. Maps the snapshotted
- * rubric type to its detail route; all five detail routes generate from
+ * rubric type to its detail route; every detail route generates from
  * (roomId, itemId) alone (material's versionId is optional). Returns null when
  * the type is unknown or the notification carries no source item, so callers
  * can fall back to the list.
@@ -31,6 +31,8 @@ class NotificationLinkResolver
         'date' => 'app_date_detail',
         'discussion' => 'app_discussion_detail',
         'todo' => 'app_todo_detail',
+        'group' => 'app_group_detail',
+        'topic' => 'app_topic_detail',
     ];
 
     public function __construct(

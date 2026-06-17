@@ -120,6 +120,28 @@ class NotificationEventSubscriberTest extends TestCase
         $subscriber->onItemDeleted(new ItemDeletedEvent($item));
     }
 
+    public function testGroupsAndTopicsNotifyForFeedParity(): void
+    {
+        // Groups and topics surface in the room/dashboard feed, so they notify too.
+        foreach (['group', 'topic'] as $type) {
+            $item = $this->item($type, isDraft: false);
+            $item->method('getItemID')->willReturn(11);
+            $item->method('getContextID')->willReturn(22);
+            $item->method('getTitle')->willReturn('Org entry');
+            $item->method('getCreatorID')->willReturn(3);
+            $item->method('getCreatorItem')->willReturn(null);
+            $item->method('getModificationDate')->willReturn('2026-06-16 09:30:00');
+
+            $bus = $this->createMock(MessageBusInterface::class);
+            $bus->expects($this->once())
+                ->method('dispatch')
+                ->with($this->callback(static fn (NotifyNewEntryMessage $m): bool => $m->sourceItemType === $type))
+                ->willReturn(new Envelope(new \stdClass()));
+
+            $this->subscriber($bus)->onSaved(new CommsyEditEvent($item));
+        }
+    }
+
     private function item(string $type, bool $notActivated = false, bool $isDraft = false): cs_item
     {
         $item = $this->createMock(cs_item::class);

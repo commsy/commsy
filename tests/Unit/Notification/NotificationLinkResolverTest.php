@@ -30,6 +30,8 @@ class NotificationLinkResolverTest extends TestCase
             'date' => 'app_date_detail',
             'discussion' => 'app_discussion_detail',
             'todo' => 'app_todo_detail',
+            'group' => 'app_group_detail',
+            'topic' => 'app_topic_detail',
         ];
 
         foreach ($map as $type => $route) {

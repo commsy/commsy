@@ -43,11 +43,14 @@ use Symfony\Component\Messenger\MessageBusInterface;
 final readonly class NotificationEventSubscriber implements EventSubscriberInterface
 {
     /**
-     * Top-level rubrics that produce an activity notification. Mirrors the
-     * CS_*_TYPE constants but kept as literals so this modern subscriber does
-     * not depend on the legacy constant bootstrap.
+     * Top-level rubrics that produce an activity notification — the same set the
+     * room/dashboard feed surfaces (groups and topics included), minus user.
+     * Kept as literals so this modern subscriber does not depend on the legacy
+     * constant bootstrap. Sub-items (discussion article, step, section, …) are
+     * absent here on purpose: their controllers dispatch the SAVE event for the
+     * parent entry, so editing a sub-item notifies about the entry it belongs to.
      */
-    private const NOTIFIABLE_TYPES = ['announcement', 'material', 'date', 'discussion', 'todo'];
+    private const NOTIFIABLE_TYPES = ['announcement', 'material', 'date', 'discussion', 'todo', 'group', 'topic'];
 
     public function __construct(
         private MessageBusInterface $messageBus,
