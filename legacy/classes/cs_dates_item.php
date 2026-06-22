@@ -274,12 +274,12 @@ class cs_dates_item extends cs_item
 
     public function getStartingDayName()
     {
-        return getDayNameFromInt(date('w', strtotime($this->getStartingDay())));
+        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getStartingDay())), $this->_environment->getTranslationObject());
     }
 
     public function getEndingDayName()
     {
-        return getDayNameFromInt(date('w', strtotime($this->getEndingDay())));
+        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getEndingDay())), $this->_environment->getTranslationObject());
     }
 
     /** set starting time of a dates
@@ -629,25 +629,25 @@ class cs_dates_item extends cs_item
 
          // set up style of days and times
          // time
-         $parse_time_start = convertTimeFromInput($this->getStartingTime());
+         $parse_time_start = \App\Utils\DateHelper::convertTimeFromInput($this->getStartingTime());
          $conforms = $parse_time_start['conforms'];
          if (true === $conforms) {
-             $start_time_print = getTimeLanguage($parse_time_start['datetime']);
+             $start_time_print = $this->_environment->getTranslationObject()->getTimeLanguage($parse_time_start['datetime']);
          } else {
              // TODO: compareWithSearchText
              $start_time_print = $converter->text_as_html_short($this->getStartingTime());
          }
 
-         $parse_time_end = convertTimeFromInput($this->getEndingTime());
+         $parse_time_end = \App\Utils\DateHelper::convertTimeFromInput($this->getEndingTime());
          $conforms = $parse_time_end['conforms'];
          if (true === $conforms) {
-             $end_time_print = getTimeLanguage($parse_time_end['datetime']);
+             $end_time_print = $this->_environment->getTranslationObject()->getTimeLanguage($parse_time_end['datetime']);
          } else {
              // TODO: compareWithSearchText
              $end_time_print = $converter->text_as_html_short($this->getEndingTime());
          }
          // day
-         $parse_day_start = convertDateFromInput($this->getStartingDay(), $this->_environment->getSelectedLanguage());
+         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getTranslationObject());
          $conforms = $parse_day_start['conforms'];
          if (true === $conforms) {
              $start_day_print = $this->getStartingDayName().', '.$translator->getDateInLang($parse_day_start['datetime']);
@@ -656,7 +656,7 @@ class cs_dates_item extends cs_item
              $start_day_print = $converter->text_as_html_short($this->getStartingDay());
          }
 
-         $parse_day_end = convertDateFromInput($this->getEndingDay(), $this->_environment->getSelectedLanguage());
+         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getTranslationObject());
          $conforms = $parse_day_end['conforms'];
          if (true === $conforms) {
              $end_day_print = $this->getEndingDayName().', '.$translator->getDateInLang($parse_day_end['datetime']);
@@ -674,7 +674,7 @@ class cs_dates_item extends cs_item
              $date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$translator->getMessage('DATES_TILL').' '.$end_day_print;
              if ($parse_day_start['conforms'] && $parse_day_end['conforms']) {
                  // start and end are dates, not string <- ???
-                 $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+                 $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
              }
 
              if ('' !== $start_time_print && '' === $end_time_print && !$this->isWholeDay()) {
@@ -710,7 +710,7 @@ class cs_dates_item extends cs_item
                  }
 
                  if ($parse_day_start['conforms'] && $parse_day_end['conforms']) {
-                     $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+                     $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
                  }
              }
          } else {
@@ -778,25 +778,25 @@ class cs_dates_item extends cs_item
 
          // set up style of days and times
          // time
-         $parse_time_start = convertTimeFromInput($this->getStartingTime());
+         $parse_time_start = \App\Utils\DateHelper::convertTimeFromInput($this->getStartingTime());
          $conforms = $parse_time_start['conforms'];
          if (true === $conforms) {
-             $start_time_print = getTimeLanguage($parse_time_start['datetime']);
+             $start_time_print = $this->_environment->getTranslationObject()->getTimeLanguage($parse_time_start['datetime']);
          } else {
              // TODO: compareWithSearchText
              $start_time_print = $converter->text_as_html_short($this->getStartingTime());
          }
 
-         $parse_time_end = convertTimeFromInput($this->getEndingTime());
+         $parse_time_end = \App\Utils\DateHelper::convertTimeFromInput($this->getEndingTime());
          $conforms = $parse_time_end['conforms'];
          if (true === $conforms) {
-             $end_time_print = getTimeLanguage($parse_time_end['datetime']);
+             $end_time_print = $this->_environment->getTranslationObject()->getTimeLanguage($parse_time_end['datetime']);
          } else {
              // TODO: compareWithSearchText
              $end_time_print = $converter->text_as_html_short($this->getEndingTime());
          }
          // day
-         $parse_day_start = convertDateFromInput($this->getStartingDay(), $this->_environment->getSelectedLanguage());
+         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getTranslationObject());
          $conforms = $parse_day_start['conforms'];
          if (true === $conforms) {
              $start_day_print = $translator->getDateInLang($parse_day_start['datetime']);
@@ -805,7 +805,7 @@ class cs_dates_item extends cs_item
              $start_day_print = $converter->text_as_html_short($this->getStartingDay());
          }
 
-         $parse_day_end = convertDateFromInput($this->getEndingDay(), $this->_environment->getSelectedLanguage());
+         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getTranslationObject());
          $conforms = $parse_day_end['conforms'];
          if (true === $conforms) {
              $end_day_print = $translator->getDateInLang($parse_day_end['datetime']);
@@ -823,7 +823,7 @@ class cs_dates_item extends cs_item
              $date_print = $start_day_print.' '.$translator->getMessage('DATES_TILL').' '.$end_day_print;
              if ($parse_day_start['conforms'] && $parse_day_end['conforms']) {
                  // start and end are dates, not string <- ???
-                 $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+                 $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
              }
 
              if ('' !== $start_time_print && '' === $end_time_print && !$this->isWholeDay()) {
@@ -858,7 +858,7 @@ class cs_dates_item extends cs_item
                                    $translator->getMessage('DATES_TILL').' '.$end_day_print;
                  }
                  if ($parse_day_start['conforms'] && $parse_day_end['conforms']) {
-                     $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+                     $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
                  }
              }
          } else {

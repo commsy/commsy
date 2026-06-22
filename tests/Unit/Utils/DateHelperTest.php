@@ -57,4 +57,52 @@ class DateHelperTest extends TestCase
     {
         self::assertSame(365, DateHelper::daysBetween('20240101', '20241231'));
     }
+
+    public function testConvertTimeFromInputParsesClockTime(): void
+    {
+        self::assertSame(
+            ['conforms' => true, 'timestamp' => '143000', 'datetime' => '14:30:00', 'display' => ''],
+            DateHelper::convertTimeFromInput('14:30')
+        );
+    }
+
+    public function testConvertTimeFromInputBareHour(): void
+    {
+        self::assertSame(
+            ['conforms' => true, 'timestamp' => '080000', 'datetime' => '08:00:00', 'display' => ''],
+            DateHelper::convertTimeFromInput('8')
+        );
+    }
+
+    public function testConvertTimeFromInputPmShiftsToTwentyFourHour(): void
+    {
+        self::assertSame(
+            ['conforms' => true, 'timestamp' => '140000', 'datetime' => '14:00:00', 'display' => ''],
+            DateHelper::convertTimeFromInput('2pm')
+        );
+    }
+
+    public function testConvertTimeFromInputCumTempore(): void
+    {
+        self::assertSame(
+            ['conforms' => true, 'timestamp' => '101500', 'datetime' => '10:15:00', 'display' => 'ct'],
+            DateHelper::convertTimeFromInput('10ct')
+        );
+    }
+
+    public function testConvertTimeFromInputSineTempore(): void
+    {
+        self::assertSame(
+            ['conforms' => true, 'timestamp' => '090000', 'datetime' => '09:00:00', 'display' => 'st'],
+            DateHelper::convertTimeFromInput('9st')
+        );
+    }
+
+    public function testConvertTimeFromInputInvalid(): void
+    {
+        self::assertSame(
+            ['conforms' => false, 'timestamp' => '000000', 'datetime' => '00:00:00', 'display' => 'xyz'],
+            DateHelper::convertTimeFromInput('xyz')
+        );
+    }
 }
