@@ -125,7 +125,6 @@
             "legacy/etc/cs_constants.php",
             "legacy/functions/curl_functions.php",
             "legacy/functions/date_functions.php",
-            "legacy/functions/language_functions.php",
             "legacy/functions/misc_functions.php",
             "legacy/functions/text_functions.php"
         ]
