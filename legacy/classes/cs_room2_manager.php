@@ -69,7 +69,7 @@ class cs_room2_manager extends cs_context_manager
 
    public function setActiveLimit()
    {
-       $this->setLastLoginNewerLimit(getCurrentDateTimeMinusDaysInMySQL(100));
+       $this->setLastLoginNewerLimit(\App\Utils\MysqlDateTime::nowMinusDays(100));
    }
 
     public function saveLastLogin($item)
@@ -135,7 +135,7 @@ class cs_room2_manager extends cs_context_manager
        if ($this->_update_with_changing_modification_information) {
            $queryBuilder
                ->set('modification_date', ':modification_date')
-               ->setParameter('modification_date', getCurrentDateTimeInMySQL());
+               ->setParameter('modification_date', \App\Utils\MysqlDateTime::now());
 
            $modifier_id = $this->_current_user->getItemID();
            if (!empty($modifier_id)) {
@@ -178,7 +178,7 @@ class cs_room2_manager extends cs_context_manager
     */
    public function _new($item)
    {
-       $current_datetime = getCurrentDateTimeInMySQL();
+       $current_datetime = \App\Utils\MysqlDateTime::now();
        $user = $item->getCreatorItem();
        if (empty($user)) {
            $user = $this->_environment->getCurrentUserItem();

@@ -203,7 +203,7 @@ class cs_annotations_manager extends cs_manager
         $version_id = $annotation_item->getLinkedVersionID() ?: '0';
 
         $query = 'UPDATE ' . $this->addDatabasePrefix('annotations') . ' SET ' .
-            'modification_date="' . getCurrentDateTimeInMySQL() . '",' .
+            'modification_date="' . \App\Utils\MysqlDateTime::now() . '",' .
             'description="' . encode(AS_DB, $annotation_item->getDescription()) . '",' .
             'linked_item_id="' . encode(AS_DB, $annotation_item->getLinkedItemID()) . '",' .
             'linked_version_id="' . encode(AS_DB, $version_id) . '",' .
@@ -233,7 +233,7 @@ class cs_annotations_manager extends cs_manager
             ->setValue('modification_date', ':modificationDate')
             ->setValue('type', ':type')
             ->setParameter('contextId', $annotation->getContextID())
-            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
             ->setParameter('type', 'annotation');
 
         try {
@@ -256,7 +256,7 @@ class cs_annotations_manager extends cs_manager
      */
     private function _newAnnotation(cs_annotation_item $annotation): void
     {
-        $currentDateTime = getCurrentDateTimeInMySQL();
+        $currentDateTime = \App\Utils\MysqlDateTime::now();
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 

@@ -368,7 +368,7 @@ class cs_todos_manager extends cs_manager
          /* @var cs_todo_item $item */
          parent::_update($item);
 
-         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : getCurrentDateTimeInMySQL();
+         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : \App\Utils\MysqlDateTime::now();
 
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -425,7 +425,7 @@ class cs_todos_manager extends cs_manager
           ->setValue('type', ':type')
           ->setValue('draft', ':draft')
           ->setParameter('contextId', $item->getContextID())
-          ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+          ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
           ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
           ->setParameter('type', 'todo')
           ->setParameter('draft', $item->isDraft());
@@ -449,7 +449,7 @@ class cs_todos_manager extends cs_manager
       */
      public function _newNews(cs_todo_item $item)
      {
-         $currentDateTime = getCurrentDateTimeInMySQL();
+         $currentDateTime = \App\Utils\MysqlDateTime::now();
 
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 

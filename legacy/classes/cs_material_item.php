@@ -1016,7 +1016,7 @@ public function copy()
             $label_item->setContextID($this->_environment->getCurrentContextID());
             $user = $this->_environment->getCurrentUserItem();
             $label_item->setCreatorItem($user);
-            $label_item->setCreationDate(getCurrentDateTimeInMySQL());
+            $label_item->setCreationDate(\App\Utils\MysqlDateTime::now());
             $label_item->save();
             $copy->setLabelId($label_item->getItemId());
         } elseif (isset($exist)) {
@@ -1074,7 +1074,7 @@ public function copy()
                                 $buzzword_item->setContextID($this->_environment->getCurrentContextID());
                                 $user = $this->_environment->getCurrentUserItem();
                                 $buzzword_item->setCreatorItem($user);
-                                $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+                                $buzzword_item->setCreationDate(\App\Utils\MysqlDateTime::now());
                                 $buzzword_item->save();
                                 $buzzword_ids[] = $buzzword_item->getItemID();
                             }
@@ -1092,7 +1092,7 @@ public function copy()
                         $buzzword_item->setContextID($this->_environment->getCurrentContextID());
                         $user = $this->_environment->getCurrentUserItem();
                         $buzzword_item->setCreatorItem($user);
-                        $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+                        $buzzword_item->setCreationDate(\App\Utils\MysqlDateTime::now());
                         $buzzword_item->save();
                         $buzzword_ids[] = $buzzword_item->getItemID();
                     }
@@ -1214,7 +1214,7 @@ public function copyVersion($id)
             $label_item->setTitle(ltrim($this->getLabel()));
             $label_item->setContextID($this->_environment->getCurrentContextID());
             $label_item->setCreatorItem($this->_environment->getCurrentUserItem());
-            $label_item->setCreationDate(getCurrentDateTimeInMySQL());
+            $label_item->setCreationDate(\App\Utils\MysqlDateTime::now());
             $label_item->save();
             $copy->setLabelId($label_item->getItemId());
         } elseif (isset($exist)) {
@@ -1274,7 +1274,7 @@ public function copyVersion($id)
                                 $buzzword_item->setTitle(ltrim((string) $original_buzzword_array[$i]));
                                 $buzzword_item->setContextID($this->_environment->getCurrentContextID());
                                 $buzzword_item->setCreatorItem($this->_environment->getCurrentUserItem());
-                                $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+                                $buzzword_item->setCreationDate(\App\Utils\MysqlDateTime::now());
                                 $buzzword_item->save();
                                 $buzzword_ids[] = $buzzword_item->getItemID();
                             }
@@ -1291,7 +1291,7 @@ public function copyVersion($id)
                         $buzzword_item->setTitle(ltrim((string) $original_buzzword_array[$i]));
                         $buzzword_item->setContextID($this->_environment->getCurrentContextID());
                         $buzzword_item->setCreatorItem($this->_environment->getCurrentUserItem());
-                        $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+                        $buzzword_item->setCreationDate(\App\Utils\MysqlDateTime::now());
                         $buzzword_item->save();
                         $buzzword_ids[] = $buzzword_item->getItemID();
                     }

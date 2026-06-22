@@ -42,4 +42,20 @@ class MysqlDateTimeTest extends TestCase
         self::assertSame('2020-12-31 23:59:59', MysqlDateTime::now());
         self::assertSame('20201231', MysqlDateTime::today());
     }
+
+    public function testNowMinusDays(): void
+    {
+        static::mockTime(new \DateTimeImmutable('2024-03-15 10:30:00'));
+
+        self::assertSame('2024-03-10 10:30:00', MysqlDateTime::nowMinusDays(5));
+        // crosses the month boundary into the (leap-year) February
+        self::assertSame('2024-02-29 10:30:00', MysqlDateTime::nowMinusDays(15));
+    }
+
+    public function testNowMinusMonths(): void
+    {
+        static::mockTime(new \DateTimeImmutable('2024-03-15 10:30:00'));
+
+        self::assertSame('2024-01-15 10:30:00', MysqlDateTime::nowMinusMonths(2));
+    }
 }

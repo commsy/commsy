@@ -377,7 +377,7 @@ class cs_section_manager extends cs_manager
         $date_string = '';
         if (!$this->_save_section_without_date) {
             parent::_update($item);
-            $date_string = 'modification_date="'.getCurrentDateTimeInMySQL().'",';
+            $date_string = 'modification_date="'.\App\Utils\MysqlDateTime::now().'",';
         }
         $modificator_item = $item->getModificatorItem();
 
@@ -414,7 +414,7 @@ class cs_section_manager extends cs_manager
   {
       $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
                'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+               'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                'type="section",'.
                'draft="'.encode(AS_DB, $item->isDraft()).'"';
       $result = $this->_db_connector->performQuery($query);
@@ -436,7 +436,7 @@ class cs_section_manager extends cs_manager
    */
   public function _newSection($item)
   {
-      $current_datetime = getCurrentDateTimeInMySQL();
+      $current_datetime = \App\Utils\MysqlDateTime::now();
       $query = 'INSERT INTO '.$this->addDatabasePrefix('section').' SET '.
                'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
                'version_id="'.encode(AS_DB, $item->getVersionID()).'",'.

@@ -71,7 +71,7 @@ class cs_assessments_manager extends cs_manager
      */
     public function _update($assessments_item)
     {
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
 
         $query = '
 	 	UPDATE
@@ -233,7 +233,7 @@ class cs_assessments_manager extends cs_manager
 	 			'.$this->addDatabasePrefix('items').'
 	 		SET
 	 			context_id = "'.encode(AS_DB, $context_id).'",
-	 			modification_date = "'.getCurrentDateTimeInMySQL().'",
+	 			modification_date = "'.\App\Utils\MysqlDateTime::now().'",
 	 			type = "'.encode(AS_DB, $assessments_item->getItemType()).'"
 	 	';
             $result = $this->_db_connector->performQuery($query);
@@ -255,7 +255,7 @@ class cs_assessments_manager extends cs_manager
      */
     private function _newAssessment($assessments_item)
     {
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
 
         $query = '
 	 	INSERT INTO

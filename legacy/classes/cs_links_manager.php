@@ -671,7 +671,7 @@ class cs_links_manager extends cs_manager
       {
           $user_id = $this->_current_user->getItemID() ?: 0;
           $query = 'UPDATE '.$this->addDatabasePrefix('links').' SET '.
-              'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
+              'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
               'deleter_id="'.encode(AS_DB, $user_id).'"'.
               ' WHERE (from_item_id="'.encode(AS_DB, $item_id).'"';
           if ($version_id) {

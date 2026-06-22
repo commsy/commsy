@@ -534,7 +534,7 @@ class cs_context_manager extends cs_manager
   {
       $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
                'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+               'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                'type="'.encode(AS_DB, $this->_room_type).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
@@ -559,7 +559,7 @@ class cs_context_manager extends cs_manager
        }
        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET ';
        if ($this->_update_with_changing_modification_information) {
-           $query .= 'modification_date="'.getCurrentDateTimeInMySQL().'",';
+           $query .= 'modification_date="'.\App\Utils\MysqlDateTime::now().'",';
            $modifier_id = $this->_current_user->getItemID();
            if (!empty($modifier_id)) {
                $query .= 'modifier_id="'.encode(AS_DB, $modifier_id).'",';
@@ -611,7 +611,7 @@ class cs_context_manager extends cs_manager
     */
    public function _new($item)
    {
-       $current_datetime = getCurrentDateTimeInMySQL();
+       $current_datetime = \App\Utils\MysqlDateTime::now();
        $user = $item->getCreatorItem();
        if (empty($user)) {
            $user = $this->_environment->getCurrentUserItem();
@@ -656,7 +656,7 @@ class cs_context_manager extends cs_manager
 
    public function undelete($item_id)
    {
-       $current_datetime = getCurrentDateTimeInMySQL();
+       $current_datetime = \App\Utils\MysqlDateTime::now();
        $current_user = $this->_environment->getCurrentUserItem();
        $user_id = $current_user->getItemID();
        $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.

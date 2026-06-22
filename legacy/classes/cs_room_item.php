@@ -71,7 +71,7 @@ class cs_room_item extends cs_context_item
             $end_date = $this->_getDateFromDateTime($this->getClosureDate());
         }
 
-        $current_date = getCurrentDate();
+        $current_date = \App\Utils\MysqlDateTime::today();
 
         $get_time_item_ids = false;
         $first = true;
@@ -267,7 +267,7 @@ class cs_room_item extends cs_context_item
      */
     public function close(): void
     {
-        $this->setClosureDate(getCurrentDateTimeInMySQL());
+        $this->setClosureDate(\App\Utils\MysqlDateTime::now());
         parent::close();
     }
 
@@ -1058,6 +1058,6 @@ class cs_room_item extends cs_context_item
 
     public function isActiveDuringLast99Days(): bool
     {
-        return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
+        return $this->getLastLogin() >= \App\Utils\MysqlDateTime::nowMinusDays(99);
     }
 }

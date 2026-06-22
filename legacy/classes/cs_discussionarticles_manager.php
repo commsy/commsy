@@ -362,7 +362,7 @@ class cs_discussionarticles_manager extends cs_manager
             parent::_update($discussionarticle_item);
         }
 
-        $this->_current_article_modification_date = getCurrentDateTimeInMySQL();
+        $this->_current_article_modification_date = \App\Utils\MysqlDateTime::now();
         $this->_current_article_id = $discussionarticle_item->getItemID();
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
@@ -408,7 +408,7 @@ class cs_discussionarticles_manager extends cs_manager
             ->setValue('type', ':type')
             ->setValue('draft', ':draft')
             ->setParameter('contextId', $discussionarticle_item->getContextID())
-            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
             ->setParameter('type', CS_DISCARTICLE_TYPE)
             ->setParameter('draft', $discussionarticle_item->isDraft());
 
@@ -433,7 +433,7 @@ class cs_discussionarticles_manager extends cs_manager
      */
     public function _newDiscussionArticle(cs_discussionarticle_item $discussionarticle_item)
     {
-        $currentDateTime = getCurrentDateTimeInMySQL();
+        $currentDateTime = \App\Utils\MysqlDateTime::now();
         $this->_current_article_modification_date = $currentDateTime;
         $modificator = $discussionarticle_item->getModificatorItem();
 
@@ -479,7 +479,7 @@ class cs_discussionarticles_manager extends cs_manager
      */
     public function overwriteContent(int $itemId): void
     {
-        $currentDatetime = getCurrentDateTimeInMySQL();
+        $currentDatetime = \App\Utils\MysqlDateTime::now();
 
         $updateQuery = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET';
         $updateQuery .= ' public = "-2",';

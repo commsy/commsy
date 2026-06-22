@@ -296,7 +296,7 @@ class cs_discussion_manager extends cs_manager
      {
          parent::_update($item);
 
-         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : getCurrentDateTimeInMySQL();
+         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : \App\Utils\MysqlDateTime::now();
 
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -363,7 +363,7 @@ class cs_discussion_manager extends cs_manager
              ->setValue('type', ':type')
              ->setValue('draft', ':draft')
              ->setParameter('contextId', $item->getContextID())
-             ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+             ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
              ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
              ->setParameter('type', 'discussion')
              ->setParameter('draft', $item->isDraft());
@@ -385,7 +385,7 @@ class cs_discussion_manager extends cs_manager
      */
     public function _newDiscussion(cs_discussion_item $item)
     {
-        $currentDateTime = getCurrentDateTimeInMySQL();
+        $currentDateTime = \App\Utils\MysqlDateTime::now();
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 

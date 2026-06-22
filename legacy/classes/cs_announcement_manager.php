@@ -294,7 +294,7 @@ class cs_announcement_manager extends cs_manager
     {
         parent::_update($announcement_item);
 
-        $modificationDate = !$announcement_item->isChangeModificationOnSave() ? $announcement_item->getModificationDate() : getCurrentDateTimeInMySQL();
+        $modificationDate = !$announcement_item->isChangeModificationOnSave() ? $announcement_item->getModificationDate() : \App\Utils\MysqlDateTime::now();
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -342,7 +342,7 @@ class cs_announcement_manager extends cs_manager
             ->setValue('type', ':type')
             ->setValue('draft', ':draft')
             ->setParameter('contextId', $announcement_item->getContextID())
-            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
             ->setParameter('activationDate', $announcement_item->isNotActivated() ? $announcement_item->getActivatingDate() : null)
             ->setParameter('type', 'announcement')
             ->setParameter('draft', $announcement_item->isDraft());
@@ -366,7 +366,7 @@ class cs_announcement_manager extends cs_manager
      */
     public function _newAnnouncement(cs_announcement_item $announcement_item)
     {
-        $currentDateTime = getCurrentDateTimeInMySQL();
+        $currentDateTime = \App\Utils\MysqlDateTime::now();
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -423,7 +423,7 @@ class cs_announcement_manager extends cs_manager
             $this->setIntervalLimit(0, $size);
         }
 
-        $this->setDateLimit(getCurrentDateTimeInMySQL());
+        $this->setDateLimit(\App\Utils\MysqlDateTime::now());
         $this->setOrder('date');
 
         $this->select();

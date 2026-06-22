@@ -391,10 +391,10 @@ class cs_labels_manager extends cs_manager
 
       switch ($this->inactiveEntriesLimit) {
           case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-              $query .= ' AND ('.$this->addDatabasePrefix('labels').'.activation_date IS NULL OR '.$this->addDatabasePrefix('labels').'.activation_date <= "'.getCurrentDateTimeInMySQL().'")';
+              $query .= ' AND ('.$this->addDatabasePrefix('labels').'.activation_date IS NULL OR '.$this->addDatabasePrefix('labels').'.activation_date <= "'.\App\Utils\MysqlDateTime::now().'")';
               break;
           case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-              $query .= ' AND ('.$this->addDatabasePrefix('labels').'.activation_date IS NOT NULL AND '.$this->addDatabasePrefix('labels').'.activation_date > "'.getCurrentDateTimeInMySQL().'")';
+              $query .= ' AND ('.$this->addDatabasePrefix('labels').'.activation_date IS NOT NULL AND '.$this->addDatabasePrefix('labels').'.activation_date > "'.\App\Utils\MysqlDateTime::now().'")';
               break;
       }
 
@@ -719,7 +719,7 @@ class cs_labels_manager extends cs_manager
      {
          parent::_update($item);
 
-         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : getCurrentDateTimeInMySQL();
+         $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : \App\Utils\MysqlDateTime::now();
 
          $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -769,7 +769,7 @@ class cs_labels_manager extends cs_manager
              ->setValue('type', ':type')
              ->setValue('draft', ':draft')
              ->setParameter('contextId', $item->getContextID())
-             ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+             ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
              ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
              ->setParameter('type', 'label')
              ->setParameter('draft', $item->isDraft());
@@ -795,7 +795,7 @@ class cs_labels_manager extends cs_manager
    */
   public function _newLabel(cs_label_item $item)
   {
-      $currentDateTime = getCurrentDateTimeInMySQL();
+      $currentDateTime = \App\Utils\MysqlDateTime::now();
 
       $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -862,7 +862,7 @@ class cs_labels_manager extends cs_manager
     {
         $user = $item->getCreatorItem();
         $modificator = $item->getModificatorItem();
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
 
         if ($item->isPublic()) {
             $public = 1;

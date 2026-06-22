@@ -133,10 +133,10 @@ class cs_item_manager extends cs_manager
 
         switch ($this->inactiveEntriesLimit) {
             case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-                $query .= ' AND (' . $this->addDatabasePrefix('items') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('items') . '.modification_date <= "' . getCurrentDateTimeInMySQL() . '")';
+                $query .= ' AND (' . $this->addDatabasePrefix('items') . '.modification_date IS NULL OR ' . $this->addDatabasePrefix('items') . '.modification_date <= "' . \App\Utils\MysqlDateTime::now() . '")';
                 break;
             case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-                $query .= ' AND (' . $this->addDatabasePrefix('items') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('items') . '.modification_date > "' . getCurrentDateTimeInMySQL() . '")';
+                $query .= ' AND (' . $this->addDatabasePrefix('items') . '.modification_date IS NOT NULL AND ' . $this->addDatabasePrefix('items') . '.modification_date > "' . \App\Utils\MysqlDateTime::now() . '")';
                 break;
         }
 

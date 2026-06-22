@@ -467,7 +467,7 @@ class cs_tag_manager extends cs_manager
         parent::_update($item);
 
         $modificator = $item->getModificatorItem();
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
 
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                  'modifier_id="'.encode(AS_DB, $modificator->getItemID()).'",'.
@@ -489,7 +489,7 @@ class cs_tag_manager extends cs_manager
     {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
                  'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-                 'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+                 'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="'.CS_TAG_TYPE.'"';
 
         $result = $this->_db_connector->performQuery($query);
@@ -512,7 +512,7 @@ class cs_tag_manager extends cs_manager
     {
         $user = $item->getCreatorItem();
         $modificator = $item->getModificatorItem();
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
         $user_id = $user->getItemID();
         if (empty($user_id)) {
             $user_id = $this->_environment->getRootUserItemID();
@@ -568,7 +568,7 @@ class cs_tag_manager extends cs_manager
      {
          $user = $item->getCreatorItem();
          $modificator = $item->getModificatorItem();
-         $current_datetime = getCurrentDateTimeInMySQL();
+         $current_datetime = \App\Utils\MysqlDateTime::now();
 
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                   'context_id="'.encode(AS_DB, $item->getContextID()).'",'.

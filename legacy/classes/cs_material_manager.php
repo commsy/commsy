@@ -379,7 +379,7 @@ class cs_material_manager extends cs_manager
     public function _performQuery2($mode = 'select')
     {
         $this->_data = new cs_list();
-        $current_time = getCurrentDateTimeInMySQL();
+        $current_time = \App\Utils\MysqlDateTime::now();
         $randum_number = random_int(0, 999999);
         $uid = 'cron_job';
         $temp_number = '';
@@ -502,10 +502,10 @@ class cs_material_manager extends cs_manager
 
         switch ($this->inactiveEntriesLimit) {
             case self::SHOW_ENTRIES_ONLY_ACTIVATED:
-                $query .= ' AND ('.$this->addDatabasePrefix('materials').'.activation_date  IS NULL OR '.$this->addDatabasePrefix('materials').'.activation_date  <= "'.getCurrentDateTimeInMySQL().'")';
+                $query .= ' AND ('.$this->addDatabasePrefix('materials').'.activation_date  IS NULL OR '.$this->addDatabasePrefix('materials').'.activation_date  <= "'.\App\Utils\MysqlDateTime::now().'")';
                 break;
             case self::SHOW_ENTRIES_ONLY_DEACTIVATED:
-                $query .= ' AND ('.$this->addDatabasePrefix('materials').'.activation_date  IS NOT NULL AND '.$this->addDatabasePrefix('materials').'.activation_date  > "'.getCurrentDateTimeInMySQL().'")';
+                $query .= ' AND ('.$this->addDatabasePrefix('materials').'.activation_date  IS NOT NULL AND '.$this->addDatabasePrefix('materials').'.activation_date  > "'.\App\Utils\MysqlDateTime::now().'")';
                 break;
         }
 
@@ -759,7 +759,7 @@ class cs_material_manager extends cs_manager
                  $world_public = '0';
              }
 
-             $modificationDate = !$material_item->isChangeModificationOnSave() ? $material_item->getModificationDate() : getCurrentDateTimeInMySQL();
+             $modificationDate = !$material_item->isChangeModificationOnSave() ? $material_item->getModificationDate() : \App\Utils\MysqlDateTime::now();
 
              $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -833,7 +833,7 @@ class cs_material_manager extends cs_manager
              ->setValue('type', ':type')
              ->setValue('draft', ':draft')
              ->setParameter('contextId', $material_item->getContextID())
-             ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+             ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
              ->setParameter('activationDate',
                  $material_item->isNotActivated() ? $material_item->getActivatingDate() : null)
              ->setParameter('type', 'material')
@@ -871,7 +871,7 @@ class cs_material_manager extends cs_manager
          } elseif (!isset($context_id)) {
              trigger_error('Problems creating new material: ContextID is not set', E_USER_ERROR);
          } else {
-             $current_datetime = getCurrentDateTimeInMySQL();
+             $current_datetime = \App\Utils\MysqlDateTime::now();
              $copy_id = null;
              $copy_item = $material_item->getCopyItem();
              if (isset($copy_item)) {
@@ -885,7 +885,7 @@ class cs_material_manager extends cs_manager
              } else {
                  $world_public = '0';
              }
-             $modification_date = getCurrentDateTimeInMySQL();
+             $modification_date = \App\Utils\MysqlDateTime::now();
 
              $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 

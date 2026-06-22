@@ -627,7 +627,7 @@ class cs_link_manager extends cs_manager
         $second_item = $link_item->getSecondLinkedItem();
         $modificator = $link_item->getModificatorItem();
         $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-                 'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+                 'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'first_item_id="'.encode(AS_DB, $first_item->getItemID()).'",'.
                  'second_item_id="'.encode(AS_DB, $second_item->getItemID()).'",'.
                  'first_item_type="'.encode(AS_DB, $link_item->getFirstLinkedItemType()).'",'.
@@ -661,7 +661,7 @@ class cs_link_manager extends cs_manager
     {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
                  'context_id="'.encode(AS_DB, $link_item->getContextID()).'",'.
-                 'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+                 'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="link_item"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
@@ -673,7 +673,7 @@ class cs_link_manager extends cs_manager
 
             $creator = $link_item->getCreatorItem();
             $creator_id = $creator->getItemID();
-            $current_datetime = getCurrentDateTimeInMySQL();
+            $current_datetime = \App\Utils\MysqlDateTime::now();
             $query = 'INSERT INTO '.$this->addDatabasePrefix('link_items').' SET '.
                       'item_id="'.encode(AS_DB, $link_item->getItemID()).'",';
             $query .= 'context_id="'.encode(AS_DB, $link_item->getContextID()).'",';
@@ -728,7 +728,7 @@ class cs_link_manager extends cs_manager
           $current_user = $this->_environment->getCurrentUserItem();
           $user_id = $current_user->getItemID() ?: 0;
           $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-              'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
+              'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
               'deleter_id="'.encode(AS_DB, $user_id).'"'.
               ' WHERE (first_item_id="'.encode(AS_DB, $item_id).'"';
           $query .= ' OR second_item_id="'.encode(AS_DB, $item_id).'"';
@@ -777,7 +777,7 @@ class cs_link_manager extends cs_manager
       {
           $user_id = $this->_current_user->getItemID() ?: 0;
           $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-              'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
+              'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
               'deleter_id="'.encode(AS_DB, $user_id).'"'.
               ' WHERE (first_item_id="'.encode(AS_DB, $item_id).'"';
           $query .= ') OR (second_item_id="'.encode(AS_DB, $item_id).'"';
@@ -792,7 +792,7 @@ class cs_link_manager extends cs_manager
             UPDATE '.
                   $this->addDatabasePrefix('link_items').'
             SET
-               deletion_date = "'.getCurrentDateTimeInMySQL().'",
+               deletion_date = "'.\App\Utils\MysqlDateTime::now().'",
                deleter_id = "'.encode(AS_DB, $user_id).'"
             WHERE
                item_id = "'.encode(AS_DB, $item_id).'"
@@ -809,7 +809,7 @@ class cs_link_manager extends cs_manager
       public function undeleteLinks($item)
       {
           $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
-              'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+              'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
               'deletion_date=NULL,'.
               'deleter_id=NULL'.
               ' WHERE deletion_date>="'.encode(AS_DB, $item->getDeletionDate()).'"'.

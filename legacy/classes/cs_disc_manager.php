@@ -256,7 +256,7 @@ class cs_disc_manager
     private function _getSecondFolder(string $second_folder): string
     {
         if (empty($second_folder)) {
-            return md5(getCurrentDateTimeInMySQL());
+            return md5(\App\Utils\MysqlDateTime::now());
         }
 
         $retour = '';

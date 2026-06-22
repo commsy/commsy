@@ -256,7 +256,7 @@ class cs_tasks_manager extends cs_manager
     {
         parent::_update($item);
         $query = 'UPDATE '.$this->addDatabasePrefix('tasks').' SET '.
-                 'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+                 'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'title="'.encode(AS_DB, $item->getTitle()).'",'.
 //              'linked_item_id="'.$item->getLinkedItemID().'",'.
                  'status="'.encode(AS_DB, $item->getStatus()).'"'.
@@ -278,7 +278,7 @@ class cs_tasks_manager extends cs_manager
     {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
                  'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-                 'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+                 'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="task"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
@@ -298,7 +298,7 @@ class cs_tasks_manager extends cs_manager
      */
     public function _newTask($item)
     {
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
         $current_user = $item->getCreatorItem();
         $linked_item = $item->getItem();
         $query = 'INSERT INTO '.$this->addDatabasePrefix('tasks').' SET '.

@@ -652,7 +652,7 @@ class cs_item
     public function isNotActivated()
     {
         $date = $this->getActivationDate();
-        if ($date > getCurrentDateTimeInMySQL()) {
+        if ($date > \App\Utils\MysqlDateTime::now()) {
             return true;
         } else {
             return false;

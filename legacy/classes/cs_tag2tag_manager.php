@@ -105,7 +105,7 @@ class cs_tag2tag_manager extends cs_manager
      */
     public function _update($item)
     {
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
 
         if ($item->getSortingPlace()) {
             $sorting_place = '"'.$item->getSortingPlace().'"';
@@ -145,7 +145,7 @@ class cs_tag2tag_manager extends cs_manager
      */
     private function _newTag2TagLink($item)
     {
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
 
         if ($item->getSortingPlace()) {
             $sorting_place = '"'.encode(AS_DB, $item->getSortingPlace()).'"';
@@ -200,7 +200,7 @@ class cs_tag2tag_manager extends cs_manager
      {
          $father_id = $this->getFatherItemID($item_id);
 
-         $current_datetime = getCurrentDateTimeInMySQL();
+         $current_datetime = \App\Utils\MysqlDateTime::now();
          $user_id = $this->_current_user->getItemID() ?: 0;
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                   'deletion_date="'.$current_datetime.'",'.

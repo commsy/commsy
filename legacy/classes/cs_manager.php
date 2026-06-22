@@ -592,7 +592,7 @@ class cs_manager
         if ($item->isChangeModificationOnSave() || $this->_update_with_changing_modification_information) {
             $queryBuilder
                 ->set('modification_date', ':modificationDate')
-                ->setParameter('modificationDate', getCurrentDateTimeInMySQL());
+                ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now());
         }
 
         if ('cs_item' == $item::class) {
@@ -610,7 +610,7 @@ class cs_manager
 
   public function undeleteItemByItemID($item_id)
   {
-      $current_datetime = getCurrentDateTimeInMySQL();
+      $current_datetime = \App\Utils\MysqlDateTime::now();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
       $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
@@ -631,7 +631,7 @@ class cs_manager
 
    public function undelete($item_id)
    {
-       $current_datetime = getCurrentDateTimeInMySQL();
+       $current_datetime = \App\Utils\MysqlDateTime::now();
        $query = 'UPDATE '.$this->addDatabasePrefix('items').' SET '.
                 'modification_date="'.$current_datetime.'",'.
                 'deletion_date=NULL,'.
@@ -797,7 +797,7 @@ class cs_manager
    public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '', $newRoomType = '')
    {
        $retour = [];
-       $current_date = getCurrentDateTimeInMySQL();
+       $current_date = \App\Utils\MysqlDateTime::now();
 
        $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.
            encode(AS_DB, $old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';

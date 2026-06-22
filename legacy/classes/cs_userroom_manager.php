@@ -329,7 +329,7 @@ class cs_userroom_manager extends cs_room2_manager
     {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
             'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-            'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+            'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
             'type="'.encode(AS_DB, $this->_room_type).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {

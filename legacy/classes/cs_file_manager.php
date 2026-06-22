@@ -72,7 +72,7 @@ class cs_file_manager extends cs_manager
         $query = 'INSERT INTO ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
             ' portal_id="' . encode(AS_DB, $file_item->getPortalId()) . '",' .
             ' context_id="' . encode(AS_DB, $file_item->getContextID()) . '",' .
-            ' creation_date="' . getCurrentDateTimeInMySQL() . '", ' .
+            ' creation_date="' . \App\Utils\MysqlDateTime::now() . '", ' .
             ' creator_id="' . encode(AS_DB, $current_user->getItemID()) . '", ' .
             ' filename="' . encode(AS_DB, $file_item->getFileName()) . '", ' .
             ' filepath="' . encode(AS_DB, $file_item->getFilePath()) . '", ' .
@@ -305,7 +305,7 @@ class cs_file_manager extends cs_manager
         $new_id = (int)$new_id;
 
         $retour = [];
-        $current_date = getCurrentDateTimeInMySQL();
+        $current_date = \App\Utils\MysqlDateTime::now();
         $current_data_array = [];
 
         $query = 'SELECT * FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' . encode(AS_DB, $old_id) . '" AND deleter_id IS NULL AND deletion_date IS NULL';

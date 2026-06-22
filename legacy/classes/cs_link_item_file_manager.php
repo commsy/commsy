@@ -50,7 +50,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
     public function copyDataFromRoomToRoom($old_id, $new_id, $user_id = '', $id_array = '', $newRoomType = '')
     {
         $retour = [];
-        $current_date = getCurrentDateTimeInMySQL();
+        $current_date = \App\Utils\MysqlDateTime::now();
 
         $file_id_array = [];
         $file_id_array2 = [];
@@ -184,7 +184,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
      {
          $deleterId = $this->_current_user->getItemID() ?: 0;
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-             'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
+             'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
              'deleter_id="'.encode(AS_DB, $deleterId).'"'.
              ' WHERE item_iid="'.encode(AS_DB, $item_id).'"';
          if ($version_id) {
@@ -204,7 +204,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
     public function deleteByFileID($file_id)
     {
         $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET ' .
-            'deletion_date="' . getCurrentDateTimeInMySQL() . '",' .
+            'deletion_date="' . \App\Utils\MysqlDateTime::now() . '",' .
             'deleter_id="' . encode(AS_DB, $this->_current_user->getItemID()) . '"' .
             ' WHERE file_id="' . encode(AS_DB, $file_id) . '";';
         $result = $this->_db_connector->performQuery($query);

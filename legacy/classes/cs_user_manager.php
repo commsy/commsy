@@ -301,7 +301,7 @@ class cs_user_manager extends cs_manager
         if (empty($value)) {
             $this->_lastlogin_limit = 'empty';
         } else {
-            $this->_lastlogin_limit = getCurrentDateTimeMinusDaysInMySQL($value);
+            $this->_lastlogin_limit = \App\Utils\MysqlDateTime::nowMinusDays($value);
         }
     }
 
@@ -790,7 +790,7 @@ class cs_user_manager extends cs_manager
             }
 
             $queryBuilder->set('modification_date', ':modificationDate');
-            $queryBuilder->setParameter('modificationDate', getCurrentDateTimeInMySQL());
+            $queryBuilder->setParameter('modificationDate', \App\Utils\MysqlDateTime::now());
         }
 
         // if user was entered by system (creator_id == 0) then creator_id must change from 0 to item_id of the user_item
@@ -851,7 +851,7 @@ class cs_user_manager extends cs_manager
      */
     public function updateLastLoginOf($user_item)
     {
-        $datetime = getCurrentDateTimeInMySQL();
+        $datetime = \App\Utils\MysqlDateTime::now();
         $query = 'UPDATE ' . $this->addDatabasePrefix('user') . ' SET ';
         $query .= 'lastlogin="' . $datetime . '" ';
         $query .= 'WHERE item_id="' . encode(AS_DB, $user_item->getItemID()) . '"';
@@ -869,7 +869,7 @@ class cs_user_manager extends cs_manager
     {
         $query = 'INSERT INTO ' . $this->addDatabasePrefix('items') . ' SET ';
         $query .= 'context_id="' . encode(AS_DB, $item->getContextID()) . '", ';
-        $query .= 'modification_date="' . getCurrentDateTimeInMySQL() . '",' .
+        $query .= 'modification_date="' . \App\Utils\MysqlDateTime::now() . '",' .
             'type="user"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
@@ -890,7 +890,7 @@ class cs_user_manager extends cs_manager
     {
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
-        $now = getCurrentDateTimeInMySQL();
+        $now = \App\Utils\MysqlDateTime::now();
 
         /** @var AccountManager $accountManager */
         $accountManager = $this->_environment->getSymfonyContainer()->get(AccountManager::class);
@@ -1003,7 +1003,7 @@ class cs_user_manager extends cs_manager
                 $room_manager = $this->_environment->getPrivateRoomManager();
                 $room_item = $room_manager->getNewItem();
                 $room_item->setCreatorItem($item);
-                $room_item->setCreationDate(getCurrentDateTimeInMySQL());
+                $room_item->setCreationDate(\App\Utils\MysqlDateTime::now());
                 $room_item->setContextID($this->_environment->getCurrentPortalID());
                 $room_item->setPortalID($this->_environment->getCurrentPortalID());
                 $room_item->setShowTitle();
@@ -1082,7 +1082,7 @@ class cs_user_manager extends cs_manager
             ->where('u.user_id = :oldUserId')
             ->andWhere('u.portal_id = :portalId')
             ->setParameter('newUserId', $username)
-            ->setParameter('modificationDate', getCurrentDateTimeInMySQL())
+            ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
             ->setParameter('oldUserId', $account->getUsername())
             ->setParameter('portalId', $account->getContextId());
 

@@ -128,7 +128,7 @@ class cs_dates_manager extends cs_manager
        if (!empty($month)
             and is_numeric($month)
        ) {
-           $this->_not_older_than_limit = getCurrentDateTimeMinusMonthsInMySQL($month);
+           $this->_not_older_than_limit = \App\Utils\MysqlDateTime::nowMinusMonths($month);
        }
    }
 
@@ -591,7 +591,7 @@ class cs_dates_manager extends cs_manager
         parent::_update($item);
 
         $modificator = $item->getModificatorItem();
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
 
         if ($item->isPublic()) {
             $public = '1';
@@ -599,7 +599,7 @@ class cs_dates_manager extends cs_manager
             $public = '0';
         }
 
-        $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : getCurrentDateTimeInMySQL();
+        $modificationDate = !$item->isChangeModificationOnSave() ? $item->getModificationDate() : \App\Utils\MysqlDateTime::now();
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 
@@ -693,7 +693,7 @@ class cs_dates_manager extends cs_manager
             ->setValue('type', ':type')
             ->setValue('draft', ':draft')
             ->setParameter('contextId', $item->getContextID())
-            ->setParameter('modificationDate', $item->isExternal() ? $item->getCreationDate() : getCurrentDateTimeInMySQL())
+            ->setParameter('modificationDate', $item->isExternal() ? $item->getCreationDate() : \App\Utils\MysqlDateTime::now())
             ->setParameter('activationDate', $item->isNotActivated() ? $item->getActivatingDate() : null)
             ->setParameter('type', 'date')
             ->setParameter('draft', $item->isDraft());
@@ -722,7 +722,7 @@ class cs_dates_manager extends cs_manager
         /** @var cs_dates_item $item */
         $user = $item->getCreatorItem();
         $modificator = $item->getModificatorItem();
-        $current_datetime = getCurrentDateTimeInMySQL();
+        $current_datetime = \App\Utils\MysqlDateTime::now();
         if ($item->isExternal()) {
             $current_datetime = $item->getCreationDate();
         }
@@ -732,7 +732,7 @@ class cs_dates_manager extends cs_manager
         } else {
             $public = '0';
         }
-        $modification_date = getCurrentDateTimeInMySQL();
+        $modification_date = \App\Utils\MysqlDateTime::now();
 
         $queryBuilder = $this->_db_connector->getConnection()->createQueryBuilder();
 

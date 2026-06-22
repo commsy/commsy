@@ -43,4 +43,29 @@ final class MysqlDateTime
     {
         return now()->format('Ymd');
     }
+
+    /**
+     * Current timestamp minus $days days, as MySQL datetime. Replaces
+     * getCurrentDateTimeMinusDaysInMySQL(); setDate() reproduces the legacy
+     * mktime() day-overflow normalisation.
+     */
+    public static function nowMinusDays(int $days): string
+    {
+        $now = now();
+
+        return $now->setDate((int) $now->format('Y'), (int) $now->format('m'), (int) $now->format('d') - $days)
+            ->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Current timestamp minus $months months, as MySQL datetime. Replaces
+     * getCurrentDateTimeMinusMonthsInMySQL().
+     */
+    public static function nowMinusMonths(int $months): string
+    {
+        $now = now();
+
+        return $now->setDate((int) $now->format('Y'), (int) $now->format('m') - $months, (int) $now->format('d'))
+            ->format('Y-m-d H:i:s');
+    }
 }
