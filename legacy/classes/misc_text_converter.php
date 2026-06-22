@@ -271,13 +271,13 @@ class misc_text_converter
                     if ('discussion' == $this->_environment->getCurrentModule()) {
                         $params = [];
                         $params['iid'] = $this->_environment->getValueOfParameter('iid');
-                        $result = preg_replace('~' . $word . '\[' . $reference . '\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor' . $reference), (string)$result);
+                        $result = preg_replace('~' . $word . '\[' . $reference . '\]~iu', \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor' . $reference), (string)$result);
                         unset($params);
                     }
                 } else {
                     $params = [];
                     $params['iid'] = $reference;
-                    $result = preg_replace('~' . $word . '\[' . $reference . '\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), (string)$result);
+                    $result = preg_replace('~' . $word . '\[' . $reference . '\]~iu', \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), (string)$result);
                     unset($params);
                 }
             }
@@ -342,7 +342,7 @@ class misc_text_converter
                     $search = '[' . $http . '|' . $word . ']';
                     $params = [];
                     $params['iid'] = $http;
-                    $replace = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word);
+                    $replace = \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word);
                     $result = str_replace($search, $replace, (string)$result);
                 }
             }
@@ -359,13 +359,13 @@ class misc_text_converter
                     if ('discussion' == $this->_environment->getCurrentModule()) {
                         $params = [];
                         $params['iid'] = $this->_environment->getValueOfParameter('iid');
-                        $result = preg_replace('~\[' . $item . '\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, '[' . $item . ']', '[' . $item . ']', '', 'anchor' . $item), (string)$result);
+                        $result = preg_replace('~\[' . $item . '\]~iu', \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, '[' . $item . ']', '[' . $item . ']', '', 'anchor' . $item), (string)$result);
                         unset($params);
                     }
                 } else {
                     $params = [];
                     $params['iid'] = $item;
-                    $result = preg_replace('~\[' . $item . '\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '[' . $item . ']', '', '', ''), (string)$result);
+                    $result = preg_replace('~\[' . $item . '\]~iu', \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '[' . $item . ']', '', '', ''), (string)$result);
                     unset($params);
                 }
             }
@@ -753,9 +753,9 @@ class misc_text_converter
                 CS_PROJECT_TYPE == $type/* ||
                 CS_PORTAL_TYPE == $type ||
                 $type == CS_SERVER_TYPE*/) {
-                $image_text = ahref_curl($word, 'home', 'index', '', $word);
+                $image_text = \App\Legacy\CommsyUrl::ahref($word, 'home', 'index', '', $word);
             } else {
-                $image_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', $target, '');
+                $image_text = \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', $target, '');
             }
         }
         if (!empty($image_text)) {

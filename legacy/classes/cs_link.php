@@ -299,7 +299,7 @@ class cs_link
         if (isset($this->_link)) {
             return "<a href='".$this->_link."'>".$this->getTitle().'</a>';
         } else {
-            return ahref_curl($this->_getContextID(), $this->_getModule(), $this->_getFunction(), $this->_getParameter(), $this->getTitle());
+            return \App\Legacy\CommsyUrl::ahref($this->_getContextID(), $this->_getModule(), $this->_getFunction(), $this->_getParameter(), $this->getTitle());
         }
     }
 
@@ -308,7 +308,7 @@ class cs_link
         if (isset($this->_link)) {
             return "<a href='".$this->_link."'>".$this->getShortTitle().'</a>';
         } else {
-            return ahref_curl($this->_getContextID(), $this->_getModule(), $this->_getFunction(), $this->_getParameter(), $this->getShortTitle());
+            return \App\Legacy\CommsyUrl::ahref($this->_getContextID(), $this->_getModule(), $this->_getFunction(), $this->_getParameter(), $this->getShortTitle());
         }
     }
 
@@ -327,9 +327,9 @@ class cs_link
     public function getLinkIcon($height = '')
     {
         if (empty($height)) {
-            return ahref_curl($this->_getContextID(), $this->_getModule(), $this->_getFunction(), $this->_getParameter(), $this->getIcon());
+            return \App\Legacy\CommsyUrl::ahref($this->_getContextID(), $this->_getModule(), $this->_getFunction(), $this->_getParameter(), $this->getIcon());
         } else {
-            return ahref_curl($this->_getContextID(), $this->_getModule(), $this->_getFunction(), $this->_getParameter(), $this->getIcon($height));
+            return \App\Legacy\CommsyUrl::ahref($this->_getContextID(), $this->_getModule(), $this->_getFunction(), $this->_getParameter(), $this->getIcon($height));
         }
     }
 
