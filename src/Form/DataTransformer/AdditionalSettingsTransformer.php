@@ -14,6 +14,7 @@
 namespace App\Form\DataTransformer;
 
 use App\Services\LegacyEnvironment;
+use App\Utils\StringCase;
 use cs_environment;
 use cs_room_item;
 use DateTimeImmutable;
@@ -88,8 +89,8 @@ class AdditionalSettingsTransformer extends AbstractTransformer
             $agb_text_array = $roomItem->getAGBTextArray();
             $enabledLocales = $this->parameterBag->get('kernel.enabled_locales');
             foreach ($enabledLocales as $language) {
-                if (!empty($agb_text_array[cs_strtoupper($language)])) {
-                    $roomData['terms']['agb_text_'.$language] = $agb_text_array[cs_strtoupper($language)];
+                if (!empty($agb_text_array[StringCase::toUpper($language)])) {
+                    $roomData['terms']['agb_text_'.$language] = $agb_text_array[StringCase::toUpper($language)];
                 } else {
                     $roomData['terms']['agb_text_'.$language] = '';
                 }

@@ -14,6 +14,7 @@
 namespace App\Database;
 
 use App\Services\LegacyEnvironment;
+use App\Utils\StringCase;
 use cs_environment;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -95,7 +96,7 @@ class FixPhysicalFileLinks implements DatabaseCheck
         $filename = mb_convert_encoding(rawurldecode((string) $file['filename']), 'UTF-8', 'ISO-8859-1');
 
         if (!empty($filename)) {
-            return cs_strtolower(mb_substr(strrchr($filename, '.'), 1));
+            return StringCase::toLower(mb_substr(strrchr($filename, '.'), 1));
         }
 
         return '';

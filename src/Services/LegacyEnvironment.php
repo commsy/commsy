@@ -29,7 +29,6 @@ readonly class LegacyEnvironment
         set_include_path(get_include_path().PATH_SEPARATOR.$legacyDir);
 
         include_once 'etc/cs_constants.php';
-        include_once 'functions/misc_functions.php';
         include_once 'classes/cs_environment.php';
 
         global $symfonyContainer;

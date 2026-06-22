@@ -98,7 +98,6 @@ class DownloadService
             unlink($zipFile);
         }
 
-        include_once 'functions/misc_functions.php';
         $zip = new ZipArchive();
         $filename = $zipFile;
 

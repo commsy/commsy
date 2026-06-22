@@ -16,6 +16,7 @@ namespace App\Cron\Tasks;
 use App\Helper\PortalHelper;
 use App\Repository\LogRepository;
 use App\Repository\PortalRepository;
+use App\Utils\DateHelper;
 use cs_room_item;
 use DateInterval;
 use DateTimeImmutable;
@@ -50,7 +51,7 @@ readonly class CronPageImpressionAndUserActivity implements CronTaskInterface
                 $oldestDate = $room->getPageImpressionAndUserActivityLast() ?:
                     (new DateTimeImmutable($room->getCreationDate()))->format('Ymd');
                 $today = (new DateTimeImmutable())->format('Ymd');
-                $dayDiff = getDifference($oldestDate, $today);
+                $dayDiff = DateHelper::daysBetween($oldestDate, $today);
 
                 $piArray = $room->getPageImpressionArray();
                 $uaArray = $room->getUserActivityArray();
