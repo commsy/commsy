@@ -157,19 +157,19 @@ class cs_discussionarticles_manager extends cs_manager
             $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.deleter_id IS NULL';
         }
         if (isset($this->_age_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
+            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_age_limit).' day)';
         }
         if (isset($this->_existence_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
+            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_existence_limit).' day)';
         }
         if (isset($this->_typ_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.type = "'.encode(AS_DB, $this->_typ_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_typ_limit).'"';
         }
         if (isset($this->_discussion_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.discussion_id = "'.encode(AS_DB, $this->_discussion_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('discussionarticles').'.discussion_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_discussion_limit).'"';
         }
         if (isset($this->_group_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('links').'.to_item_id="'.encode(AS_DB, $this->_group_limit).'" AND '.$this->addDatabasePrefix('links').'.link_type="relevant_for"';
+            $query .= ' AND '.$this->addDatabasePrefix('links').'.to_item_id="'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'" AND '.$this->addDatabasePrefix('links').'.link_type="relevant_for"';
         }
 
         if ($this->_sort_position) {
@@ -179,7 +179,7 @@ class cs_discussionarticles_manager extends cs_manager
         }
         if ('select' == $mode) {
             if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-                $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
+                $query .= ' LIMIT '.\App\Legacy\SqlStringEscaper::escape($this->_from_limit).', '.\App\Legacy\SqlStringEscaper::escape($this->_interval_limit);
             }
         }
 
@@ -293,8 +293,8 @@ class cs_discussionarticles_manager extends cs_manager
 
         $query = 'SELECT * FROM '.$dbPrefix;
         $query .= ' INNER JOIN '.$dbPrefixItems.' ON '.$dbPrefixItems.'.item_id = '.$dbPrefix.'.item_id AND '.$dbPrefixItems.'.draft != "1"';
-        $query .= ' WHERE discussion_id="'.encode(AS_DB, $item->getDiscussionID()).'"';
-        $query .= ' AND position="'.encode(AS_DB, $parentPosition).'"';
+        $query .= ' WHERE discussion_id="'.\App\Legacy\SqlStringEscaper::escape($item->getDiscussionID()).'"';
+        $query .= ' AND position="'.\App\Legacy\SqlStringEscaper::escape($parentPosition).'"';
         $query .= ' AND '.$dbPrefix.'.deleter_id IS NULL';
         $query .= ' AND '.$dbPrefix.'.deletion_date IS NULL';
 
@@ -484,7 +484,7 @@ class cs_discussionarticles_manager extends cs_manager
         $updateQuery = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET';
         $updateQuery .= ' public = "-2",';
         $updateQuery .= ' modification_date = "'.$currentDatetime.'"';
-        $updateQuery .= ' WHERE item_id="'.encode(AS_DB, $itemId).'"';
+        $updateQuery .= ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($itemId).'"';
 
         $result = $this->_db_connector->performQuery($updateQuery);
         if (!$result) {

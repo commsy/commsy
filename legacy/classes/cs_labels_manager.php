@@ -374,19 +374,19 @@ class cs_labels_manager extends cs_manager
       }
 
       if (!empty($this->_type_limit)) {
-          $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.type="'.encode(AS_DB, $this->_type_limit).'"';
+          $query .= ' WHERE '.$this->addDatabasePrefix('labels').'.type="'.\App\Legacy\SqlStringEscaper::escape($this->_type_limit).'"';
       } else {
           $query .= ' WHERE 1';
       }
       if (!empty($this->_dossier_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('labels').'.name="'.encode(AS_DB, $this->_dossier_limit).'"';
+          $query .= ' AND '.$this->addDatabasePrefix('labels').'.name="'.\App\Legacy\SqlStringEscaper::escape($this->_dossier_limit).'"';
       }
 
       // insert limits into the select statement
       if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
           $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id IN ('.implode(', ', $this->_room_array_limit).')';
       } elseif (isset($this->_room_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+          $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
       }
 
       switch ($this->inactiveEntriesLimit) {
@@ -402,22 +402,22 @@ class cs_labels_manager extends cs_manager
           $query .= ' AND '.$this->addDatabasePrefix('labels').'.deleter_id IS NULL';
       }
       if (isset($this->_name_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('labels').'.name like "%'.encode(AS_DB, $this->_name_limit).'%"';
+          $query .= ' AND '.$this->addDatabasePrefix('labels').'.name like "%'.\App\Legacy\SqlStringEscaper::escape($this->_name_limit).'%"';
       }
       if (isset($this->_exact_name_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('labels').'.name = "'.encode(AS_DB, $this->_exact_name_limit).'"';
+          $query .= ' AND '.$this->addDatabasePrefix('labels').'.name = "'.\App\Legacy\SqlStringEscaper::escape($this->_exact_name_limit).'"';
       }
       if (isset($this->_age_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('labels').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
+          $query .= ' AND '.$this->addDatabasePrefix('labels').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_age_limit).' day)';
       }
       if (isset($this->_existence_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('labels').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
+          $query .= ' AND '.$this->addDatabasePrefix('labels').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_existence_limit).' day)';
       }
 
       // This would be much better to have in cs_group_manager, but requires a lot of legacy code duplication
       if ($this instanceof cs_group_manager && isset($this->_user_limit)) {
-          $query .= ' AND ((l51.first_item_id = "'.encode(AS_DB, $this->_user_limit).'" OR l51.second_item_id = "'.encode(AS_DB, $this->_user_limit).'")';
-          $query .= ' OR (l52.first_item_id = "'.encode(AS_DB, $this->_user_limit).'" OR l52.second_item_id = "'.encode(AS_DB, $this->_user_limit).'"))';
+          $query .= ' AND ((l51.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_user_limit).'" OR l51.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_user_limit).'")';
+          $query .= ' OR (l52.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_user_limit).'" OR l52.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_user_limit).'"))';
       }
 
       if (isset($this->_topic_limit)) {
@@ -425,8 +425,8 @@ class cs_labels_manager extends cs_manager
               $query .= ' AND (l21.first_item_id IS NULL AND l21.second_item_id IS NULL)';
               $query .= ' AND (l22.first_item_id IS NULL AND l22.second_item_id IS NULL)';
           } else {
-              $query .= ' AND ((l21.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l21.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'")';
-              $query .= ' OR (l22.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l22.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'"))';
+              $query .= ' AND ((l21.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topic_limit).'" OR l21.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topic_limit).'")';
+              $query .= ' OR (l22.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topic_limit).'" OR l22.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topic_limit).'"))';
           }
       }
       if (isset($this->_institution_limit)) {
@@ -434,8 +434,8 @@ class cs_labels_manager extends cs_manager
               $query .= ' AND (l11.first_item_id IS NULL AND l11.second_item_id IS NULL)';
               $query .= ' AND (l12.first_item_id IS NULL AND l12.second_item_id IS NULL)';
           } else {
-              $query .= ' AND ((l11.first_item_id = "'.encode(AS_DB, $this->_institution_limit).'" OR l11.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'")';
-              $query .= ' OR (l12.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'" OR l12.first_item_id = "'.encode(AS_DB, $this->_institution_limit).'"))';
+              $query .= ' AND ((l11.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'" OR l11.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'")';
+              $query .= ' OR (l12.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'" OR l12.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'"))';
           }
       }
       if (isset($this->_group_limit)) {
@@ -443,8 +443,8 @@ class cs_labels_manager extends cs_manager
               $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';
               $query .= ' AND (l32.first_item_id IS NULL AND l32.second_item_id IS NULL)';
           } else {
-              $query .= ' AND ((l31.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l31.second_item_id = "'.encode(AS_DB, $this->_group_limit).'")';
-              $query .= ' OR (l32.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l32.second_item_id = "'.encode(AS_DB, $this->_group_limit).'"))';
+              $query .= ' AND ((l31.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'" OR l31.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'")';
+              $query .= ' OR (l32.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'" OR l32.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'"))';
           }
       }
 
@@ -455,8 +455,8 @@ class cs_labels_manager extends cs_manager
               $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
               $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
           } else {
-              $query .= ' AND ( (l41.first_item_id IN ('.encode(AS_DB, $id_string).') OR l41.second_item_id IN ('.encode(AS_DB, $id_string).') )';
-              $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB, $id_string).') OR l42.second_item_id IN ('.encode(AS_DB, $id_string).') ))';
+              $query .= ' AND ( (l41.first_item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).') OR l41.second_item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).') )';
+              $query .= ' OR (l42.first_item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).') OR l42.second_item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).') ))';
           }
       }
 
@@ -464,12 +464,12 @@ class cs_labels_manager extends cs_manager
           if (-1 == $this->_buzzword_limit) {
               $query .= ' AND (l6.to_item_id IS NULL OR l6.deletion_date IS NOT NULL)';
           } else {
-              $query .= ' AND buzzwords.item_id="'.encode(AS_DB, $this->_buzzword_limit).'"';
+              $query .= ' AND buzzwords.item_id="'.\App\Legacy\SqlStringEscaper::escape($this->_buzzword_limit).'"';
           }
       }
 
       if (!empty($this->_id_array_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
       }
 
       if ($this->modificationNewerThenLimit) {
@@ -477,11 +477,11 @@ class cs_labels_manager extends cs_manager
       }
 
       if ($this->excludedIdsLimit) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(', ', encode(AS_DB, $this->excludedIdsLimit)).')';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->excludedIdsLimit)).')';
       }
 
       if ($this->excludeNameLimit) {
-          $query .= ' AND '.$this->addDatabasePrefix('labels').'.name != "'.encode(AS_DB, $this->excludeNameLimit).'"';
+          $query .= ' AND '.$this->addDatabasePrefix('labels').'.name != "'.\App\Legacy\SqlStringEscaper::escape($this->excludeNameLimit).'"';
       }
 
       if (isset($this->_sort_order)) {
@@ -515,7 +515,7 @@ class cs_labels_manager extends cs_manager
       }
       if ('select' == $mode) {
           if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-              $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
+              $query .= ' LIMIT '.\App\Legacy\SqlStringEscaper::escape($this->_from_limit).', '.\App\Legacy\SqlStringEscaper::escape($this->_interval_limit);
           }
       }
       // sixth, perform query
@@ -871,18 +871,18 @@ class cs_labels_manager extends cs_manager
         }
 
         $query = 'UPDATE '.$this->addDatabasePrefix('labels').' SET '.
-                  'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-                  'creator_id="'.encode(AS_DB, $user->getItemID()).'",'.
+                  'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
+                  'creator_id="'.\App\Legacy\SqlStringEscaper::escape($user->getItemID()).'",'.
                   'creation_date="'.$current_datetime.'",'.
-                  'modifier_id="'.encode(AS_DB, $modificator->getItemID()).'",'.
+                  'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($modificator->getItemID()).'",'.
                   'modification_date="'.$current_datetime.'",';
         if (!(CS_GROUP_TYPE == $item->getLabelType() and $item->isSystemLabel())) {
-            $query .= 'name="'.encode(AS_DB, $item->getTitle()).'",';
+            $query .= 'name="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'",';
         }
-        $query .= 'description="'.encode(AS_DB, $item->getDescription()).'",'.
-                  'public="'.encode(AS_DB, $public).'",'.
-                  "extras='".encode(AS_DB, serialize($item->getExtraInformation()))."'".
-                  ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
+        $query .= 'description="'.\App\Legacy\SqlStringEscaper::escape($item->getDescription()).'",'.
+                  'public="'.\App\Legacy\SqlStringEscaper::escape($public).'",'.
+                  "extras='".\App\Legacy\SqlStringEscaper::escape(serialize($item->getExtraInformation()))."'".
+                  ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems updating label.', E_USER_WARNING);
@@ -926,7 +926,7 @@ class cs_labels_manager extends cs_manager
 
          // images of labels
          $query = '';
-         $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.encode(AS_DB,
+         $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.\App\Legacy\SqlStringEscaper::escape(
              $new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
@@ -942,7 +942,7 @@ class cs_labels_manager extends cs_manager
                          $value_array[0] = 'cid'.$new_id;
                          $extra_array['LABELPICTURE'] = implode('_', $value_array);
 
-                         $update_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET extras="'.encode(AS_DB,
+                         $update_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET extras="'.\App\Legacy\SqlStringEscaper::escape(
                              serialize($extra_array)).'" WHERE item_id="'.$query_result['item_id'].'"';
                          $update_result = $this->_db_connector->performQuery($update_query);
                          if (!isset($update_result) or !$update_result) {

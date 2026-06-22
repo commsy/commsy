@@ -168,7 +168,7 @@ class cs_context_manager extends cs_manager
            $db_array['description'] = unserialize($db_array['description']);
        }
        $item = $this->_getNewRoomItem($db_array['type']);
-       $item->_setItemData(encode(FROM_DB, $db_array));
+       $item->_setItemData($db_array);
 
        if ($this->_cache_on) {
            if (empty($this->_cache_object[$item->getItemID()])) {
@@ -353,7 +353,7 @@ class cs_context_manager extends cs_manager
 
        $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id
                   AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL
-                  AND '.$this->addDatabasePrefix('user').'.account_id="'.encode(AS_DB, $accountId).'"';
+                  AND '.$this->addDatabasePrefix('user').'.account_id="'.\App\Legacy\SqlStringEscaper::escape($accountId).'"';
        if (!$this->_all_room_limit) {
            $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
        } else {
@@ -372,12 +372,12 @@ class cs_context_manager extends cs_manager
            if (CS_PROJECT_TYPE == $this->_room_type
                 and ($current_portal->withGroupRoomFunctions()
                 or $grouproom)) {
-               $query .= ' AND ('.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB, $this->_room_type).'" or '.$this->addDatabasePrefix($this->_db_table).'.type = "'.CS_GROUPROOM_TYPE.'")';
+               $query .= ' AND ('.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'" or '.$this->addDatabasePrefix($this->_db_table).'.type = "'.CS_GROUPROOM_TYPE.'")';
            } else {
                // ###################END#####################
                // FLAG: group room
                // ###########################################
-               $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB, $this->_room_type).'"';
+               $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'"';
                // ###########################################
                // FLAG: group room
                // #################BEGIN####################
@@ -387,13 +387,13 @@ class cs_context_manager extends cs_manager
            // ###########################################
        }
 
-       $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.encode(AS_DB, $context_id).'"';
+       $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.\App\Legacy\SqlStringEscaper::escape($context_id).'"';
 
        if (true == $this->_delete_limit) {
            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
        }
        if (isset($this->_status_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB, $this->_status_limit).'"';
+           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.\App\Legacy\SqlStringEscaper::escape($this->_status_limit).'"';
        }
 
        $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.name DESC, '.$this->addDatabasePrefix($this->_db_table).'.title, '.$this->addDatabasePrefix($this->_db_table).'.creation_date DESC';
@@ -444,7 +444,7 @@ class cs_context_manager extends cs_manager
            ) {
                // NOTE: as of migration Version20191007171054.php, the `portal` table's `item_id` column is now called `id`
                $id_column_name = ('portal' === $this->_db_table) ? 'id' : 'item_id';
-               $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.'.$id_column_name."='".encode(AS_DB, $item_id)."'";
+               $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.'.$id_column_name."='".\App\Legacy\SqlStringEscaper::escape($item_id)."'";
                $result = $this->_db_connector->performQuery($query);
                unset($query);
                if (!isset($result)) {
@@ -488,7 +488,7 @@ class cs_context_manager extends cs_manager
            if (isset($this->extrasCache[$item_id])) {
                $retour = unserialize($this->extrasCache[$item_id]);
            } else {
-               $query = 'SELECT extras FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".item_id='".encode(AS_DB, $item_id)."'";
+               $query = 'SELECT extras FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".item_id='".\App\Legacy\SqlStringEscaper::escape($item_id)."'";
                $result = $this->_db_connector->performQuery($query);
                unset($query);
                if (!isset($result)) {
@@ -533,9 +533,9 @@ class cs_context_manager extends cs_manager
   public function _create($item)
   {
       $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-               'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
+               'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
                'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
-               'type="'.encode(AS_DB, $this->_room_type).'"';
+               'type="'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
           trigger_error('Problems creating '.$this->_db_table.' item.', E_USER_WARNING);
@@ -562,7 +562,7 @@ class cs_context_manager extends cs_manager
            $query .= 'modification_date="'.\App\Utils\MysqlDateTime::now().'",';
            $modifier_id = $this->_current_user->getItemID();
            if (!empty($modifier_id)) {
-               $query .= 'modifier_id="'.encode(AS_DB, $modifier_id).'",';
+               $query .= 'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($modifier_id).'",';
            }
        }
 
@@ -577,13 +577,13 @@ class cs_context_manager extends cs_manager
            $activity_points = 0;
        }
 
-       $query .= 'title="'.encode(AS_DB, $item->getTitle()).'",'.
-                 "context_id='".encode(AS_DB, $item->getContextID())."',".
-                 "portal_id='".encode(AS_DB, $item->getPortalID())."',".
-                 "extras='".encode(AS_DB, serialize($item->getExtraInformation()))."',".
-                 "status='".encode(AS_DB, $item->getStatus())."',".
-                 "activity='".encode(AS_DB, $activity_points)."',".
-                 "is_open_for_guests='".encode(AS_DB, $open_for_guests)."'";
+       $query .= 'title="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'",'.
+                 "context_id='".\App\Legacy\SqlStringEscaper::escape($item->getContextID())."',".
+                 "portal_id='".\App\Legacy\SqlStringEscaper::escape($item->getPortalID())."',".
+                 "extras='".\App\Legacy\SqlStringEscaper::escape(serialize($item->getExtraInformation()))."',".
+                 "status='".\App\Legacy\SqlStringEscaper::escape($item->getStatus())."',".
+                 "activity='".\App\Legacy\SqlStringEscaper::escape($activity_points)."',".
+                 "is_open_for_guests='".\App\Legacy\SqlStringEscaper::escape($open_for_guests)."'";
 
        // maybe move this to method to portal/server manager
        if ($item->isPortal()
@@ -591,11 +591,11 @@ class cs_context_manager extends cs_manager
        ) {
            $url = $item->getUrl();
            if (isset($url)) {
-               $query .= ", url='".encode(AS_DB, $url)."'";
+               $query .= ", url='".\App\Legacy\SqlStringEscaper::escape($url)."'";
            }
        }
 
-       $query .= ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
+       $query .= ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"';
 
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
@@ -617,17 +617,17 @@ class cs_context_manager extends cs_manager
            $user = $this->_environment->getCurrentUserItem();
        }
        $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
-                'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-                'portal_id="'.encode(AS_DB, $item->getPortalID()).'",'.
-                'creator_id="'.encode(AS_DB, $user->getItemID()).'",'.
-                'modifier_id="'.encode(AS_DB, $user->getItemID()).'",'.
+                'item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'",'.
+                'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
+                'portal_id="'.\App\Legacy\SqlStringEscaper::escape($item->getPortalID()).'",'.
+                'creator_id="'.\App\Legacy\SqlStringEscaper::escape($user->getItemID()).'",'.
+                'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($user->getItemID()).'",'.
                 'creation_date="'.$current_datetime.'",'.
                 'modification_date="'.$current_datetime.'",'.
-                'title="'.encode(AS_DB, $item->getTitle()).'",'.
-                'extras="'.encode(AS_DB, serialize($item->getExtraInformation())).'",'.
-                'type="'.encode(AS_DB, $item->getRoomType()).'",'.
-                'status="'.encode(AS_DB, $item->getStatus()).'"';
+                'title="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'",'.
+                'extras="'.\App\Legacy\SqlStringEscaper::escape(serialize($item->getExtraInformation())).'",'.
+                'type="'.\App\Legacy\SqlStringEscaper::escape($item->getRoomType()).'",'.
+                'status="'.\App\Legacy\SqlStringEscaper::escape($item->getStatus()).'"';
 
        // maybe move this to method to portal/server manager
        if ($item->isPortal()
@@ -635,7 +635,7 @@ class cs_context_manager extends cs_manager
        ) {
            $url = $item->getUrl();
            if (isset($url)) {
-               $query .= ", url='".encode(AS_DB, $url)."'";
+               $query .= ", url='".\App\Legacy\SqlStringEscaper::escape($url)."'";
            }
        }
 
@@ -650,7 +650,7 @@ class cs_context_manager extends cs_manager
 
    public function minimizeActivityPoints($quotient): void
    {
-       $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET activity=ROUND(activity/'.encode(AS_DB, $quotient).') WHERE activity > 0;';
+       $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET activity=ROUND(activity/'.\App\Legacy\SqlStringEscaper::escape($quotient).') WHERE activity > 0;';
        $this->_db_connector->performQuery($query);
    }
 
@@ -663,8 +663,8 @@ class cs_context_manager extends cs_manager
                 ' deletion_date=NULL,'.
                 ' deleter_id=NULL,'.
                 ' modification_date="'.$current_datetime.'",'.
-                ' modifier_id="'.encode(AS_DB, $user_id).'"'.
-                ' WHERE item_id="'.encode(AS_DB, $item_id).'"';
+                ' modifier_id="'.\App\Legacy\SqlStringEscaper::escape($user_id).'"'.
+                ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or !$result) {
            trigger_error('Problems undeleting '.$this->_db_table.'.', E_USER_WARNING);
@@ -676,7 +676,7 @@ class cs_context_manager extends cs_manager
    public function getMaxActivityPoints()
    {
        $retour = 0;
-       $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.encode(AS_DB, $this->_room_limit).';';
+       $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).';';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or empty($result[0])) {
            trigger_error('Problems selecting '.$this->_db_table.' max activity.', E_USER_WARNING);
@@ -696,9 +696,9 @@ class cs_context_manager extends cs_manager
        $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).'';
        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
-       $query .= 'WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = '.encode(AS_DB, $this->_room_limit).'';
-       $query .= ' AND ( (l31.context_id="'.encode(AS_DB, $this->_room_limit).'" AND (l31.first_item_id = "'.encode(AS_DB, $community_room_limit).'" OR l31.second_item_id = "'.encode(AS_DB, $community_room_limit).'"))';
-       $query .= ' OR ( l32.context_id="'.encode(AS_DB, $this->_room_limit).'" AND (l32.first_item_id = "'.encode(AS_DB, $community_room_limit).'" OR l32.second_item_id = "'.encode(AS_DB, $community_room_limit).'")));';
+       $query .= 'WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = '.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'';
+       $query .= ' AND ( (l31.context_id="'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'" AND (l31.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($community_room_limit).'" OR l31.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($community_room_limit).'"))';
+       $query .= ' OR ( l32.context_id="'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'" AND (l32.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($community_room_limit).'" OR l32.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($community_room_limit).'")));';
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result) or empty($result[0])) {
            trigger_error('Problems selecting '.$this->_db_table.' max activity: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
@@ -719,7 +719,7 @@ class cs_context_manager extends cs_manager
             and is_array($community_room_array_limit)
        ) {
            $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table);
-           $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.encode(AS_DB, implode(',', $community_room_array_limit)).');';
+           $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.\App\Legacy\SqlStringEscaper::escape(implode(',', $community_room_array_limit)).');';
            $result = $this->_db_connector->performQuery($query);
            if (!isset($result) or empty($result[0])) {
                trigger_error('Problems selecting '.$this->_db_table.' max activity: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
@@ -737,8 +737,8 @@ class cs_context_manager extends cs_manager
     public function saveActivityPoints(cs_item $item)
     {
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-            ' activity="'.encode(AS_DB, $item->getActivityPoints()).'"'.
-            ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
+            ' activity="'.\App\Legacy\SqlStringEscaper::escape($item->getActivityPoints()).'"'.
+            ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems updating activity points '.$this->_db_table.'.', E_USER_WARNING);

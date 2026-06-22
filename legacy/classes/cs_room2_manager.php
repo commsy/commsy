@@ -76,7 +76,7 @@ class cs_room2_manager extends cs_context_manager
     {
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
             ' lastlogin=NOW()'.
-            ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
+            ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems saving lastlogin to room ('.$item->getItemID().') - '.$this->_db_table.'.',
@@ -188,23 +188,23 @@ class cs_room2_manager extends cs_context_manager
        $title = str_ireplace("'", '"', (string) $item->getTitle());
 
        $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
-                'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-                'portal_id="'.encode(AS_DB, $item->getPortalID()).'",'.
-                'creator_id="'.encode(AS_DB, $user->getItemID()).'",'.
-                'modifier_id="'.encode(AS_DB, $user->getItemID()).'",'.
+                'item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'",'.
+                'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
+                'portal_id="'.\App\Legacy\SqlStringEscaper::escape($item->getPortalID()).'",'.
+                'creator_id="'.\App\Legacy\SqlStringEscaper::escape($user->getItemID()).'",'.
+                'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($user->getItemID()).'",'.
                 'creation_date="'.$current_datetime.'",'.
                 'modification_date="'.$current_datetime.'",'.
-                'title="'.encode(AS_DB, $title).'",'.
-                'extras="'.encode(AS_DB, serialize($item->getExtraInformation())).'",'.
-                'type="'.encode(AS_DB, $item->getRoomType()).'",'.
+                'title="'.\App\Legacy\SqlStringEscaper::escape($title).'",'.
+                'extras="'.\App\Legacy\SqlStringEscaper::escape(serialize($item->getExtraInformation())).'",'.
+                'type="'.\App\Legacy\SqlStringEscaper::escape($item->getRoomType()).'",'.
                 'continuous="'.$continuous.'",'.
-                'status="'.encode(AS_DB, $item->getStatus()).'",'.
-                'contact_persons="'.encode(AS_DB, $item->getContactPersonString()).'",';
+                'status="'.\App\Legacy\SqlStringEscaper::escape($item->getStatus()).'",'.
+                'contact_persons="'.\App\Legacy\SqlStringEscaper::escape($item->getContactPersonString()).'",';
        if ($this->_existsField($this->_db_table, 'room_description')) {
-           $query .= 'room_description="'.encode(AS_DB, $item->getDescription()).'"';
+           $query .= 'room_description="'.\App\Legacy\SqlStringEscaper::escape($item->getDescription()).'"';
        } else {
-           $query .= 'description="'.encode(AS_DB, $item->getDescription()).'"';
+           $query .= 'description="'.\App\Legacy\SqlStringEscaper::escape($item->getDescription()).'"';
        }
 
        $result = $this->_db_connector->performQuery($query);

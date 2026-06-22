@@ -65,7 +65,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
         if (!empty($file_id_array)) {
             $query = '';
             $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date IS NULL';
-            $query .= ' AND file_id IN ('.implode(',', encode(AS_DB, $file_id_array)).')';
+            $query .= ' AND file_id IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($file_id_array)).')';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 trigger_error('Problems getting data "'.$this->_db_table.'" from query: "'.$query.'"', E_USER_WARNING);
@@ -73,7 +73,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
                 $current_data_array = [];
 
                 $sql = 'SELECT item_iid,file_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE 1';
-                $sql .= ' AND file_id IN ('.implode(',', encode(AS_DB, $file_id_array2)).')';
+                $sql .= ' AND file_id IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($file_id_array2)).')';
                 $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
                 $sql_result = $this->_db_connector->performQuery($sql);
                 if (!isset($sql_result)) {
@@ -100,7 +100,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
                         $insert_query .= 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET';
                         $first = true;
                         foreach ($query_result as $key => $value) {
-                            $value = encode(FROM_DB, $value);
                             if ($first) {
                                 $first = false;
                                 $before = ' ';
@@ -113,13 +112,13 @@ class cs_link_item_file_manager extends cs_link_father_manager
                                 // do nothing
                             } elseif ('item_iid' == $key) {
                                 if (isset($id_array[$value])) {
-                                    $insert_query .= $before.$key.'="'.encode(AS_DB, $id_array[$value]).'"';
+                                    $insert_query .= $before.$key.'="'.\App\Legacy\SqlStringEscaper::escape($id_array[$value]).'"';
                                 } else {
                                     $do_it = false;
                                 }
                             } elseif ('file_id' == $key) {
                                 if (isset($id_array[CS_FILE_TYPE.$value])) {
-                                    $insert_query .= $before.$key.'="'.encode(AS_DB, $id_array[CS_FILE_TYPE.$value]).'"';
+                                    $insert_query .= $before.$key.'="'.\App\Legacy\SqlStringEscaper::escape($id_array[CS_FILE_TYPE.$value]).'"';
                                 } else {
                                     $do_it = false;
                                 }
@@ -127,7 +126,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
 
                             // default
                             else {
-                                $insert_query .= $before.$key.'="'.encode(AS_DB, $value).'"';
+                                $insert_query .= $before.$key.'="'.\App\Legacy\SqlStringEscaper::escape($value).'"';
                             }
                         }
                     }
@@ -159,10 +158,10 @@ class cs_link_item_file_manager extends cs_link_father_manager
         $query .= ' WHERE 1';
 
         if (isset($this->_context_limit)) {
-            $query .= ' AND f.context_id = "'.encode(AS_DB, $this->_context_limit).'"';
+            $query .= ' AND f.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_context_limit).'"';
         }
         if (isset($this->_limit_file_id)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.file_id = "'.encode(AS_DB, $this->_limit_file_id).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.file_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_limit_file_id).'"';
         }
 
         // perform query
@@ -185,10 +184,10 @@ class cs_link_item_file_manager extends cs_link_father_manager
          $deleterId = $this->_current_user->getItemID() ?: 0;
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
              'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
-             'deleter_id="'.encode(AS_DB, $deleterId).'"'.
-             ' WHERE item_iid="'.encode(AS_DB, $item_id).'"';
+             'deleter_id="'.\App\Legacy\SqlStringEscaper::escape($deleterId).'"'.
+             ' WHERE item_iid="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
          if ($version_id) {
-             $query .= ' AND item_vid="'.encode(AS_DB, $version_id).'"';
+             $query .= ' AND item_vid="'.\App\Legacy\SqlStringEscaper::escape($version_id).'"';
          }
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
@@ -205,8 +204,8 @@ class cs_link_item_file_manager extends cs_link_father_manager
     {
         $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET ' .
             'deletion_date="' . \App\Utils\MysqlDateTime::now() . '",' .
-            'deleter_id="' . encode(AS_DB, $this->_current_user->getItemID()) . '"' .
-            ' WHERE file_id="' . encode(AS_DB, $file_id) . '";';
+            'deleter_id="' . \App\Legacy\SqlStringEscaper::escape($this->_current_user->getItemID()) . '"' .
+            ' WHERE file_id="' . \App\Legacy\SqlStringEscaper::escape($file_id) . '";';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems deleting (updating) links of an item from query: "' . $query . '". - ' . __FILE__ . ' - ' . __LINE__, E_USER_WARNING);
@@ -216,7 +215,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
     public function deleteByFileReally($file_id)
     {
         $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).
-                 ' WHERE file_id="'.encode(AS_DB, $file_id).'"';
+                 ' WHERE file_id="'.\App\Legacy\SqlStringEscaper::escape($file_id).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems deleting links of a file item from query: "'.$query.'"', E_USER_WARNING);
@@ -231,7 +230,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
     public function _buildItem(array $db_array): object
     {
         $item = $this->getNewItem();
-        $item->_setItemData(encode(FROM_DB, $db_array));
+        $item->_setItemData($db_array);
 
         return $item;
     }

@@ -126,8 +126,8 @@ class cs_item_manager extends cs_manager
                 $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
                 $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
             } else {
-                $query .= ' AND ( (l41.first_item_id IN (' . encode(AS_DB, $id_string) . ') OR l41.second_item_id IN (' . encode(AS_DB, $id_string) . ') )';
-                $query .= ' OR (l42.first_item_id IN (' . encode(AS_DB, $id_string) . ') OR l42.second_item_id IN (' . encode(AS_DB, $id_string) . ') ))';
+                $query .= ' AND ( (l41.first_item_id IN (' . \App\Legacy\SqlStringEscaper::escape($id_string) . ') OR l41.second_item_id IN (' . \App\Legacy\SqlStringEscaper::escape($id_string) . ') )';
+                $query .= ' OR (l42.first_item_id IN (' . \App\Legacy\SqlStringEscaper::escape($id_string) . ') OR l42.second_item_id IN (' . \App\Legacy\SqlStringEscaper::escape($id_string) . ') ))';
             }
         }
 
@@ -141,7 +141,7 @@ class cs_item_manager extends cs_manager
         }
 
         if (isset($this->_existence_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . encode(AS_DB, $this->_existence_limit) . ' day)';
+            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . \App\Legacy\SqlStringEscaper::escape($this->_existence_limit) . ' day)';
         }
         if (isset($this->_type_array_limit) and !empty($this->_type_array_limit)) {
             $query .= ' AND (';
@@ -152,17 +152,17 @@ class cs_item_manager extends cs_manager
                 } else {
                     $query .= ' OR';
                 }
-                $query .= ' ' . $this->addDatabasePrefix('items') . '.type = "' . encode(AS_DB, $type) . '"';
+                $query .= ' ' . $this->addDatabasePrefix('items') . '.type = "' . \App\Legacy\SqlStringEscaper::escape($type) . '"';
             }
             $query .= ' )';
         }
         if (isset($this->_room_limit) and empty($this->_room_array_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
+            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.context_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . '"';
         } elseif (empty($this->_room_array_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.context_id = "' . encode(AS_DB, $this->_environment->getCurrentContextID()) . '"';
+            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.context_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentContextID()) . '"';
         }
         if (isset($this->_id_array_limit) and !empty($this->_id_array_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.item_id IN (' . implode(', ', encode(AS_DB, $this->_id_array_limit)) . ')';
+            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.item_id IN (' . implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)) . ')';
         }
         if (isset($this->_type_limit) or isset($this->_label_limit)) {
             $query .= ' AND (';
@@ -174,7 +174,7 @@ class cs_item_manager extends cs_manager
                     } else {
                         $query .= ' OR';
                     }
-                    $query .= ' ' . $this->addDatabasePrefix('items') . '.type = "' . encode(AS_DB, $type) . '"';
+                    $query .= ' ' . $this->addDatabasePrefix('items') . '.type = "' . \App\Legacy\SqlStringEscaper::escape($type) . '"';
                 }
             }
             if (isset($this->_label_limit)) {
@@ -188,7 +188,7 @@ class cs_item_manager extends cs_manager
                     } else {
                         $query .= ' OR';
                     }
-                    $query .= ' label.type = "' . encode(AS_DB, $type) . '"';
+                    $query .= ' label.type = "' . \App\Legacy\SqlStringEscaper::escape($type) . '"';
                 }
             }
             $query .= ')';
@@ -198,12 +198,12 @@ class cs_item_manager extends cs_manager
             $query .= ' AND ' . $this->addDatabasePrefix('items') . '.deletion_date IS NULL';
         }
         if (isset($this->_age_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.modification_date > DATE_SUB(CURRENT_DATE,interval ' . encode(AS_DB, $this->_age_limit) . ' day)';
+            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.modification_date > DATE_SUB(CURRENT_DATE,interval ' . \App\Legacy\SqlStringEscaper::escape($this->_age_limit) . ' day)';
         }
 
         // context array limit
         if (!empty($this->_room_array_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id IN (' . implode(', ', encode(AS_DB, $this->_room_array_limit)) . ')';
+            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id IN (' . implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_room_array_limit)) . ')';
         }
 
         if ($this->modificationNewerThenLimit) {
@@ -247,7 +247,7 @@ class cs_item_manager extends cs_manager
         $type = '';
         $query = 'SELECT ' . $this->addDatabasePrefix('items') . '.type';
         $query .= ' FROM ' . $this->addDatabasePrefix('items');
-        $query .= ' WHERE item_id = "' . encode(AS_DB, $iid) . '"';
+        $query .= ' WHERE item_id = "' . \App\Legacy\SqlStringEscaper::escape($iid) . '"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems selecting an item from query: "' . $query . '"', E_USER_WARNING);
@@ -291,7 +291,7 @@ class cs_item_manager extends cs_manager
         if (!isset($this->_cache_object[$iid])) {
             $query = 'SELECT *';
             $query .= ' FROM ' . $this->addDatabasePrefix('items');
-            $query .= ' WHERE item_id="' . encode(AS_DB, $iid) . '"';
+            $query .= ' WHERE item_id="' . \App\Legacy\SqlStringEscaper::escape($iid) . '"';
             $result = $this->_db_connector->performQuery($query);
             if (isset($result) and !empty($result)) {
                 $item = $this->_buildItem($result[0]);
@@ -360,8 +360,8 @@ class cs_item_manager extends cs_manager
     public function setExternalViewerEntry($iid, $user_id)
     {
         $query = 'INSERT INTO ' . $this->addDatabasePrefix('external_viewer') . ' SET ' .
-            'item_id="' . encode(AS_DB, $iid) . '",' .
-            'user_id="' . encode(AS_DB, $user_id) . '"';
+            'item_id="' . \App\Legacy\SqlStringEscaper::escape($iid) . '",' .
+            'user_id="' . \App\Legacy\SqlStringEscaper::escape($user_id) . '"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems creating external_view entry from query: "' . $query . '"', E_USER_WARNING);
@@ -420,7 +420,7 @@ class cs_item_manager extends cs_manager
     {
         $retour = 0;
 
-        $query = 'SELECT count(' . $this->addDatabasePrefix($this->_db_table) . '.item_id) as number FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . ".context_id = '" . encode(AS_DB, $this->_room_limit) . "' and " . $this->addDatabasePrefix($this->_db_table) . ".modification_date > '" . encode(AS_DB, $start) . "' and " . $this->addDatabasePrefix($this->_db_table) . ".modification_date < '" . encode(AS_DB, $end) . "';";
+        $query = 'SELECT count(' . $this->addDatabasePrefix($this->_db_table) . '.item_id) as number FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . ".context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "' and " . $this->addDatabasePrefix($this->_db_table) . ".modification_date > '" . \App\Legacy\SqlStringEscaper::escape($start) . "' and " . $this->addDatabasePrefix($this->_db_table) . ".modification_date < '" . \App\Legacy\SqlStringEscaper::escape($end) . "';";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems counting items with query: ' . $query, E_USER_WARNING);

@@ -258,25 +258,25 @@ class cs_tag_manager extends cs_manager
 
         // insert limits into the select statement
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
         }
         if (isset($this->_room_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
         }
         if ($this->_delete_limit) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL';
         }
         if (isset($this->_title_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title like "%'.encode(AS_DB, $this->_title_limit).'%"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title like "%'.\App\Legacy\SqlStringEscaper::escape($this->_title_limit).'%"';
         }
         if (isset($this->_exact_title_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title = "'.encode(AS_DB, $this->_exact_title_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title = "'.\App\Legacy\SqlStringEscaper::escape($this->_exact_title_limit).'"';
         }
         if (isset($this->_age_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_age_limit).' day)';
         }
         if (isset($this->_existence_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_existence_limit).' day)';
         }
 
         if (isset($this->_sort_order)) {
@@ -296,7 +296,7 @@ class cs_tag_manager extends cs_manager
         }
         if ('select' == $mode) {
             if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-                $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
+                $query .= ' LIMIT '.\App\Legacy\SqlStringEscaper::escape($this->_from_limit).', '.\App\Legacy\SqlStringEscaper::escape($this->_interval_limit);
             }
         }
 
@@ -362,7 +362,7 @@ class cs_tag_manager extends cs_manager
         $item = null;
         if (!empty($item_id)) {
             $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table);
-            $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.encode(AS_DB, $item_id).'"';
+            $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 trigger_error('Problems selecting one '.$this->_db_table.'.', E_USER_WARNING);
@@ -470,10 +470,10 @@ class cs_tag_manager extends cs_manager
         $current_datetime = \App\Utils\MysqlDateTime::now();
 
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                 'modifier_id="'.encode(AS_DB, $modificator->getItemID()).'",'.
+                 'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($modificator->getItemID()).'",'.
                  'modification_date="'.$current_datetime.'",'.
-                 'title="'.encode(AS_DB, $item->getTitle()).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
+                 'title="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'"'.
+                 ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems updating '.$this->_db_table.': "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
@@ -488,7 +488,7 @@ class cs_tag_manager extends cs_manager
     public function _create($item)
     {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-                 'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
+                 'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="'.CS_TAG_TYPE.'"';
 
@@ -523,13 +523,13 @@ class cs_tag_manager extends cs_manager
         }
 
         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                  'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
-                  'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-                  'creator_id="'.encode(AS_DB, $user_id).'",'.
+                  'item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'",'.
+                  'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
+                  'creator_id="'.\App\Legacy\SqlStringEscaper::escape($user_id).'",'.
                   'creation_date="'.$current_datetime.'",'.
-                  'modifier_id="'.encode(AS_DB, $modificator_id).'",'.
+                  'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($modificator_id).'",'.
                   'modification_date="'.$current_datetime.'",'.
-                  'title="'.encode(AS_DB, $item->getTitle()).'"';
+                  'title="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems creating '.$this->_db_table.'.', E_USER_WARNING);
@@ -571,13 +571,13 @@ class cs_tag_manager extends cs_manager
          $current_datetime = \App\Utils\MysqlDateTime::now();
 
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                  'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-                  'creator_id="'.encode(AS_DB, $user->getItemID()).'",'.
+                  'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
+                  'creator_id="'.\App\Legacy\SqlStringEscaper::escape($user->getItemID()).'",'.
                   'creation_date="'.$current_datetime.'",'.
-                  'modifier_id="'.encode(AS_DB, $modificator->getItemID()).'",'.
+                  'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($modificator->getItemID()).'",'.
                   'modification_date="'.$current_datetime.'",'.
-                  'title="'.encode(AS_DB, $item->getTitle()).'"'.
-                  ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
+                  'title="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'"'.
+                  ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
              trigger_error('Problems updating '.$this->_db_table.'.', E_USER_WARNING);

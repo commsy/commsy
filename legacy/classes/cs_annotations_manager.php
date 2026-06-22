@@ -94,13 +94,13 @@ class cs_annotations_manager extends cs_manager
         $query .= ' WHERE 1';
 
         if (isset($this->linkedItemId) and !empty($this->linkedItemId)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('annotations') . '.linked_item_id=' . encode(AS_DB, $this->linkedItemId);
+            $query .= ' AND ' . $this->addDatabasePrefix('annotations') . '.linked_item_id=' . \App\Legacy\SqlStringEscaper::escape($this->linkedItemId);
         }
         if (isset($this->_room_limit) and !empty($this->_room_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('annotations') . '.context_id=' . encode(AS_DB, $this->_room_limit);
+            $query .= ' AND ' . $this->addDatabasePrefix('annotations') . '.context_id=' . \App\Legacy\SqlStringEscaper::escape($this->_room_limit);
         }
         if (isset($this->_age_limit) and !empty($this->_age_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('annotations') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . encode(AS_DB, $this->_age_limit) . ' day)';
+            $query .= ' AND ' . $this->addDatabasePrefix('annotations') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . \App\Legacy\SqlStringEscaper::escape($this->_age_limit) . ' day)';
         }
         if ($this->_delete_limit) {
             $query .= ' AND ' . $this->addDatabasePrefix('annotations') . '.deleter_id IS NULL';
@@ -141,7 +141,7 @@ class cs_annotations_manager extends cs_manager
             if (!empty($this->_cache_object[$item_id])) {
                 $annotation = $this->_cache_object[$item_id];
             } else {
-                $query = 'SELECT * FROM ' . $this->addDatabasePrefix('annotations') . ' WHERE ' . $this->addDatabasePrefix('annotations') . ".item_id = '" . encode(AS_DB, $item_id) . "'";
+                $query = 'SELECT * FROM ' . $this->addDatabasePrefix('annotations') . ' WHERE ' . $this->addDatabasePrefix('annotations') . ".item_id = '" . \App\Legacy\SqlStringEscaper::escape($item_id) . "'";
                 $result = $this->_db_connector->performQuery($query);
                 if (!isset($result)) {
                     trigger_error('Problems selecting one annotation item.', E_USER_WARNING);
@@ -204,11 +204,11 @@ class cs_annotations_manager extends cs_manager
 
         $query = 'UPDATE ' . $this->addDatabasePrefix('annotations') . ' SET ' .
             'modification_date="' . \App\Utils\MysqlDateTime::now() . '",' .
-            'description="' . encode(AS_DB, $annotation_item->getDescription()) . '",' .
-            'linked_item_id="' . encode(AS_DB, $annotation_item->getLinkedItemID()) . '",' .
-            'linked_version_id="' . encode(AS_DB, $version_id) . '",' .
-            'modifier_id="' . encode(AS_DB, $this->_current_user->getItemID()) . '"' .
-            ' WHERE item_id="' . encode(AS_DB, $annotation_item->getItemID()) . '"';
+            'description="' . \App\Legacy\SqlStringEscaper::escape($annotation_item->getDescription()) . '",' .
+            'linked_item_id="' . \App\Legacy\SqlStringEscaper::escape($annotation_item->getLinkedItemID()) . '",' .
+            'linked_version_id="' . \App\Legacy\SqlStringEscaper::escape($version_id) . '",' .
+            'modifier_id="' . \App\Legacy\SqlStringEscaper::escape($this->_current_user->getItemID()) . '"' .
+            ' WHERE item_id="' . \App\Legacy\SqlStringEscaper::escape($annotation_item->getItemID()) . '"';
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {

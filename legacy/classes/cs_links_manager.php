@@ -208,7 +208,7 @@ class cs_links_manager extends cs_manager
             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix('items').'.item_id='.$this->addDatabasePrefix('links').'.from_item_id';
         }
         if (!empty($type)) {
-            $query .= ' WHERE '.$this->addDatabasePrefix('links').'.link_type LIKE "'.encode(AS_DB, $type).'"';
+            $query .= ' WHERE '.$this->addDatabasePrefix('links').'.link_type LIKE "'.\App\Legacy\SqlStringEscaper::escape($type).'"';
         } else {
             $query .= ' WHERE 1';
         }
@@ -223,17 +223,17 @@ class cs_links_manager extends cs_manager
 
         // fifth, insert limits into the select statement
         if (isset($this->_item_id_limit)) {
-            $query .= ' AND ('.$this->addDatabasePrefix('links').'.from_item_id = "'.encode(AS_DB, $this->_item_id_limit).'"';
-            $query .= ' OR '.$this->addDatabasePrefix('links').'.to_item_id = "'.encode(AS_DB, $this->_item_id_limit).'" )';
+            $query .= ' AND ('.$this->addDatabasePrefix('links').'.from_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_item_id_limit).'"';
+            $query .= ' OR '.$this->addDatabasePrefix('links').'.to_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_item_id_limit).'" )';
         }
         if (isset($this->_version_id_limit)) {
-            $query .= ' AND ('.$this->addDatabasePrefix('links').'.from_version_id = "'.encode(AS_DB, $this->_version_id_limit).'"';
-            $query .= ' OR '.$this->addDatabasePrefix('links').'.to_version_id = "'.encode(AS_DB, $this->_version_id_limit).'") ';
+            $query .= ' AND ('.$this->addDatabasePrefix('links').'.from_version_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_version_id_limit).'"';
+            $query .= ' OR '.$this->addDatabasePrefix('links').'.to_version_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_version_id_limit).'") ';
         }
         if (isset($this->_room_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('links').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('links').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
         } else {
-            $query .= ' AND '.$this->addDatabasePrefix('links').'.context_id = "'.encode(AS_DB, $this->_environment->getCurrentContextID()).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('links').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentContextID()).'"';
         }
         if (!$this->_with_deleted_links) {
             $query .= ' AND '.$this->addDatabasePrefix('links').'.deleter_id IS NULL';
@@ -242,7 +242,7 @@ class cs_links_manager extends cs_manager
             if ('section' == $this->_order) {
                 $query .= ' ORDER BY '.$this->addDatabasePrefix('section').'.number';
             } else {
-                $query .= ' ORDER BY '.$this->addDatabasePrefix('links').'.'.encode(AS_DB, $this->_order);
+                $query .= ' ORDER BY '.$this->addDatabasePrefix('links').'.'.\App\Legacy\SqlStringEscaper::escape($this->_order);
             }
         }
 
@@ -283,10 +283,10 @@ class cs_links_manager extends cs_manager
         }
 
         $query = 'UPDATE '.$this->addDatabasePrefix('links').' SET '.
-                 'to_item_id="'.encode(AS_DB, $buzz1).'"'.
-                 ' WHERE '.$this->addDatabasePrefix('links').'.to_item_id="'.encode(AS_DB, $buzz2).'"';
+                 'to_item_id="'.\App\Legacy\SqlStringEscaper::escape($buzz1).'"'.
+                 ' WHERE '.$this->addDatabasePrefix('links').'.to_item_id="'.\App\Legacy\SqlStringEscaper::escape($buzz2).'"';
         if (!empty($from_id_array)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.from_item_id NOT IN ('.implode(',', encode(AS_DB, $from_id_array)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.from_item_id NOT IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($from_id_array)).')';
         }
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
@@ -373,11 +373,11 @@ class cs_links_manager extends cs_manager
     public function isLinkedTo($from_item_id, $to_item_id, $from_version_id = null, $to_version_id = null, $link_type = null)
     {
         $query = 'SELECT * FROM '.$this->addDatabasePrefix('links');
-        $query .= ' WHERE '.$this->addDatabasePrefix('links').'.from_item_id="'.encode(AS_DB, $from_item_id).'"';
-        $query .= ' AND '.$this->addDatabasePrefix('links').'.to_item_id = "'.encode(AS_DB, $to_item_id).'"';
-        $query .= isset($from_version_id) ? ' AND '.$this->addDatabasePrefix('links').'.from_version_id="'.encode(AS_DB, $from_version_id).'"' : '';
-        $query .= isset($to_version_id) ? ' AND '.$this->addDatabasePrefix('links').'.to_version_id="'.encode(AS_DB, $to_version_id).'"' : '';
-        $query .= isset($link_type) ? ' AND '.$this->addDatabasePrefix('links').'.link_type = "'.encode(AS_DB, $link_type).'"' : '';
+        $query .= ' WHERE '.$this->addDatabasePrefix('links').'.from_item_id="'.\App\Legacy\SqlStringEscaper::escape($from_item_id).'"';
+        $query .= ' AND '.$this->addDatabasePrefix('links').'.to_item_id = "'.\App\Legacy\SqlStringEscaper::escape($to_item_id).'"';
+        $query .= isset($from_version_id) ? ' AND '.$this->addDatabasePrefix('links').'.from_version_id="'.\App\Legacy\SqlStringEscaper::escape($from_version_id).'"' : '';
+        $query .= isset($to_version_id) ? ' AND '.$this->addDatabasePrefix('links').'.to_version_id="'.\App\Legacy\SqlStringEscaper::escape($to_version_id).'"' : '';
+        $query .= isset($link_type) ? ' AND '.$this->addDatabasePrefix('links').'.link_type = "'.\App\Legacy\SqlStringEscaper::escape($link_type).'"' : '';
         if (!$this->_with_deleted_links) {
             $query .= ' AND '.$this->addDatabasePrefix('links').'.deleter_id IS NULL';
         }
@@ -481,17 +481,17 @@ class cs_links_manager extends cs_manager
     public function _create($db_data)
     {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('links').' SET '.
-                 'from_item_id="'.encode(AS_DB, $db_data['from_item_id']).'",'.
-                 'from_version_id="'.encode(AS_DB, $db_data['from_version_id']).'",'.
-                 'to_item_id="'.encode(AS_DB, $db_data['to_item_id']).'",'.
-                 'to_version_id="'.encode(AS_DB, $db_data['to_version_id']).'",'.
-                 'link_type="'.encode(AS_DB, $db_data['link_type']).'",';
-        $query .= 'context_id="'.encode(AS_DB, $db_data['room_id']).'"';
+                 'from_item_id="'.\App\Legacy\SqlStringEscaper::escape($db_data['from_item_id']).'",'.
+                 'from_version_id="'.\App\Legacy\SqlStringEscaper::escape($db_data['from_version_id']).'",'.
+                 'to_item_id="'.\App\Legacy\SqlStringEscaper::escape($db_data['to_item_id']).'",'.
+                 'to_version_id="'.\App\Legacy\SqlStringEscaper::escape($db_data['to_version_id']).'",'.
+                 'link_type="'.\App\Legacy\SqlStringEscaper::escape($db_data['link_type']).'",';
+        $query .= 'context_id="'.\App\Legacy\SqlStringEscaper::escape($db_data['room_id']).'"';
         if (!empty($db_data['x'])) {
-            $query .= ',x="'.encode(AS_DB, $db_data['x']).'"';
+            $query .= ',x="'.\App\Legacy\SqlStringEscaper::escape($db_data['x']).'"';
         }
         if (!empty($db_data['y'])) {
-            $query .= ',y="'.encode(AS_DB, $db_data['y']).'"';
+            $query .= ',y="'.\App\Legacy\SqlStringEscaper::escape($db_data['y']).'"';
         }
         $query .= ';';
         $result = $this->_db_connector->performQuery($query);
@@ -573,14 +573,14 @@ class cs_links_manager extends cs_manager
     {
         if ($this->_isAvailable($link_type)) {
             $query = 'DELETE FROM '.$this->addDatabasePrefix('links').' WHERE '.
-                     'from_item_id="'.encode(AS_DB, $from_item_id).'"';
+                     'from_item_id="'.\App\Legacy\SqlStringEscaper::escape($from_item_id).'"';
             if (!empty($from_version_id)) {
-                $query .= ' AND from_version_id="'.encode(AS_DB, $from_version_id).'"';
+                $query .= ' AND from_version_id="'.\App\Legacy\SqlStringEscaper::escape($from_version_id).'"';
             } elseif (0 == $from_version_id and '' != $from_version_id) {
                 $query .= ' AND from_version_id="0"';
             }
             if (!empty($link_type)) {
-                $query .= ' AND link_type="'.encode(AS_DB, $link_type).'"';
+                $query .= ' AND link_type="'.\App\Legacy\SqlStringEscaper::escape($link_type).'"';
             }
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result) or !$result) {
@@ -602,12 +602,12 @@ class cs_links_manager extends cs_manager
             $query = 'DELETE FROM '.$this->addDatabasePrefix('links').' WHERE '.
                      'to_item_id="'.$to_item_id.'"';
             if (!empty($to_version_id)) {
-                $query .= ' AND to_version_id="'.encode(AS_DB, $to_version_id).'"';
+                $query .= ' AND to_version_id="'.\App\Legacy\SqlStringEscaper::escape($to_version_id).'"';
             } elseif (0 == $to_version_id and '' != $to_version_id) {
                 $query .= ' AND to_version_id="0"';
             }
             if (!empty($link_type)) {
-                $query .= ' AND link_type="'.encode(AS_DB, $link_type).'"';
+                $query .= ' AND link_type="'.\App\Legacy\SqlStringEscaper::escape($link_type).'"';
             }
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result) or !$result) {
@@ -629,11 +629,11 @@ class cs_links_manager extends cs_manager
     {
         if ($this->_isAvailable($link_type)) {
             $query = 'DELETE FROM '.$this->addDatabasePrefix('links').' WHERE '.
-                     'from_item_id="'.encode(AS_DB, $from_item_id).'" and '.
-                     'to_item_id="'.encode(AS_DB, $to_item_id).'"';
-            $query .= !empty($from_version_id) ? ' and from_version_id="'.encode(AS_DB, $from_version_id).'"' : '';
-            $query .= !empty($to_version_id) ? ' and to_version_id="'.encode(AS_DB, $to_version_id).'"' : '';
-            $query .= !empty($link_type) ? ' and link_type="'.encode(AS_DB, $link_type).'"' : '';
+                     'from_item_id="'.\App\Legacy\SqlStringEscaper::escape($from_item_id).'" and '.
+                     'to_item_id="'.\App\Legacy\SqlStringEscaper::escape($to_item_id).'"';
+            $query .= !empty($from_version_id) ? ' and from_version_id="'.\App\Legacy\SqlStringEscaper::escape($from_version_id).'"' : '';
+            $query .= !empty($to_version_id) ? ' and to_version_id="'.\App\Legacy\SqlStringEscaper::escape($to_version_id).'"' : '';
+            $query .= !empty($link_type) ? ' and link_type="'.\App\Legacy\SqlStringEscaper::escape($link_type).'"' : '';
 
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result) or !$result) {
@@ -652,8 +652,8 @@ class cs_links_manager extends cs_manager
     {
         if (!empty($from_item_array) and !empty($to_item_id)) {
             $query = 'DELETE FROM '.$this->addDatabasePrefix('links').' WHERE '.
-                     'from_item_id IN ('.encode(AS_DB, implode(',', $from_item_array)).') AND '.
-                     'to_item_id="'.encode(AS_DB, $to_item_id).'"';
+                     'from_item_id IN ('.\App\Legacy\SqlStringEscaper::escape(implode(',', $from_item_array)).') AND '.
+                     'to_item_id="'.\App\Legacy\SqlStringEscaper::escape($to_item_id).'"';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result) or !$result) {
                 trigger_error('Problems deleting from links from query: "'.$query.'"', E_USER_WARNING);
@@ -672,14 +672,14 @@ class cs_links_manager extends cs_manager
           $user_id = $this->_current_user->getItemID() ?: 0;
           $query = 'UPDATE '.$this->addDatabasePrefix('links').' SET '.
               'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
-              'deleter_id="'.encode(AS_DB, $user_id).'"'.
-              ' WHERE (from_item_id="'.encode(AS_DB, $item_id).'"';
+              'deleter_id="'.\App\Legacy\SqlStringEscaper::escape($user_id).'"'.
+              ' WHERE (from_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
           if ($version_id) {
-              $query .= ' AND from_version_id="'.encode(AS_DB, $version_id).'"';
+              $query .= ' AND from_version_id="'.\App\Legacy\SqlStringEscaper::escape($version_id).'"';
           }
-          $query .= ') OR (to_item_id="'.encode(AS_DB, $item_id).'"';
+          $query .= ') OR (to_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
           if ($version_id) {
-              $query .= ' AND to_version_id="'.encode(AS_DB, $version_id).'"';
+              $query .= ' AND to_version_id="'.\App\Legacy\SqlStringEscaper::escape($version_id).'"';
           }
           $query .= ')';
           $result = $this->_db_connector->performQuery($query);
@@ -720,14 +720,14 @@ class cs_links_manager extends cs_manager
              $query .= 'deleter_id=NULL, ';
              $query .= 'deletion_date=NULL ';
              $query .= 'WHERE ';
-             $query .= "item_iid='".encode(AS_DB, $from_item->getItemID())."' AND ";
-             $query .= "item_vid='".encode(AS_DB, $from_item->getVersionID())."' AND ";
-             $query .= "file_id='".encode(AS_DB, $file_id)."'";
+             $query .= "item_iid='".\App\Legacy\SqlStringEscaper::escape($from_item->getItemID())."' AND ";
+             $query .= "item_vid='".\App\Legacy\SqlStringEscaper::escape($from_item->getVersionID())."' AND ";
+             $query .= "file_id='".\App\Legacy\SqlStringEscaper::escape($file_id)."'";
          } else {
              $query = 'INSERT INTO '.$this->addDatabasePrefix('item_link_file').' SET ';
-             $query .= "item_iid='".encode(AS_DB, $from_item->getItemID())."', ";
-             $query .= "item_vid='".encode(AS_DB, $from_item->getVersionID())."', ";
-             $query .= "file_id='".encode(AS_DB, $file_id)."'";
+             $query .= "item_iid='".\App\Legacy\SqlStringEscaper::escape($from_item->getItemID())."', ";
+             $query .= "item_vid='".\App\Legacy\SqlStringEscaper::escape($from_item->getVersionID())."', ";
+             $query .= "file_id='".\App\Legacy\SqlStringEscaper::escape($file_id)."'";
          }
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
@@ -742,9 +742,9 @@ class cs_links_manager extends cs_manager
              $version_id = '0';
          }
          $query = 'SELECT * FROM '.$this->addDatabasePrefix('item_link_file');
-         $query .= ' WHERE item_iid='.encode(AS_DB, $from_item->getItemID());
-         $query .= ' AND item_vid='.encode(AS_DB, $version_id);
-         $query .= ' AND file_id="'.encode(AS_DB, $file_id).'"';
+         $query .= ' WHERE item_iid='.\App\Legacy\SqlStringEscaper::escape($from_item->getItemID());
+         $query .= ' AND item_vid='.\App\Legacy\SqlStringEscaper::escape($version_id);
+         $query .= ' AND file_id="'.\App\Legacy\SqlStringEscaper::escape($file_id).'"';
          $result = $this->_db_connector->performQuery($query);
 
          if (!empty($result[0])) {
@@ -767,10 +767,10 @@ class cs_links_manager extends cs_manager
 
          // is entry allready stored in database ?
          $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table);
-         $query .= ' WHERE from_item_id="'.encode(AS_DB, $data_array['from_item_id']).'"';
-         $query .= ' AND from_version_id="'.encode(AS_DB, $data_array['from_version_id']).'"';
-         $query .= ' AND to_item_id="'.encode(AS_DB, $data_array['to_item_id']).'"';
-         $query .= ' AND to_version_id="'.encode(AS_DB, $data_array['to_version_id']).'"';
+         $query .= ' WHERE from_item_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['from_item_id']).'"';
+         $query .= ' AND from_version_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['from_version_id']).'"';
+         $query .= ' AND to_item_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['to_item_id']).'"';
+         $query .= ' AND to_version_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['to_version_id']).'"';
 
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
@@ -800,7 +800,7 @@ class cs_links_manager extends cs_manager
                      } else {
                          $query .= ',';
                      }
-                     $query .= $key.'="'.encode(AS_DB, $value).'"';
+                     $query .= $key.'="'.\App\Legacy\SqlStringEscaper::escape($value).'"';
                  }
              }
 
@@ -827,10 +827,10 @@ class cs_links_manager extends cs_manager
              }
 
              if (!empty($query_result)) {
-                 $query .= ' WHERE from_item_id="'.encode(AS_DB, $data_array['from_item_id']).'"';
-                 $query .= ' AND from_version_id="'.encode(AS_DB, $data_array['from_version_id']).'"';
-                 $query .= ' AND to_item_id="'.encode(AS_DB, $data_array['to_item_id']).'"';
-                 $query .= ' AND to_version_id="'.encode(AS_DB, $data_array['to_version_id']).'"';
+                 $query .= ' WHERE from_item_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['from_item_id']).'"';
+                 $query .= ' AND from_version_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['from_version_id']).'"';
+                 $query .= ' AND to_item_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['to_item_id']).'"';
+                 $query .= ' AND to_version_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['to_version_id']).'"';
              }
              $query .= ';';
 

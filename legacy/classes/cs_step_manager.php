@@ -140,43 +140,43 @@ class cs_step_manager extends cs_manager
 
         // fifth, insert limits into the select statement
         if (isset($this->_todo_item_id_limit) and !empty($this->_todo_item_id_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('step').'.todo_item_id='.encode(AS_DB, $this->_todo_item_id_limit);
+            $query .= ' AND '.$this->addDatabasePrefix('step').'.todo_item_id='.\App\Legacy\SqlStringEscaper::escape($this->_todo_item_id_limit);
         }
         if (isset($this->_room_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('step').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('step').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
         } else {
-            $query .= ' AND '.$this->addDatabasePrefix('step').'.context_id = "'.encode(AS_DB, $this->_environment->getCurrentContextID()).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('step').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentContextID()).'"';
         }
         if (true == $this->_delete_limit) {
             $query .= ' AND '.$this->addDatabasePrefix('step').'.deleter_id IS NULL';
         }
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('step').'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix('step').'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
         }
         if (isset($this->_existence_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('step').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
+            $query .= ' AND '.$this->addDatabasePrefix('step').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_existence_limit).' day)';
         }
         if (isset($this->_age_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('step').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
+            $query .= ' AND '.$this->addDatabasePrefix('step').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_age_limit).' day)';
         }
         // restrict sql-statement by search limit, create wheres
         if (isset($this->_search_limit) and !empty($this->_search_limit)) {
             $query .= ' AND (';
 
             // todo item
-            $query .= ' UPPER('.$this->addDatabasePrefix('step').'.title) LIKE BINARY "%'.encode(AS_DB, $this->_search_limit).'%"';
-            $query .= ' OR UPPER('.$this->addDatabasePrefix('step').'.description) LIKE BINARY "%'.encode(AS_DB, $this->_search_limit).'%"';
+            $query .= ' UPPER('.$this->addDatabasePrefix('step').'.title) LIKE BINARY "%'.\App\Legacy\SqlStringEscaper::escape($this->_search_limit).'%"';
+            $query .= ' OR UPPER('.$this->addDatabasePrefix('step').'.description) LIKE BINARY "%'.\App\Legacy\SqlStringEscaper::escape($this->_search_limit).'%"';
             if (':' != $this->_search_limit and '-' != $this->_search_limit) {
-                $query .= ' OR UPPER('.$this->addDatabasePrefix('step').'.modification_date) LIKE BINARY "%'.encode(AS_DB, $this->_search_limit).'%"';
+                $query .= ' OR UPPER('.$this->addDatabasePrefix('step').'.modification_date) LIKE BINARY "%'.\App\Legacy\SqlStringEscaper::escape($this->_search_limit).'%"';
             }
 
             // creation date - modification date language problem (TBD)
 
             // creator and modificator
-            $query .= ' OR UPPER(TRIM(CONCAT(people.firstname," ",people.lastname))) LIKE BINARY "%'.encode(AS_DB, $this->_search_limit).'%"';
+            $query .= ' OR UPPER(TRIM(CONCAT(people.firstname," ",people.lastname))) LIKE BINARY "%'.\App\Legacy\SqlStringEscaper::escape($this->_search_limit).'%"';
 
             // groups
-            $query .= ' OR UPPER(groups.name) LIKE BINARY "%'.encode(AS_DB, $this->_search_limit).'%"';
+            $query .= ' OR UPPER(groups.name) LIKE BINARY "%'.\App\Legacy\SqlStringEscaper::escape($this->_search_limit).'%"';
             $query .= ' )';
         }
 
@@ -225,7 +225,7 @@ class cs_step_manager extends cs_manager
          if (!empty($this->_cache_object[$item_id])) {
              $step = $this->_cache_object[$item_id];
          } else {
-             $query = 'SELECT * FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').".item_id = '".encode(AS_DB, $item_id)."'";
+             $query = 'SELECT * FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').".item_id = '".\App\Legacy\SqlStringEscaper::escape($item_id)."'";
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result) or empty($result[0])) {
                  trigger_error('Problems selecting one step item from query: "'.$query.'"', E_USER_WARNING);
@@ -251,7 +251,7 @@ class cs_step_manager extends cs_manager
             return new cs_step_list();
         } else {
             $step = null;
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').".item_id IN ('".implode("', '", encode(AS_DB, $id_array))."')";
+            $query = 'SELECT * FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').".item_id IN ('".implode("', '", \App\Legacy\SqlStringEscaper::escape($id_array))."')";
             $query .= ' ORDER BY '.$this->addDatabasePrefix('step').'.item_id';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
@@ -281,7 +281,7 @@ class cs_step_manager extends cs_manager
             return new cs_step_list();
         } else {
             $step = null;
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('step')." WHERE todo_item_id IN ('".implode("', '", encode(AS_DB, $id_array))."')";
+            $query = 'SELECT * FROM '.$this->addDatabasePrefix('step')." WHERE todo_item_id IN ('".implode("', '", \App\Legacy\SqlStringEscaper::escape($id_array))."')";
             $query .= ' AND '.$this->addDatabasePrefix('step').'.deleter_id IS NULL';
             $query .= ' AND '.$this->addDatabasePrefix('step').'.deletion_date IS NULL';
             $result = $this->_db_connector->performQuery($query);
@@ -323,13 +323,13 @@ class cs_step_manager extends cs_manager
 
         $query = 'UPDATE '.$this->addDatabasePrefix('step').' SET '.
               $date_string.
-              'title="'.encode(AS_DB, $item->getTitle()).'",'.
-              'description="'.encode(AS_DB, $item->getDescription()).'",'.
-              'minutes="'.encode(AS_DB, $item->getMinutes()).'",'.
-              'time_type="'.encode(AS_DB, $item->getTimeType()).'",'.
-              'todo_item_id="'.encode(AS_DB, $item->getTodoID()).'",'.
-              'modifier_id="'.encode(AS_DB, $modificator_item->getItemID()).'"'.
-              ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
+              'title="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'",'.
+              'description="'.\App\Legacy\SqlStringEscaper::escape($item->getDescription()).'",'.
+              'minutes="'.\App\Legacy\SqlStringEscaper::escape($item->getMinutes()).'",'.
+              'time_type="'.\App\Legacy\SqlStringEscaper::escape($item->getTimeType()).'",'.
+              'todo_item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getTodoID()).'",'.
+              'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($modificator_item->getItemID()).'"'.
+              ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"';
         // extras (TBD)
 
         $result = $this->_db_connector->performQuery($query);
@@ -349,10 +349,10 @@ class cs_step_manager extends cs_manager
   public function _create($item)
   {
       $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-               'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
+               'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
                'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                'type="step",'.
-               'draft="'.encode(AS_DB, $item->isDraft()).'"';
+               'draft="'.\App\Legacy\SqlStringEscaper::escape($item->isDraft()).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
           trigger_error('Problems creating step from query: "'.$query.'"', E_USER_WARNING);

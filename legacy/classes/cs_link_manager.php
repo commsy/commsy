@@ -222,16 +222,16 @@ class cs_link_manager extends cs_manager
              $query .= ' AND ((';
          }
          if (isset($this->_linked_item)) {
-             $query .= ' first_item_id ="'.encode(AS_DB, $this->_linked_item->getItemID()).'"';
+             $query .= ' first_item_id ="'.\App\Legacy\SqlStringEscaper::escape($this->_linked_item->getItemID()).'"';
          }
          if (isset($this->_second_linked_item)) {
-             $query .= ' AND second_item_id ="'.encode(AS_DB, $this->_second_linked_item->getItemID()).'"';
+             $query .= ' AND second_item_id ="'.\App\Legacy\SqlStringEscaper::escape($this->_second_linked_item->getItemID()).'"';
          }
          if (!empty($this->_link_type_limit)) {
              if (!empty($this->_linked_item) or !empty($this->_second_linked_item)) {
                  $query .= ' AND';
              }
-             $query .= ' second_item_type ="'.encode(AS_DB, $this->_link_type_limit).'"';
+             $query .= ' second_item_type ="'.\App\Legacy\SqlStringEscaper::escape($this->_link_type_limit).'"';
          } elseif (!empty($this->_link_type_array_limit)) {
              if (!empty($this->_linked_item) or !empty($this->_second_linked_item)) {
                  $query .= ' AND';
@@ -241,9 +241,9 @@ class cs_link_manager extends cs_manager
              foreach ($this->_link_type_array_limit as $limit) {
                  if ($first) {
                      $first = false;
-                     $query .= ' second_item_type ="'.encode(AS_DB, $limit).'"';
+                     $query .= ' second_item_type ="'.\App\Legacy\SqlStringEscaper::escape($limit).'"';
                  } else {
-                     $query .= ' OR second_item_type ="'.encode(AS_DB, $limit).'"';
+                     $query .= ' OR second_item_type ="'.\App\Legacy\SqlStringEscaper::escape($limit).'"';
                  }
              }
              $query .= ')';
@@ -253,16 +253,16 @@ class cs_link_manager extends cs_manager
              $query .= ' OR (';
          }
          if (isset($this->_linked_item)) {
-             $query .= ' second_item_id ="'.encode(AS_DB, $this->_linked_item->getItemID()).'"';
+             $query .= ' second_item_id ="'.\App\Legacy\SqlStringEscaper::escape($this->_linked_item->getItemID()).'"';
          }
          if (isset($this->_second_linked_item)) {
-             $query .= ' AND first_item_id ="'.encode(AS_DB, $this->_second_linked_item->getItemID()).'"';
+             $query .= ' AND first_item_id ="'.\App\Legacy\SqlStringEscaper::escape($this->_second_linked_item->getItemID()).'"';
          }
          if (!empty($this->_link_type_limit)) {
              if (!empty($this->_linked_item) or !empty($this->_second_linked_item)) {
                  $query .= ' AND';
              }
-             $query .= ' first_item_type ="'.encode(AS_DB, $this->_link_type_limit).'"';
+             $query .= ' first_item_type ="'.\App\Legacy\SqlStringEscaper::escape($this->_link_type_limit).'"';
          } if (!empty($this->_link_type_array_limit)) {
              if (!empty($this->_linked_item) or !empty($this->_second_linked_item)) {
                  $query .= ' AND';
@@ -272,9 +272,9 @@ class cs_link_manager extends cs_manager
              foreach ($this->_link_type_array_limit as $limit) {
                  if ($first) {
                      $first = false;
-                     $query .= ' first_item_type ="'.encode(AS_DB, $limit).'"';
+                     $query .= ' first_item_type ="'.\App\Legacy\SqlStringEscaper::escape($limit).'"';
                  } else {
-                     $query .= ' OR first_item_type ="'.encode(AS_DB, $limit).'"';
+                     $query .= ' OR first_item_type ="'.\App\Legacy\SqlStringEscaper::escape($limit).'"';
                  }
              }
              $query .= ' )';
@@ -284,7 +284,7 @@ class cs_link_manager extends cs_manager
          }
          $query .= ' AND '.$this->addDatabasePrefix('link_items').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('link_items').'.deletion_date IS NULL';
          if (isset($this->_room_limit)) {
-             $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+             $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
          }
 //       else {
 //         $query .= ' AND link_items.context_id = "'.$this->_environment->getCurrentContextID().'"';
@@ -312,7 +312,7 @@ class cs_link_manager extends cs_manager
              $query .= ' ORDER BY '.$this->addDatabasePrefix('link_items').'.creation_date DESC';
          }
          if (isset($this->_entry_limit)) {
-             $query .= ' LIMIT 0, '.encode(AS_DB, $this->_entry_limit);
+             $query .= ' LIMIT 0, '.\App\Legacy\SqlStringEscaper::escape($this->_entry_limit);
          }
 
          $cache_exists = false;
@@ -372,13 +372,13 @@ class cs_link_manager extends cs_manager
              $query .= ' first_item_id IN ('.implode(',', $this->_id_array_limit).')';
          }
          if (isset($this->_second_linked_item)) {
-             $query .= ' AND second_item_id ="'.encode(AS_DB, $this->_second_linked_item->getItemID()).'"';
+             $query .= ' AND second_item_id ="'.\App\Legacy\SqlStringEscaper::escape($this->_second_linked_item->getItemID()).'"';
          }
          if (!empty($this->_link_type_limit)) { // user
              if (!empty($this->_id_array_limit) or !empty($this->_second_linked_item)) { // id-Array
                  $query .= ' AND';
              }
-             $query .= ' second_item_type ="'.encode(AS_DB, $this->_link_type_limit).'"'; // user
+             $query .= ' second_item_type ="'.\App\Legacy\SqlStringEscaper::escape($this->_link_type_limit).'"'; // user
          } elseif (!empty($this->_link_type_array_limit)) {
              if (!empty($this->_id_array_limit) or !empty($this->_second_linked_item)) { // id-Array
                  $query .= ' AND';
@@ -388,9 +388,9 @@ class cs_link_manager extends cs_manager
              foreach ($this->_link_type_array_limit as $limit) {
                  if ($first) {
                      $first = false;
-                     $query .= ' second_item_type ="'.encode(AS_DB, $limit).'"';
+                     $query .= ' second_item_type ="'.\App\Legacy\SqlStringEscaper::escape($limit).'"';
                  } else {
-                     $query .= ' OR second_item_type ="'.encode(AS_DB, $limit).'"';
+                     $query .= ' OR second_item_type ="'.\App\Legacy\SqlStringEscaper::escape($limit).'"';
                  }
              }
              $query .= ')';
@@ -403,13 +403,13 @@ class cs_link_manager extends cs_manager
              $query .= ' second_item_id IN ('.implode(',', $this->_id_array_limit).')'; // id-Array
          }
          if (isset($this->_second_linked_item)) {
-             $query .= ' AND first_item_id ="'.encode(AS_DB, $this->_second_linked_item->getItemID()).'"';
+             $query .= ' AND first_item_id ="'.\App\Legacy\SqlStringEscaper::escape($this->_second_linked_item->getItemID()).'"';
          }
          if (!empty($this->_link_type_limit)) { // user
              if (!empty($this->_id_array_limit) or !empty($this->_second_linked_item)) { // id-Array
                  $query .= ' AND';
              }
-             $query .= ' first_item_type ="'.encode(AS_DB, $this->_link_type_limit).'"'; // user
+             $query .= ' first_item_type ="'.\App\Legacy\SqlStringEscaper::escape($this->_link_type_limit).'"'; // user
          } if (!empty($this->_link_type_array_limit)) {
              if (!empty($this->_id_array_limit) or !empty($this->_second_linked_item)) { // id-Array
                  $query .= ' AND';
@@ -419,9 +419,9 @@ class cs_link_manager extends cs_manager
              foreach ($this->_link_type_array_limit as $limit) {
                  if ($first) {
                      $first = false;
-                     $query .= ' first_item_type ="'.encode(AS_DB, $limit).'"';
+                     $query .= ' first_item_type ="'.\App\Legacy\SqlStringEscaper::escape($limit).'"';
                  } else {
-                     $query .= ' OR first_item_type ="'.encode(AS_DB, $limit).'"';
+                     $query .= ' OR first_item_type ="'.\App\Legacy\SqlStringEscaper::escape($limit).'"';
                  }
              }
              $query .= ' )';
@@ -431,7 +431,7 @@ class cs_link_manager extends cs_manager
          }
          $query .= ' AND '.$this->addDatabasePrefix('link_items').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('link_items').'.deletion_date IS NULL';
          if (isset($this->_room_limit)) {
-             $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+             $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
          }
 //       else {
 //         $query .= ' AND link_items.context_id = "'.$this->_environment->getCurrentContextID().'"';
@@ -459,7 +459,7 @@ class cs_link_manager extends cs_manager
              $query .= ' ORDER BY '.$this->addDatabasePrefix('link_items').'.creation_date DESC';
          }
          if (isset($this->_entry_limit)) {
-             $query .= ' LIMIT 0, '.encode(AS_DB, $this->_entry_limit);
+             $query .= ' LIMIT 0, '.\App\Legacy\SqlStringEscaper::escape($this->_entry_limit);
          }
 
          $cache_exists = false;
@@ -628,18 +628,18 @@ class cs_link_manager extends cs_manager
         $modificator = $link_item->getModificatorItem();
         $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
-                 'first_item_id="'.encode(AS_DB, $first_item->getItemID()).'",'.
-                 'second_item_id="'.encode(AS_DB, $second_item->getItemID()).'",'.
-                 'first_item_type="'.encode(AS_DB, $link_item->getFirstLinkedItemType()).'",'.
-                 'second_item_type="'.encode(AS_DB, $link_item->getSecondLinkedItemType()).'",';
+                 'first_item_id="'.\App\Legacy\SqlStringEscaper::escape($first_item->getItemID()).'",'.
+                 'second_item_id="'.\App\Legacy\SqlStringEscaper::escape($second_item->getItemID()).'",'.
+                 'first_item_type="'.\App\Legacy\SqlStringEscaper::escape($link_item->getFirstLinkedItemType()).'",'.
+                 'second_item_type="'.\App\Legacy\SqlStringEscaper::escape($link_item->getSecondLinkedItemType()).'",';
 
         if ('' != $link_item->getSortingPlace()) {
-            $query .= 'sorting_place="'.encode(AS_DB, $link_item->getSortingPlace()).'",';
+            $query .= 'sorting_place="'.\App\Legacy\SqlStringEscaper::escape($link_item->getSortingPlace()).'",';
         }
 
-        $query .= 'sorting_place="'.encode(AS_DB, $link_item->getSortingPlace()).'",'.
-                  'extras="'.encode(AS_DB, serialize($link_item->getExtraInformation())).'"'.
-                  ' WHERE item_id="'.encode(AS_DB, $link_item->getItemID()).'"';
+        $query .= 'sorting_place="'.\App\Legacy\SqlStringEscaper::escape($link_item->getSortingPlace()).'",'.
+                  'extras="'.\App\Legacy\SqlStringEscaper::escape(serialize($link_item->getExtraInformation())).'"'.
+                  ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($link_item->getItemID()).'"';
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
@@ -660,7 +660,7 @@ class cs_link_manager extends cs_manager
     public function _create($link_item)
     {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-                 'context_id="'.encode(AS_DB, $link_item->getContextID()).'",'.
+                 'context_id="'.\App\Legacy\SqlStringEscaper::escape($link_item->getContextID()).'",'.
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="link_item"';
         $result = $this->_db_connector->performQuery($query);
@@ -675,8 +675,8 @@ class cs_link_manager extends cs_manager
             $creator_id = $creator->getItemID();
             $current_datetime = \App\Utils\MysqlDateTime::now();
             $query = 'INSERT INTO '.$this->addDatabasePrefix('link_items').' SET '.
-                      'item_id="'.encode(AS_DB, $link_item->getItemID()).'",';
-            $query .= 'context_id="'.encode(AS_DB, $link_item->getContextID()).'",';
+                      'item_id="'.\App\Legacy\SqlStringEscaper::escape($link_item->getItemID()).'",';
+            $query .= 'context_id="'.\App\Legacy\SqlStringEscaper::escape($link_item->getContextID()).'",';
             $first_item = $link_item->getFirstLinkedItem();
             if (isset($first_item)) {
                 $first_item_id = $first_item->getItemID();
@@ -695,21 +695,21 @@ class cs_link_manager extends cs_manager
             }
 
             if (isset($creator_id) && !empty($creator_id)) {
-                $query .= 'creator_id="'.encode(AS_DB, $creator_id).'",';
+                $query .= 'creator_id="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'",';
             }
 
             $query .= 'creation_date="'.$current_datetime.'",'.
                       'modification_date="'.$current_datetime.'",'.
-                      'first_item_id="'.encode(AS_DB, $first_item_id).'",'.
-                      'second_item_id="'.encode(AS_DB, $second_item_id).'",'.
-                      'first_item_type="'.encode(AS_DB, $first_item_type).'",'.
-                      'second_item_type="'.encode(AS_DB, $second_item_type).'",';
+                      'first_item_id="'.\App\Legacy\SqlStringEscaper::escape($first_item_id).'",'.
+                      'second_item_id="'.\App\Legacy\SqlStringEscaper::escape($second_item_id).'",'.
+                      'first_item_type="'.\App\Legacy\SqlStringEscaper::escape($first_item_type).'",'.
+                      'second_item_type="'.\App\Legacy\SqlStringEscaper::escape($second_item_type).'",';
 
             if ('' != $link_item->getSortingPlace()) {
-                $query .= 'sorting_place="'.encode(AS_DB, $link_item->getSortingPlace()).'",';
+                $query .= 'sorting_place="'.\App\Legacy\SqlStringEscaper::escape($link_item->getSortingPlace()).'",';
             }
 
-            $query .= 'extras="'.encode(AS_DB, serialize($link_item->getExtraInformation())).'"';
+            $query .= 'extras="'.\App\Legacy\SqlStringEscaper::escape(serialize($link_item->getExtraInformation())).'"';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 trigger_error('Problems creating link item from query: "'.$query.'"', E_USER_WARNING);
@@ -729,11 +729,11 @@ class cs_link_manager extends cs_manager
           $user_id = $current_user->getItemID() ?: 0;
           $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
-              'deleter_id="'.encode(AS_DB, $user_id).'"'.
-              ' WHERE (first_item_id="'.encode(AS_DB, $item_id).'"';
-          $query .= ' OR second_item_id="'.encode(AS_DB, $item_id).'"';
+              'deleter_id="'.\App\Legacy\SqlStringEscaper::escape($user_id).'"'.
+              ' WHERE (first_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
+          $query .= ' OR second_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
           $query .= ')';
-          $query .= ' AND context_id ="'.encode(AS_DB, $context_id).'"';
+          $query .= ' AND context_id ="'.\App\Legacy\SqlStringEscaper::escape($context_id).'"';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
               trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"', E_USER_WARNING);
@@ -750,13 +750,13 @@ class cs_link_manager extends cs_manager
          $query .= ' WHERE 1';
 
          if (isset($this->_room_limit)) {
-             $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+             $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
          } else {
-             $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.encode(AS_DB, $this->_environment->getCurrentContextID()).'"';
+             $query .= ' AND '.$this->addDatabasePrefix('link_items').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentContextID()).'"';
          }
          $query .= ' AND NOT('.$this->addDatabasePrefix('link_items').'.first_item_type="user" AND '.$this->addDatabasePrefix('link_items').'.second_item_type="group")';
          $query .= ' AND '.$this->addDatabasePrefix('link_items').'.deleter_id IS NULL';
-         $query .= ' AND '.$this->addDatabasePrefix('link_items').'.creator_id ="'.encode(AS_DB, $user_id).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('link_items').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($user_id).'"';
 
          // perform query
          $result = $this->_db_connector->performQuery($query);
@@ -778,9 +778,9 @@ class cs_link_manager extends cs_manager
           $user_id = $this->_current_user->getItemID() ?: 0;
           $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET '.
               'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
-              'deleter_id="'.encode(AS_DB, $user_id).'"'.
-              ' WHERE (first_item_id="'.encode(AS_DB, $item_id).'"';
-          $query .= ') OR (second_item_id="'.encode(AS_DB, $item_id).'"';
+              'deleter_id="'.\App\Legacy\SqlStringEscaper::escape($user_id).'"'.
+              ' WHERE (first_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
+          $query .= ') OR (second_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
           $query .= ')';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
@@ -793,9 +793,9 @@ class cs_link_manager extends cs_manager
                   $this->addDatabasePrefix('link_items').'
             SET
                deletion_date = "'.\App\Utils\MysqlDateTime::now().'",
-               deleter_id = "'.encode(AS_DB, $user_id).'"
+               deleter_id = "'.\App\Legacy\SqlStringEscaper::escape($user_id).'"
             WHERE
-               item_id = "'.encode(AS_DB, $item_id).'"
+               item_id = "'.\App\Legacy\SqlStringEscaper::escape($item_id).'"
         ';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) || !$result) {
@@ -812,9 +812,9 @@ class cs_link_manager extends cs_manager
               'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
               'deletion_date=NULL,'.
               'deleter_id=NULL'.
-              ' WHERE deletion_date>="'.encode(AS_DB, $item->getDeletionDate()).'"'.
-              ' AND (first_item_id="'.encode(AS_DB, $item->getItemID()).'"'.
-              ' OR second_item_id="'.encode(AS_DB, $item->getItemID()).'")';
+              ' WHERE deletion_date>="'.\App\Legacy\SqlStringEscaper::escape($item->getDeletionDate()).'"'.
+              ' AND (first_item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"'.
+              ' OR second_item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'")';
           $result = $this->_db_connector->performQuery($query);
           if (!isset($result) or !$result) {
               trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"', E_USER_WARNING);
@@ -829,22 +829,22 @@ class cs_link_manager extends cs_manager
         $query = '';
         switch ($type) {
             case CS_MATERIAL_TYPE:
-                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('materials').'.item_id FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.creator_id ="'.encode(AS_DB, $creator_id).'" AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('materials').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC';
+                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('materials').'.item_id FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('materials').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC';
                 break;
             case CS_PROJECT_TYPE:
-                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('room').'.item_id FROM '.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('room').'.creator_id ="'.encode(AS_DB, $creator_id).'" AND '.$this->addDatabasePrefix('room').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('room').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('room').'.type="project" ORDER BY '.$this->addDatabasePrefix('room').'.modification_date DESC, '.$this->addDatabasePrefix('room').'.title ASC';
+                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('room').'.item_id FROM '.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('room').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('room').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('room').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('room').'.type="project" ORDER BY '.$this->addDatabasePrefix('room').'.modification_date DESC, '.$this->addDatabasePrefix('room').'.title ASC';
                 break;
             case CS_ANNOUNCEMENT_TYPE:
-                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('announcement').'.item_id FROM '.$this->addDatabasePrefix('announcement').' WHERE '.$this->addDatabasePrefix('announcement').'.creator_id ="'.encode(AS_DB, $creator_id).'" AND '.$this->addDatabasePrefix('announcement').'.deleter_id IS NULL  AND '.$this->addDatabasePrefix('announcement').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
+                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('announcement').'.item_id FROM '.$this->addDatabasePrefix('announcement').' WHERE '.$this->addDatabasePrefix('announcement').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('announcement').'.deleter_id IS NULL  AND '.$this->addDatabasePrefix('announcement').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
                 break;
             case CS_DISCUSSION_TYPE:
-                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.item_id FROM '.$this->addDatabasePrefix('discussions').' WHERE '.$this->addDatabasePrefix('discussions').'.creator_id ="'.encode(AS_DB, $creator_id).'" AND '.$this->addDatabasePrefix('discussions').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('discussions').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('discussions').'.modification_date DESC, '.$this->addDatabasePrefix('discussions').'.title DESC';
+                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.item_id FROM '.$this->addDatabasePrefix('discussions').' WHERE '.$this->addDatabasePrefix('discussions').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('discussions').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('discussions').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('discussions').'.modification_date DESC, '.$this->addDatabasePrefix('discussions').'.title DESC';
                 break;
             case CS_TODO_TYPE:
-                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('todos').'.item_id FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').'.creator_id ="'.encode(AS_DB, $creator_id).'" AND '.$this->addDatabasePrefix('todos').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('todos').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date DESC';
+                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('todos').'.item_id FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('todos').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('todos').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date DESC';
                 break;
             case CS_DATE_TYPE:
-                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('dates').'.item_id FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').'.creator_id ="'.encode(AS_DB, $creator_id).'" AND '.$this->addDatabasePrefix('dates').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('dates').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
+                $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('dates').'.item_id FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('dates').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('dates').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
                 break;
         }
         // perform query
@@ -857,7 +857,7 @@ class cs_link_manager extends cs_manager
             }
         }
         if ('CS_DISCUSSION_TYPE' == $type) {
-            $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussionarticless').'.item_id FROM '.$this->addDatabasePrefix('discussionarticles').' WHERE '.$this->addDatabasePrefix('discussionarticles').'.creator_id ="'.encode(AS_DB, $creator_id).'" OR '.$this->addDatabasePrefix('discussionarticles').'.deleter_id IS NULL  ORDER BY '.$this->addDatabasePrefix('discussionarticle').'.modification_date DESC, '.$this->addDatabasePrefix('discussionarticle').'.subject DESC';
+            $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussionarticless').'.item_id FROM '.$this->addDatabasePrefix('discussionarticles').' WHERE '.$this->addDatabasePrefix('discussionarticles').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" OR '.$this->addDatabasePrefix('discussionarticles').'.deleter_id IS NULL  ORDER BY '.$this->addDatabasePrefix('discussionarticle').'.modification_date DESC, '.$this->addDatabasePrefix('discussionarticle').'.subject DESC';
             $result = $this->_db_connector->performQuery($query);
             $id_array = [];
             if (isset($result)) {
@@ -877,7 +877,7 @@ class cs_link_manager extends cs_manager
     public function moveRoom($roomMover)
     {
         $query = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET ';
-        $query .= " WHERE context_id = '".encode(AS_DB, $roomMover->getRoomId())."'";
+        $query .= " WHERE context_id = '".\App\Legacy\SqlStringEscaper::escape($roomMover->getRoomId())."'";
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
@@ -889,12 +889,12 @@ class cs_link_manager extends cs_manager
      {
          parent::mergeAccounts($new_id, $old_id);
 
-         $query = 'SELECT * FROM '.$this->addDatabasePrefix('link_items').' WHERE creator_id = "'.encode(AS_DB, $new_id).'" AND first_item_id ="'.encode(AS_DB, $old_id).'"';
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix('link_items').' WHERE creator_id = "'.\App\Legacy\SqlStringEscaper::escape($new_id).'" AND first_item_id ="'.\App\Legacy\SqlStringEscaper::escape($old_id).'"';
          $result = $this->_db_connector->performQuery($query);
          if (isset($result)) {
              foreach ($result as $row) {
                  $update = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET ';
-                 $update .= ' first_item_id = '.encode(AS_DB, $new_id);
+                 $update .= ' first_item_id = '.\App\Legacy\SqlStringEscaper::escape($new_id);
                  $update .= ' WHERE item_id = '.$row['item_id'];
 
                  $result2 = $this->_db_connector->performQuery($update);
@@ -904,12 +904,12 @@ class cs_link_manager extends cs_manager
              }
          }
 
-         $query = 'SELECT * FROM '.$this->addDatabasePrefix('link_items').' WHERE creator_id = "'.encode(AS_DB, $new_id).'" AND second_item_id ="'.encode(AS_DB, $old_id).'"';
+         $query = 'SELECT * FROM '.$this->addDatabasePrefix('link_items').' WHERE creator_id = "'.\App\Legacy\SqlStringEscaper::escape($new_id).'" AND second_item_id ="'.\App\Legacy\SqlStringEscaper::escape($old_id).'"';
          $result = $this->_db_connector->performQuery($query);
          if (isset($result)) {
              foreach ($result as $row) {
                  $update = 'UPDATE '.$this->addDatabasePrefix('link_items').' SET ';
-                 $update .= ' second_item_id = '.encode(AS_DB, $new_id);
+                 $update .= ' second_item_id = '.\App\Legacy\SqlStringEscaper::escape($new_id);
                  $update .= ' WHERE item_id = '.$row['item_id'];
 
                  $result2 = $this->_db_connector->performQuery($update);
@@ -923,7 +923,7 @@ class cs_link_manager extends cs_manager
      public function cleanSortingPlaces($linked_item)
      {
          $item_id = $linked_item->getItemID();
-         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=NULL WHERE first_item_id="'.encode(AS_DB, $item_id).'" OR second_item_id="'.encode(AS_DB, $item_id).'";';
+         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=NULL WHERE first_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'" OR second_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'";';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
              trigger_error('Problems cleaning sorting place at table '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
@@ -944,13 +944,13 @@ class cs_link_manager extends cs_manager
                UPDATE '.
                        $this->addDatabasePrefix($this->_db_table).'
                SET
-                  sorting_place="'.encode(AS_DB, $place).'",
+                  sorting_place="'.\App\Legacy\SqlStringEscaper::escape($place).'",
                   modification_date = "'.getCurrentDateTimeinMySQL().'"
                WHERE
-                  item_id="'.encode(AS_DB, $item_id).'";
+                  item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'";
             ';
 
-                 // $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place="'.encode(AS_DB,$place).'" WHERE item_id="'.encode(AS_DB,$item_id).'";';
+                 // $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place="'.\App\Legacy\SqlStringEscaper::escape($place).'" WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'";';
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result) or !$result) {
                      trigger_error('Problems saveing sorting place at table '.$this->_db_table.' from query: "'.$query.'"', E_USER_WARNING);
@@ -1017,7 +1017,7 @@ class cs_link_manager extends cs_manager
          } elseif (array_key_exists($item_id, $this->_cached_items)) {
              $item = $this->_buildItem($this->_cached_items[$item_id]);
          } elseif (!empty($item_id)) {
-             $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.encode(AS_DB, $item_id).'";';
+             $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.\App\Legacy\SqlStringEscaper::escape($item_id).'";';
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result) or empty($result[0])) {
                  trigger_error('Problems selecting one '.$this->_db_table.' item ('.$item_id.').', E_USER_WARNING);
@@ -1055,10 +1055,10 @@ class cs_link_manager extends cs_manager
               if ($deletion_date) {
                   $query .= ' deletion_date IS NULL AND deleter_id IS NULL AND';
               }
-              $query .= ' ('.$this->addDatabasePrefix($this->_db_table).'.first_item_id = "'.encode(AS_DB, $first_id).'"';
-              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.second_item_id = "'.encode(AS_DB, $second_id).'")';
-              $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.first_item_id = "'.encode(AS_DB, $second_id).'"';
-              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.second_item_id = "'.encode(AS_DB, $first_id).'")';
+              $query .= ' ('.$this->addDatabasePrefix($this->_db_table).'.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($first_id).'"';
+              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($second_id).'")';
+              $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($second_id).'"';
+              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($first_id).'")';
 
               $query .= ';';
               $result = $this->_db_connector->performQuery($query);
@@ -1090,7 +1090,7 @@ class cs_link_manager extends cs_manager
    			FROM
    				'.$this->addDatabasePrefix($this->_db_table).'
    			WHERE
-   				'.$this->addDatabasePrefix($this->_db_table).'.context_id = '.encode(AS_DB, $contextId).' AND
+   				'.$this->addDatabasePrefix($this->_db_table).'.context_id = '.\App\Legacy\SqlStringEscaper::escape($contextId).' AND
    				'.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL AND
    				(
    					'.$this->addDatabasePrefix($this->_db_table).'.first_item_id IN ('.$inString.') OR

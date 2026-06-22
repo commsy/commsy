@@ -102,7 +102,7 @@ class cs_tasks_manager extends cs_manager
 
     public function setTaskSearchLimit($limit)
     {
-        $this->_search_limit = encode(AS_DB, (string) $limit);
+        $this->_search_limit = \App\Legacy\SqlStringEscaper::escape((string) $limit);
     }
 
     public function setLinkedIDLimit($value)
@@ -128,24 +128,24 @@ class cs_tasks_manager extends cs_manager
 
         // insert limits into the select statement
         if (isset($this->_room_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('tasks').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('tasks').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
         }
         if (true == $this->_delete_limit) {
             $query .= ' AND '.$this->addDatabasePrefix('tasks').'.deleter_id IS NULL';
         }
         if (isset($this->_status_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('tasks').'.status = "'.encode(AS_DB, $this->_status_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('tasks').'.status = "'.\App\Legacy\SqlStringEscaper::escape($this->_status_limit).'"';
         }
         if (isset($this->_linked_id_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('tasks').'.linked_item_id = "'.encode(AS_DB, $this->_linked_id_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('tasks').'.linked_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_linked_id_limit).'"';
         }
 
         // restrict sql-statement by search limit, create wheres
         elseif (isset($this->_search_limit) and !empty($this->_search_limit)) {
             $query .= ' AND (';
-            $query .= ' UPPER('.$this->addDatabasePrefix('tasks').'.title) LIKE BINARY "%'.encode(AS_DB, $this->_search_limit).'%"';
+            $query .= ' UPPER('.$this->addDatabasePrefix('tasks').'.title) LIKE BINARY "%'.\App\Legacy\SqlStringEscaper::escape($this->_search_limit).'%"';
             $query .= ' OR';
-            $query .= ' UPPER('.$this->addDatabasePrefix('tasks').'.status) LIKE BINARY "%'.encode(AS_DB, $this->_search_limit).'%")';
+            $query .= ' UPPER('.$this->addDatabasePrefix('tasks').'.status) LIKE BINARY "%'.\App\Legacy\SqlStringEscaper::escape($this->_search_limit).'%")';
         }
 
         if (isset($this->_sort_order)) {
@@ -190,7 +190,7 @@ class cs_tasks_manager extends cs_manager
     public function getItem(?int $item_id)
     {
         $task = null;
-        $query = 'SELECT * FROM '.$this->addDatabasePrefix('tasks').' WHERE '.$this->addDatabasePrefix('tasks').".item_id = '".encode(AS_DB, $item_id)."'";
+        $query = 'SELECT * FROM '.$this->addDatabasePrefix('tasks').' WHERE '.$this->addDatabasePrefix('tasks').".item_id = '".\App\Legacy\SqlStringEscaper::escape($item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
             trigger_error('Problems selecting one task from query: "'.$query.'"', E_USER_WARNING);
@@ -257,10 +257,10 @@ class cs_tasks_manager extends cs_manager
         parent::_update($item);
         $query = 'UPDATE '.$this->addDatabasePrefix('tasks').' SET '.
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
-                 'title="'.encode(AS_DB, $item->getTitle()).'",'.
+                 'title="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'",'.
 //              'linked_item_id="'.$item->getLinkedItemID().'",'.
-                 'status="'.encode(AS_DB, $item->getStatus()).'"'.
-                 ' WHERE item_id="'.encode(AS_DB, $item->getItemID()).'"';
+                 'status="'.\App\Legacy\SqlStringEscaper::escape($item->getStatus()).'"'.
+                 ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'"';
         // extras (TBD)
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
@@ -277,7 +277,7 @@ class cs_tasks_manager extends cs_manager
     public function _create($item)
     {
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-                 'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
+                 'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="task"';
         $result = $this->_db_connector->performQuery($query);
@@ -302,14 +302,14 @@ class cs_tasks_manager extends cs_manager
         $current_user = $item->getCreatorItem();
         $linked_item = $item->getItem();
         $query = 'INSERT INTO '.$this->addDatabasePrefix('tasks').' SET '.
-                 'item_id="'.encode(AS_DB, $item->getItemID()).'",'.
-                 'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
-                 'creator_id="'.encode(AS_DB, $current_user->getItemID()).'",'.
+                 'item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'",'.
+                 'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
+                 'creator_id="'.\App\Legacy\SqlStringEscaper::escape($current_user->getItemID()).'",'.
                  'creation_date="'.$current_datetime.'",'.
                  'modification_date="'.$current_datetime.'",'.
-                 'title="'.encode(AS_DB, $item->getTitle()).'",'.
-                 'linked_item_id="'.encode(AS_DB, $linked_item->getItemID()).'",'.
-                 'status="'.encode(AS_DB, $item->getStatus()).'"';
+                 'title="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'",'.
+                 'linked_item_id="'.\App\Legacy\SqlStringEscaper::escape($linked_item->getItemID()).'",'.
+                 'status="'.\App\Legacy\SqlStringEscaper::escape($item->getStatus()).'"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems creating task item from query: "'.$query.'"', E_USER_WARNING);
@@ -325,7 +325,7 @@ class cs_tasks_manager extends cs_manager
     public function getTaskListForItem($item)
     {
         $item_id = $item->getItemID();
-        $query = 'SELECT * FROM '.$this->addDatabasePrefix('tasks').' WHERE linked_item_id="'.encode(AS_DB, $item_id).'"';
+        $query = 'SELECT * FROM '.$this->addDatabasePrefix('tasks').' WHERE linked_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
         $result = $this->_db_connector->performQuery($query);
         $task_list = new cs_list();
         foreach ($result as $query_result) {

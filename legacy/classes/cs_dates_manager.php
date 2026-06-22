@@ -521,7 +521,7 @@ class cs_dates_manager extends cs_manager
        $color_array = [];
        $query = 'SELECT DISTINCT color FROM '.$this->addDatabasePrefix('dates').' WHERE 1';
        if (isset($this->_room_limit)) {
-           $query .= ' AND '.$this->addDatabasePrefix('dates').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+           $query .= ' AND '.$this->addDatabasePrefix('dates').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
        }
        $result = $this->_db_connector->performQuery($query);
        if (!isset($result)) {

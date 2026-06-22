@@ -75,7 +75,7 @@ class cs_translator
             if (file_exists($this->_file_path.$entry)) {
                 include_once $this->_file_path.$entry;
                 if (!empty($message)) {
-                    $message = encode(FROM_FILE, $message);
+                    $message = \App\Legacy\LegacyTextDecode::fromFile($message);
                     $this->messageArray = array_replace_recursive($this->messageArray, $message);
                     unset($message);
                 }
@@ -87,7 +87,7 @@ class cs_translator
                     if (file_exists($this->_file_path.$entry)) {
                         include_once $this->_file_path.$entry;
                         if (!empty($message)) {
-                            $message = encode(FROM_FILE, $message);
+                            $message = \App\Legacy\LegacyTextDecode::fromFile($message);
                             $this->messageArray = array_replace_recursive($this->messageArray, $message);
                             unset($message);
                         }

@@ -39,7 +39,7 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
         $link_modifiers = [];
         $query = 'SELECT t2.item_id '.
                   'FROM '.$this->addDatabasePrefix('link_modifier_item').' AS t1, '.$this->addDatabasePrefix('user').' AS t2 '.
-                  'WHERE t1.item_id = "'.encode(AS_DB, $item_id).'" AND t1.modifier_id = t2.item_id '.
+                  'WHERE t1.item_id = "'.\App\Legacy\SqlStringEscaper::escape($item_id).'" AND t1.modifier_id = t2.item_id '.
                   'ORDER BY lastname ASC';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
@@ -68,11 +68,11 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
          if (!empty($user_id)) {
              $query = '
                 INSERT INTO '.$this->addDatabasePrefix('link_modifier_item').' SET '.
-                 ' item_id="'.encode(AS_DB, $item_id).'", '.
-                 ' modifier_id="'.encode(AS_DB, $user_id).'"'.
+                 ' item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'", '.
+                 ' modifier_id="'.\App\Legacy\SqlStringEscaper::escape($user_id).'"'.
                  ' ON DUPLICATE KEY UPDATE'.
-                 ' item_id="'.encode(AS_DB, $item_id).'", '.
-                 ' modifier_id="'.encode(AS_DB, $user_id).'"
+                 ' item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'", '.
+                 ' modifier_id="'.\App\Legacy\SqlStringEscaper::escape($user_id).'"
             ';
 
              try {
@@ -85,17 +85,17 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
 
     public function mergeAccounts($account_new, $account_old)
     {
-        $query_test = 'SELECT * FROM '.$this->addDatabasePrefix('link_modifier_item').' WHERE modifier_id = "'.encode(AS_DB, $account_old).'";';
+        $query_test = 'SELECT * FROM '.$this->addDatabasePrefix('link_modifier_item').' WHERE modifier_id = "'.\App\Legacy\SqlStringEscaper::escape($account_old).'";';
         $result_test = $this->_db_connector->performQuery($query_test);
         if (!empty($result_test)) {
             foreach ($result_test as $row_test) {
-                $query_test2 = 'SELECT * FROM '.$this->addDatabasePrefix('link_modifier_item').' WHERE modifier_id="'.encode(AS_DB, $account_new).'" and item_id="'.encode(AS_DB, $row_test['item_id']).'";';
+                $query_test2 = 'SELECT * FROM '.$this->addDatabasePrefix('link_modifier_item').' WHERE modifier_id="'.\App\Legacy\SqlStringEscaper::escape($account_new).'" and item_id="'.\App\Legacy\SqlStringEscaper::escape($row_test['item_id']).'";';
                 $result_test2 = $this->_db_connector->performQuery($query_test2);
                 if (empty($result_test2)) {
                     $query = 'UPDATE '.$this->addDatabasePrefix('link_modifier_item').' SET ';
-                    $query .= ' modifier_id = '.encode(AS_DB, $account_new);
-                    $query .= ' WHERE modifier_id = '.encode(AS_DB, $account_old);
-                    $query .= ' AND item_id = '.encode(AS_DB, $row_test['item_id']);
+                    $query .= ' modifier_id = '.\App\Legacy\SqlStringEscaper::escape($account_new);
+                    $query .= ' WHERE modifier_id = '.\App\Legacy\SqlStringEscaper::escape($account_old);
+                    $query .= ' AND item_id = '.\App\Legacy\SqlStringEscaper::escape($row_test['item_id']);
 
                     $result = $this->_db_connector->performQuery($query);
                     if (!isset($result) or !$result) {
@@ -103,8 +103,8 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
                     }
                 } else {
                     $query = 'DELETE FROM '.$this->addDatabasePrefix('link_modifier_item');
-                    $query .= ' WHERE modifier_id = '.encode(AS_DB, $account_old);
-                    $query .= ' AND item_id = '.encode(AS_DB, $row_test['item_id']);
+                    $query .= ' WHERE modifier_id = '.\App\Legacy\SqlStringEscaper::escape($account_old);
+                    $query .= ' AND item_id = '.\App\Legacy\SqlStringEscaper::escape($row_test['item_id']);
 
                     $result = $this->_db_connector->performQuery($query);
                     if (!isset($result) or !$result) {

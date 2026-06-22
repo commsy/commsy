@@ -176,25 +176,25 @@ class cs_project_manager extends cs_room2_manager
 
       $query .= ' WHERE 1';
       if (isset($this->_room_type)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB, $this->_room_type).'"';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'"';
       }
       if (isset($this->_community_room_limit) and isset($this->_room_limit)) {
           if (-1 == $this->_community_room_limit) {
               $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';
               $query .= ' AND (l32.first_item_id IS NULL AND l32.second_item_id IS NULL)';
-              $query .= ' AND l31.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
-              $query .= ' AND l32.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+              $query .= ' AND l31.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
+              $query .= ' AND l32.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
           } else {
               $query .= ' AND (';
               $query .= '(';
-              $query .= '(l31.first_item_id = "'.encode(AS_DB, $this->_community_room_limit).'" OR l31.second_item_id = "'.encode(AS_DB, $this->_community_room_limit).'")';
-              $query .= ' AND l31.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+              $query .= '(l31.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_community_room_limit).'" OR l31.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_community_room_limit).'")';
+              $query .= ' AND l31.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
               $query .= ')';
               $query .= ' OR ';
               $query .= '(';
-              $query .= '(l32.first_item_id = "'.encode(AS_DB, $this->_community_room_limit).'" OR l32.second_item_id = "'.encode(AS_DB, $this->_community_room_limit).'")';
+              $query .= '(l32.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_community_room_limit).'" OR l32.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_community_room_limit).'")';
               $query .= ')';
-              $query .= ' AND l32.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+              $query .= ' AND l32.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
               $query .= ')';
           }
       }
@@ -203,8 +203,8 @@ class cs_project_manager extends cs_room2_manager
               $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
               $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
           } else {
-              $query .= ' AND ((l41.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l41.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'")';
-              $query .= ' OR (l42.first_item_id = "'.encode(AS_DB, $this->_topic_limit).'" OR l42.second_item_id = "'.encode(AS_DB, $this->_topic_limit).'"))';
+              $query .= ' AND ((l41.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topic_limit).'" OR l41.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topic_limit).'")';
+              $query .= ' OR (l42.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topic_limit).'" OR l42.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topic_limit).'"))';
           }
       }
       if (isset($this->_institution_limit)) {
@@ -212,43 +212,43 @@ class cs_project_manager extends cs_room2_manager
               $query .= ' AND (l21.first_item_id IS NULL AND l21.second_item_id IS NULL)';
               $query .= ' AND (l22.first_item_id IS NULL AND l22.second_item_id IS NULL)';
           } else {
-              $query .= ' AND ((l21.first_item_id = "'.encode(AS_DB, $this->_institution_limit).'" OR l21.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'")';
-              $query .= ' OR (l22.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'" OR l22.first_item_id = "'.encode(AS_DB, $this->_institution_limit).'"))';
+              $query .= ' AND ((l21.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'" OR l21.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'")';
+              $query .= ' OR (l22.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'" OR l22.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'"))';
           }
       }
       // insert limits into the select statement
       if (isset($this->_room_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
       }
       if (true == $this->_delete_limit) {
           $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL';
       }
       if (isset($this->_age_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_age_limit).' day)';
       }
       if (isset($this->_existence_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_existence_limit).' day)';
       }
 
       if (isset($this->_status_limit)) {
           if (5 != $this->_status_limit) {
-              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB, $this->_status_limit).'"';
+              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.\App\Legacy\SqlStringEscaper::escape($this->_status_limit).'"';
           } elseif (5 == $this->_status_limit) {
               $query .= ' AND ( '.$this->addDatabasePrefix($this->_db_table).'.status = "1" OR '.$this->addDatabasePrefix($this->_db_table).'.status = "2")';
           }
       }
 
       if (!empty($this->_user_id_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB, $this->_user_id_limit).'"';
+          $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.\App\Legacy\SqlStringEscaper::escape($this->_user_id_limit).'"';
       }
       if (!empty($this->_auth_source_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source="'.encode(AS_DB, $this->_auth_source_limit).'"';
+          $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source="'.\App\Legacy\SqlStringEscaper::escape($this->_auth_source_limit).'"';
       }
 
       // time (clock pulses)
       if (isset($this->_time_limit)) {
           if (-1 != $this->_time_limit) {
-              $query .= ' AND time_label.item_id = "'.encode(AS_DB, $this->_time_limit).'"';
+              $query .= ' AND time_label.item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_time_limit).'"';
           } else {
               $query .= ' AND room_time.to_item_id IS NULL';
           }
@@ -256,7 +256,7 @@ class cs_project_manager extends cs_room2_manager
 
       // id_array_limit
       if (!empty($this->_id_array_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
       }
 
       // archive
@@ -265,18 +265,18 @@ class cs_project_manager extends cs_room2_manager
           if ('NULL' == $this->_lastlogin_limit) {
               $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL';
           } else {
-              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.encode(AS_DB, $this->_lastlogin_limit);
+              $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.\App\Legacy\SqlStringEscaper::escape($this->_lastlogin_limit);
           }
       }
       // lastlogin_older_limit
       if (!empty($this->_lastlogin_older_limit)) {
-          $query .= ' AND ( '.$this->addDatabasePrefix($this->_db_table).'.lastlogin < "'.encode(AS_DB, $this->_lastlogin_older_limit).'"';
-          $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.encode(AS_DB, $this->_lastlogin_older_limit).'" ) )';
+          $query .= ' AND ( '.$this->addDatabasePrefix($this->_db_table).'.lastlogin < "'.\App\Legacy\SqlStringEscaper::escape($this->_lastlogin_older_limit).'"';
+          $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.\App\Legacy\SqlStringEscaper::escape($this->_lastlogin_older_limit).'" ) )';
       }
 
       // lastlogin_newer_limit
       if (!empty($this->_lastlogin_newer_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin >= "'.encode(AS_DB, $this->_lastlogin_newer_limit).'"';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin >= "'.\App\Legacy\SqlStringEscaper::escape($this->_lastlogin_newer_limit).'"';
       }
 
       if (isset($this->_sort_order)) {
@@ -317,7 +317,7 @@ class cs_project_manager extends cs_room2_manager
 
       if ('select' == $mode) {
           if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-              $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
+              $query .= ' LIMIT '.\App\Legacy\SqlStringEscaper::escape($this->_from_limit).', '.\App\Legacy\SqlStringEscaper::escape($this->_interval_limit);
           }
       }
 
@@ -395,9 +395,9 @@ class cs_project_manager extends cs_room2_manager
   public function _create($item)
   {
       $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
-               'context_id="'.encode(AS_DB, $item->getContextID()).'",'.
+               'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
                'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
-               'type="'.encode(AS_DB, $this->_room_type).'"';
+               'type="'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
           trigger_error('Problems creating '.$this->_db_table.' item from query: "'.$query.'"', E_USER_WARNING);
@@ -422,25 +422,25 @@ class cs_project_manager extends cs_room2_manager
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
        }
-       $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB, $this->_room_type).'" AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'" AND (('.$this->addDatabasePrefix($this->_db_table).'.creation_date > "'.encode(AS_DB, $start).'" AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.encode(AS_DB, $end).'") OR ('.$this->addDatabasePrefix($this->_db_table).'.modification_date > "'.encode(AS_DB, $start).'" AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date < "'.encode(AS_DB, $end).'"))';
+       $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'" AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'" AND (('.$this->addDatabasePrefix($this->_db_table).'.creation_date > "'.\App\Legacy\SqlStringEscaper::escape($start).'" AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.\App\Legacy\SqlStringEscaper::escape($end).'") OR ('.$this->addDatabasePrefix($this->_db_table).'.modification_date > "'.\App\Legacy\SqlStringEscaper::escape($start).'" AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date < "'.\App\Legacy\SqlStringEscaper::escape($end).'"))';
 
        if (isset($this->_community_room_limit) and isset($this->_room_limit)) {
            if (-1 == $this->_community_room_limit) {
                $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';
                $query .= ' AND (l32.first_item_id IS NULL AND l32.second_item_id IS NULL)';
-               $query .= ' AND l31.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
-               $query .= ' AND l32.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+               $query .= ' AND l31.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
+               $query .= ' AND l32.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
            } else {
                $query .= ' AND (';
                $query .= '(';
-               $query .= '(l31.first_item_id = "'.encode(AS_DB, $this->_community_room_limit).'" OR l31.second_item_id = "'.encode(AS_DB, $this->_community_room_limit).'")';
-               $query .= ' AND l31.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+               $query .= '(l31.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_community_room_limit).'" OR l31.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_community_room_limit).'")';
+               $query .= ' AND l31.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
                $query .= ')';
                $query .= ' OR ';
                $query .= '(';
-               $query .= '(l32.first_item_id = "'.encode(AS_DB, $this->_community_room_limit).'" OR l32.second_item_id = "'.encode(AS_DB, $this->_community_room_limit).'")';
+               $query .= '(l32.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_community_room_limit).'" OR l32.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_community_room_limit).'")';
                $query .= ')';
-               $query .= ' AND l32.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+               $query .= ' AND l32.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
                $query .= ')';
            }
        }
@@ -488,7 +488,7 @@ class cs_project_manager extends cs_room2_manager
    				 '.$this->addDatabasePrefix($this->_db_table).'.context_id = '.$portalid.' AND
    				 		 ('.$this->addDatabasePrefix($this->_db_table).'.title LIKE "%'.$string.'%" OR
    				 		 		 '.$this->addDatabasePrefix($this->_db_table).'.item_id LIKE "%'.$string.'%") LIMIT 20';
-//    		$query .= " ORDER BY ".encode(AS_DB,$sortBy);
+//    		$query .= " ORDER BY ".\App\Legacy\SqlStringEscaper::escape($sortBy);
            $result = $this->_db_connector->performQuery($query);
            if (!isset($result)) {
                trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"', E_USER_WARNING);

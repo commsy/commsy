@@ -281,7 +281,7 @@ class cs_material_manager extends cs_manager
         if (empty($id_array)) {
             return new cs_list();
         } else {
-            $query = 'SELECT * FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').".item_id IN ('".implode("', '", encode(AS_DB, $id_array))."')";
+            $query = 'SELECT * FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').".item_id IN ('".implode("', '", \App\Legacy\SqlStringEscaper::escape($id_array))."')";
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.item_id, '.$this->addDatabasePrefix('materials').'.version_id DESC';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
@@ -345,7 +345,7 @@ class cs_material_manager extends cs_manager
     {
         $version_list = new cs_list();
         $query = 'SELECT * FROM '.$this->addDatabasePrefix('materials');
-        $query .= ' WHERE '.$this->addDatabasePrefix('materials').'.item_id="'.encode(AS_DB, $material_id).'"';
+        $query .= ' WHERE '.$this->addDatabasePrefix('materials').'.item_id="'.\App\Legacy\SqlStringEscaper::escape($material_id).'"';
         if (true == $this->_delete_limit) {
             $query .= ' AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL';
         }
@@ -397,9 +397,9 @@ class cs_material_manager extends cs_manager
             if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
                 $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id IN ('.implode(', ', $this->_room_array_limit).')';
             } elseif (isset($this->_room_limit)) {
-                $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+                $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
             } else {
-                $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_environment->getCurrentContextID()).'"';
+                $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentContextID()).'"';
             }
 
             $query .= ' GROUP BY item_id;';
@@ -457,8 +457,8 @@ class cs_material_manager extends cs_manager
 
         // restrict material by ref item
         if (isset($this->_ref_id_limit)) {
-            $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.second_item_id="'.encode(AS_DB, $this->_ref_id_limit).'")
-                     OR (l5.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.first_item_id="'.encode(AS_DB, $this->_ref_id_limit).'") ) AND l5.deletion_date IS NULL';
+            $query .= ' INNER JOIN '.$this->addDatabasePrefix('link_items').' AS l5 ON ( (l5.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.second_item_id="'.\App\Legacy\SqlStringEscaper::escape($this->_ref_id_limit).'")
+                     OR (l5.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l5.first_item_id="'.\App\Legacy\SqlStringEscaper::escape($this->_ref_id_limit).'") ) AND l5.deletion_date IS NULL';
         }
 
         if (isset($this->_order) and
@@ -493,7 +493,7 @@ class cs_material_manager extends cs_manager
         if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix('materials').'.context_id IN ('.implode(', ', $this->_room_array_limit).')';
         } elseif (isset($this->_room_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('materials').'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('materials').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
         }
 
         if (true == $this->_delete_limit) {
@@ -510,13 +510,13 @@ class cs_material_manager extends cs_manager
         }
 
         if (isset($this->_ref_user_limit)) {
-            $query .= ' AND ('.$this->addDatabasePrefix('materials').'.creator_id = "'.encode(AS_DB, $this->_ref_user_limit).'" )';
+            $query .= ' AND ('.$this->addDatabasePrefix('materials').'.creator_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_ref_user_limit).'" )';
         }
         if (isset($this->_public_limit)) {
             if (6 == $this->_public_limit) {
                 $query .= ' AND ('.$this->addDatabasePrefix('materials').'.world_public >= "1" )';
             } else {
-                $query .= ' AND ('.$this->addDatabasePrefix('materials').'.world_public = "'.encode(AS_DB, $this->_public_limit).'" )';
+                $query .= ' AND ('.$this->addDatabasePrefix('materials').'.world_public = "'.\App\Legacy\SqlStringEscaper::escape($this->_public_limit).'" )';
             }
         }
         if (isset($this->_topics_limit)) {
@@ -524,8 +524,8 @@ class cs_material_manager extends cs_manager
                 $query .= ' AND (l21.first_item_id IS NULL AND l21.second_item_id IS NULL)';
                 $query .= ' AND (l22.first_item_id IS NULL AND l22.second_item_id IS NULL)';
             } else {
-                $query .= ' AND ((l21.first_item_id = "'.encode(AS_DB, $this->_topics_limit).'" OR l21.second_item_id = "'.encode(AS_DB, $this->_topics_limit).'")';
-                $query .= ' OR (l22.first_item_id = "'.encode(AS_DB, $this->_topics_limit).'" OR l22.second_item_id = "'.encode(AS_DB, $this->_topics_limit).'"))';
+                $query .= ' AND ((l21.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topics_limit).'" OR l21.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topics_limit).'")';
+                $query .= ' OR (l22.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topics_limit).'" OR l22.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_topics_limit).'"))';
             }
         }
         if (isset($this->_institution_limit)) {
@@ -533,8 +533,8 @@ class cs_material_manager extends cs_manager
                 $query .= ' AND (l11.first_item_id IS NULL AND l11.second_item_id IS NULL)';
                 $query .= ' AND (l12.first_item_id IS NULL AND l12.second_item_id IS NULL)';
             } else {
-                $query .= ' AND ((l11.first_item_id = "'.encode(AS_DB, $this->_institution_limit).'" OR l11.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'")';
-                $query .= ' OR (l12.second_item_id = "'.encode(AS_DB, $this->_institution_limit).'" OR l12.first_item_id = "'.encode(AS_DB, $this->_institution_limit).'"))';
+                $query .= ' AND ((l11.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'" OR l11.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'")';
+                $query .= ' OR (l12.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'" OR l12.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_institution_limit).'"))';
             }
         }
         if (isset($this->_group_limit)) {
@@ -542,16 +542,16 @@ class cs_material_manager extends cs_manager
                 $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';
                 $query .= ' AND (l32.first_item_id IS NULL AND l32.second_item_id IS NULL)';
             } else {
-                $query .= ' AND ((l31.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l31.second_item_id = "'.encode(AS_DB, $this->_group_limit).'")';
-                $query .= ' OR (l32.first_item_id = "'.encode(AS_DB, $this->_group_limit).'" OR l32.second_item_id = "'.encode(AS_DB, $this->_group_limit).'"))';
+                $query .= ' AND ((l31.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'" OR l31.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'")';
+                $query .= ' OR (l32.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'" OR l32.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_group_limit).'"))';
             }
         }
 
         if (isset($this->_age_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('materials').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_age_limit).' day)';
+            $query .= ' AND '.$this->addDatabasePrefix('materials').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_age_limit).' day)';
         }
         if (isset($this->_existence_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('materials').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB, $this->_existence_limit).' day)';
+            $query .= ' AND '.$this->addDatabasePrefix('materials').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_existence_limit).' day)';
         }
 
         if (isset($this->_tag_limit)) {
@@ -564,29 +564,29 @@ class cs_material_manager extends cs_manager
                 $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
                 $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
             } else {
-                $query .= ' AND ( (l41.first_item_id IN ('.encode(AS_DB, $id_string).') OR l41.second_item_id IN ('.encode(AS_DB, $id_string).') )';
-                $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB, $id_string).') OR l42.second_item_id IN ('.encode(AS_DB, $id_string).') ))';
+                $query .= ' AND ( (l41.first_item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).') OR l41.second_item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).') )';
+                $query .= ' OR (l42.first_item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).') OR l42.second_item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).') ))';
             }
         }
         if (isset($this->_buzzword_limit)) {
             if (-1 == $this->_buzzword_limit) {
                 $query .= ' AND (l5.to_item_id IS NULL OR l5.deletion_date IS NOT NULL)';
             } else {
-                $query .= ' AND buzzwords.item_id="'.encode(AS_DB, $this->_buzzword_limit).'"';
+                $query .= ' AND buzzwords.item_id="'.\App\Legacy\SqlStringEscaper::escape($this->_buzzword_limit).'"';
             }
         }
         if (isset($this->_id_limit)) {
             $id_string = implode(', ', $this->_id_limit);
-            $query .= ' AND '.$this->addDatabasePrefix('materials').'.item_id IN ('.encode(AS_DB, $id_string).')';
+            $query .= ' AND '.$this->addDatabasePrefix('materials').'.item_id IN ('.\App\Legacy\SqlStringEscaper::escape($id_string).')';
         }
 
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
         }
 
         // only entries with files
         if (isset($this->_limit_not_item_id_array)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(',', encode(AS_DB, $this->_limit_not_item_id_array)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($this->_limit_not_item_id_array)).')';
         }
 
         // only files limit -> entries with files (material)
@@ -613,7 +613,7 @@ class cs_material_manager extends cs_manager
         }
 
         if ($this->excludedIdsLimit) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(', ', encode(AS_DB, $this->excludedIdsLimit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->excludedIdsLimit)).')';
         }
 
         if (isset($this->_order) && ('assessment' == $this->_order || 'assessment_rev' == $this->_order)) {
@@ -659,7 +659,7 @@ class cs_material_manager extends cs_manager
         }
         if ('select' == $mode) {
             if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-                $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
+                $query .= ' LIMIT '.\App\Legacy\SqlStringEscaper::escape($this->_from_limit).', '.\App\Legacy\SqlStringEscaper::escape($this->_interval_limit);
             }
         }
 
@@ -696,7 +696,7 @@ class cs_material_manager extends cs_manager
     public function getLatestVersionID($item_id)
     {
         $latest_version = null;
-        $query = 'SELECT MAX('.$this->addDatabasePrefix('materials').'.version_id) AS version_id FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').".item_id = '".encode(AS_DB, $item_id)."'";
+        $query = 'SELECT MAX('.$this->addDatabasePrefix('materials').'.version_id) AS version_id FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').".item_id = '".\App\Legacy\SqlStringEscaper::escape($item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
             trigger_error('Problems selecting one material item from query: "'.$query.'"', E_USER_WARNING);
@@ -1016,7 +1016,7 @@ class cs_material_manager extends cs_manager
     public function mergeAccount($new_id, $old_id)
     {
         parent::mergeAccounts($new_id, $old_id);
-        $query = 'UPDATE '.$this->addDatabasePrefix('material_link_file').' SET deleter_id = "'.encode(AS_DB, $new_id).'" WHERE deleter_id = "'.encode(AS_DB, $old_id).'";';
+        $query = 'UPDATE '.$this->addDatabasePrefix('material_link_file').' SET deleter_id = "'.\App\Legacy\SqlStringEscaper::escape($new_id).'" WHERE deleter_id = "'.\App\Legacy\SqlStringEscaper::escape($old_id).'";';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems creating material_link_file from query: "'.$query.'"', E_USER_WARNING);
@@ -1061,7 +1061,7 @@ class cs_material_manager extends cs_manager
             SET
                 license_id = NULL
             WHERE
-                license_id = '.encode(AS_DB, $license->getId()).'
+                license_id = '.\App\Legacy\SqlStringEscaper::escape($license->getId()).'
         ';
 
      return $this->_db_connector->performQuery($query);

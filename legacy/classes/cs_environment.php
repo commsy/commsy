@@ -297,7 +297,7 @@ class cs_environment
         if (!isset($this->_current_parameter_array)) {
             $this->_current_parameter_array = [];
             if (isset($_SERVER['QUERY_STRING'])) {
-                $retour = explode('&', (string) encode(FROM_GET, $_SERVER['QUERY_STRING']));
+                $retour = explode('&', (string) $this->getTextConverter()->encode(FROM_GET, $_SERVER['QUERY_STRING']));
 
                 // GetParameterSäubern
                 $textConverter = $this->getTextConverter();

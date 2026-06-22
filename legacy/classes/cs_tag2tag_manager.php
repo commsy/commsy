@@ -57,7 +57,7 @@ class cs_tag2tag_manager extends cs_manager
     public function getItem($father_id, $child_id = null)
     {
         $retour = null;
-        $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".from_item_id = '".encode(AS_DB, $father_id)."' AND ".$this->addDatabasePrefix($this->_db_table).".to_item_id = '".encode(AS_DB, $child_id)."'";
+        $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".from_item_id = '".\App\Legacy\SqlStringEscaper::escape($father_id)."' AND ".$this->addDatabasePrefix($this->_db_table).".to_item_id = '".\App\Legacy\SqlStringEscaper::escape($child_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
             trigger_error('Problems selecting one tag link item from query: "'.$query.'"', E_USER_WARNING);
@@ -77,7 +77,7 @@ class cs_tag2tag_manager extends cs_manager
     private function _getItemTo($to_id)
     {
         $retour = null;
-        $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".to_item_id = '".encode(AS_DB, $to_id)."' AND deletion_date is NULL and deleter_id IS NULL;";
+        $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".to_item_id = '".\App\Legacy\SqlStringEscaper::escape($to_id)."' AND deletion_date is NULL and deleter_id IS NULL;";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
             trigger_error('Problems selecting one tag link item: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
@@ -114,11 +114,11 @@ class cs_tag2tag_manager extends cs_manager
         }
 
         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                 'from_item_id="'.encode(AS_DB, $item->getFatherItemID()).'",'.
-                 'modifier_id="'.encode(AS_DB, $item->getModifierItemID()).'",'.
+                 'from_item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getFatherItemID()).'",'.
+                 'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($item->getModifierItemID()).'",'.
                  'modification_date="'.$current_datetime.'",'.
-                 'sorting_place='.encode(AS_DB, $sorting_place).''.
-                 ' WHERE link_id="'.encode(AS_DB, $item->getLinkID()).'"';
+                 'sorting_place='.\App\Legacy\SqlStringEscaper::escape($sorting_place).''.
+                 ' WHERE link_id="'.\App\Legacy\SqlStringEscaper::escape($item->getLinkID()).'"';
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
@@ -148,18 +148,18 @@ class cs_tag2tag_manager extends cs_manager
         $current_datetime = \App\Utils\MysqlDateTime::now();
 
         if ($item->getSortingPlace()) {
-            $sorting_place = '"'.encode(AS_DB, $item->getSortingPlace()).'"';
+            $sorting_place = '"'.\App\Legacy\SqlStringEscaper::escape($item->getSortingPlace()).'"';
         } else {
             $sorting_place = 'NULL';
         }
 
         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
-                 'from_item_id="'.encode(AS_DB, $item->getFatherItemID()).'",'.
-                 'to_item_id="'.encode(AS_DB, $item->getChildItemID()).'",'.
-                 'context_id="'.encode(AS_DB, $item->getContextItemID()).'",'.
-                 'creator_id="'.encode(AS_DB, $item->getCreatorItemID()).'",'.
+                 'from_item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getFatherItemID()).'",'.
+                 'to_item_id="'.\App\Legacy\SqlStringEscaper::escape($item->getChildItemID()).'",'.
+                 'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextItemID()).'",'.
+                 'creator_id="'.\App\Legacy\SqlStringEscaper::escape($item->getCreatorItemID()).'",'.
                  'creation_date="'.$current_datetime.'",'.
-                 'modifier_id="'.encode(AS_DB, $item->getModifierItemID()).'",'.
+                 'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($item->getModifierItemID()).'",'.
                  'modification_date="'.$current_datetime.'",'.
                  'sorting_place='.$sorting_place;
 
@@ -204,8 +204,8 @@ class cs_tag2tag_manager extends cs_manager
          $user_id = $this->_current_user->getItemID() ?: 0;
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
                   'deletion_date="'.$current_datetime.'",'.
-                  'deleter_id="'.encode(AS_DB, $user_id).'"'.
-                  ' WHERE from_item_id="'.encode(AS_DB, $father_id).'" AND to_item_id="'.encode(AS_DB, $item_id).'"';
+                  'deleter_id="'.\App\Legacy\SqlStringEscaper::escape($user_id).'"'.
+                  ' WHERE from_item_id="'.\App\Legacy\SqlStringEscaper::escape($father_id).'" AND to_item_id="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
              trigger_error('Problems deleting tag2tag link from query: "'.$query.'"', E_USER_WARNING);
@@ -310,11 +310,11 @@ class cs_tag2tag_manager extends cs_manager
      private function _cleanSortingPlaces($item_id)
      {
          if (isset($item_id)) {
-             $query = 'SELECT link_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.from_item_id = '.encode(AS_DB, $item_id).' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL ORDER BY sorting_place ASC;';
+             $query = 'SELECT link_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.from_item_id = '.\App\Legacy\SqlStringEscaper::escape($item_id).' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL ORDER BY sorting_place ASC;';
              $result = $this->_db_connector->performQuery($query);
              $link_id_array = [];
              if (!isset($result)) {
-                 trigger_error('Problems cleaning sorting place for father item id (GET) '.encode(AS_DB, $item_id).' from query: "'.$query.'"', E_USER_WARNING);
+                 trigger_error('Problems cleaning sorting place for father item id (GET) '.\App\Legacy\SqlStringEscaper::escape($item_id).' from query: "'.$query.'"', E_USER_WARNING);
              } else {
                  foreach ($result as $result_array) {
                      $link_id_array[] = $result_array['link_id'];
@@ -322,10 +322,10 @@ class cs_tag2tag_manager extends cs_manager
              }
              $counter = 1;
              foreach ($link_id_array as $link_id) {
-                 $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB, $counter).' WHERE link_id='.encode(AS_DB, $link_id);
+                 $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.\App\Legacy\SqlStringEscaper::escape($counter).' WHERE link_id='.\App\Legacy\SqlStringEscaper::escape($link_id);
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result) or !$result) {
-                     trigger_error('Problems cleaning sorting place for father item id (UPDATE) '.encode(AS_DB, $item_id).' from query: "'.$query.'"', E_USER_WARNING);
+                     trigger_error('Problems cleaning sorting place for father item id (UPDATE) '.\App\Legacy\SqlStringEscaper::escape($item_id).' from query: "'.$query.'"', E_USER_WARNING);
                  }
                  ++$counter;
              }
@@ -335,7 +335,7 @@ class cs_tag2tag_manager extends cs_manager
      public function deleteAllTagLinks($context_id)
      {
          $current_user = $this->_environment->getCurrentUserItem();
-         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET deleter_id='.encode(AS_DB, $current_user->getItemID()).', deletion_date=NOW() WHERE context_id='.encode(AS_DB, $context_id);
+         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET deleter_id='.\App\Legacy\SqlStringEscaper::escape($current_user->getItemID()).', deletion_date=NOW() WHERE context_id='.\App\Legacy\SqlStringEscaper::escape($context_id);
          unset($current_user);
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or !$result) {
@@ -353,7 +353,7 @@ class cs_tag2tag_manager extends cs_manager
          $query .= ' WHERE 1';
 
          if (isset($this->_room_limit)) {
-             $query .= ' AND context_id="'.encode(AS_DB, $this->_room_limit).'"';
+             $query .= ' AND context_id="'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
          }
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
          $query .= ' ORDER BY sorting_place';
@@ -382,11 +382,11 @@ class cs_tag2tag_manager extends cs_manager
      public function change($item_id, $father_id, $place)
      {
          // select all links from father
-         $query = 'SELECT link_id,from_item_id,to_item_id,sorting_place FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.from_item_id = '.encode(AS_DB, $father_id).' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL ORDER BY sorting_place ASC;';
+         $query = 'SELECT link_id,from_item_id,to_item_id,sorting_place FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.from_item_id = '.\App\Legacy\SqlStringEscaper::escape($father_id).' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL ORDER BY sorting_place ASC;';
          $result = $this->_db_connector->performQuery($query);
          $link_id_array = [];
          if (!isset($result)) {
-             trigger_error('Problems cleaning sorting place for father item id (GET) '.encode(AS_DB, $item_id).' from query: "'.$query.'"', E_USER_WARNING);
+             trigger_error('Problems cleaning sorting place for father item id (GET) '.\App\Legacy\SqlStringEscaper::escape($item_id).' from query: "'.$query.'"', E_USER_WARNING);
          } else {
              $old_place = '';
              $link_id = '';
@@ -402,19 +402,19 @@ class cs_tag2tag_manager extends cs_manager
                  $this->deleteTagLinksFromToItemID($item_id);
                  $this->insert($item_id, $father_id, $place);
              } elseif (empty($old_place)) {
-                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place+1 WHERE from_item_id='.encode(AS_DB, $father_id).' AND sorting_place >= '.$place.';';
+                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place+1 WHERE from_item_id='.\App\Legacy\SqlStringEscaper::escape($father_id).' AND sorting_place >= '.$place.';';
                  $result = $this->_db_connector->performQuery($update);
-                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB, $place).' WHERE link_id='.encode(AS_DB, $link_id).';';
+                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.\App\Legacy\SqlStringEscaper::escape($place).' WHERE link_id='.\App\Legacy\SqlStringEscaper::escape($link_id).';';
                  $result = $this->_db_connector->performQuery($update);
              } elseif ($old_place < $place) {
-                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place-1 WHERE from_item_id='.encode(AS_DB, $father_id).' AND sorting_place > '.$old_place.' AND sorting_place <= '.$place.';';
+                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place-1 WHERE from_item_id='.\App\Legacy\SqlStringEscaper::escape($father_id).' AND sorting_place > '.$old_place.' AND sorting_place <= '.$place.';';
                  $result = $this->_db_connector->performQuery($update);
-                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB, $place).' WHERE link_id='.encode(AS_DB, $link_id).';';
+                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.\App\Legacy\SqlStringEscaper::escape($place).' WHERE link_id='.\App\Legacy\SqlStringEscaper::escape($link_id).';';
                  $result = $this->_db_connector->performQuery($update);
              } elseif ($old_place > $place) {
-                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place+1 WHERE from_item_id='.encode(AS_DB, $father_id).' AND sorting_place < '.$old_place.' AND sorting_place >= '.$place.';';
+                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place=sorting_place+1 WHERE from_item_id='.\App\Legacy\SqlStringEscaper::escape($father_id).' AND sorting_place < '.$old_place.' AND sorting_place >= '.$place.';';
                  $result = $this->_db_connector->performQuery($update);
-                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB, $place).' WHERE link_id='.encode(AS_DB, $link_id).';';
+                 $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.\App\Legacy\SqlStringEscaper::escape($place).' WHERE link_id='.\App\Legacy\SqlStringEscaper::escape($link_id).';';
                  $result = $this->_db_connector->performQuery($update);
              }
          }
@@ -422,7 +422,7 @@ class cs_tag2tag_manager extends cs_manager
 
      public function changeUpdate($item_id, $place)
      {
-         $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB, $place).' WHERE to_item_id='.encode(AS_DB, $item_id).';';
+         $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.\App\Legacy\SqlStringEscaper::escape($place).' WHERE to_item_id='.\App\Legacy\SqlStringEscaper::escape($item_id).';';
          $result = $this->_db_connector->performQuery($update);
      }
 
@@ -450,7 +450,7 @@ class cs_tag2tag_manager extends cs_manager
 
          // is entry allready stored in database ?
          $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table);
-         $query .= ' WHERE link_id="'.encode(AS_DB, $data_array['link_id']).'"';
+         $query .= ' WHERE link_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['link_id']).'"';
 
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
@@ -476,7 +476,7 @@ class cs_tag2tag_manager extends cs_manager
                      } else {
                          $query .= ',';
                      }
-                     $query .= $key.'="'.encode(AS_DB, $value).'"';
+                     $query .= $key.'="'.\App\Legacy\SqlStringEscaper::escape($value).'"';
                  }
              }
 
@@ -491,7 +491,7 @@ class cs_tag2tag_manager extends cs_manager
              }
 
              if (!empty($result[0])) {
-                 $query .= ' WHERE link_id="'.encode(AS_DB, $data_array['link_id']).'"';
+                 $query .= ' WHERE link_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['link_id']).'"';
              }
              $query .= ';';
 

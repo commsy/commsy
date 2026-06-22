@@ -238,7 +238,7 @@ class cs_room_manager extends cs_context_manager
         }
 
         if (!empty($this->_room_type)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB, $this->_room_type).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'"';
         }
 
         // ##################################
@@ -262,30 +262,30 @@ class cs_room_manager extends cs_context_manager
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL';
         }
         if (isset($this->_status_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB, $this->_status_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.\App\Legacy\SqlStringEscaper::escape($this->_status_limit).'"';
         }
 
         if (isset($this->_room_limit)
             and !empty($this->_room_limit)
             and !isset($this->_id_array_limit)
         ) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
         }
         if ($this->continuousLimit) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.continuous = "'.encode(AS_DB, 1).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.continuous = "'.\App\Legacy\SqlStringEscaper::escape(1).'"';
         }
 
         if (!empty($this->_user_id_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB, $this->_user_id_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.\App\Legacy\SqlStringEscaper::escape($this->_user_id_limit).'"';
         }
         if (isset($this->_account_id_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.account_id="'.encode(AS_DB, $this->_account_id_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix('user').'.account_id="'.\App\Legacy\SqlStringEscaper::escape($this->_account_id_limit).'"';
         }
 
         // time (clock pulses)
         if (isset($this->_time_limit)) {
             if (-1 != $this->_time_limit) {
-                $query .= ' AND time_label.item_id = "'.encode(AS_DB, $this->_time_limit).'"';
+                $query .= ' AND time_label.item_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_time_limit).'"';
             } else {
                 $query .= ' AND room_time.to_item_id IS NULL';
             }
@@ -293,7 +293,7 @@ class cs_room_manager extends cs_context_manager
 
         // template
         if ($this->templateLimit) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB, 1).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.\App\Legacy\SqlStringEscaper::escape(1).'"';
         }
 
         if ('count' != $mode) {
@@ -320,7 +320,7 @@ class cs_room_manager extends cs_context_manager
 
         if ('select' == $mode) {
             if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-                $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
+                $query .= ' LIMIT '.\App\Legacy\SqlStringEscaper::escape($this->_from_limit).', '.\App\Legacy\SqlStringEscaper::escape($this->_interval_limit);
             }
         }
 
@@ -382,8 +382,8 @@ class cs_room_manager extends cs_context_manager
         $list = new cs_list();
 
         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).', '.$this->addDatabasePrefix('user');
-        $query .= ' WHERE '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').".lastlogin > '".encode(AS_DB, $start)."' and ".$this->addDatabasePrefix('user').".creation_date < '".encode(AS_DB, $end)."'";
-        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB, $this->_room_limit)."' AND ".$this->addDatabasePrefix($this->_db_table).".status != '4' and ".$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL and '.$this->addDatabasePrefix($this->_db_table).".creation_date < '".encode(AS_DB, $end)."' and (type = 'project' or type = 'community')";
+        $query .= ' WHERE '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').".lastlogin > '".\App\Legacy\SqlStringEscaper::escape($start)."' and ".$this->addDatabasePrefix('user').".creation_date < '".\App\Legacy\SqlStringEscaper::escape($end)."'";
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).".context_id = '".\App\Legacy\SqlStringEscaper::escape($this->_room_limit)."' AND ".$this->addDatabasePrefix($this->_db_table).".status != '4' and ".$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL and '.$this->addDatabasePrefix($this->_db_table).".creation_date < '".\App\Legacy\SqlStringEscaper::escape($end)."' and (type = 'project' or type = 'community')";
         $query .= ' GROUP BY '.$this->addDatabasePrefix($this->_db_table).'.item_id';
         $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.type';
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.title';
@@ -410,7 +410,7 @@ class cs_room_manager extends cs_context_manager
         $retour = 0;
         $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date is NULL';
         if (!empty($this->_room_limit)) {
-            $query .= ' and context_id = '.encode(AS_DB, $this->_room_limit);
+            $query .= ' and context_id = '.\App\Legacy\SqlStringEscaper::escape($this->_room_limit);
         }
         $query .= ';';
         $result = $this->_db_connector->performQuery($query);
@@ -438,7 +438,7 @@ class cs_room_manager extends cs_context_manager
     {
         $retour = 0;
 
-        $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as number FROM '.$this->addDatabasePrefix($this->_db_table)." WHERE context_id = '".encode(AS_DB, $this->_room_limit)."' and creation_date < '".encode(AS_DB, $end)."' and status != '4' AND deletion_date IS NULL AND deletion_date IS NULL";
+        $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as number FROM '.$this->addDatabasePrefix($this->_db_table)." WHERE context_id = '".\App\Legacy\SqlStringEscaper::escape($this->_room_limit)."' and creation_date < '".\App\Legacy\SqlStringEscaper::escape($end)."' and status != '4' AND deletion_date IS NULL AND deletion_date IS NULL";
         if (!empty($type)) {
             $query .= ' AND type="'.$type.'"';
         }
@@ -499,8 +499,8 @@ class cs_room_manager extends cs_context_manager
             $query = 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
         }
         $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table).', '.$this->addDatabasePrefix('user');
-        $query .= ' WHERE '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').".lastlogin > '".encode(AS_DB, $start)."' and ".$this->addDatabasePrefix('user').".creation_date < '".encode(AS_DB, $end)."'";
-        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB, $this->_room_limit)."' AND ".$this->addDatabasePrefix($this->_db_table).".status != '4' AND ".$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL and '.$this->addDatabasePrefix($this->_db_table).".creation_date < '".encode(AS_DB, $end)."'";
+        $query .= ' WHERE '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').".lastlogin > '".\App\Legacy\SqlStringEscaper::escape($start)."' and ".$this->addDatabasePrefix('user').".creation_date < '".\App\Legacy\SqlStringEscaper::escape($end)."'";
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).".context_id = '".\App\Legacy\SqlStringEscaper::escape($this->_room_limit)."' AND ".$this->addDatabasePrefix($this->_db_table).".status != '4' AND ".$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL and '.$this->addDatabasePrefix($this->_db_table).".creation_date < '".\App\Legacy\SqlStringEscaper::escape($end)."'";
         if (!empty($type)) {
             $query .= ' AND type="'.$type.'"';
         }

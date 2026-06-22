@@ -122,8 +122,7 @@
             "legacy/classes"
         ],
         "files": [
-            "legacy/etc/cs_constants.php",
-            "legacy/functions/text_functions.php"
+            "legacy/etc/cs_constants.php"
         ]
     },
     "autoload-dev": {

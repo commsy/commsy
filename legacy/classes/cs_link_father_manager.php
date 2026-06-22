@@ -102,14 +102,14 @@ class cs_link_father_manager extends cs_manager
                if ('NULL' == $value) {
                    $query .= $key.'= NULL';
                } else {
-                   $query .= $key.'="'.encode(AS_DB, $value).'"';
+                   $query .= $key.'="'.\App\Legacy\SqlStringEscaper::escape($value).'"';
                }
            }
        }
 
-       $query .= ' WHERE item_iid="'.encode(AS_DB, $data_array['item_iid']).'"';
-       $query .= ' AND item_vid="'.encode(AS_DB, $data_array['item_vid']).'"';
-       $query .= ' AND file_id="'.encode(AS_DB, $data_array['file_id']).'"';
+       $query .= ' WHERE item_iid="'.\App\Legacy\SqlStringEscaper::escape($data_array['item_iid']).'"';
+       $query .= ' AND item_vid="'.\App\Legacy\SqlStringEscaper::escape($data_array['item_vid']).'"';
+       $query .= ' AND file_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['file_id']).'"';
        $query .= ';';
 
        $result = $this->_db_connector->performQuery($query);

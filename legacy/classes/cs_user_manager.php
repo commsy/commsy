@@ -278,7 +278,7 @@ class cs_user_manager extends cs_manager
      */
     public function setNameLimit($name)
     {
-        $this->_name_limit = encode(AS_DB, $name);
+        $this->_name_limit = \App\Legacy\SqlStringEscaper::escape($name);
     }
 
     public function setTopicLimit($limit)
@@ -420,16 +420,16 @@ class cs_user_manager extends cs_manager
         $query .= ' WHERE 1';
 
         if (isset($this->_limit_email)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.email = "' . encode(AS_DB, $this->_limit_email) . '"';
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.email = "' . \App\Legacy\SqlStringEscaper::escape($this->_limit_email) . '"';
         }
 
         // fifth, insert limits into the select statement
         if (isset($this->_user_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.user_id = "' . encode(AS_DB, $this->_user_limit) . '"';
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.user_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_user_limit) . '"';
         }
 
         if (isset($this->_account_id_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.account_id = "' . encode(AS_DB, $this->_account_id_limit) . '"';
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.account_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_account_id_limit) . '"';
         }
 
         if (empty($this->_id_array_limit)) {
@@ -441,7 +441,7 @@ class cs_user_manager extends cs_manager
                 $id_string = implode(',', $this->_context_array_limit);
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id IN (' . $id_string . ')';
             } elseif (isset($this->_room_limit) and 0 != $this->_room_limit) {
-                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
+                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . '"';
             } else {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id IS NULL';
             }
@@ -455,32 +455,32 @@ class cs_user_manager extends cs_manager
             $query .= ' AND ' . $this->addDatabasePrefix('user') . '.is_contact="1"';
         }
         if (isset($this->_age_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . encode(AS_DB, $this->_age_limit) . ' day)';
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . \App\Legacy\SqlStringEscaper::escape($this->_age_limit) . ' day)';
         }
         if (isset($this->_existence_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.creation_date >= DATE_SUB(CURRENT_DATE,interval ' . encode(AS_DB, $this->_existence_limit) . ' day)';
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.creation_date >= DATE_SUB(CURRENT_DATE,interval ' . \App\Legacy\SqlStringEscaper::escape($this->_existence_limit) . ' day)';
         }
         if (isset($this->_age_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . encode(AS_DB, $this->_age_limit) . ' day)';
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.modification_date >= DATE_SUB(CURRENT_DATE,interval ' . \App\Legacy\SqlStringEscaper::escape($this->_age_limit) . ' day)';
         }
         if (isset($this->_status_limit) and !isset($this->_status_select_limit)) {
             if (2 == $this->_status_limit) {
-                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "' . encode(AS_DB, $this->_status_limit) . '"';
+                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "' . \App\Legacy\SqlStringEscaper::escape($this->_status_limit) . '"';
             } else {
-                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status = "' . encode(AS_DB, $this->_status_limit) . '"';
+                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status = "' . \App\Legacy\SqlStringEscaper::escape($this->_status_limit) . '"';
             }
         }
         if (isset($this->_status_select_limit)) {
             if (8 == $this->_status_select_limit) {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status >= "2"';
             } else {
-                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status = "' . encode(AS_DB, $this->_status_select_limit) . '"';
+                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.status = "' . \App\Legacy\SqlStringEscaper::escape($this->_status_select_limit) . '"';
             }
         }
 
         if ($this->_lastlogin_limit) {
             if ('empty' != $this->_lastlogin_limit) {
-                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.lastlogin > "' . encode(AS_DB, $this->_lastlogin_limit) . '"';
+                $query .= ' AND ' . $this->addDatabasePrefix('user') . '.lastlogin > "' . \App\Legacy\SqlStringEscaper::escape($this->_lastlogin_limit) . '"';
             } else {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.lastlogin IS NOT NULL AND user.lastlogin != "00-00-00 00:00:00"';
             }
@@ -489,9 +489,9 @@ class cs_user_manager extends cs_manager
         if (isset($this->_name_limit)) {
             $name_array = explode(' ', (string)$this->_name_limit);
             if (1 == count($name_array)) {
-                $query .= ' AND (' . $this->addDatabasePrefix('user') . '.firstname LIKE "' . encode(AS_DB, $name_array[0]) . '" OR ' . $this->addDatabasePrefix('user') . '.lastname LIKE "' . encode(AS_DB, $name_array[0]) . '")';
+                $query .= ' AND (' . $this->addDatabasePrefix('user') . '.firstname LIKE "' . \App\Legacy\SqlStringEscaper::escape($name_array[0]) . '" OR ' . $this->addDatabasePrefix('user') . '.lastname LIKE "' . \App\Legacy\SqlStringEscaper::escape($name_array[0]) . '")';
             } else {
-                $query .= ' AND (' . $this->addDatabasePrefix('user') . '.firstname LIKE "' . encode(AS_DB, $name_array[0]) . '" AND ' . $this->addDatabasePrefix('user') . '.lastname LIKE "' . encode(AS_DB, $name_array[1]) . '")';
+                $query .= ' AND (' . $this->addDatabasePrefix('user') . '.firstname LIKE "' . \App\Legacy\SqlStringEscaper::escape($name_array[0]) . '" AND ' . $this->addDatabasePrefix('user') . '.lastname LIKE "' . \App\Legacy\SqlStringEscaper::escape($name_array[1]) . '")';
             }
         }
 
@@ -504,8 +504,8 @@ class cs_user_manager extends cs_manager
                 $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
                 $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
             } else {
-                $query .= ' AND ((l41.first_item_id = "' . encode(AS_DB, $this->_topic_limit) . '" OR l41.second_item_id = "' . encode(AS_DB, $this->_topic_limit) . '")';
-                $query .= ' OR (l42.first_item_id = "' . encode(AS_DB, $this->_topic_limit) . '" OR l42.second_item_id = "' . encode(AS_DB, $this->_topic_limit) . '"))';
+                $query .= ' AND ((l41.first_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_topic_limit) . '" OR l41.second_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_topic_limit) . '")';
+                $query .= ' OR (l42.first_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_topic_limit) . '" OR l42.second_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_topic_limit) . '"))';
             }
         }
         if (isset($this->_institution_limit)) {
@@ -513,8 +513,8 @@ class cs_user_manager extends cs_manager
                 $query .= ' AND (l11.first_item_id IS NULL AND l11.second_item_id IS NULL)';
                 $query .= ' AND (l12.first_item_id IS NULL AND l12.second_item_id IS NULL)';
             } else {
-                $query .= ' AND ((l11.first_item_id = "' . encode(AS_DB, $this->_institution_limit) . '" OR l11.second_item_id = "' . encode(AS_DB, $this->_institution_limit) . '")';
-                $query .= ' OR (l12.second_item_id = "' . encode(AS_DB, $this->_institution_limit) . '" OR l12.first_item_id = "' . encode(AS_DB, $this->_institution_limit) . '"))';
+                $query .= ' AND ((l11.first_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_institution_limit) . '" OR l11.second_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_institution_limit) . '")';
+                $query .= ' OR (l12.second_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_institution_limit) . '" OR l12.first_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_institution_limit) . '"))';
             }
         }
         if (isset($this->_group_limit)) {
@@ -522,13 +522,13 @@ class cs_user_manager extends cs_manager
                 $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';
                 $query .= ' AND (l32.first_item_id IS NULL AND l32.second_item_id IS NULL)';
             } else {
-                $query .= ' AND ((l31.first_item_id = "' . encode(AS_DB, $this->_group_limit) . '" OR l31.second_item_id = "' . encode(AS_DB, $this->_group_limit) . '")';
-                $query .= ' OR (l32.first_item_id = "' . encode(AS_DB, $this->_group_limit) . '" OR l32.second_item_id = "' . encode(AS_DB, $this->_group_limit) . '"))';
+                $query .= ' AND ((l31.first_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_group_limit) . '" OR l31.second_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_group_limit) . '")';
+                $query .= ' OR (l32.first_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_group_limit) . '" OR l32.second_item_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_group_limit) . '"))';
             }
         }
         if (isset($this->_group_array_limit) and !empty($this->_group_array_limit)) {
             array_walk($this->_group_array_limit, function (&$v, $k) {
-                $v = encode(AS_DB, $v);
+                $v = \App\Legacy\SqlStringEscaper::escape($v);
             });
             $mergedGroupIDs = implode(',', $this->_group_array_limit);
             $query .= ' AND ((l31.first_item_id IN (' . $mergedGroupIDs . ') OR l31.second_item_id IN (' . $mergedGroupIDs . '))';
@@ -544,7 +544,7 @@ class cs_user_manager extends cs_manager
         }
 
         if ($this->excludedIdsLimit) {
-            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(', ', encode(AS_DB, $this->excludedIdsLimit)) . ')';
+            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(', ', \App\Legacy\SqlStringEscaper::escape($this->excludedIdsLimit)) . ')';
         }
 
         if ((isset($this->_search_limit)
@@ -749,7 +749,7 @@ class cs_user_manager extends cs_manager
     public function getRootUser(): cs_user_item
     {
         if (!isset($this->rootUser)) {
-            $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user') . ' WHERE ' . $this->addDatabasePrefix('user') . ".user_id = 'root' AND context_id = '" . encode(AS_DB, $this->_environment->getServerID()) . "'";
+            $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user') . ' WHERE ' . $this->addDatabasePrefix('user') . ".user_id = 'root' AND context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_environment->getServerID()) . "'";
             $result = $this->_db_connector->performQuery($query);
             $this->rootUser = $this->_buildItem($result[0]);
         }
@@ -854,7 +854,7 @@ class cs_user_manager extends cs_manager
         $datetime = \App\Utils\MysqlDateTime::now();
         $query = 'UPDATE ' . $this->addDatabasePrefix('user') . ' SET ';
         $query .= 'lastlogin="' . $datetime . '" ';
-        $query .= 'WHERE item_id="' . encode(AS_DB, $user_item->getItemID()) . '"';
+        $query .= 'WHERE item_id="' . \App\Legacy\SqlStringEscaper::escape($user_item->getItemID()) . '"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems updating users last login.', E_USER_ERROR);
@@ -868,7 +868,7 @@ class cs_user_manager extends cs_manager
     public function _create($item): void
     {
         $query = 'INSERT INTO ' . $this->addDatabasePrefix('items') . ' SET ';
-        $query .= 'context_id="' . encode(AS_DB, $item->getContextID()) . '", ';
+        $query .= 'context_id="' . \App\Legacy\SqlStringEscaper::escape($item->getContextID()) . '", ';
         $query .= 'modification_date="' . \App\Utils\MysqlDateTime::now() . '",' .
             'type="user"';
         $result = $this->_db_connector->performQuery($query);
@@ -1060,8 +1060,8 @@ class cs_user_manager extends cs_manager
     public function setCreatorID2ItemID(cs_user_item $item): void
     {
         $query = 'UPDATE ' . $this->addDatabasePrefix('user') . ' SET ' .
-            'creator_id="' . encode(AS_DB, $item->getItemID()) . '"' .
-            ' WHERE item_id="' . encode(AS_DB, $item->getItemID()) . '"';
+            'creator_id="' . \App\Legacy\SqlStringEscaper::escape($item->getItemID()) . '"' .
+            ' WHERE item_id="' . \App\Legacy\SqlStringEscaper::escape($item->getItemID()) . '"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems set creator id to item id.', E_USER_WARNING);
@@ -1105,11 +1105,11 @@ class cs_user_manager extends cs_manager
         if (!empty($this->_context_array_limit)
             and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
         ) {
-            $query .= ' context_id IN (' . implode(',', encode(AS_DB, $this->_context_array_limit)) . ')';
+            $query .= ' context_id IN (' . implode(',', \App\Legacy\SqlStringEscaper::escape($this->_context_array_limit)) . ')';
         } elseif (!empty($this->_room_limit)) {
-            $query .= " context_id = '" . encode(AS_DB, $this->_room_limit) . "'";
+            $query .= " context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "'";
         }
-        $query .= " and lastlogin > '" . encode(AS_DB, $start) . "' and creation_date < '" . encode(AS_DB, $end) . "'";
+        $query .= " and lastlogin > '" . \App\Legacy\SqlStringEscaper::escape($start) . "' and creation_date < '" . \App\Legacy\SqlStringEscaper::escape($end) . "'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems counting used accounts.', E_USER_WARNING);
@@ -1131,11 +1131,11 @@ class cs_user_manager extends cs_manager
         if (!empty($this->_context_array_limit)
             and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
         ) {
-            $query .= ' context_id IN (' . implode(',', encode(AS_DB, $this->_context_array_limit)) . ')';
+            $query .= ' context_id IN (' . implode(',', \App\Legacy\SqlStringEscaper::escape($this->_context_array_limit)) . ')';
         } elseif (!empty($this->_room_limit)) {
-            $query .= " context_id = '" . encode(AS_DB, $this->_room_limit) . "'";
+            $query .= " context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "'";
         }
-        $query .= " and status >= 2 and (deletion_date IS NULL or deletion_date > '" . encode(AS_DB, $end) . "') and creation_date < '" . encode(AS_DB, $end) . "'";
+        $query .= " and status >= 2 and (deletion_date IS NULL or deletion_date > '" . \App\Legacy\SqlStringEscaper::escape($end) . "') and creation_date < '" . \App\Legacy\SqlStringEscaper::escape($end) . "'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems counting open accounts.', E_USER_WARNING);
@@ -1157,11 +1157,11 @@ class cs_user_manager extends cs_manager
         if (!empty($this->_context_array_limit)
             and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
         ) {
-            $query .= ' context_id IN (' . implode(',', encode(AS_DB, $this->_context_array_limit)) . ')';
+            $query .= ' context_id IN (' . implode(',', \App\Legacy\SqlStringEscaper::escape($this->_context_array_limit)) . ')';
         } elseif (!empty($this->_room_limit)) {
-            $query .= " context_id = '" . encode(AS_DB, $this->_room_limit) . "'";
+            $query .= " context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "'";
         }
-        $query .= ' and ' . $this->addDatabasePrefix('user') . ".creation_date < '" . encode(AS_DB, $end) . "'";
+        $query .= ' and ' . $this->addDatabasePrefix('user') . ".creation_date < '" . \App\Legacy\SqlStringEscaper::escape($end) . "'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems counting all accounts.', E_USER_WARNING);
@@ -1182,11 +1182,11 @@ class cs_user_manager extends cs_manager
         if (!empty($this->_context_array_limit)
             and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
         ) {
-            $query .= ' context_id IN (' . implode(',', encode(AS_DB, $this->_context_array_limit)) . ')';
+            $query .= ' context_id IN (' . implode(',', \App\Legacy\SqlStringEscaper::escape($this->_context_array_limit)) . ')';
         } elseif (!empty($this->_room_limit)) {
-            $query .= " context_id = '" . encode(AS_DB, $this->_room_limit) . "'";
+            $query .= " context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "'";
         }
-        $query .= ' and ' . $this->addDatabasePrefix($this->_db_table) . ".extras LIKE '%LASTLOGIN_" . mb_strtoupper((string)$plugin) . "%' and user.creation_date < '" . encode(AS_DB, $end) . "'";
+        $query .= ' and ' . $this->addDatabasePrefix($this->_db_table) . ".extras LIKE '%LASTLOGIN_" . mb_strtoupper((string)$plugin) . "%' and user.creation_date < '" . \App\Legacy\SqlStringEscaper::escape($end) . "'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems counting all accounts.', E_USER_WARNING);

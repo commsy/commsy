@@ -129,18 +129,18 @@ class cs_community_manager extends cs_room2_manager
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deleter_id IS NULL';
         }
         if (isset($this->_status_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.encode(AS_DB, $this->_status_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.status = "'.\App\Legacy\SqlStringEscaper::escape($this->_status_limit).'"';
         }
         if (isset($this->_room_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB, $this->_room_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
         }
         if (isset($this->_room_type)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.encode(AS_DB, $this->_room_type).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'"';
         }
 
         // id_array_limit
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', encode(AS_DB, $this->_id_array_limit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
         }
 
         // archive
@@ -149,18 +149,18 @@ class cs_community_manager extends cs_room2_manager
             if ('NULL' == $this->_lastlogin_limit) {
                 $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL';
             } else {
-                $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.encode(AS_DB, $this->_lastlogin_limit);
+                $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.\App\Legacy\SqlStringEscaper::escape($this->_lastlogin_limit);
             }
         }
         // _lastlogin_older_limit
         if (!empty($this->_lastlogin_older_limit)) {
-            $query .= ' AND ( '.$this->addDatabasePrefix($this->_db_table).'.lastlogin < "'.encode(AS_DB, $this->_lastlogin_older_limit).'"';
-            $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.encode(AS_DB, $this->_lastlogin_older_limit).'" ) )';
+            $query .= ' AND ( '.$this->addDatabasePrefix($this->_db_table).'.lastlogin < "'.\App\Legacy\SqlStringEscaper::escape($this->_lastlogin_older_limit).'"';
+            $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.\App\Legacy\SqlStringEscaper::escape($this->_lastlogin_older_limit).'" ) )';
         }
 
         // lastlogin_newer_limit
         if (!empty($this->_lastlogin_newer_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin >= "'.encode(AS_DB, $this->_lastlogin_newer_limit).'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin >= "'.\App\Legacy\SqlStringEscaper::escape($this->_lastlogin_newer_limit).'"';
         }
 
         if (isset($this->_order)) {
@@ -183,7 +183,7 @@ class cs_community_manager extends cs_room2_manager
 
         if ('select' == $mode) {
             if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-                $query .= ' LIMIT '.encode(AS_DB, $this->_from_limit).', '.encode(AS_DB, $this->_interval_limit);
+                $query .= ' LIMIT '.\App\Legacy\SqlStringEscaper::escape($this->_from_limit).', '.\App\Legacy\SqlStringEscaper::escape($this->_interval_limit);
             }
         }
 
@@ -201,7 +201,7 @@ class cs_community_manager extends cs_room2_manager
          if (empty($id_array)) {
              return new cs_list();
          } else {
-             $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ("'.implode('", "', encode(AS_DB, $id_array)).'") AND '.$this->addDatabasePrefix($this->_db_table).'.type LIKE "community"';
+             $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ("'.implode('", "', \App\Legacy\SqlStringEscaper::escape($id_array)).'") AND '.$this->addDatabasePrefix($this->_db_table).'.type LIKE "community"';
              $query .= ' ORDER BY '.$sortBy;
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {

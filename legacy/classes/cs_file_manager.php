@@ -52,7 +52,7 @@ class cs_file_manager extends cs_manager
         if (true == $this->_delete_limit) {
             $query .= ' AND ' . $this->addDatabasePrefix('files') . '.deleter_id IS NULL';
         }
-        $query .= ' AND ' . $this->addDatabasePrefix('files') . '.files_id="' . encode(AS_DB, $file_id) . '"';
+        $query .= ' AND ' . $this->addDatabasePrefix('files') . '.files_id="' . \App\Legacy\SqlStringEscaper::escape($file_id) . '"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems get file entry [' . $file_id . '].', E_USER_WARNING);
@@ -70,13 +70,13 @@ class cs_file_manager extends cs_manager
         /** @var cs_file_item $file_item */
         $current_user = $this->_environment->getCurrentUser();
         $query = 'INSERT INTO ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
-            ' portal_id="' . encode(AS_DB, $file_item->getPortalId()) . '",' .
-            ' context_id="' . encode(AS_DB, $file_item->getContextID()) . '",' .
+            ' portal_id="' . \App\Legacy\SqlStringEscaper::escape($file_item->getPortalId()) . '",' .
+            ' context_id="' . \App\Legacy\SqlStringEscaper::escape($file_item->getContextID()) . '",' .
             ' creation_date="' . \App\Utils\MysqlDateTime::now() . '", ' .
-            ' creator_id="' . encode(AS_DB, $current_user->getItemID()) . '", ' .
-            ' filename="' . encode(AS_DB, $file_item->getFileName()) . '", ' .
-            ' filepath="' . encode(AS_DB, $file_item->getFilePath()) . '", ' .
-            ' extras="' . encode(AS_DB, serialize($file_item->getExtraInformation())) . '"';
+            ' creator_id="' . \App\Legacy\SqlStringEscaper::escape($current_user->getItemID()) . '", ' .
+            ' filename="' . \App\Legacy\SqlStringEscaper::escape($file_item->getFileName()) . '", ' .
+            ' filepath="' . \App\Legacy\SqlStringEscaper::escape($file_item->getFilePath()) . '", ' .
+            ' extras="' . \App\Legacy\SqlStringEscaper::escape(serialize($file_item->getExtraInformation())) . '"';
 
         if (!$result = $this->_db_connector->performQuery($query)) {
             throw new Exception();
@@ -100,9 +100,9 @@ class cs_file_manager extends cs_manager
             ));
 
             $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET' .
-                ' size="' . encode(AS_DB, $fileSize) . '",' .
-                ' filepath="' . encode(AS_DB, $filePath) . '"' .
-                ' WHERE files_id="' . encode(AS_DB, $file_item->getFileID()) . '"';
+                ' size="' . \App\Legacy\SqlStringEscaper::escape($fileSize) . '",' .
+                ' filepath="' . \App\Legacy\SqlStringEscaper::escape($filePath) . '"' .
+                ' WHERE files_id="' . \App\Legacy\SqlStringEscaper::escape($file_item->getFileID()) . '"';
             $this->_db_connector->performQuery($query);
         } catch (Exception $e) {
             throw new Exception();
@@ -112,8 +112,8 @@ class cs_file_manager extends cs_manager
     public function updateItem($file_item)
     {
         $query = 'UPDATE ' . $this->addDatabasePrefix('files') . ' SET ' .
-            'extras="' . encode(AS_DB, serialize($file_item->getExtraInformation())) . '"' .
-            ' WHERE files_id="' . encode(AS_DB, $file_item->getFileID()) . '"';
+            'extras="' . \App\Legacy\SqlStringEscaper::escape(serialize($file_item->getExtraInformation())) . '"' .
+            ' WHERE files_id="' . \App\Legacy\SqlStringEscaper::escape($file_item->getFileID()) . '"';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or !$result) {
             trigger_error('Problems updating file from query: "' . $query . '"', E_USER_WARNING);
@@ -308,14 +308,14 @@ class cs_file_manager extends cs_manager
         $current_date = \App\Utils\MysqlDateTime::now();
         $current_data_array = [];
 
-        $query = 'SELECT * FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' . encode(AS_DB, $old_id) . '" AND deleter_id IS NULL AND deletion_date IS NULL';
+        $query = 'SELECT * FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' . \App\Legacy\SqlStringEscaper::escape($old_id) . '" AND deleter_id IS NULL AND deletion_date IS NULL';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
             trigger_error('Problems getting data "' . $this->_db_table . '" from query: "' . $query . '"', E_USER_WARNING);
         } else {
             $item_id = 'files_id';
             $modification_date = 'creation_date';
-            $sql = 'SELECT ' . $item_id . ',' . $modification_date . ',extras FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' . encode(AS_DB, $new_id) . '"';
+            $sql = 'SELECT ' . $item_id . ',' . $modification_date . ',extras FROM ' . $this->addDatabasePrefix($this->_db_table) . ' WHERE context_id="' . \App\Legacy\SqlStringEscaper::escape($new_id) . '"';
             $sql .= ' AND extras LIKE "%s:4:\"COPY\";a:2:{s:7:\"ITEM_ID\";%"';
             $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
             $sql_result = $this->_db_connector->performQuery($sql);
@@ -340,7 +340,6 @@ class cs_file_manager extends cs_manager
                     $first = true;
                     $old_item_id = '';
                     foreach ($query_result as $key => $value) {
-                        $value = encode(FROM_DB, $value);
                         if ('files_id' == $key) {
                             $old_item_id = $value;
                         } elseif ('context_id' == $key) {
@@ -368,9 +367,9 @@ class cs_file_manager extends cs_manager
                             $extra_array['COPY']['ITEM_ID'] = $old_item_id;
                             $extra_array['COPY']['COPYING_DATE'] = $current_date;
                             $value = serialize($extra_array);
-                            $after = $key . '="' . encode(AS_DB, $value) . '"';
+                            $after = $key . '="' . \App\Legacy\SqlStringEscaper::escape($value) . '"';
                         } elseif (!empty($value)) {
-                            $after = $key . '="' . encode(AS_DB, $value) . '"';
+                            $after = $key . '="' . \App\Legacy\SqlStringEscaper::escape($value) . '"';
                         }
 
                         if (!empty($after)) {

@@ -43,7 +43,7 @@ class cs_assessments_manager extends cs_manager
     public function getItem(?int $item_id)
     {
         $retour = null;
-        $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".item_id = '".encode(AS_DB, $item_id)."'";
+        $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).".item_id = '".\App\Legacy\SqlStringEscaper::escape($item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
             trigger_error('Problems selecting one assessment item from query: "'.$query.'"', E_USER_WARNING);
@@ -77,9 +77,9 @@ class cs_assessments_manager extends cs_manager
 	 	UPDATE
 	 		'.$this->addDatabasePrefix($this->_db_table).'
 	 	SET
-	 		assessment = "'.encode(AS_DB, $assessments_item->getAssessment()).'"
+	 		assessment = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getAssessment()).'"
 	 	WHERE
-	 		item_id = "'.encode(AS_DB, $assessments_item->getItemID()).'"
+	 		item_id = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getItemID()).'"
 	 ';
 
         $result = $this->_db_connector->performQuery($query);
@@ -108,7 +108,7 @@ class cs_assessments_manager extends cs_manager
             }
         } else {
             $query = '
-	  		SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment FROM assessments WHERE	item_link_id = "'.encode(AS_DB, $item->getItemID()).'" AND	deletion_date IS NULL GROUP BY item_link_id';
+	  		SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment FROM assessments WHERE	item_link_id = "'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'" AND	deletion_date IS NULL GROUP BY item_link_id';
             $result = $this->_db_connector->performQuery($query);
             if (isset($result[0])) {
                 return [$result[0]['average_assessment'], $result[0]['count_assessment']];
@@ -129,7 +129,7 @@ class cs_assessments_manager extends cs_manager
                      $this->_item_id_array[] = $id;
                  }
              }
-             $query = 'SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment, item_link_id FROM assessments WHERE item_link_id IN ('.implode(',', encode(AS_DB, $id_array)).') AND deletion_date IS NULL GROUP BY item_link_id';
+             $query = 'SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment, item_link_id FROM assessments WHERE item_link_id IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($id_array)).') AND deletion_date IS NULL GROUP BY item_link_id';
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
                  trigger_error('Problems selecting noticed from query: "'.$query.'"');
@@ -159,7 +159,7 @@ class cs_assessments_manager extends cs_manager
   		FROM
   			assessments
   		WHERE
-  			item_link_id = "'.encode(AS_DB, $item->getItemID()).'" AND
+  			item_link_id = "'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'" AND
 			deletion_date IS NULL
 		GROUP BY
 			assessment
@@ -185,8 +185,8 @@ class cs_assessments_manager extends cs_manager
   		FROM
   			assessments
   		WHERE
-  			creator_id = "'.encode(AS_DB, $this->_environment->getCurrentUserID()).'" AND
-  			item_link_id = "'.encode(AS_DB, $item->getItemID()).'" AND
+  			creator_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentUserID()).'" AND
+  			item_link_id = "'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'" AND
 			deletion_date IS NULL
   	';
         $result = $this->_db_connector->performQuery($query);
@@ -205,8 +205,8 @@ class cs_assessments_manager extends cs_manager
 		FROM
 			assessments
 		WHERE
-			item_link_id = "'.encode(AS_DB, $item->getItemID()).'" AND
-			creator_id = "'.encode(AS_DB, $this->_environment->getCurrentUserID()).'" AND
+			item_link_id = "'.\App\Legacy\SqlStringEscaper::escape($item->getItemID()).'" AND
+			creator_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentUserID()).'" AND
 			deletion_date IS NULL
   	';
         $result = $this->_db_connector->performQuery($query);
@@ -232,9 +232,9 @@ class cs_assessments_manager extends cs_manager
 	 		INSERT INTO
 	 			'.$this->addDatabasePrefix('items').'
 	 		SET
-	 			context_id = "'.encode(AS_DB, $context_id).'",
+	 			context_id = "'.\App\Legacy\SqlStringEscaper::escape($context_id).'",
 	 			modification_date = "'.\App\Utils\MysqlDateTime::now().'",
-	 			type = "'.encode(AS_DB, $assessments_item->getItemType()).'"
+	 			type = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getItemType()).'"
 	 	';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
@@ -261,12 +261,12 @@ class cs_assessments_manager extends cs_manager
 	 	INSERT INTO
 	 		'.$this->addDatabasePrefix($this->_db_table).'
 	 	SET
-	 		item_id = "'.encode(AS_DB, $assessments_item->getItemID()).'",
-	 		context_id = "'.encode(AS_DB, $assessments_item->getContextID()).'",
-	 		creator_id = "'.encode(AS_DB, $assessments_item->getCreatorID()).'",
+	 		item_id = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getItemID()).'",
+	 		context_id = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getContextID()).'",
+	 		creator_id = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getCreatorID()).'",
 	 		creation_date = "'.$current_datetime.'",
-	 		item_link_id = "'.encode(AS_DB, $assessments_item->getItemLinkID()).'",
-	 		assessment = "'.encode(AS_DB, $assessments_item->getAssessment()).'"
+	 		item_link_id = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getItemLinkID()).'",
+	 		assessment = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getAssessment()).'"
 	 ';
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
@@ -302,8 +302,8 @@ class cs_assessments_manager extends cs_manager
 		FROM
 			assessments
 		WHERE
-			item_link_id = "'.encode(AS_DB, $item_link_id).'" AND
-			creator_id = "'.encode(AS_DB, $this->_environment->getCurrentUserID()).'" AND
+			item_link_id = "'.\App\Legacy\SqlStringEscaper::escape($item_link_id).'" AND
+			creator_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentUserID()).'" AND
 			deletion_date IS NULL
   	';
         $result = $this->_db_connector->performQuery($query);
@@ -327,7 +327,7 @@ class cs_assessments_manager extends cs_manager
          $query .= ' WHERE 1';
 
          if (isset($this->_room_limit)) {
-             $query .= ' AND context_id="'.encode(AS_DB, $this->_room_limit).'"';
+             $query .= ' AND context_id="'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
          }
 
          // perform query
