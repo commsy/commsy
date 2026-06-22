@@ -23,6 +23,7 @@ use App\Rubric\Label\LabelDeleter;
 use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\LabelService;
+use App\Utils\MysqlDateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -205,7 +206,7 @@ class HashtagController extends AbstractController
             $newName = $buzzwordOne.'/'.$buzzwordTwo;
 
             $buzzwordItemOne->setName($newName);
-            $buzzwordItemOne->setModificationDate(getCurrentDateTimeInMySQL());
+            $buzzwordItemOne->setModificationDate(MysqlDateTime::now());
             $buzzwordItemOne->save();
 
             // Get links to create new hashtag links

@@ -13,6 +13,7 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Utils\MysqlDateTime;
 use cs_label_item;
 use DateTime;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -84,12 +85,12 @@ class InstitutionTransformer extends AbstractTransformer
                 }
             } else {
                 if ($labelObject->isNotActivated()) {
-                    $labelObject->setModificationDate(getCurrentDateTimeInMySQL());
+                    $labelObject->setModificationDate(MysqlDateTime::now());
                 }
             }
         } else {
             if ($labelObject->isNotActivated()) {
-                $labelObject->setModificationDate(getCurrentDateTimeInMySQL());
+                $labelObject->setModificationDate(MysqlDateTime::now());
             }
         }
 

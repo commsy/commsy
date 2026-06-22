@@ -20,6 +20,7 @@ use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\FileService;
 use App\Utils\ItemService;
+use App\Utils\MysqlDateTime;
 use App\Validator\UploadSizeValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -219,7 +220,7 @@ class UploadController extends AbstractController
                 $fileInfo = [
                     'name' => $file->getClientOriginalName(),
                     'tmp_name' => $movedFile->getRealPath(),
-                    'file_id' => $file->getClientOriginalName() . '_' . getCurrentDateTimeInMySQL(),
+                    'file_id' => $file->getClientOriginalName() . '_' . MysqlDateTime::now(),
                 ];
 
                 $fileManager = $legacyEnvironment->getFileManager();

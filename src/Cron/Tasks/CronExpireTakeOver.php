@@ -16,6 +16,7 @@ namespace App\Cron\Tasks;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
+use App\Utils\MysqlDateTime;
 use cs_environment;
 use cs_user_item;
 use DateTimeImmutable;
@@ -70,8 +71,8 @@ readonly class CronExpireTakeOver implements CronTaskInterface
 
                 $translator->setEmailTextArray($portal->getEmailTextArray());
                 $body = '';
-                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()),
-                    $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(MysqlDateTime::now()),
+                    $translator->getTimeInLang(MysqlDateTime::now()));
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $expiredUser->getFullName());
                 $body .= "\n\n";

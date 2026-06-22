@@ -15,6 +15,7 @@ namespace App\Helper;
 
 use App\Entity\Portal;
 use App\Services\LegacyEnvironment;
+use App\Utils\MysqlDateTime;
 use cs_environment;
 use cs_list;
 use cs_time_item;
@@ -36,7 +37,7 @@ class PortalHelper
 
         $current_year = date('Y');
         $year = $current_year - 1;
-        $current_date = getCurrentDate();
+        $current_date = MysqlDateTime::today();
         $clock_pulse_array = $portal->getTimeTextArray();
         $found = false;
         while (!$found and $year < $current_year + 1) {

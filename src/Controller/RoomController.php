@@ -33,6 +33,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
+use App\Utils\MysqlDateTime;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
@@ -121,7 +122,7 @@ class RoomController extends AbstractController
 
         $announcementManager = $legacyEnvironment->getAnnouncementManager();
         $announcementManager->setContextLimit($roomId);
-        $announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
+        $announcementManager->setDateLimit(MysqlDateTime::now());
         $countAnnouncements = $announcementManager->getCountAll();
 
         $backgroundImage = $this->generateUrl('getBackground', [
@@ -544,7 +545,7 @@ class RoomController extends AbstractController
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
                 $legacyRoom->setCreatorItem($currentUser);
-                $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
+                $legacyRoom->setCreationDate(MysqlDateTime::now());
                 $legacyRoom->setModificatorItem($currentUser);
                 $legacyRoom->setContextID($currentContextResolver->getPortal()?->getId() ?? 0);
                 $legacyRoom->setPortalID($currentContextResolver->getPortal()?->getId() ?? 0);

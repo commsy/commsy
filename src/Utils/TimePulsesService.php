@@ -175,7 +175,7 @@ class TimePulsesService
         $clock_pulse_array = [];
         if (!empty($timePulseTemplates)) {
             $current_year = date('Y');
-            $current_date = getCurrentDate();
+            $current_date = MysqlDateTime::today();
             $ad_year = 0;
             $first = true;
             foreach ($timePulseTemplates as $key => $timePulseTemplate) {

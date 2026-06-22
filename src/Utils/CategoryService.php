@@ -159,7 +159,7 @@ class CategoryService
         $newTag->setTitle($titleOne.'/'.$titleTwo);
         $newTag->setContextID($this->currentContextResolver->getContextId() ?? 0);
         $newTag->setCreatorItem($environment->getCurrentUserItem());
-        $newTag->setCreationDate(getCurrentDateTimeInMySQL());
+        $newTag->setCreationDate(MysqlDateTime::now());
         $newTag->setLinkedItemsByIDArray($mergedLinkedIds);
         $newTag->setPosition($fatherId, $tag2tagManager->countChildren($fatherId));
         $newTag->save();

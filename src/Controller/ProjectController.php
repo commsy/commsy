@@ -30,6 +30,7 @@ use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
 use App\Utils\ItemService;
+use App\Utils\MysqlDateTime;
 use App\Utils\ProjectService;
 use App\Utils\ReaderService;
 use App\Utils\RoomService;
@@ -228,7 +229,7 @@ class ProjectController extends AbstractController
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
                 $legacyRoom->setCreatorItem($currentUser);
-                $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
+                $legacyRoom->setCreationDate(MysqlDateTime::now());
                 $legacyRoom->setModificatorItem($currentUser);
                 $legacyRoom->setContextID($currentContextResolver->getPortal()?->getId() ?? 0);
                 $legacyRoom->setPortalID($currentContextResolver->getPortal()?->getId() ?? 0);

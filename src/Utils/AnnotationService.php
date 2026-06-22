@@ -59,11 +59,11 @@ readonly class AnnotationService
         $annotationItem = $annotationManager->getNewItem();
         $annotationItem->setContextID($roomId);
         $annotationItem->setCreatorItem($user);
-        $annotationItem->setCreationDate(getCurrentDateTimeInMySQL());
+        $annotationItem->setCreationDate(MysqlDateTime::now());
 
         // set modificator and modification date
         $annotationItem->setModificatorItem($user);
-        $annotationItem->setModificationDate(getCurrentDateTimeInMySQL());
+        $annotationItem->setModificationDate(MysqlDateTime::now());
 
         $annotationItem->setDescription($description);
 

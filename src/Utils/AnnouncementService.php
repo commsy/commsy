@@ -91,7 +91,7 @@ class AnnouncementService
 
     public function setDateLimit(): void
     {
-        $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
+        $this->announcementManager->setDateLimit(MysqlDateTime::now());
     }
 
     public function setFilterConditions(Form $filterForm): void
@@ -169,6 +169,6 @@ class AnnouncementService
 
     public function hideInvalidEntries(): void
     {
-        $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
+        $this->announcementManager->setDateLimit(MysqlDateTime::now());
     }
 }
