@@ -1190,7 +1190,7 @@ class cs_manager
                if (strstr((string) $desc, '<!-- KFC TEXT')
                     and $replace
                ) {
-                   $desc = renewSecurityHash($desc);
+                   $desc = \App\Legacy\KfcTextHash::renew($desc);
                }
                $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET description="'.encode(AS_DB, $desc).'" WHERE item_id='.encode(AS_DB, $item_id);
                $result_update = $this->_db_connector->performQuery($query);

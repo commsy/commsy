@@ -127,7 +127,6 @@
             "legacy/functions/date_functions.php",
             "legacy/functions/language_functions.php",
             "legacy/functions/misc_functions.php",
-            "legacy/functions/security_functions.php",
             "legacy/functions/text_functions.php"
         ]
     },

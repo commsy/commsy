@@ -14,8 +14,6 @@
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Result;
 
-require_once 'functions/security_functions.php';
-
 class db_mysql_connector
 {
     private int $dbErrorCode = 0;
@@ -98,7 +96,7 @@ class db_mysql_connector
 
     public function text_php2db($text)
     {
-        return mysql_escape_mimic($text);
+        return \App\Legacy\SqlStringEscaper::escape($text);
     }
 
     private function resetErrors(): void
