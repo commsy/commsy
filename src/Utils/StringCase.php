@@ -13,27 +13,25 @@
 
 namespace App\Utils;
 
+use function Symfony\Component\String\u;
+
 /**
  * Locale-independent upper-/lower-casing.
  *
  * Replaces the legacy global functions cs_strtoupper()/cs_strtolower() from
- * legacy/functions/text_functions.php. The two-step conversion (a byte-wise
- * strtr() over the Latin-1 supplement range followed by mb_*case) is kept
- * identical to the legacy behaviour so callers see the same result regardless
- * of the runtime locale.
+ * legacy/functions/text_functions.php. Uses Symfony's String component, whose
+ * case mapping is Unicode-aware and locale-independent — the property the
+ * legacy strtr()/mb_*case() dance hand-rolled.
  */
 final class StringCase
 {
-    private const string LOWER_CHARS = 'àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþ';
-    private const string UPPER_CHARS = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ';
-
     public static function toUpper(string $value): string
     {
-        return mb_strtoupper(strtr($value, self::LOWER_CHARS, self::UPPER_CHARS), 'UTF-8');
+        return u($value)->upper()->toString();
     }
 
     public static function toLower(string $value): string
     {
-        return mb_strtolower(strtr($value, self::UPPER_CHARS, self::LOWER_CHARS), 'UTF-8');
+        return u($value)->lower()->toString();
     }
 }
