@@ -131,7 +131,7 @@ class cs_file_item extends cs_item
     {
         $display_name = $this->getDisplayName();
         if (!empty($display_name)) {
-            return cs_strtolower(mb_substr(strrchr((string) $display_name, '.'), 1));
+            return \App\Utils\StringCase::toLower(mb_substr(strrchr((string) $display_name, '.'), 1));
         }
 
         return null;

@@ -344,8 +344,8 @@ class cs_context_item extends cs_item
     public function getDescriptionByLanguage($language): string
     {
         $desc_array = $this->getDescriptionArray();
-        if (!empty($desc_array[cs_strtoupper($language)])) {
-            return $desc_array[cs_strtoupper($language)];
+        if (!empty($desc_array[\App\Utils\StringCase::toUpper($language)])) {
+            return $desc_array[\App\Utils\StringCase::toUpper($language)];
         }
 
         return '';
@@ -1142,7 +1142,7 @@ class cs_context_item extends cs_item
         $rubric_array[] = CS_TIME_TYPE;
 
         foreach ($rubric_array as $rubric) {
-            $retour[cs_strtoupper($rubric)] = $this->_getRubricArray($rubric);
+            $retour[\App\Utils\StringCase::toUpper($rubric)] = $this->_getRubricArray($rubric);
         }
 
         return $retour;
@@ -1156,7 +1156,7 @@ class cs_context_item extends cs_item
     public function setRubricArray($rubric, $array): void
     {
         $rubric_translation_array = $this->_getExtra('RUBRIC_TRANSLATION_ARRAY');
-        $rubric_translation_array[cs_strtoupper($rubric)] = $array;
+        $rubric_translation_array[\App\Utils\StringCase::toUpper($rubric)] = $array;
         $this->_addExtra('RUBRIC_TRANSLATION_ARRAY', $rubric_translation_array);
     }
 
@@ -1170,8 +1170,8 @@ class cs_context_item extends cs_item
         $retour = [];
         if ($this->_issetExtra('RUBRIC_TRANSLATION_ARRAY')) {
             $rubric_translation_array = $this->_getExtra('RUBRIC_TRANSLATION_ARRAY');
-            if (!empty($rubric_translation_array[cs_strtoupper($rubric)])) {
-                $retour = $rubric_translation_array[cs_strtoupper($rubric)];
+            if (!empty($rubric_translation_array[\App\Utils\StringCase::toUpper($rubric)])) {
+                $retour = $rubric_translation_array[\App\Utils\StringCase::toUpper($rubric)];
             }
         }
         if (empty($retour)) {

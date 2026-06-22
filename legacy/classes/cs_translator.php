@@ -622,9 +622,9 @@ class cs_translator
         $rubric_array = [];
         if (!empty($this->_rubric_translation_array)
              and !empty($rubric)
-             and !empty($this->_rubric_translation_array[cs_strtoupper($rubric)])
+             and !empty($this->_rubric_translation_array[\App\Utils\StringCase::toUpper($rubric)])
         ) {
-            $retour = $this->_rubric_translation_array[cs_strtoupper($rubric)];
+            $retour = $this->_rubric_translation_array[\App\Utils\StringCase::toUpper($rubric)];
         } else {
             $rubric_array['NAME'] = 'rubrics';
             $rubric_array['DE']['GENUS'] = 'F';
@@ -673,8 +673,8 @@ class cs_translator
     {
         $rubric_array = $this->_getRubricArray($rubric);
         $language = $this->_selected_language;
-        if (isset($rubric_array[cs_strtoupper($language)][cs_strtoupper($position)])) {
-            $text = $rubric_array[cs_strtoupper($language)][cs_strtoupper($position)];
+        if (isset($rubric_array[\App\Utils\StringCase::toUpper($language)][\App\Utils\StringCase::toUpper($position)])) {
+            $text = $rubric_array[\App\Utils\StringCase::toUpper($language)][\App\Utils\StringCase::toUpper($position)];
         } else {
             $text = 'rubric';
         }
@@ -743,11 +743,11 @@ class cs_translator
 
         $cs_article['EN'] = 'the';
         $rubric_array = $this->_getRubricArray($rubric);
-        $language = cs_strtoupper($this->_selected_language);
+        $language = \App\Utils\StringCase::toUpper($this->_selected_language);
         if ('EN' == $language) {
             $text = $cs_article[$language];
         } else {
-            $text = $cs_article[$language][$mode][$rubric_array[$language]['GENUS']][cs_strtoupper($position)];
+            $text = $cs_article[$language][$mode][$rubric_array[$language]['GENUS']][\App\Utils\StringCase::toUpper($position)];
         }
         if ('BIG' == $upper_case) {
             $text = ucfirst($text);

@@ -25,33 +25,3 @@ function encode($mode, $value)
 
     return $retour;
 }
-
-/**
- * Extended implementation of the standard PHP-Function.
- *
- * Needed to ensure proper searching in CommSy with standard PHP settings
- * When the 'locale' setting of PHP is not set properly, the search for language specific characters
- * like 'ä', 'ü', 'ö', 'á' etc doesn't work correct, because the standard PHP strtoupper doesn't translate
- * them (http://de3.php.net/manual/en/function.strtoupper.php)
- *
- * Our extended implementation translates correct without respect to 'locale'
- */
-function cs_strtoupper($value): string
-{
-    return mb_strtoupper(strtr($value, LC_CHARS, UC_CHARS), 'UTF-8');
-}
-
-/**
- * Extended implementation of the standard PHP-Function.
- *
- * Needed to ensure proper searching in CommSy with standard PHP settings
- * When the 'locale' setting of PHP is not set properly, the search for language specific characters
- * like 'ä', 'ü', 'ö', 'á' etc doesn't work correct, because the standard PHP strtolower doesn't translate
- * them (http://de3.php.net/manual/en/function.strtolower.php)
- *
- * Our extended implementation translates correct without respect to 'locale'
- */
-function cs_strtolower($value): string
-{
-    return mb_strtolower(strtr($value, UC_CHARS, LC_CHARS), 'UTF-8');
-}

@@ -135,9 +135,9 @@ class cs_disc_manager
         }
         $this->makeFolder($this->firstId, $new_room_id);
         $source_file = str_replace('//', '/', $this->getFilePath('',
-            $old_room_id).'/'.$old_file_id.'.'.cs_strtolower(mb_substr(strrchr((string) $filename, '.'), 1)));
+            $old_room_id).'/'.$old_file_id.'.'.\App\Utils\StringCase::toLower(mb_substr(strrchr((string) $filename, '.'), 1)));
         $target_file = str_replace('//', '/', $this->getFilePath('',
-            $new_room_id).'/'.$new_file_id.'.'.cs_strtolower(mb_substr(strrchr((string) $filename, '.'), 1)));
+            $new_room_id).'/'.$new_file_id.'.'.\App\Utils\StringCase::toLower(mb_substr(strrchr((string) $filename, '.'), 1)));
 
         // copy
         if (file_exists($source_file)) {
