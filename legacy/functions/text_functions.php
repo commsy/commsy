@@ -26,61 +26,6 @@ function encode($mode, $value)
     return $retour;
 }
 
-/** returns a string that is x characters at the most but won't
- *  break in the middle of a word.
- *
- * @param text that uld be chunked
- * @param length size of the caracters
- *
- * @return array retour_array the prepared array
- */
-function chunkText($text, $length)
-{
-    $first_tag = '(:';
-    $last_tag = ':)';
-
-    $text = trim((string) $text);
-    $mySubstring = preg_replace('~^(.{1,$length})[ .,].*~u', '\\1', $text); // ???
-    if (mb_strlen($mySubstring) > $length) {
-        $mySubstring = mb_substr($text, 0, $length);
-        if (strstr($text, $first_tag)
-             and strstr($text, $last_tag)
-        ) {
-            if (mb_strrpos($mySubstring, $last_tag) < mb_strrpos($mySubstring, $first_tag)) {
-                $mySubstring2 = mb_substr($text, $length);
-                $mySubstring .= mb_substr($mySubstring2, 0, mb_strpos($mySubstring2, $last_tag) + 2);
-                $mySubstring .= ' ';
-            }
-        }
-        if (strstr($mySubstring, ' ')) {
-            $mySubstring = mb_substr($mySubstring, 0, mb_strrpos($mySubstring, ' '));
-        }
-        $mySubstring .= ' ...';
-    }
-    $mySubstring = preg_replace('~\n~u', ' ', $mySubstring);
-
-    return $mySubstring;
-}
-
-/** returns an URL that is x characters at the most
- *  special needed for _activate_urls in cs_view.php
- *  in a preg_replace_callback - function.
- *
- * @param array from preg_replace_function
- *
- * @return text for replacement in preg_replace_function
- */
-function spezial_chunkURL(array $text): string
-{
-    // ------------------
-    // --->UTF8 - OK<----
-    // ------------------
-    $text = $text[1];
-    $text = chunkText($text, 45);
-
-    return '">'.$text.'</a>';
-}
-
 /**
  * Extended implementation of the standard PHP-Function.
  *

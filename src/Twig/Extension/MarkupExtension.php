@@ -14,6 +14,7 @@
 namespace App\Twig\Extension;
 
 use App\Entity\User;
+use App\Legacy\AutoLinkText;
 use App\Services\LegacyMarkup;
 use cs_item;
 use DOMNode;
@@ -101,7 +102,7 @@ class MarkupExtension extends AbstractExtension
         $url_string .= '(?![\s\w\d]*</a>)^u'; // if there's a </a>-tag behind the link, it is assumed that there's already a complete <a href="">link</a> contruct comming from the editor. These links are omitted.
 
         $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
-        $text = preg_replace_callback('~">(.[^"]+)</a>~u', 'spezial_chunkURL', $text);
+        $text = preg_replace_callback('~">(.[^"]+)</a>~u', AutoLinkText::shortenAnchorText(...), $text);
         $text = preg_replace('~<a href="www~u', '<a href="http://www', $text); // add "http://" to links that were activated with www in front only
 
         // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated

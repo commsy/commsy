@@ -139,7 +139,7 @@ class misc_text_converter
 
         // $text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
         $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
-        $text = preg_replace_callback('~">(.[^"]+)</a>~u', 'spezial_chunkURL', $text);
+        $text = preg_replace_callback('~">(.[^"]+)</a>~u', \App\Legacy\AutoLinkText::shortenAnchorText(...), $text);
         $text = preg_replace('~<a href="www~u', '<a href="http://www', $text); // add "http://" to links that were activated with www in front only
         // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
         $text = preg_replace('^( |\^|>|\n)(mailto:)?(([' . RFC2822_CHARS . ']+(\.[' . RFC2822_CHARS . ']+)*)@([' . RFC2822_CHARS . ']+(\.[' . RFC2822_CHARS . ']+)*\.([A-z]{2,})))^u', '$1<a href="mailto:$3">$3</a>', $text);
