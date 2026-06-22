@@ -76,7 +76,7 @@ class cs_translator
                 include_once $this->_file_path.$entry;
                 if (!empty($message)) {
                     $message = encode(FROM_FILE, $message);
-                    $this->messageArray = multi_array_merge($this->messageArray, $message);
+                    $this->messageArray = array_replace_recursive($this->messageArray, $message);
                     unset($message);
                 }
             }
@@ -88,7 +88,7 @@ class cs_translator
                         include_once $this->_file_path.$entry;
                         if (!empty($message)) {
                             $message = encode(FROM_FILE, $message);
-                            $this->messageArray = multi_array_merge($this->messageArray, $message);
+                            $this->messageArray = array_replace_recursive($this->messageArray, $message);
                             unset($message);
                         }
                     }
@@ -517,12 +517,12 @@ class cs_translator
 
                 // get the replacement strings for the placeholders
                 if ('ART' == $placeholder_elements[2]) {
-                    $tags[$i++] = $this->_getRubricNameArticle(Module2Type($placeholder_elements[1]),
+                    $tags[$i++] = $this->_getRubricNameArticle(\App\Legacy\ItemTypeMapper::fromModule($placeholder_elements[1]),
                         $placeholder_elements[3],
                         $placeholder_elements[4],
                         $placeholder_elements[5]);
                 } else {
-                    $tags[$i++] = $this->_getRubricName(Module2Type($placeholder_elements[1]),
+                    $tags[$i++] = $this->_getRubricName(\App\Legacy\ItemTypeMapper::fromModule($placeholder_elements[1]),
                         $placeholder_elements[3],
                         $placeholder_elements[4]);
                     if (!empty($placeholder_elements[5])
@@ -533,7 +533,7 @@ class cs_translator
                         if (!empty($placeholder_elements[7])) {
                             $upper_lower = $placeholder_elements[7];
                         }
-                        $tags[$i - 1] = $this->_getRubricAdjective(Module2Type($placeholder_elements[1]), $placeholder_elements[6], $upper_lower).$tags[$i - 1];
+                        $tags[$i - 1] = $this->_getRubricAdjective(\App\Legacy\ItemTypeMapper::fromModule($placeholder_elements[1]), $placeholder_elements[6], $upper_lower).$tags[$i - 1];
                     }
                 }
             }

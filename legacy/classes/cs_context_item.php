@@ -1928,9 +1928,9 @@ class cs_context_item extends cs_item
                     $rubric = 'user';
                 }
                 if ($this->withRubric($rubric)) {
-                    $this->_current_rubrics_array[$pointer++] = Module2Type($rubric);
+                    $this->_current_rubrics_array[$pointer++] = \App\Legacy\ItemTypeMapper::fromModule($rubric);
                 }
-                $this->_current_home_conf_array[Module2Type($rubric)] = $view;
+                $this->_current_home_conf_array[\App\Legacy\ItemTypeMapper::fromModule($rubric)] = $view;
             }
         }
 
