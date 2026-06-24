@@ -598,6 +598,124 @@ Please make sure that you stated your upload-password in the following manner in
 
 Best regards ... CommSy Administrator</target>
             </trans-unit>
+            <trans-unit id="mail_body_account_delete">
+                <source>mail.body.account_delete</source>
+                <target>{room_type, select,
+project {your account
+    {p1}
+
+has been deleted at the CommSy Project workspace "{p2}".}
+community {your account
+    {p1}
+
+has been deleted at the Community workspace "{p2}".}
+grouproom {your account
+    {p1}
+
+has been deleted in CommSy group workspace "{p2}".}
+other {your account
+    {p1}
+
+has been deleted on portal "{p2}" as well as in all contained workspaces.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_account_lock">
+                <source>mail.body.account_lock</source>
+                <target>{room_type, select,
+project {the status of your membership for the CommSy Project workspace "{p2}" has changed:
+Your account {p1} has locked.}
+community {the status of your membership for the Community workspace "{p2}" has changed:
+
+Your account {p1} has locked.
+
+Please contact the moderator/s of the Community workspace "{p2}" for further information.}
+grouproom {the status of your membership in CommSy group workspace "{p2}" has changed:
+your account {p1} has been locked.}
+other {the status of your membership for the portal "{p2}" has changed: Your account {p1} has been locked.
+
+Please contact the moderator/s of the portal "{p2}" for further information.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_user">
+                <source>mail.body.status_user</source>
+                <target>{room_type, select,
+project {your account
+   {p1}
+
+for the commsy Project workspace "{p2}" has now the status "user". You can use the whole range of functions of the Project workspace "{p2}" now.}
+community {your account
+   {p1}
+
+for the Community workspace "{p2}" has now the status "user". You can now use the whole range of functions on "{p2}".}
+grouproom {your account
+   {p1}
+
+has now the status "user" in CommSy group workspace "{p2}". You can use the whole range of functions of the group workspace "{p2}" now.}
+other {your account
+   {p1}
+
+for the portal "{p2}" has now the status "user". You can now use the whole range of functions on "{p2}". Your account is valid for all rooms that you want to participate in.
+
+Two more details for the rooms:
+- you can open a room by making the accordant entry after the link "enter new room".
+
+- to become a member of a certain room, click on the hyperlink "become a member" on the details for the room.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_moderator">
+                <source>mail.body.status_moderator</source>
+                <target>{room_type, select,
+project {the status of your account
+   {p1}
+
+for the CommSy Project workspace "{p2}" has been changed: You are now a "moderator".
+
+As a moderator you can configure Project workspace: Select colours, administrate accounts, ...}
+community {the status of your account
+   {p1}
+
+for the Community workspace "{p2}" has changed:
+
+You are now an "moderator" of "{p2}". That gives you the possibility to administrate this Community workspace, activate accounts and activate the worldwide publication of materials.}
+grouproom {the status of your account
+   {p1}
+
+in CommSy group workspace "{p2}" has changed: You are a "moderator" now.
+
+You now have access to group workspace settings, such as: Select colours, administrate accounts, ...}
+other {the status of your account
+   {p1}
+
+for the portal "{p2}" has changed:
+
+You are a "moderator" now of "{p2}". You now have access to user and workspace management controls for the entire CommSy installation.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_read_only">
+                <source>mail.body.status_read_only</source>
+                <target>your account
+   {p1}
+
+for the commsy Project workspace "{p2}" has now the status "read only user".</target>
+            </trans-unit>
+            <trans-unit id="mail_body_make_contact_person">
+                <source>mail.body.make_contact_person</source>
+                <target>{room_type, select,
+project {your status for the CommSy Project workspace "{p2}" has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.}
+community {your status for the CommSy Community workspace "{p2}" has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.}
+grouproom {your status for the CommSy group workspace "{p2}" has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.}
+other {your status for the CommSy portal "{p2}" has been changed: You are now a contact person.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_unmake_contact_person">
+                <source>mail.body.unmake_contact_person</source>
+                <target>{room_type, select,
+project {your status for the CommSy Project workspace "{p2}" has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.}
+community {your status for the CommSy Community workspace "{p2}" has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.}
+grouproom {your status for the CommSy group workspace "{p2}" has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.}
+other {your status for the CommSy portal "{p2}" has changed: You are not a contact person anymore.}
+}</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

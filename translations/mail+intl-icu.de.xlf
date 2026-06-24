@@ -598,6 +598,125 @@ Bitte überprüfen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennw
 
 Gruß ... CommSy Administrator</target>
             </trans-unit>
+            <trans-unit id="mail_body_account_delete">
+                <source>mail.body.account_delete</source>
+                <target>{room_type, select,
+project {Ihre Kennung
+   {p1}
+
+wurde in dem CommSy-Projektraum "{p2}" gelöscht.}
+community {Ihre Kennung
+   {p1}
+
+wurde in dem Gemeinschaftsraum "{p2}" gelöscht.}
+grouproom {Ihre Kennung
+   {p1}
+
+wurde in dem CommSy-Gruppenraum "{p2}" gelöscht.}
+other {Ihre Kennung
+   {p1}
+
+wurde auf dem Portal "{p2}" und damit auch in allen Räumen des Portals gelöscht.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_account_lock">
+                <source>mail.body.account_lock</source>
+                <target>{room_type, select,
+project {Ihre Kennung
+   {p1}
+
+in dem CommSy-Projektraum "{p2}" ist gesperrt worden.}
+community {Ihre Kennung
+   {p1}
+
+in dem Gemeinschaftsraum "{p2}" ist gesperrt worden.
+
+Bitte wenden Sie sich an die Moderation des Gemeinschaftsraums "{p2}", wenn Sie weitere Informationen wünschen.}
+grouproom {Ihre Kennung
+   {p1}
+
+in dem CommSy-Gruppenraum "{p2}" ist gesperrt worden.}
+other {Ihre Kennung
+   {p1}
+
+im Portal "{p2}" ist gesperrt worden.
+
+Bitte wenden Sie sich an die Moderation des Portals "{p2}", wenn Sie weitere Informationen wünschen.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_user">
+                <source>mail.body.status_user</source>
+                <target>{room_type, select,
+project {Ihre Kennung
+   {p1}
+
+für den CommSy-Projektraum "{p2}" hat nun den Status "BenutzerIn" und Sie können alle Möglichkeiten in dem Projektraum "{p2}" nutzen.}
+community {Ihre Kennung
+   {p1}
+
+für den Gemeinschaftsraum "{p2}" hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten in dem Gemeinschaftsraum "{p2}" nutzen.}
+grouproom {Ihre Kennung
+   {p1}
+
+für den CommSy-Gruppenraum "{p2}" hat nun den Status "BenutzerIn" und Sie können alle Möglichkeiten im Gruppenraum "{p2}" nutzen.}
+other {Ihre Kennung
+   {p1}
+
+für das Portal "{p2}" hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten im Portal "{p2}" nutzen. Ihre Kennung gilt außerdem für alle Räume im Portal "{p2}", in denen Sie sich als Teilnehmer anmelden.
+
+Noch zwei Hinweise zu den Räumen:
+- TeilnehmerIn in einem Raum können Sie werden, indem Sie auf der zum Raum zugehörigen Seite auf den Link "Teilnahme beantragen" klicken.
+
+- Einen Raum können Sie eröffnen, indem Sie auf dem Portal dem Link "Raum neu eröffnen" folgen. Der Raum steht Ihnen anschließend sofort zur Verfügung.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_moderator">
+                <source>mail.body.status_moderator</source>
+                <target>{room_type, select,
+project {der Status Ihrer Kennung
+   {p1}
+
+in dem CommSy-Projektraum "{p2}" hat sich geändert: Sie sind nun "Projektraum-ModeratorIn".
+
+Sie können nun den CommSy-Projektraum "{p2}" konfigurieren: Farben einstellen, Kennungen verwalten, ...}
+community {Sie gehören nun zur "Moderation" des Gemeinschaftsraums "{p2}". Damit können Sie diesen Gemeinschaftsraum administrieren, Kennungen freischalten und Materialien zur weltweiten Veröffentlichung freischalten.}
+grouproom {der Status Ihrer Kennung
+   {p1}
+
+in dem CommSy-Gruppenraum "{p2}" hat sich geändert: Sie sind nun "ModeratorIn".
+
+Sie können nun den CommSy-Gruppenraum "{p2}" konfigurieren: Farben einstellen, Kennungen verwalten, ...}
+other {Der Status Ihrer Kennung
+   {p1}
+
+hat sich geändert. Sie gehören nun zur Moderation des Portals "{p2}". Damit können Sie auf diesem Portal Kennungen und Räume freischalten bzw. sperren.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_read_only">
+                <source>mail.body.status_read_only</source>
+                <target>Ihre Kennung
+   {p1}
+
+für den CommSy-Raum "{p2}" hat nun den Status "LesendeR BenutzerIn" und Sie können nun lesend auf die Inhalte im Raum "{p2}" zugreifen.</target>
+            </trans-unit>
+            <trans-unit id="mail_body_make_contact_person">
+                <source>mail.body.make_contact_person</source>
+                <target>{room_type, select,
+project {Ihr Status in dem CommSy-Projektraum "{p2}" hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.}
+community {Ihr Status in dem CommSy-Gemeinschaftsraum "{p2}" hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.}
+grouproom {Ihr Status in dem CommSy-Gruppenraum "{p2}" hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.}
+other {Ihr Status im CommSy-Portal "{p2}" hat sich geändert: Sie sind nun AnsprechpartnerIn für das Portal.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_unmake_contact_person">
+                <source>mail.body.unmake_contact_person</source>
+                <target>{room_type, select,
+project {Ihr Status in dem CommSy-Projektraum "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.}
+community {Ihr Status in dem CommSy-Gemeinschaftsraum "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raums nicht mehr angezeigt.}
+grouproom {Ihr Status in dem CommSy-Gruppenraum "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.}
+other {Ihr Status im CommSy-Portal "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für das Portal mehr.}
+}</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
