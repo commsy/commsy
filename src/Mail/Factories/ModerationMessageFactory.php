@@ -6,6 +6,7 @@ use App\Mail\MessageInterface;
 use App\Mail\Messages\RoomModerationMessage;
 use App\Proxy\PortalProxy;
 use App\Services\LegacyEnvironment;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use cs_community_item;
 use cs_context_item;
 use cs_room_item;
@@ -14,6 +15,7 @@ readonly class ModerationMessageFactory
 {
     public function __construct(
         private LegacyEnvironment $legacyEnvironment,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -29,6 +31,7 @@ readonly class ModerationMessageFactory
             $parentContext,
             $changeType,
             $this->legacyEnvironment,
+            $this->translator,
             $oldLinkedIds ?? [],
             $newLinkedIds ?? []
         );
