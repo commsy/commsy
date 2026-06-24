@@ -15,6 +15,7 @@ namespace App\Mail\Messages;
 
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Mail\MailTextResolver;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
 use cs_environment;
@@ -29,7 +30,8 @@ class AccountActivityLockWarningMessage extends Message
         private readonly UrlGeneratorInterface $urlGenerator,
         LegacyEnvironment $legacyEnvironment,
         private readonly Portal $portal,
-        private readonly Account $account
+        private readonly Account $account,
+        private readonly MailTextResolver $mailTextResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -46,32 +48,47 @@ class AccountActivityLockWarningMessage extends Message
 
     public function getParameters(): array
     {
-        $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
-        $legacyTranslator->setEmailTextArray($this->portal->getEmailTextArray());
+        $overrides = $this->portal->getEmailTextArray();
+        // account-level mail: the legacy translator resolved this in portal context (_PO)
+        $roomType = 'other';
+        $locale = $this->legacyEnvironment->getSelectedLanguage();
 
         $contactModerators = $this->portal->getContactModeratorList($this->legacyEnvironment);
         /** @var cs_user_item|false $firstContactModerator */
         $firstContactModerator = $contactModerators->getFirst();
 
         return [
-            'hello' => $legacyTranslator->getEmailMessage(
+            'hello' => $this->mailTextResolver->resolve(
+                'mail.salutation',
                 'MAIL_BODY_HELLO',
-                "{$this->account->getFirstname()} {$this->account->getLastname()}"
+                $roomType,
+                $locale,
+                ["{$this->account->getFirstname()} {$this->account->getLastname()}"],
+                $overrides
             ),
-            'content' => $legacyTranslator->getEmailMessage(
+            'content' => $this->mailTextResolver->resolve(
+                'mail.inactivity_lock_next',
                 'EMAIL_INACTIVITY_LOCK_NEXT_BODY',
-                $this->account->getDisplayName(),
-                $this->account->getAuthSource()->getTitle(),
-                $this->portal->getClearInactiveAccountsLockDays(),
-                $this->urlGenerator->generate('app_helper_portalenter', [
-                    'context' => $this->portal->getId(),
-                ], UrlGeneratorInterface::ABSOLUTE_URL),
-                $this->portal->getTitle(),
+                $roomType,
+                $locale,
+                [
+                    $this->account->getDisplayName(),
+                    $this->account->getAuthSource()->getTitle(),
+                    $this->portal->getClearInactiveAccountsLockDays(),
+                    $this->urlGenerator->generate('app_helper_portalenter', [
+                        'context' => $this->portal->getId(),
+                    ], UrlGeneratorInterface::ABSOLUTE_URL),
+                    $this->portal->getTitle(),
+                ],
+                $overrides
             ),
-            'ciao' => $legacyTranslator->getEmailMessage(
+            'ciao' => $this->mailTextResolver->resolve(
+                'mail.goodbye',
                 'MAIL_BODY_CIAO',
-                $firstContactModerator ? $firstContactModerator->getFullName() : '',
-                $this->portal->getTitle()
+                $roomType,
+                $locale,
+                [$firstContactModerator ? $firstContactModerator->getFullName() : '', $this->portal->getTitle()],
+                $overrides
             ),
         ];
     }

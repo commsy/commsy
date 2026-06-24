@@ -40,7 +40,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityLockWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account);
+            return new AccountActivityLockWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextResolver);
         }
 
         return null;
@@ -60,7 +60,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityDeleteWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account);
+            return new AccountActivityDeleteWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextResolver);
         }
 
         return null;
@@ -70,7 +70,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityDeletedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account);
+            return new AccountActivityDeletedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextResolver);
         }
 
         return null;

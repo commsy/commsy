@@ -484,6 +484,24 @@ Moderator/s {p2}}
 
 {p3}</target>
             </trans-unit>
+            <trans-unit id="mail_inactivity_lock_next">
+                <source>mail.inactivity_lock_next</source>
+                <target>your account {p1} ({p2}) will be locked in {p3} days because of inactivity. Log on to your account will prevent you from getting locked.
+
+{p4}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_delete_next">
+                <source>mail.inactivity_delete_next</source>
+                <target>Your account {p1} ({p2}) will be deleted in {p3} days.
+
+{p4}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_delete_now">
+                <source>mail.inactivity_delete_now</source>
+                <target>Your account {p1} ({p2}) has been deleted.
+
+{p3}</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
