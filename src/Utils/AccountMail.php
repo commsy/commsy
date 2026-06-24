@@ -19,6 +19,7 @@ use cs_environment;
 use cs_user_item;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * This is just a helper class to construct mails on any account action.
@@ -28,28 +29,29 @@ class AccountMail
 {
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RouterInterface $router, private readonly CurrentContextResolver $currentContextResolver)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RouterInterface $router, private readonly CurrentContextResolver $currentContextResolver, private readonly TranslatorInterface $translator)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function generateSubject(string $action): string
     {
-        $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
         $room = $this->currentContextResolver->getContextItem();
+        $locale = $this->legacyEnvironment->getSelectedLanguage();
+        $title = $room->getTitle();
 
         return match ($action) {
-            'user-delete' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE', $room->getTitle()),
-            'user-block' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK', $room->getTitle()),
-            'user-confirm' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE', $room->getTitle()),
-            'user-status-user' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_STATUS_USER', $room->getTitle()),
-            'user-status-moderator' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_STATUS_MODERATOR', $room->getTitle()),
-            'user-status-reading-user' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_STATUS_READ_ONLY_USER', $room->getTitle()),
-            'user-contact' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_MAKE_CONTACT_PERSON', $room->getTitle()),
-            'user-contact-remove' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON', $room->getTitle()),
-            'user-account-merge' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_MERGE', $room->getTitle()),
-            'user-account_password' => $legacyTranslator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_PASSWORD', $room->getTitle()),
-            'user-account_send_mail' => $legacyTranslator->getMessage('MAIL_SUBJECT', $room->getTitle()),
+            'user-delete' => $this->translator->trans('mail.subject.account_delete', ['p1' => $title], 'mail', $locale),
+            'user-block' => $this->translator->trans('mail.subject.account_lock', ['p1' => $title], 'mail', $locale),
+            'user-confirm' => $this->translator->trans('mail.subject.account_free', ['p1' => $title], 'mail', $locale),
+            'user-status-user' => $this->translator->trans('mail.subject.status_user', ['p1' => $title], 'mail', $locale),
+            'user-status-moderator' => $this->translator->trans('mail.subject.status_moderator', ['p1' => $title], 'mail', $locale),
+            'user-status-reading-user' => $this->translator->trans('mail.subject.status_read_only_user', ['p1' => $title], 'mail', $locale),
+            'user-contact' => $this->translator->trans('mail.subject.make_contact_person', ['p1' => $title], 'mail', $locale),
+            'user-contact-remove' => $this->translator->trans('mail.subject.unmake_contact_person', ['p1' => $title], 'mail', $locale),
+            'user-account-merge' => $this->translator->trans('mail.subject.account_merge', ['p1' => $title], 'mail', $locale),
+            'user-account_password' => $this->translator->trans('mail.subject.account_password', ['p1' => $title], 'mail', $locale),
+            'user-account_send_mail' => $this->translator->trans('mail.subject.generic', [], 'mail', $locale),
             default => '',
         };
     }

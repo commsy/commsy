@@ -514,6 +514,50 @@ Wenn Sie nicht wollen, dass der Raum gesperrt wird, betreten Sie Ihn innerhalb d
 
 Wenn Sie nicht wollen, dass der Raum gelöscht wird, kontaktieren Sie inner der nächsten {p3} Tage die Portalmoderation mit der Bitte ihn zu entsperren.</target>
             </trans-unit>
+            <trans-unit id="mail_subject_account_delete">
+                <source>mail.subject.account_delete</source>
+                <target>{p1}: Kennung gelöscht</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_lock">
+                <source>mail.subject.account_lock</source>
+                <target>{p1}: Kennung gesperrt</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_free">
+                <source>mail.subject.account_free</source>
+                <target>{p1}: Kennung freigeschaltet</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_user">
+                <source>mail.subject.status_user</source>
+                <target>{p1}: neuer Status - BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_moderator">
+                <source>mail.subject.status_moderator</source>
+                <target>{p1}: neuer Status - Moderator</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_read_only_user">
+                <source>mail.subject.status_read_only_user</source>
+                <target>{p1}: neuer Status - LesendeR BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_make_contact_person">
+                <source>mail.subject.make_contact_person</source>
+                <target>{p1}: neuer Status - AnsprechpartnerIn</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_unmake_contact_person">
+                <source>mail.subject.unmake_contact_person</source>
+                <target>{p1}: keinE AnsprechpartnerIn mehr</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_merge">
+                <source>mail.subject.account_merge</source>
+                <target>{p1}: doppelte Kennungen</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_password">
+                <source>mail.subject.account_password</source>
+                <target>{p1}: Kennung und Passwort</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_generic">
+                <source>mail.subject.generic</source>
+                <target>Betreff:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

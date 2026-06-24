@@ -1616,7 +1616,8 @@ class PortalSettingsController extends AbstractController
         #[MapEntity(id: 'portalId')]
         Portal $portal,
         RouterInterface $router,
-        ContactFormHelper $contactFormHelper
+        ContactFormHelper $contactFormHelper,
+        AccountMail $accountMail
     ): Response {
         $currentUser = $userService->getCurrentUserItem();
 
@@ -1631,7 +1632,6 @@ class PortalSettingsController extends AbstractController
         $sendMail->setRecipients($recipientArray);
 
         $chosenAction = $action ?? 'user-account_send_mail';
-        $accountMail = new AccountMail($legacyEnvironment, $router);
         $body = '';
         $subject = $accountMail->generateSubject($chosenAction);
         $sendMail->setSubject($subject);
