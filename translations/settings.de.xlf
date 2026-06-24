@@ -585,6 +585,18 @@
                 <source>Traffic light red text</source>
                 <target>Rot</target>
             </trans-unit>
+            <trans-unit id="workflow.traffic_light.green_default">
+                <source>workflow.traffic_light.green_default</source>
+                <target>gültig</target>
+            </trans-unit>
+            <trans-unit id="workflow.traffic_light.yellow_default">
+                <source>workflow.traffic_light.yellow_default</source>
+                <target>Entwurf</target>
+            </trans-unit>
+            <trans-unit id="workflow.traffic_light.red_default">
+                <source>workflow.traffic_light.red_default</source>
+                <target>ungültig</target>
+            </trans-unit>
             <trans-unit id="reader">
                 <source>Reader</source>
                 <target>In diesem Raum verwenden</target>
