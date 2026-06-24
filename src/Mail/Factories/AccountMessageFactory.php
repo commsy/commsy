@@ -16,6 +16,7 @@ namespace App\Mail\Factories;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Mail\MailTextResolver;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\AccountActivityDeletedMessage;
 use App\Mail\Messages\AccountActivityDeleteWarningMessage;
@@ -30,7 +31,8 @@ class AccountMessageFactory
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly LegacyEnvironment $legacyEnvironment,
-        private readonly AccountManager $accountManager
+        private readonly AccountManager $accountManager,
+        private readonly MailTextResolver $mailTextResolver
     ) {
     }
 
@@ -48,7 +50,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityLockedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account);
+            return new AccountActivityLockedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextResolver);
         }
 
         return null;

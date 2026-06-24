@@ -461,6 +461,29 @@
                 <source>mail.account_merge_ignore</source>
                 <target>Falls Sie dieses Zusammenlegen nicht angefordert haben, ignorieren Sie diese E-Mail bitte. Es wird dann nichts verändert.</target>
             </trans-unit>
+            <trans-unit id="mail_salutation">
+                <source>mail.salutation</source>
+                <target>Hallo {p1},</target>
+            </trans-unit>
+            <trans-unit id="mail_goodbye">
+                <source>mail.goodbye</source>
+                <target>{room_type, select,
+project {Gruß ... {p1}
+CommSy-Projektraum "{p2}"}
+community {Gruß ... {p1}
+Moderation "{p2}"}
+grouproom {Gruß ... {p1}
+CommSy-Gruppenraum "{p2}"}
+other {Gruß ... {p1}
+Moderation "{p2}"}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_lock_now">
+                <source>mail.inactivity_lock_now</source>
+                <target>Ihre Kennung {p1} ({p2}) wurde wegen Inaktivität gesperrt. Bitte wenden Sie sich an Ihre Portal-Moderation.
+
+{p3}</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

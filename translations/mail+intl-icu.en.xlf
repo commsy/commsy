@@ -461,6 +461,29 @@
                 <source>mail.account_merge_ignore</source>
                 <target>If you did not request this merge, please ignore this e-mail. Nothing will be changed.</target>
             </trans-unit>
+            <trans-unit id="mail_salutation">
+                <source>mail.salutation</source>
+                <target>Dear {p1},</target>
+            </trans-unit>
+            <trans-unit id="mail_goodbye">
+                <source>mail.goodbye</source>
+                <target>{room_type, select,
+project {Best wishes ... {p1}
+CommSy project workspace "{p2}"}
+community {Best regards ... {p1}
+Moderator/s {p2}}
+grouproom {Best regards ... {p1}
+CommSy group workspace "{p2}"}
+other {Best wishes ... {p1}
+Moderator/s {p2}}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_lock_now">
+                <source>mail.inactivity_lock_now</source>
+                <target>your account {p1} ({p2}) is locked because of inactivity.
+
+{p3}</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
