@@ -17,6 +17,7 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_room_item;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ModerationSettingsTransformer extends AbstractTransformer
 {
@@ -31,7 +32,8 @@ class ModerationSettingsTransformer extends AbstractTransformer
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->emailTexts = [
@@ -83,7 +85,7 @@ class ModerationSettingsTransformer extends AbstractTransformer
             // Usage Infos
             $translator = $this->legacyEnvironment->getTranslationObject();
             $array_info_text = [];
-            $temp_array['rubric'] = $translator->getMessage('HOME_INDEX');
+            $temp_array['rubric'] = $this->translator->trans('rubric.home', [], 'settings');
             $temp_array['key'] = 'home';
             $temp_array['title'] = $roomItem->getUsageInfoHeaderForRubric('home');
             $temp_array['text'] = $roomItem->getUsageInfoTextForRubricInForm('home');
@@ -92,17 +94,19 @@ class ModerationSettingsTransformer extends AbstractTransformer
             $roomData['usernotice']['description_home'] = $roomItem->getUsageInfoTextForRubricInForm('home');
             foreach ($roomItem->getAvailableRubrics() as $rubric) {
                 $temp_array = [];
+                // PROJECT/TOPIC/INSTITUTION still carry legacy grammar placeholders
+                // (rubric-name declension); they are handled in the grammar pass.
                 $temp_array['rubric'] = match (mb_strtoupper((string) $rubric, 'UTF-8')) {
-                    'ANNOUNCEMENT' => $translator->getMessage('ANNOUNCEMENT_INDEX'),
-                    'DATE' => $translator->getMessage('DATE_INDEX'),
-                    'DISCUSSION' => $translator->getMessage('DISCUSSION_INDEX'),
+                    'ANNOUNCEMENT' => $this->translator->trans('rubric.announcement', [], 'settings'),
+                    'DATE' => $this->translator->trans('rubric.date', [], 'settings'),
+                    'DISCUSSION' => $this->translator->trans('rubric.discussion', [], 'settings'),
                     'INSTITUTION' => $translator->getMessage('INSTITUTION_INDEX'),
-                    'GROUP' => $translator->getMessage('GROUP_INDEX'),
-                    'MATERIAL' => $translator->getMessage('MATERIAL_INDEX'),
+                    'GROUP' => $this->translator->trans('rubric.group', [], 'settings'),
+                    'MATERIAL' => $this->translator->trans('rubric.material', [], 'settings'),
                     'PROJECT' => $translator->getMessage('PROJECT_INDEX'),
-                    'TODO' => $translator->getMessage('TODO_INDEX'),
+                    'TODO' => $this->translator->trans('rubric.todo', [], 'settings'),
                     'TOPIC' => $translator->getMessage('TOPIC_INDEX'),
-                    'USER' => $translator->getMessage('USER_INDEX'),
+                    'USER' => $this->translator->trans('rubric.user', [], 'settings'),
                     default => $translator->getMessage('COMMON_MESSAGETAG_ERROR cs_configuration_usageinfo_form(113) '),
                 };
                 $temp_array['key'] = $rubric;
