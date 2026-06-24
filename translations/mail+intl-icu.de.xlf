@@ -701,6 +701,14 @@ Bitte wenden Sie sich an die Moderation des Portals "{p2}", wenn Sie weitere Inf
                 <source>mail.auto_sent</source>
                 <target>[Diese E-Mail wurde am {p1} um {p2} Uhr automatisch vom System verschickt.]</target>
             </trans-unit>
+            <trans-unit id="mail_subject_login_expiration">
+                <source>mail.subject.login_expiration</source>
+                <target>{p1}: Einloggen als XYZ ist abgelaufen</target>
+            </trans-unit>
+            <trans-unit id="mail_body_login_expiration">
+                <source>mail.body.login_expiration</source>
+                <target>die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.</target>
+            </trans-unit>
             <trans-unit id="mail_body_status_user">
                 <source>mail.body.status_user</source>
                 <target>{room_type, select,

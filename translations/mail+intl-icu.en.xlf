@@ -691,6 +691,16 @@ Please contact the moderator/s of the portal "{p2}" for further information.}
                 <source>mail.auto_sent</source>
                 <target>[This e-mail was sent automatically at {p1} - {p2}.]</target>
             </trans-unit>
+            <trans-unit id="mail_subject_login_expiration">
+                <source>mail.subject.login_expiration</source>
+                <target>{p1}: Login as another user is deactivated</target>
+            </trans-unit>
+            <trans-unit id="mail_body_login_expiration">
+                <source>mail.body.login_expiration</source>
+                <target>your right to login as another user is deactivated now.
+
+Best regards ... %2</target>
+            </trans-unit>
             <trans-unit id="mail_body_status_user">
                 <source>mail.body.status_user</source>
                 <target>{room_type, select,

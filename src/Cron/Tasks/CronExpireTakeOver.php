@@ -14,15 +14,16 @@
 namespace App\Cron\Tasks;
 
 use App\Mail\Mailer;
+use App\Mail\MailTextResolver;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
-use App\Utils\MysqlDateTime;
 use cs_environment;
 use cs_user_item;
 use DateTimeImmutable;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class CronExpireTakeOver implements CronTaskInterface
 {
@@ -31,7 +32,9 @@ readonly class CronExpireTakeOver implements CronTaskInterface
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private RouterInterface $router,
-        private Mailer $mailer
+        private Mailer $mailer,
+        private TranslatorInterface $translator,
+        private MailTextResolver $mailTextResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -39,8 +42,11 @@ readonly class CronExpireTakeOver implements CronTaskInterface
     public function run(?DateTimeImmutable $lastRun): void
     {
         $userManager = $this->legacyEnvironment->getUserManager();
-        $translator = $this->legacyEnvironment->getTranslationObject();
         $now = new DateTimeImmutable();
+        $locale = $this->legacyEnvironment->getSelectedLanguage();
+        // legacy MAIL_AUTO footer date/time formatting (de d.m.Y / H:i, en m/d/Y / h:ia)
+        $autoDate = 'de' === $locale ? $now->format('d.m.Y') : $now->format('m/d/Y');
+        $autoTime = 'de' === $locale ? $now->format('H:i') : $now->format('h:ia');
 
         $expiredUsers = $userManager->getUserTempLoginExpired();
         foreach ($expiredUsers as $expiredUser) {
@@ -52,7 +58,7 @@ readonly class CronExpireTakeOver implements CronTaskInterface
 
                 $portal = $expiredUser->getPortal();
 
-                $subject = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_SUBJECT', $portal->getTitle());
+                $subject = $this->translator->trans('mail.subject.login_expiration', ['p1' => $portal->getTitle()], 'mail', $locale);
 
                 $contactModerators = $portal->getContactModeratorList();
                 $ccMails = [];
@@ -69,17 +75,14 @@ readonly class CronExpireTakeOver implements CronTaskInterface
                     'context' => $portal->getItemID(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                $translator->setEmailTextArray($portal->getEmailTextArray());
-                $body = '';
-                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(MysqlDateTime::now()),
-                    $translator->getTimeInLang(MysqlDateTime::now()));
+                $overrides = $portal->getEmailTextArray();
+                $body = $this->translator->trans('mail.auto_sent', ['p1' => $autoDate, 'p2' => $autoTime], 'mail', $locale);
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $expiredUser->getFullName());
+                $body .= $this->mailTextResolver->resolve('mail.salutation', 'MAIL_BODY_HELLO', 'other', $locale, [$expiredUser->getFullName()], $overrides);
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('EMAIL_LOGIN_EXPIRATION_BODY');
+                $body .= $this->mailTextResolver->resolve('mail.body.login_expiration', 'EMAIL_LOGIN_EXPIRATION_BODY', 'other', $locale, [], $overrides);
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $contactModerators->getFirst()->getFullName(),
-                    $portal->getTitle());
+                $body .= $this->mailTextResolver->resolve('mail.goodbye', 'MAIL_BODY_CIAO', 'other', $locale, [$contactModerators->getFirst()->getFullName(), $portal->getTitle()], $overrides);
                 $body .= "\n\n";
                 $body .= $linkToPortal;
 
