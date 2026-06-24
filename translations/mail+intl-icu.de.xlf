@@ -618,6 +618,39 @@ Gruß ... CommSy Administrator</target>
                 <source>mail.workflow.validity_subject</source>
                 <target>{p1} - Das zweite Wiedervorlage-Datum eines Eintrags wurde erreicht</target>
             </trans-unit>
+            <trans-unit id="mail_account_forget_subject">
+                <source>mail.account_forget_subject</source>
+                <target>Kennung zusenden</target>
+            </trans-unit>
+            <trans-unit id="mail_account_forget_body">
+                <source>mail.account_forget_body</source>
+                <target>Im CommSy *{p1}* sind folgende Kennungen auf Ihre E-Mail-Adresse registriert:
+
+{p2}</target>
+            </trans-unit>
+            <trans-unit id="mail_password_mail_subject">
+                <source>mail.password_mail_subject</source>
+                <target>{p1}: Passwortänderung</target>
+            </trans-unit>
+            <trans-unit id="mail_password_mail_body">
+                <source>mail.password_mail_body</source>
+                <target>für Ihre Kennung
+   {p1}
+
+auf dem CommSy-Portal
+   {p2}
+
+wurde der Mechanismus "Passwort vergessen" aktiviert.
+
+Über den Link
+{p3}
+
+können Sie Ihr Passwort in den nächsten {p4} Minuten neu setzen. Er ist nur von dem PC aus nutzbar, von dem der "Passwort-vergessen"-Mechanismus aus angestoßen wurde.
+
+---
+
+Sofern Sie nicht gerade auf "Passwort vergessen?" geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.</target>
+            </trans-unit>
             <trans-unit id="mail_body_account_delete">
                 <source>mail.body.account_delete</source>
                 <target>{room_type, select,

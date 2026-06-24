@@ -618,6 +618,37 @@ Best regards ... CommSy Administrator</target>
                 <source>mail.workflow.validity_subject</source>
                 <target>{p1} - The second resubmission date of an entry has been reached</target>
             </trans-unit>
+            <trans-unit id="mail_account_forget_subject">
+                <source>mail.account_forget_subject</source>
+                <target>Send account data</target>
+            </trans-unit>
+            <trans-unit id="mail_account_forget_body">
+                <source>mail.account_forget_body</source>
+                <target>There are the following accounts registered in the CommSy *{p1}*:
+
+{p2}</target>
+            </trans-unit>
+            <trans-unit id="mail_password_mail_subject">
+                <source>mail.password_mail_subject</source>
+                <target>{p1}: Change password</target>
+            </trans-unit>
+            <trans-unit id="mail_password_mail_body">
+                <source>mail.password_mail_body</source>
+                <target>the mechanism "password forget" has been activated for your account
+   {p1}
+
+at the CommSy portal
+   {p2}
+
+If you just actived it, please follow this url:
+{p3}
+
+You can change your password via this url in the next % minutes from the computer which actived this mechanism.
+
+---
+
+If you have not followed the link "password forget?", please delete this email. Your password has not changed und nobody capter your account.</target>
+            </trans-unit>
             <trans-unit id="mail_body_account_delete">
                 <source>mail.body.account_delete</source>
                 <target>{room_type, select,
