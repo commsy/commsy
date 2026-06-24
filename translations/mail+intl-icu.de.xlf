@@ -697,6 +697,10 @@ im Portal "{p2}" ist gesperrt worden.
 Bitte wenden Sie sich an die Moderation des Portals "{p2}", wenn Sie weitere Informationen wünschen.}
 }</target>
             </trans-unit>
+            <trans-unit id="mail_auto_sent">
+                <source>mail.auto_sent</source>
+                <target>[Diese E-Mail wurde am {p1} um {p2} Uhr automatisch vom System verschickt.]</target>
+            </trans-unit>
             <trans-unit id="mail_body_status_user">
                 <source>mail.body.status_user</source>
                 <target>{room_type, select,

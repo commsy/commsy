@@ -687,6 +687,10 @@ other {the status of your membership for the portal "{p2}" has changed: Your acc
 Please contact the moderator/s of the portal "{p2}" for further information.}
 }</target>
             </trans-unit>
+            <trans-unit id="mail_auto_sent">
+                <source>mail.auto_sent</source>
+                <target>[This e-mail was sent automatically at {p1} - {p2}.]</target>
+            </trans-unit>
             <trans-unit id="mail_body_status_user">
                 <source>mail.body.status_user</source>
                 <target>{room_type, select,
