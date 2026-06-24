@@ -311,7 +311,8 @@ class RoomService
             return [];
         }
 
-        $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
+        $locale = $this->legacyEnvironment->getSelectedLanguage();
+        $timeTextArray = $portalItem->getTimeTextArray();
 
         $timePulses = [];
         if ($reverseOrder) {
@@ -322,7 +323,7 @@ class RoomService
 
         $timeItem = $timeList->getFirst();
         while ($timeItem) {
-            $translatedTitle = $legacyTranslator->getTimeMessage($timeItem->getName());
+            $translatedTitle = TimePulsesService::renderTimePulseTitle($timeTextArray, $timeItem->getName(), $locale);
             $timePulses[$translatedTitle] = $timeItem->getItemID();
 
             $timeItem = $timeList->getNext();
