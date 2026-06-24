@@ -598,6 +598,26 @@ Please make sure that you stated your upload-password in the following manner in
 
 Best regards ... CommSy Administrator</target>
             </trans-unit>
+            <trans-unit id="mail_workflow_resubmission_body">
+                <source>mail.workflow.resubmission_body</source>
+                <target>For the workspace "{p1}", the resubmission date for the entry "{p2}" has been reached:
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_resubmission_subject">
+                <source>mail.workflow.resubmission_subject</source>
+                <target>{p1} - The resubmission date of an entry has been reached</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_validity_body">
+                <source>mail.workflow.validity_body</source>
+                <target>For the workspace "{p1}", the second resubmission date for the entry "{p2}" has been reached:
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_validity_subject">
+                <source>mail.workflow.validity_subject</source>
+                <target>{p1} - The second resubmission date of an entry has been reached</target>
+            </trans-unit>
             <trans-unit id="mail_body_account_delete">
                 <source>mail.body.account_delete</source>
                 <target>{room_type, select,

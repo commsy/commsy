@@ -22,6 +22,7 @@ use cs_environment;
 use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CronWorkflow implements CronTaskInterface
 {
@@ -31,7 +32,8 @@ class CronWorkflow implements CronTaskInterface
         LegacyEnvironment $legacyEnvironment,
         private readonly RouterInterface $router,
         private readonly Mailer $mailer,
-        private readonly RoomRepository $roomRepository
+        private readonly RoomRepository $roomRepository,
+        private readonly TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -75,8 +77,6 @@ class CronWorkflow implements CronTaskInterface
                         $recipients[] = RecipientFactory::createFromRaw($mail);
                     }
 
-                    $translator = $this->legacyEnvironment->getTranslationObject();
-
                     $path = $this->router->generate('app_material_detail', [
                         'roomId' => $room->getItemID(),
                         'itemId' => $material->getItemID(),
@@ -85,16 +85,12 @@ class CronWorkflow implements CronTaskInterface
 
                     $link = '<a href="'.$path.'">'.$material->getTitle().'</a>';
 
-                    $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $room->getTitle(),
-                        $material->getTitle(), $link);
+                    $body = $this->translator->trans('mail.workflow.resubmission_body', ['p1' => $room->getTitle(), 'p2' => $material->getTitle(), 'p3' => $link], 'mail');
 
                     $portal = $room->getPortal();
 
                     $this->mailer->sendMultipleRaw(
-                        $translator->getMessage(
-                            'COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION',
-                            $portal->getTitle()
-                        ),
+                        $this->translator->trans('mail.workflow.resubmission_subject', ['p1' => $portal->getTitle()], 'mail'),
                         $body,
                         $recipients,
                         $portal->getTitle()
@@ -142,8 +138,6 @@ class CronWorkflow implements CronTaskInterface
                         $recipients[] = RecipientFactory::createFromRaw($mail);
                     }
 
-                    $translator = $this->legacyEnvironment->getTranslationObject();
-
                     $path = $this->router->generate('app_material_detail', [
                         'roomId' => $room->getItemID(),
                         'itemId' => $material->getItemID(),
@@ -152,16 +146,12 @@ class CronWorkflow implements CronTaskInterface
 
                     $link = '<a href="'.$path.'">'.$material->getTitle().'</a>';
 
-                    $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $room->getTitle(),
-                        $material->getTitle(), $link);
+                    $body = $this->translator->trans('mail.workflow.validity_body', ['p1' => $room->getTitle(), 'p2' => $material->getTitle(), 'p3' => $link], 'mail');
 
                     $portal = $room->getPortal();
 
                     $this->mailer->sendMultipleRaw(
-                        $translator->getMessage(
-                            'COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY',
-                            $portal->getTitle()
-                        ),
+                        $this->translator->trans('mail.workflow.validity_subject', ['p1' => $portal->getTitle()], 'mail'),
                         $body,
                         $recipients,
                         $portal->getTitle()

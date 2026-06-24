@@ -598,6 +598,26 @@ Bitte überprüfen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennw
 
 Gruß ... CommSy Administrator</target>
             </trans-unit>
+            <trans-unit id="mail_workflow_resubmission_body">
+                <source>mail.workflow.resubmission_body</source>
+                <target>Im Raum "{p1}" wurde das Wiedervorlage-Datum f&amp;uuml;r den Eintrag "{p2}" erreicht:
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_resubmission_subject">
+                <source>mail.workflow.resubmission_subject</source>
+                <target>{p1} - Das Wiedervorlage-Datum eines Eintrags wurde erreicht</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_validity_body">
+                <source>mail.workflow.validity_body</source>
+                <target>Im Raum "{p1}" wurde das zweite Wiedervorlage-Datum f&amp;uuml;r den Eintrag "{p2}" erreicht:
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_validity_subject">
+                <source>mail.workflow.validity_subject</source>
+                <target>{p1} - Das zweite Wiedervorlage-Datum eines Eintrags wurde erreicht</target>
+            </trans-unit>
             <trans-unit id="mail_body_account_delete">
                 <source>mail.body.account_delete</source>
                 <target>{room_type, select,

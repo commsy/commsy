@@ -21,6 +21,7 @@ use cs_group_item;
 use cs_room_item;
 use cs_user_item;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class LegacyCopy.
@@ -35,7 +36,8 @@ class LegacyCopy implements CopyStrategy
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly ItemService $itemService,
-        private readonly EventDispatcherInterface $eventDispatcher
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly TranslatorInterface $translator
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -200,9 +202,8 @@ class LegacyCopy implements CopyStrategy
         if ($copy_array['title']) {
             if ($source->isPrivateRoom()) {
                 $title = $source->getTitlePure();
-                $translator = $this->legacyEnvironment->getTranslationObject();
                 if (empty($title)
-                    or $title == $translator->getMessage('COMMON_PRIVATEROOM')
+                    or $title == $this->translator->trans('common.privateroom', [], 'messages')
                 ) {
                     $title = 'PRIVATEROOM';
                 }
