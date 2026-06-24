@@ -1,10 +1,5 @@
 <?php
-$message["EMAIL_CHOICE_PASSWORD_EXPIRATION"]["de"] = "Passwort ist abgelaufen";
 $message["EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON"]["de"] = "Passwort läuft ab";
-$message["EMAIL_COMMSY_PORTAL_MODERATION"]["de"] = "Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.";
-$message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
-$message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden";
-$message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Ihre Kennung %1 (%2) wird in %3 Tagen gelöscht.
 
 %4";
@@ -37,8 +32,6 @@ $message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "Ihr Passwort läuft in 
 %2
 
 Falls Sie diesen Link nicht aus der Mail heraus aufrufen möchten, können Sie alternativ die CommSy-Anmeldeseite im Browser aufrufen, sich anmelden und anschließend Ihr Passwort in Ihren Profileinstellungen ändern. Bitte denke Sie daran, dass Sie diesen Vorgang ggf. für jede CommSy-Instanz, in der Sie eine Kennung nutzen, getrennt durchführen müssen. Ebenso, falls Sie nicht eine, sondern mehrere Kennungen verwenden.";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "%1: Ihr Passwort l&auml;uft in %2 Tagen ab";
-$message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["de"] = "%1: Ihr Passwort ist abgelaufen";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";
 $message["EMAIL_TO_COMMSY_RESULT_FAILURE"]["de"] = "Hallo %1,
@@ -61,7 +54,4 @@ der Upload per E-Mail in Ihre persönliche Ablage war erfolgreich.
 
 Das neue Material finden sie in Ihrer CommSy-Leiste.
 ";
-$message["EMAIL_TO_INSTITUTION_TITLE"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW &quot;%1&quot;";
-$message["EMAIL_TO_INSTITUTION_TITLE_WITHOUT"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW";
-$message["EMAIL_TO_TOPIC_TITLE"]["de"] = "Email an die Personen, die sich %_TOPICS_ART_DEF_DATS_LOW %_TOPICS_SUB_DATS_BIG &quot;%1&quot; zugeordneten haben.";
 ?>
