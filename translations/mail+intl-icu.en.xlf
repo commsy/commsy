@@ -502,6 +502,18 @@ Moderator/s {p2}}
 
 {p3}</target>
             </trans-unit>
+            <trans-unit id="mail_inactivity_room_lock_upcoming">
+                <source>mail.inactivity_room_lock_upcoming</source>
+                <target>The workspace "{p1}" is unused for almost {p2} days. It will be locked in {p3} days.
+
+If you want to continue using the workspace, please enter it within the following {p3} days.</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_room_delete_upcoming">
+                <source>mail.inactivity_room_delete_upcoming</source>
+                <target>The worksapce "{p1}" is unused for almost {p2} days. It will be deleted in {p3} days.
+
+If you want to continue using the workspace please contact a portal moderator within the following {p3} days and ask for unlocking.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

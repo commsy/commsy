@@ -14,6 +14,7 @@
 namespace App\Mail\Messages;
 
 use App\Entity\Portal;
+use App\Mail\MailTextResolver;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
 use cs_environment;
@@ -26,7 +27,8 @@ class RoomActivityLockWarningMessage extends Message
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly Portal $portal,
-        private readonly object $room
+        private readonly object $room,
+        private readonly MailTextResolver $mailTextResolver
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -43,17 +45,21 @@ class RoomActivityLockWarningMessage extends Message
 
     public function getParameters(): array
     {
-        $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
-
         $now = new DateTimeImmutable();
         $numDaysInactive = $now->diff($this->room->getLastLogin(), true)->format('%a');
 
         return [
             'room' => $this->room,
-            'content' => $legacyTranslator->getEmailMessage('EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY',
-                $this->room->getTitle(),
-                $numDaysInactive,
-                $this->portal->getClearInactiveRoomsLockDays(),
+            'content' => $this->mailTextResolver->resolve(
+                'mail.inactivity_room_lock_upcoming',
+                'EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY',
+                'other',
+                $this->legacyEnvironment->getSelectedLanguage(),
+                [
+                    $this->room->getTitle(),
+                    $numDaysInactive,
+                    $this->portal->getClearInactiveRoomsLockDays(),
+                ]
             ),
         ];
     }

@@ -502,6 +502,18 @@ Moderation "{p2}"}
 
 {p3}</target>
             </trans-unit>
+            <trans-unit id="mail_inactivity_room_lock_upcoming">
+                <source>mail.inactivity_room_lock_upcoming</source>
+                <target>Der Raum "{p1}" wurde seit {p2} Tagen nicht mehr verwendet. Daher wird er in {p3} Tagen gesperrt.
+
+Wenn Sie nicht wollen, dass der Raum gesperrt wird, betreten Sie Ihn innerhalb der nächsten {p3} Tage.</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_room_delete_upcoming">
+                <source>mail.inactivity_room_delete_upcoming</source>
+                <target>Der Raum "{p1}" wurde seit {p2} Tagen nicht mehr verwendet. Daher findet eine Löschung in {p3} Tagen statt.
+
+Wenn Sie nicht wollen, dass der Raum gelöscht wird, kontaktieren Sie inner der nächsten {p3} Tage die Portalmoderation mit der Bitte ihn zu entsperren.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
