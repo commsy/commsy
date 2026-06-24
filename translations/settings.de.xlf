@@ -629,6 +629,18 @@
                 <source>rubric.user</source>
                 <target>Personen</target>
             </trans-unit>
+            <trans-unit id="rubric.project">
+                <source>rubric.project</source>
+                <target>Projekträume</target>
+            </trans-unit>
+            <trans-unit id="rubric.topic">
+                <source>rubric.topic</source>
+                <target>Themen</target>
+            </trans-unit>
+            <trans-unit id="rubric.institution">
+                <source>rubric.institution</source>
+                <target>Rubriken</target>
+            </trans-unit>
             <trans-unit id="template.no_choice">
                 <source>template.no_choice</source>
                 <target>Keine Vorlage</target>

@@ -628,6 +628,18 @@
                 <source>rubric.user</source>
                 <target>Members</target>
             </trans-unit>
+            <trans-unit id="rubric.project">
+                <source>rubric.project</source>
+                <target>Project workspaces</target>
+            </trans-unit>
+            <trans-unit id="rubric.topic">
+                <source>rubric.topic</source>
+                <target>Topics</target>
+            </trans-unit>
+            <trans-unit id="rubric.institution">
+                <source>rubric.institution</source>
+                <target>Rubrics</target>
+            </trans-unit>
             <trans-unit id="template.no_choice">
                 <source>template.no_choice</source>
                 <target>No template</target>

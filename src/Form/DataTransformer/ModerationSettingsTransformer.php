@@ -94,18 +94,18 @@ class ModerationSettingsTransformer extends AbstractTransformer
             $roomData['usernotice']['description_home'] = $roomItem->getUsageInfoTextForRubricInForm('home');
             foreach ($roomItem->getAvailableRubrics() as $rubric) {
                 $temp_array = [];
-                // PROJECT/TOPIC/INSTITUTION still carry legacy grammar placeholders
-                // (rubric-name declension); they are handled in the grammar pass.
+                // The grammar-bearing rubric names (project/topic/institution) are baked
+                // to their declined plural form, matching the legacy engine's output.
                 $temp_array['rubric'] = match (mb_strtoupper((string) $rubric, 'UTF-8')) {
                     'ANNOUNCEMENT' => $this->translator->trans('rubric.announcement', [], 'settings'),
                     'DATE' => $this->translator->trans('rubric.date', [], 'settings'),
                     'DISCUSSION' => $this->translator->trans('rubric.discussion', [], 'settings'),
-                    'INSTITUTION' => $translator->getMessage('INSTITUTION_INDEX'),
+                    'INSTITUTION' => $this->translator->trans('rubric.institution', [], 'settings'),
                     'GROUP' => $this->translator->trans('rubric.group', [], 'settings'),
                     'MATERIAL' => $this->translator->trans('rubric.material', [], 'settings'),
-                    'PROJECT' => $translator->getMessage('PROJECT_INDEX'),
+                    'PROJECT' => $this->translator->trans('rubric.project', [], 'settings'),
                     'TODO' => $this->translator->trans('rubric.todo', [], 'settings'),
-                    'TOPIC' => $translator->getMessage('TOPIC_INDEX'),
+                    'TOPIC' => $this->translator->trans('rubric.topic', [], 'settings'),
                     'USER' => $this->translator->trans('rubric.user', [], 'settings'),
                     default => $translator->getMessage('COMMON_MESSAGETAG_ERROR cs_configuration_usageinfo_form(113) '),
                 };
