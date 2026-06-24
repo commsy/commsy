@@ -558,6 +558,46 @@ If you want to continue using the workspace please contact a portal moderator wi
                 <source>mail.subject.generic</source>
                 <target>Subject:</target>
             </trans-unit>
+            <trans-unit id="mail_email_upload_password">
+                <source>mail.email_upload.password</source>
+                <target>Upload-Password</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_account">
+                <source>mail.email_upload.account</source>
+                <target>Account</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_success">
+                <source>mail.email_upload.success</source>
+                <target>Hello {p1},
+
+the upload via e-mail to CommSy was successful.
+
+You can view the new material in your CommSy Stack
+</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_files_too_large">
+                <source>mail.email_upload.files_too_large</source>
+                <target>The following files exceeded the upload-limit of the portal ({p1} MB):
+
+{p2}
+Those files haven not been attached to the new material.</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_regards">
+                <source>mail.email_upload.regards</source>
+                <target>Best regards ... CommSy Administrator</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_failure">
+                <source>mail.email_upload.failure</source>
+                <target>Hello {p1},
+
+the upload via e-mail to CommSy was not successful.
+
+Please make sure that you stated your upload-password in the following manner in a single line:
+
+{p2}: YOUR_UPLOAD_PASSWORT
+
+Best regards ... CommSy Administrator</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

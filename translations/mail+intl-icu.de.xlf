@@ -558,6 +558,46 @@ Wenn Sie nicht wollen, dass der Raum gelöscht wird, kontaktieren Sie inner der 
                 <source>mail.subject.generic</source>
                 <target>Betreff:</target>
             </trans-unit>
+            <trans-unit id="mail_email_upload_password">
+                <source>mail.email_upload.password</source>
+                <target>Upload-Kennwort</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_account">
+                <source>mail.email_upload.account</source>
+                <target>Kennung</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_success">
+                <source>mail.email_upload.success</source>
+                <target>Hallo {p1},
+
+der Upload per E-Mail in Ihre persönliche Ablage war erfolgreich.
+
+Das neue Material finden sie in Ihrer CommSy-Leiste.
+</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_files_too_large">
+                <source>mail.email_upload.files_too_large</source>
+                <target>Folgende Dateien waren leider größer als die erlaubte Upload-Grenze des Portals ({p1} MB):
+
+{p2}
+Diese Dateien wurden nicht an das neue Material angehängt.</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_regards">
+                <source>mail.email_upload.regards</source>
+                <target>Gruß ... CommSy Administrator</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_failure">
+                <source>mail.email_upload.failure</source>
+                <target>Hallo {p1},
+
+der Upload per E-Mail in Ihre Ablage war leider nicht erfolgreich.
+
+Bitte überprüfen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennwort mit folgender Zeile angegeben haben:
+
+{p2}: IHR_UPLOAD_KENNWORT
+
+Gruß ... CommSy Administrator</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
