@@ -54,7 +54,7 @@ class RoomActivityLockWarningMessage extends Message
                 'mail.inactivity_room_lock_upcoming',
                 'EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY',
                 'other',
-                $this->legacyEnvironment->getSelectedLanguage(),
+                $this->legacyEnvironment->getTranslationObject()->getSelectedLanguage(),
                 [
                     $this->room->getTitle(),
                     $numDaysInactive,

@@ -57,7 +57,7 @@ class RoomModerationMessage extends Message
                 $communityRoom = $roomManager->getItem($roomId);
                 if ($communityRoom) {
                     $linkedCommunityRoomNames[] = $communityRoom->getTitle() . (!in_array($roomId, $this->oldLinkedIds) ?
-                        " [{$this->translator->trans('common.new', [], 'messages', $this->legacyEnvironment->getSelectedLanguage())}]" :
+                        " [{$this->translator->trans('common.new', [], 'messages', $this->legacyEnvironment->getTranslationObject()->getSelectedLanguage())}]" :
                         '');
                 }
             }
