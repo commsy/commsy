@@ -174,9 +174,10 @@ class SecurityController extends AbstractController
                         $portal->getTitle()
                     );
 
-                    $flashMessage = $translator->getMessage(
-                        'USER_ACCOUNT_FORGET_SUCCESS_TEXT',
-                        $requestAccounts->getEmail()
+                    $flashMessage = $symfonyTranslator->trans(
+                        'login.request_accounts_success',
+                        ['%email%' => $requestAccounts->getEmail()],
+                        'login'
                     );
                 } else {
                     $flashMessage = $symfonyTranslator->trans('login.request_accounts_none', [], 'login');
@@ -206,7 +207,8 @@ class SecurityController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         Mailer $mailer,
         RouterInterface $router,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
+        TranslatorInterface $symfonyTranslator
     ): Response {
         $localAccount = new LocalAccount($portal->getId());
         $form = $this->createForm(RequestPasswordResetType::class, $localAccount);
@@ -275,7 +277,7 @@ class SecurityController extends AbstractController
                     $portal->getTitle()
                 );
 
-                $flashMessage = $translator->getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT');
+                $flashMessage = $symfonyTranslator->trans('login.password_reset_success', [], 'login');
                 $this->addFlash('primary', str_replace('<br/>', '', $flashMessage));
 
                 return $this->redirectToRoute('app_login', [

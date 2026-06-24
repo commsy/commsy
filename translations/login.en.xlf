@@ -90,6 +90,16 @@
                 <source>login.request_accounts_none</source>
                 <target>No accounts where found for the provided email address.</target>
             </trans-unit>
+            <trans-unit id="login_request_accounts_success">
+                <source>login.request_accounts_success</source>
+                <target>Your account data has been sent to your e-mail address %email%.</target>
+            </trans-unit>
+            <trans-unit id="login_password_reset_success">
+                <source>login.password_reset_success</source>
+                <target>Further information was sent to your email address saved in the system.
+
+If you are not receiving this email, please contact the portal moderation.</target>
+            </trans-unit>
             <trans-unit id="login_simultaneous_title">
                 <source>login.simultaneous_title</source>
                 <target>Duplicated login</target>

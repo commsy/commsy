@@ -629,6 +629,10 @@
                 <source>rubric.user</source>
                 <target>Personen</target>
             </trans-unit>
+            <trans-unit id="template.no_choice">
+                <source>template.no_choice</source>
+                <target>Keine Vorlage</target>
+            </trans-unit>
             <trans-unit id="reader">
                 <source>Reader</source>
                 <target>In diesem Raum verwenden</target>

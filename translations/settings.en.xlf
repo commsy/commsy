@@ -628,6 +628,10 @@
                 <source>rubric.user</source>
                 <target>Members</target>
             </trans-unit>
+            <trans-unit id="template.no_choice">
+                <source>template.no_choice</source>
+                <target>No template</target>
+            </trans-unit>
             <trans-unit id="reader">
                 <source>Reader</source>
                 <target>Use in this workspace</target>
