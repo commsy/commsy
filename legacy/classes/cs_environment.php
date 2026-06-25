@@ -764,33 +764,21 @@ class cs_environment
             $context_item = $this->getCurrentContextItem();
             if ($this->inCommunityRoom()) {
                 $this->instance['translation_object']->setContext('community');
-                $portal = $this->portalRepository->find($context_item->getPortalID());
-                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inProjectRoom()) {
                 $this->instance['translation_object']->setContext('project');
-                $portal = $this->portalRepository->find($context_item->getPortalID());
-                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inGroupRoom()) {
                 $this->instance['translation_object']->setContext(CS_GROUPROOM_TYPE);
-                $portal = $this->portalRepository->find($context_item->getPortalID());
-                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inUserroom()) {
                 $this->instance['translation_object']->setContext(cs_userroom_item::ROOM_TYPE_USER);
-                $portal = $this->portalRepository->find($context_item->getPortalID());
-                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inPrivateRoom()) {
                 $this->instance['translation_object']->setContext('private');
-                $portal = $this->portalRepository->find($context_item->getPortalID());
-                $this->instance['translation_object']->setTimeMessageArray($portal->getTimeTextArray());
             } elseif ($this->inPortal()) {
                 $this->instance['translation_object']->setContext('portal');
-                $this->instance['translation_object']->setTimeMessageArray($context_item->getTimeTextArray());
             } else {
                 $this->instance['translation_object']->setContext('server');
             }
             if (isset($context_item)) {
                 $this->instance['translation_object']->setRubricTranslationArray($context_item->getRubricTranslationArray());
-                $this->instance['translation_object']->setEmailTextArray($context_item->getEmailTextArray());
             }
         }
 

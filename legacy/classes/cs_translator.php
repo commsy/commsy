@@ -19,7 +19,6 @@ use function Symfony\Component\String\u;
 class cs_translator
 {
     private array $messageArray = [];
-    private array $timeMessageArray = [];
 
     private ?array $availableLanguages = null;
 
@@ -38,10 +37,6 @@ class cs_translator
      */
     private array $_rubric_translation_array = [];
 
-    /**
-     * containing the special email texts, get from current room.
-     */
-    private array $_email_array = [];
 
     /**
      * containing the context: community or project or portal.
@@ -204,165 +199,6 @@ class cs_translator
         return $text;
     }
 
-    /**
-     * Get the translation of the email message in the right language.
-     * This method returns the translation of the email text in the right language
-     * just from the current room or default.
-     *
-     * @param string $MsgID The MessageID, which should be translated
-     * @param string[] $params parameters
-     *
-     * @return string the translated text
-     */
-    public function getEmailMessage(string $MsgID, ...$params): string
-    {
-        if (!empty($this->_selected_language)) {
-            $retour = $this->getEmailMessageInLang($this->_selected_language, $MsgID, ...$params);
-
-            /*
-             * This is quite hacky... Content from CKEditor can contain multiple paragraphs. In the end we are trying
-             * to trim all tags from start and end and preserve line breaks.
-             */
-            return u($retour)
-                ->replace("\n", '<br/>')
-                ->replace('<p>', '<br/><br/>')
-                ->replace('</p>', '')
-                ->trimPrefix('<br/><br/>')
-                ->trimSuffix('<br/><br/>')
-                ->toString();
-        } else {
-            trigger_error('no selected language is set', E_USER_WARNING);
-            $retour = $MsgID;
-        }
-
-        return $retour;
-    }
-
-    public function getEmailMessageInLang(string $language, string $MsgID, ...$params): string
-    {
-        if (!empty($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')], ...$params);
-        } elseif (!empty($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')], ...$params);
-        } else {
-            if ($this->_inProjectRoom()) {
-                $retour = match ($MsgID) {
-                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_PR', ...$params),
-                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_PR', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_PR', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_PR', ...$params),
-                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR', ...$params),
-                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_PR', ...$params),
-                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_PR', ...$params),
-                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR', ...$params),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', ...$params),
-                    default => $this->getMessageInLang($language, $MsgID, ...$params),
-                };
-            } elseif ($this->_inCommunityRoom()) {
-                $retour = match ($MsgID) {
-                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_GR', ...$params),
-                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_GR', ...$params),
-                    'MAIL_BODY_MATERIAL_NOT_WORLDPUBLIC' => $this->getMessageInLang($language, 'MAIL_BODY_MATERIAL_NOT_WORLDPUBLIC_GR', ...$params),
-                    'MAIL_BODY_MATERIAL_WORLDPUBLIC' => $this->getMessageInLang($language, 'MAIL_BODY_MATERIAL_WORLDPUBLIC_GR', ...$params),
-                    'MAIL_BODY_ROOM_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_LOCK_GR', ...$params),
-                    'MAIL_BODY_ROOM_UNLINK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLINK_GR', ...$params),
-                    'MAIL_BODY_ROOM_UNLOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLOCK_GR', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_GR', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_GR', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_MERGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_MERGE_GR', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_PASSWORD' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_PASSWORD_GR', ...$params),
-                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR', ...$params),
-                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_GR', ...$params),
-                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_GR', ...$params),
-                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR', ...$params),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', ...$params),
-                    'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', ...$params),
-                    default => $this->getMessageInLang($language, $MsgID, ...$params),
-                };
-            } elseif ($this->_inGroupRoom()) {
-                $retour = match ($MsgID) {
-                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_GP', ...$params),
-                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_GP', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_GP', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_GP', ...$params),
-                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_GP', ...$params),
-                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_GP', ...$params),
-                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP', ...$params),
-                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP', ...$params),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', ...$params),
-                    'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', ...$params),
-                    default => $this->getMessageInLang($language, $MsgID, ...$params),
-                };
-            } else {
-                $retour = match ($MsgID) {
-                    'MAIL_BODY_CIAO' => $this->getMessageInLang($language, 'MAIL_BODY_CIAO_PO', ...$params),
-                    'MAIL_BODY_HELLO' => $this->getMessageInLang($language, 'MAIL_BODY_HELLO_PO', ...$params),
-                    'MAIL_BODY_ROOM_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_DELETE_PO', ...$params),
-                    'MAIL_BODY_ROOM_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_LOCK_PO', ...$params),
-                    'MAIL_BODY_ROOM_OPEN' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_OPEN_PO', ...$params),
-                    'MAIL_BODY_ROOM_UNDELETE' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNDELETE_PO', ...$params),
-                    'MAIL_BODY_ROOM_UNLOCK' => $this->getMessageInLang($language, 'MAIL_BODY_ROOM_UNLOCK_PO', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_DELETE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_DELETE_PO', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_LOCK' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_LOCK_PO', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_MERGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_MERGE_PO', ...$params),
-                    'MAIL_BODY_USER_ACCOUNT_PASSWORD' => $this->getMessageInLang($language, 'MAIL_BODY_USER_ACCOUNT_PASSWORD_PO', ...$params),
-                    'MAIL_BODY_USER_MAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO', ...$params),
-                    'MAIL_BODY_USER_PASSWORD_CHANGE' => $this->getMessageInLang($language, 'MAIL_BODY_USER_PASSWORD_CHANGE_PO', ...$params),
-                    'MAIL_BODY_USER_STATUS_MODERATOR' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_MODERATOR_PO', ...$params),
-                    'MAIL_BODY_USER_STATUS_USER' => $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_PO', ...$params),
-                    'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON' => $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO', ...$params),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION_SOON' => $this->getMessageInLang($language, 'EMAIL_PASSWORD_EXPIRATION_SOON_BODY', ...$params),
-                    'EMAIL_BODY_PASSWORD_EXPIRATION' => $this->getMessageInLang($language, 'EMAIL_PASSWORD_EXPIRATION_BODY', ...$params),
-                    default => $this->getMessageInLang($language, $MsgID, ...$params),
-                };
-            }
-        }
-
-        return $retour;
-    }
-
-    public function getTimeMessage($MsgID)
-    {
-        if (!empty($this->_selected_language)) {
-            $retour = $this->getTimeMessageInLang($this->_selected_language, $MsgID);
-        } else {
-            trigger_error('no selected language is set', E_USER_WARNING);
-            $retour = $MsgID;
-        }
-
-        return $retour;
-    }
-
-    public function getTimeMessageInLang($language, $MsgID)
-    {
-        $retour = $MsgID;
-        if (!$this->isLanguageAvailable($language)) {
-            $language = $this->_default_language;
-        }
-        $msg_array = explode('_', (string) $MsgID);
-        $year_small_temp = $msg_array[0];
-        $year_small = $year_small_temp[2].$year_small_temp[3];
-        $year_small_plus = $year_small + 1;
-        if (100 == $year_small_plus) {
-            $year_small_plus = '00';
-        }
-        if ($year_small_plus < 10) {
-            $year_small_plus = '0'.$year_small_plus;
-        }
-        $year_small_minus = $year_small - 1;
-        if (-1 == $year_small_minus) {
-            $year_small_minus = '99';
-        }
-        if ($year_small_minus < 10) {
-            $year_small_minus = '0'.$year_small_minus;
-        }
-        if (isset($msg_array[1]) and !empty($this->timeMessageArray[$msg_array[1]][mb_strtoupper((string) $language, 'UTF-8')])) {
-            $retour = $this->text_replace($this->timeMessageArray[$msg_array[1]][mb_strtoupper((string) $language, 'UTF-8')], $msg_array[0], $msg_array[0] + 1, $msg_array[0] - 1, $year_small, $year_small_plus, $year_small_minus);
-        }
-
-        return $retour;
-    }
-
     /** setDBConnector
      * this methode set the class to connect the database.
      *
@@ -435,26 +271,6 @@ class cs_translator
     public function setRubricTranslationArray($value)
     {
         $this->_rubric_translation_array = (array) $value;
-    }
-
-    /** setEmailTextArray
-     * this methode set the special email text, get from current room.
-     *
-     * @param array email text
-     */
-    public function setEmailTextArray($value): void
-    {
-        $this->_email_array = (array) $value;
-    }
-
-    /** setTimeMessageArray
-     * this methode set the special time messages, get from current portal.
-     *
-     * @param array time messages
-     */
-    public function setTimeMessageArray($value): void
-    {
-        $this->timeMessageArray = (array) $value;
     }
 
     /** replace %x in text
