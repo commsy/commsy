@@ -54,7 +54,7 @@ class RoomActivityDeleteWarningMessage extends Message
                 'mail.inactivity_room_delete_upcoming',
                 'EMAIL_INACTIVITY_ROOM_DELETE_UPCOMING_BODY',
                 'other',
-                $this->legacyEnvironment->getTranslationObject()->getSelectedLanguage(),
+                $this->legacyEnvironment->getSelectedLanguage(),
                 [
                     $this->room->getTitle(),
                     $numDaysInactive,

@@ -51,7 +51,7 @@ class AccountActivityLockedMessage extends Message
         $overrides = $this->portal->getEmailTextArray();
         // account-level mail: the legacy translator resolved this in portal context (_PO)
         $roomType = 'other';
-        $locale = $this->legacyEnvironment->getTranslationObject()->getSelectedLanguage();
+        $locale = $this->legacyEnvironment->getSelectedLanguage();
 
         $contactModerators = $this->portal->getContactModeratorList($this->legacyEnvironment);
         /** @var cs_user_item|false $firstContactModerator */
