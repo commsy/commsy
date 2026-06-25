@@ -154,7 +154,7 @@ final class MailTextComponent extends AbstractController
 
         $sampleValues = array_map(static fn ($placeholder) => $placeholder->sample($lang), $definition->positionalParams);
 
-        return $this->renderer->render($selected, 'project', $lang, $sampleValues, [$selected => [$lang => $content]]);
+        return $this->renderer->render($definition->key, $selected, 'project', $lang, $sampleValues, [$selected => [$lang => $content]]);
     }
 
     private function selectedMessageId(): string
