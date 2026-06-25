@@ -1582,6 +1582,14 @@
                 <source>portal.auth.oidc.email_identifier.help</source>
                 <target>CommSy will use the email address as a second criteria to identify accounts</target>
             </trans-unit>
+            <trans-unit id="mail_text.insert_placeholder">
+                <source>mail_text.insert_placeholder</source>
+                <target>Insert placeholder</target>
+            </trans-unit>
+            <trans-unit id="mail_text.preview">
+                <source>mail_text.preview</source>
+                <target>Preview</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

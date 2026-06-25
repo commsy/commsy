@@ -44,15 +44,6 @@ class MailTextType extends AbstractType
                         'Status moderator' => 'MAIL_BODY_USER_STATUS_MODERATOR',
                         'Make contact' => 'MAIL_BODY_USER_MAKE_CONTACT_PERSON',
                         'Remove contact' => 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON',
-                        'Password expires' => 'EMAIL_BODY_PASSWORD_EXPIRATION_SOON',
-                        'Password is expired' => 'EMAIL_BODY_PASSWORD_EXPIRATION',
-                        'Change password' => 'MAIL_BODY_USER_PASSWORD_CHANGE',
-                    ],
-                    'Workspace' => [
-                        'Lock room' => 'MAIL_BODY_ROOM_LOCK',
-                        'Unlock room' => 'MAIL_BODY_ROOM_UNLOCK',
-                        'Delete room' => 'MAIL_BODY_ROOM_DELETE',
-                        'Create room' => 'MAIL_BODY_ROOM_OPEN',
                     ],
                     'Deprovisioning' => [
                         'Lock room after X days' => 'EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY',

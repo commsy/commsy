@@ -4,6 +4,7 @@ import {getComponent} from "@symfony/ux-live-component";
 
 let germanEditor;
 let englishEditor;
+let focusedEditor;
 
 const toolbarConfig = {
   removeItems: ['uploadImage', 'mediaEmbed']
@@ -56,7 +57,28 @@ export default class extends Controller {
         }
       });
 
+      // remember which editor the cursor is in, so a placeholder gets inserted there
+      newEditor.editing.view.document.on('change:isFocused', (evt, name, isFocused) => {
+        if (isFocused) {
+          focusedEditor = newEditor;
+        }
+      });
+
       return newEditor;
     })
+  }
+
+  // insert a placeholder token (e.g. "{recipientName}") at the cursor of the focused editor
+  insert(event) {
+    const token = event.params.token;
+    const editor = focusedEditor || germanEditor;
+    if (!editor || !token) {
+      return;
+    }
+
+    editor.model.change(writer => {
+      editor.model.insertContent(writer.createText(token));
+    });
+    editor.editing.view.focus();
   }
 }

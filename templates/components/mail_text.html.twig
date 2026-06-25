@@ -8,9 +8,33 @@
 
         {{ form_row(form.mailText) }}
 
+        {% set placeholders = this.availablePlaceholders %}
+        {% if placeholders is not empty %}
+            <div class="uk-margin uk-flex uk-flex-middle uk-flex-wrap" uk-margin>
+                <span class="uk-text-meta uk-margin-small-right">{{ 'mail_text.insert_placeholder'|trans({}, 'portal') }}:</span>
+                {% for placeholder in placeholders %}
+                    <button type="button"
+                            class="uk-button uk-button-default uk-button-small uk-margin-small-right uk-margin-small-bottom"
+                            data-action="mailtexts_editor#insert"
+                            data-mailtexts-editor-token-param="{{ placeholder.token }}"
+                            title="{{ placeholder.token }}">
+                        {{ placeholder.label }}
+                    </button>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="uk-margin">
             {{ form_row(form.contentGerman) }}
         </div>
+
+        {% set previewGerman = this.preview('de') %}
+        {% if previewGerman is not empty %}
+            <div class="uk-margin uk-card uk-card-default uk-card-small uk-card-body">
+                <div class="uk-text-meta uk-margin-small-bottom">{{ 'mail_text.preview'|trans({}, 'portal') }} (DE)</div>
+                {{ previewGerman|raw }}
+            </div>
+        {% endif %}
 
         <div class="uk-form-controls">
             {{ form_row(form.resetContentGerman) }}
@@ -19,6 +43,14 @@
         <div class="uk-margin">
             {{ form_row(form.contentEnglish) }}
         </div>
+
+        {% set previewEnglish = this.preview('en') %}
+        {% if previewEnglish is not empty %}
+            <div class="uk-margin uk-card uk-card-default uk-card-small uk-card-body">
+                <div class="uk-text-meta uk-margin-small-bottom">{{ 'mail_text.preview'|trans({}, 'portal') }} (EN)</div>
+                {{ previewEnglish|raw }}
+            </div>
+        {% endif %}
 
         <div class="uk-form-controls">
             {{ form_row(form.resetContentEnglish) }}
