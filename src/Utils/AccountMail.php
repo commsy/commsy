@@ -13,7 +13,7 @@
 
 namespace App\Utils;
 
-use App\Mail\MailTextResolver;
+use App\Mail\Text\MailTextRenderer;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
@@ -30,7 +30,7 @@ class AccountMail
 {
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RouterInterface $router, private readonly CurrentContextResolver $currentContextResolver, private readonly TranslatorInterface $translator, private readonly MailTextResolver $mailTextResolver)
+    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RouterInterface $router, private readonly CurrentContextResolver $currentContextResolver, private readonly TranslatorInterface $translator, private readonly MailTextRenderer $mailTextRenderer)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -73,7 +73,7 @@ class AccountMail
             'roomId' => $this->currentContextResolver->getContextId() ?? 0,
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $body = $this->mailTextResolver->resolve(
+        $body = $this->mailTextRenderer->render(
             'mail.salutation',
             'MAIL_BODY_HELLO',
             $roomType,
@@ -94,7 +94,7 @@ class AccountMail
             'user-contact-remove' => ['mail.body.unmake_contact_person', 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $locale],
         };
         $bodyUserId = ('user-delete' === $action || !$multipleRecipients) ? $user->getUserID() : ' ';
-        $body .= $this->mailTextResolver->resolve(
+        $body .= $this->mailTextRenderer->render(
             $bodyKey,
             $bodyLegacyId,
             $roomType,
@@ -109,7 +109,7 @@ class AccountMail
         }
 
         $body .= '<br/><br/>';
-        $body .= $this->mailTextResolver->resolve(
+        $body .= $this->mailTextRenderer->render(
             'mail.goodbye',
             'MAIL_BODY_CIAO',
             $roomType,

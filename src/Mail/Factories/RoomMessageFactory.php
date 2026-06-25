@@ -14,7 +14,7 @@
 namespace App\Mail\Factories;
 
 use App\Entity\Room;
-use App\Mail\MailTextResolver;
+use App\Mail\Text\MailTextRenderer;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\RoomActivityDeleteWarningMessage;
 use App\Mail\Messages\RoomActivityLockWarningMessage;
@@ -31,7 +31,7 @@ class RoomMessageFactory
         private readonly LegacyEnvironment $legacyEnvironment,
         private readonly PortalRepository $portalRepository,
         private readonly CurrentUserResolver $currentUserResolver,
-        private readonly MailTextResolver $mailTextResolver
+        private readonly MailTextRenderer $mailTextRenderer
     ) {
     }
 
@@ -44,7 +44,7 @@ class RoomMessageFactory
 
         $portal = $room->getPortal();
         if ($portal) {
-            return new RoomActivityLockWarningMessage($this->legacyEnvironment, $portal, $room, $this->mailTextResolver);
+            return new RoomActivityLockWarningMessage($this->legacyEnvironment, $portal, $room, $this->mailTextRenderer);
         }
 
         return null;
@@ -59,7 +59,7 @@ class RoomMessageFactory
 
         $portal = $room->getPortal();
         if ($portal) {
-            return new RoomActivityDeleteWarningMessage($this->legacyEnvironment, $portal, $room, $this->mailTextResolver);
+            return new RoomActivityDeleteWarningMessage($this->legacyEnvironment, $portal, $room, $this->mailTextRenderer);
         }
 
         return null;

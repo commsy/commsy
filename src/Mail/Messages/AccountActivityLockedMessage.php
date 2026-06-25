@@ -15,7 +15,7 @@ namespace App\Mail\Messages;
 
 use App\Entity\Account;
 use App\Entity\Portal;
-use App\Mail\MailTextResolver;
+use App\Mail\Text\MailTextRenderer;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
 use cs_environment;
@@ -31,7 +31,7 @@ class AccountActivityLockedMessage extends Message
         LegacyEnvironment $legacyEnvironment,
         private readonly Portal $portal,
         private readonly Account $account,
-        private readonly MailTextResolver $mailTextResolver
+        private readonly MailTextRenderer $mailTextRenderer
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -58,7 +58,7 @@ class AccountActivityLockedMessage extends Message
         $firstContactModerator = $contactModerators->getFirst();
 
         return [
-            'hello' => $this->mailTextResolver->resolve(
+            'hello' => $this->mailTextRenderer->render(
                 'mail.salutation',
                 'MAIL_BODY_HELLO',
                 $roomType,
@@ -66,7 +66,7 @@ class AccountActivityLockedMessage extends Message
                 ["{$this->account->getFirstname()} {$this->account->getLastname()}"],
                 $overrides
             ),
-            'content' => $this->mailTextResolver->resolve(
+            'content' => $this->mailTextRenderer->render(
                 'mail.inactivity_lock_now',
                 'EMAIL_INACTIVITY_LOCK_NOW_BODY',
                 $roomType,
@@ -81,7 +81,7 @@ class AccountActivityLockedMessage extends Message
                 ],
                 $overrides
             ),
-            'ciao' => $this->mailTextResolver->resolve(
+            'ciao' => $this->mailTextRenderer->render(
                 'mail.goodbye',
                 'MAIL_BODY_CIAO',
                 $roomType,

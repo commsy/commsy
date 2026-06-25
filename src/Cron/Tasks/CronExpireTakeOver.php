@@ -14,8 +14,8 @@
 namespace App\Cron\Tasks;
 
 use App\Mail\Mailer;
-use App\Mail\MailTextResolver;
 use App\Mail\RecipientFactory;
+use App\Mail\Text\MailTextRenderer;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_user_item;
@@ -34,7 +34,7 @@ readonly class CronExpireTakeOver implements CronTaskInterface
         private RouterInterface $router,
         private Mailer $mailer,
         private TranslatorInterface $translator,
-        private MailTextResolver $mailTextResolver
+        private MailTextRenderer $mailTextRenderer
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -78,11 +78,11 @@ readonly class CronExpireTakeOver implements CronTaskInterface
                 $overrides = $portal->getEmailTextArray();
                 $body = $this->translator->trans('mail.auto_sent', ['p1' => $autoDate, 'p2' => $autoTime], 'mail', $locale);
                 $body .= "\n\n";
-                $body .= $this->mailTextResolver->resolve('mail.salutation', 'MAIL_BODY_HELLO', 'other', $locale, [$expiredUser->getFullName()], $overrides);
+                $body .= $this->mailTextRenderer->render('mail.salutation', 'MAIL_BODY_HELLO', 'other', $locale, [$expiredUser->getFullName()], $overrides);
                 $body .= "\n\n";
-                $body .= $this->mailTextResolver->resolve('mail.body.login_expiration', 'EMAIL_LOGIN_EXPIRATION_BODY', 'other', $locale, [], $overrides);
+                $body .= $this->mailTextRenderer->render('mail.body.login_expiration', 'EMAIL_LOGIN_EXPIRATION_BODY', 'other', $locale, [], $overrides);
                 $body .= "\n\n";
-                $body .= $this->mailTextResolver->resolve('mail.goodbye', 'MAIL_BODY_CIAO', 'other', $locale, [$contactModerators->getFirst()->getFullName(), $portal->getTitle()], $overrides);
+                $body .= $this->mailTextRenderer->render('mail.goodbye', 'MAIL_BODY_CIAO', 'other', $locale, [$contactModerators->getFirst()->getFullName(), $portal->getTitle()], $overrides);
                 $body .= "\n\n";
                 $body .= $linkToPortal;
 

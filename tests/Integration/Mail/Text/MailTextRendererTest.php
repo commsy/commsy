@@ -4,32 +4,30 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Mail\Text;
 
-use App\Mail\MailTextResolver;
 use App\Mail\Text\MailTextCatalog;
 use App\Mail\Text\MailTextRenderer;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * P3 gate: the new renderer's default path (no override) must be byte-identical to the
- * current MailTextResolver for every catalog text x room type x language, and its override
- * path must substitute the named tokens (including {roomTypeName}).
- */
 final class MailTextRendererTest extends KernelTestCase
 {
-    public function testDefaultPathMatchesLegacyResolverForEveryCatalogText(): void
+    public function testDefaultPathIsTheTranslatedMailKey(): void
     {
         self::bootKernel();
         $renderer = self::getContainer()->get(MailTextRenderer::class);
-        $resolver = self::getContainer()->get(MailTextResolver::class);
+        $translator = self::getContainer()->get(TranslatorInterface::class);
         $catalog = self::getContainer()->get(MailTextCatalog::class);
 
         $values = ['VALUE_ONE', 'VALUE_TWO'];
 
+        // renderRaw() is the default lookup before the (separately tested) paragraph normalisation
         foreach ($catalog->all() as $definition) {
             foreach (['project', 'community', 'grouproom', 'other'] as $roomType) {
                 foreach (['de', 'en'] as $locale) {
-                    $expected = $resolver->resolve($definition->key, $definition->legacyMessageId, $roomType, $locale, $values, []);
-                    $actual = $renderer->render($definition->legacyMessageId, $roomType, $locale, $values, []);
+                    $arguments = ['room_type' => $roomType, 'p1' => $values[0], 'p2' => $values[1]];
+                    $expected = $translator->trans($definition->key, $arguments, 'mail', $locale);
+
+                    $actual = $renderer->renderRaw($definition->key, $definition->legacyMessageId, $roomType, $locale, $values, []);
 
                     self::assertSame($expected, $actual, "default mismatch: {$definition->key} / $roomType / $locale");
                 }
@@ -42,7 +40,6 @@ final class MailTextRendererTest extends KernelTestCase
         self::bootKernel();
         $renderer = self::getContainer()->get(MailTextRenderer::class);
 
-        // room-type aware: the room noun becomes {roomTypeName}, the user id becomes {accountId}
         $statusUser = $renderer->templateFor('MAIL_BODY_USER_STATUS_USER', 'de');
         self::assertStringContainsString('{accountId}', $statusUser);
         self::assertStringContainsString('{roomTitle}', $statusUser);
@@ -50,9 +47,7 @@ final class MailTextRendererTest extends KernelTestCase
         self::assertStringNotContainsString('{p1}', $statusUser);
         self::assertStringNotContainsString('Projektraum', $statusUser);
 
-        // not room-type aware: just the recipient token, no {roomTypeName}
-        $salutation = $renderer->templateFor('MAIL_BODY_HELLO', 'de');
-        self::assertSame('Hallo {recipientName},', $salutation);
+        self::assertSame('Hallo {recipientName},', $renderer->templateFor('MAIL_BODY_HELLO', 'de'));
     }
 
     public function testOverridePathSubstitutesNamedTokens(): void
@@ -67,17 +62,31 @@ final class MailTextRendererTest extends KernelTestCase
 
         self::assertSame(
             'Hallo Anna Beispiel, willkommen!',
-            $renderer->render('MAIL_BODY_HELLO', 'project', 'de', ['Anna Beispiel'], $overrides)
+            $renderer->render('mail.salutation', 'MAIL_BODY_HELLO', 'project', 'de', ['Anna Beispiel'], $overrides)
         );
 
         // {roomTypeName} is resolved from the room type, not supplied by the author
         self::assertSame(
             'Ihre Kennung abeispiel im Projektraum "Mein Kurs".',
-            $renderer->render('MAIL_BODY_USER_STATUS_USER', 'project', 'de', ['abeispiel', 'Mein Kurs'], $overrides)
+            $renderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER', 'project', 'de', ['abeispiel', 'Mein Kurs'], $overrides)
         );
         self::assertSame(
             'Ihre Kennung abeispiel im Gemeinschaftsraum "Mein Kurs".',
-            $renderer->render('MAIL_BODY_USER_STATUS_USER', 'community', 'de', ['abeispiel', 'Mein Kurs'], $overrides)
+            $renderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER', 'community', 'de', ['abeispiel', 'Mein Kurs'], $overrides)
+        );
+    }
+
+    public function testOverridePathStillSubstitutesLegacyPercentTokens(): void
+    {
+        self::bootKernel();
+        $renderer = self::getContainer()->get(MailTextRenderer::class);
+
+        // an override not yet migrated to named tokens must keep working
+        $overrides = ['MAIL_BODY_HELLO' => ['de' => 'Hallo %1, willkommen!']];
+
+        self::assertSame(
+            'Hallo Anna Beispiel, willkommen!',
+            $renderer->render('mail.salutation', 'MAIL_BODY_HELLO', 'project', 'de', ['Anna Beispiel'], $overrides)
         );
     }
 }

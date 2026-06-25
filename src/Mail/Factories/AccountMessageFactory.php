@@ -16,7 +16,7 @@ namespace App\Mail\Factories;
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\Portal;
-use App\Mail\MailTextResolver;
+use App\Mail\Text\MailTextRenderer;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\AccountActivityDeletedMessage;
 use App\Mail\Messages\AccountActivityDeleteWarningMessage;
@@ -32,7 +32,7 @@ class AccountMessageFactory
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly LegacyEnvironment $legacyEnvironment,
         private readonly AccountManager $accountManager,
-        private readonly MailTextResolver $mailTextResolver
+        private readonly MailTextRenderer $mailTextRenderer
     ) {
     }
 
@@ -40,7 +40,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityLockWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextResolver);
+            return new AccountActivityLockWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
         }
 
         return null;
@@ -50,7 +50,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityLockedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextResolver);
+            return new AccountActivityLockedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
         }
 
         return null;
@@ -60,7 +60,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityDeleteWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextResolver);
+            return new AccountActivityDeleteWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
         }
 
         return null;
@@ -70,7 +70,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityDeletedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextResolver);
+            return new AccountActivityDeletedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
         }
 
         return null;

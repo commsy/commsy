@@ -14,7 +14,7 @@
 namespace App\Mail\Messages;
 
 use App\Entity\Portal;
-use App\Mail\MailTextResolver;
+use App\Mail\Text\MailTextRenderer;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
 use cs_environment;
@@ -28,7 +28,7 @@ class RoomActivityLockWarningMessage extends Message
         LegacyEnvironment $legacyEnvironment,
         private readonly Portal $portal,
         private readonly object $room,
-        private readonly MailTextResolver $mailTextResolver
+        private readonly MailTextRenderer $mailTextRenderer
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -50,7 +50,7 @@ class RoomActivityLockWarningMessage extends Message
 
         return [
             'room' => $this->room,
-            'content' => $this->mailTextResolver->resolve(
+            'content' => $this->mailTextRenderer->render(
                 'mail.inactivity_room_lock_upcoming',
                 'EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY',
                 'other',

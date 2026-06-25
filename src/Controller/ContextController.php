@@ -18,8 +18,8 @@ use App\Facade\MembershipManager;
 use App\Form\Type\ContextRequestType;
 use App\Mail\Factories\RoomMessageFactory;
 use App\Mail\Mailer;
-use App\Mail\MailTextResolver;
 use App\Mail\RecipientFactory;
+use App\Mail\Text\MailTextRenderer;
 use App\Repository\RoomRepository;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -67,7 +67,7 @@ class ContextController extends AbstractController
         RoomMessageFactory $roomMessageFactory,
         RoomRepository $roomRepository,
         Mailer $mailer,
-        MailTextResolver $mailTextResolver,
+        MailTextRenderer $mailTextRenderer,
         TranslatorInterface $symfonyTranslator,
         int $roomId,
         int $itemId
@@ -247,17 +247,17 @@ class ContextController extends AbstractController
 
                     $body = $symfonyTranslator->trans('mail.auto_sent', ['p1' => $autoDate, 'p2' => $autoTime], 'mail', $language);
                     $body .= "\n\n";
-                    $body .= $mailTextResolver->resolve('mail.salutation', 'MAIL_BODY_HELLO', 'project', $language, [$newUser->getFullname()], $overrides);
+                    $body .= $mailTextRenderer->render('mail.salutation', 'MAIL_BODY_HELLO', 'project', $language, [$newUser->getFullname()], $overrides);
                     $body .= "\n\n";
                     if ($roomItem->isCommunityRoom()) {
-                        $body .= $mailTextResolver->resolve('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_GR', 'community', $language, [$userId, $roomItem->getTitle()], $overrides);
+                        $body .= $mailTextRenderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_GR', 'community', $language, [$userId, $roomItem->getTitle()], $overrides);
                     } elseif ($roomItem->isProjectRoom()) {
-                        $body .= $mailTextResolver->resolve('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_PR', 'project', $language, [$userId, $roomItem->getTitle()], $overrides);
+                        $body .= $mailTextRenderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_PR', 'project', $language, [$userId, $roomItem->getTitle()], $overrides);
                     } elseif ($roomItem->isGroupRoom()) {
-                        $body .= $mailTextResolver->resolve('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_GP', 'grouproom', $language, [$userId, $roomItem->getTitle()], $overrides);
+                        $body .= $mailTextRenderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_GP', 'grouproom', $language, [$userId, $roomItem->getTitle()], $overrides);
                     }
                     $body .= "\n\n";
-                    $body .= $mailTextResolver->resolve('mail.goodbye', 'MAIL_BODY_CIAO', 'project', $language, [$modFullName, $roomItem->getTitle()], $overrides);
+                    $body .= $mailTextRenderer->render('mail.goodbye', 'MAIL_BODY_CIAO', 'project', $language, [$modFullName, $roomItem->getTitle()], $overrides);
                     $body .= "\n\n";
                     $body .= $this->generateUrl('app_room_home', [
                         'roomId' => $roomItem->getItemID(),
