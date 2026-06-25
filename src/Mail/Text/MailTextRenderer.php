@@ -23,12 +23,11 @@ use function Symfony\Component\String\u;
  * Renders a mail text from an override or the translated default. Single engine, drop-in for
  * the former App\Mail\MailTextResolver (same call signature).
  *
- * Override path: a plain token substitution, deliberately NOT ICU (admin free text has
+ * Override path: a plain named-token substitution, deliberately NOT ICU (admin free text has
  * apostrophes and stray braces that would break an ICU parse, and a flat override never needs
- * select/plural). Both placeholder formats are substituted so the system works during the
- * transition: the new named tokens ("{recipientName}", and "{roomTypeName}" resolved from the
- * room type so the author never picks one) and the legacy positional "%1".."%6" of overrides
- * not yet migrated. Catalog texts get the named mapping; any other key falls back to %1..%6.
+ * select/plural). The room type is never the author's concern -- it is supplied as the
+ * {roomTypeName} value. Stored overrides use named tokens exclusively (legacy %1..%6 overrides
+ * were one-off migrated by Version20260625120000).
  *
  * Default path: the mail-domain key is translated unchanged (room_type select + p1..pN), so it
  * is byte-identical to the legacy resolver and also covers keys that are not customizable.
@@ -64,7 +63,7 @@ final readonly class MailTextRenderer
             ?? null;
 
         if (is_string($override) && '' !== $override) {
-            return $this->substitute($override, $this->namedArguments($legacyMessageId, $roomType, $locale, $values, $rubricConfig), $values);
+            return $this->substitute($override, $this->namedArguments($legacyMessageId, $roomType, $locale, $values, $rubricConfig));
         }
 
         $arguments = ['room_type' => $roomType];
@@ -126,14 +125,11 @@ final readonly class MailTextRenderer
     }
 
     /**
-     * Substitute first the named tokens (new format) then the legacy %1..%6 (overrides not yet
-     * migrated). A named override has no %N and a legacy override has none of our named tokens,
-     * so applying both passes is safe for either format.
+     * Substitute the named tokens ("{recipientName}" -> value).
      *
      * @param array<string, string> $namedArguments
-     * @param list<string>          $values
      */
-    private function substitute(string $text, array $namedArguments, array $values): string
+    private function substitute(string $text, array $namedArguments): string
     {
         $search = [];
         $replace = [];
@@ -141,13 +137,8 @@ final readonly class MailTextRenderer
             $search[] = '{'.$name.'}';
             $replace[] = $value;
         }
-        $text = str_replace($search, $replace, $text);
 
-        foreach ($values as $index => $value) {
-            $text = str_replace('%'.($index + 1), (string) $value, $text);
-        }
-
-        return $text;
+        return str_replace($search, $replace, $text);
     }
 
     private function normalizeParagraphs(string $text): string

@@ -75,18 +75,4 @@ final class MailTextRendererTest extends KernelTestCase
             $renderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER', 'community', 'de', ['abeispiel', 'Mein Kurs'], $overrides)
         );
     }
-
-    public function testOverridePathStillSubstitutesLegacyPercentTokens(): void
-    {
-        self::bootKernel();
-        $renderer = self::getContainer()->get(MailTextRenderer::class);
-
-        // an override not yet migrated to named tokens must keep working
-        $overrides = ['MAIL_BODY_HELLO' => ['de' => 'Hallo %1, willkommen!']];
-
-        self::assertSame(
-            'Hallo Anna Beispiel, willkommen!',
-            $renderer->render('mail.salutation', 'MAIL_BODY_HELLO', 'project', 'de', ['Anna Beispiel'], $overrides)
-        );
-    }
 }
