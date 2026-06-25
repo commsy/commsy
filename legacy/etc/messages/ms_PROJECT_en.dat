@@ -1,4 +1,0 @@
-<?php
-$message["PROJECT_INDEX"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
-$message["PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO"]["en"] = "Announcement of Storage";
-?>

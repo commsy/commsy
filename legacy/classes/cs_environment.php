@@ -752,39 +752,6 @@ class cs_environment
         return $this->getCurrentContextItem()->isServer();
     }
 
-    /** get Instance of the translation object
-     * returns an object for translation of message tags.
-     */
-    public function getTranslationObject(): cs_translator
-    {
-        if (!isset($this->instance['translation_object'])) {
-            $this->instance['translation_object'] = new cs_translator();
-            $this->instance['translation_object']->setSelectedLanguage($this->getSelectedLanguage());
-
-            $context_item = $this->getCurrentContextItem();
-            if ($this->inCommunityRoom()) {
-                $this->instance['translation_object']->setContext('community');
-            } elseif ($this->inProjectRoom()) {
-                $this->instance['translation_object']->setContext('project');
-            } elseif ($this->inGroupRoom()) {
-                $this->instance['translation_object']->setContext(CS_GROUPROOM_TYPE);
-            } elseif ($this->inUserroom()) {
-                $this->instance['translation_object']->setContext(cs_userroom_item::ROOM_TYPE_USER);
-            } elseif ($this->inPrivateRoom()) {
-                $this->instance['translation_object']->setContext('private');
-            } elseif ($this->inPortal()) {
-                $this->instance['translation_object']->setContext('portal');
-            } else {
-                $this->instance['translation_object']->setContext('server');
-            }
-            if (isset($context_item)) {
-                $this->instance['translation_object']->setRubricTranslationArray($context_item->getRubricTranslationArray());
-            }
-        }
-
-        return $this->instance['translation_object'];
-    }
-
     /**
      * Translate a legacy message key via the Symfony translator (domain "legacy"), using the
      * currently selected language. Bridge that lets legacy classes drop cs_translator: the

@@ -48,7 +48,7 @@ class cs_discussion_manager extends cs_manager
     /*
      * Translation Object
      */
-    private cs_translator $_translator;
+    private cs_environment $_translator;
 
     /** constructor
      * the only available constructor, initial values for internal variables

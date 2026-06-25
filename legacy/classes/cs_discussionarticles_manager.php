@@ -59,7 +59,7 @@ class cs_discussionarticles_manager extends cs_manager
     /*
      * Translation Object
      */
-    private readonly cs_translator $_translator;
+    private readonly cs_environment $_translator;
 
     /** constructor: cs_discussionarticles_manager
      * the only available constructor, initial values for internal variables.

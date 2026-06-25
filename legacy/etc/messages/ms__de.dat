@@ -1,6 +1,0 @@
-<?php
-$message["ALL"]["de"] = "Alle";
-$message["BROWSER"]["de"] = "Browsereinstellung";
-$message["INSTITUTION"]["de"] = "%_INSTITUTION_SUB_NOMS_BIG";
-$message["PRIVATEROOM"]["de"] = "Meine Ablage";
-?>

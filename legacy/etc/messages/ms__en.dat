@@ -1,6 +1,0 @@
-<?php
-$message["ALL"]["en"] = "All";
-$message["BROWSER"]["en"] = "Browser settings";
-$message["INSTITUTION"]["en"] = "%_INSTITUTION_SUB_NOMS_BIG";
-$message["PRIVATEROOM"]["en"] = "My stack";
-?>

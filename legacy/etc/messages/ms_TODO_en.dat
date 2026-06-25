@@ -1,6 +1,0 @@
-<?php
-$message["TODO_DONE"]["en"] = "Done";
-$message["TODO_INDEX"]["en"] = "Tasks";
-$message["TODO_IN_POGRESS"]["en"] = "In progress";
-$message["TODO_NOT_STARTED"]["en"] = "Not started";
-?>

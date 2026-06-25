@@ -47,12 +47,6 @@ use Zenstruck\Foundry\Attribute\WithStory;
  *
  * Reuse-priority suite (lock 2 + lock 3 caller). Must stay green when
  * the context seam is rerouted onto CurrentContextResolver.
- *
- * Runs in separate processes so that cs_translator's `include_once`
- * on ms_MAIL_de.dat re-fires every time — a previous test in the same
- * process leaves include_once cached and a fresh cs_translator inside
- * a rebooted kernel would otherwise see an empty messageArray and
- * fall back to returning the raw MsgID.
  */
 #[WithStory(AccountStory::class)]
 #[RunTestsInSeparateProcesses]
@@ -72,12 +66,9 @@ final class AccountMailCurrentContextCharacterizationTest extends KernelTestCase
             ->getEnvironment();
         $this->account = AccountStory::get('account');
 
-        // The legacy translator is lazy-initialised on first call and then
-        // cached on cs_environment. When a previous test ran with an empty
-        // request locale the cached instance has `_selected_language = ''`
-        // and getMessage() short-circuits, returning the raw MsgID. Pin a
-        // known language here so the cache survives test-order pollution.
-        $this->legacyEnvironment->getTranslationObject()->setSelectedLanguage('de');
+        // Pin a known language so the rendered mail texts are deterministic
+        // regardless of the (test-order dependent) request locale.
+        $this->legacyEnvironment->setSelectedLanguage('de');
     }
 
     public function testSubjectIncorporatesCurrentContextRoomTitle(): void

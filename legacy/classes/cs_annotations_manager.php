@@ -22,9 +22,9 @@ class cs_annotations_manager extends cs_manager
     private int $linkedItemId = 0;
 
     /**
-     * @var cs_translator
+     * @var cs_environment
      */
-    private cs_translator $translator;
+    private cs_environment $translator;
 
     public function __construct($environment)
     {

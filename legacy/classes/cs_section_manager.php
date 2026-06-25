@@ -56,7 +56,7 @@ class cs_section_manager extends cs_manager
     public $_all_section_list = null;
     public $_cached_material_item_ids = [];
 
-    private cs_translator $translator;
+    private cs_environment $translator;
 
     /** constructor: cs_section_manager
      * the only available constructor, initial values for internal variables<br />

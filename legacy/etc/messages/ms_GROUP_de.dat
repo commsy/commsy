@@ -1,4 +1,0 @@
-<?php
-$message["GROUP_ALL_DESC"]["de"] = "In diese Gruppe werden automatisch alle Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG eingetragen. Sie wurde vom System erzeugt und kann nicht gelöscht werden.";
-$message["GROUP_INDEX"]["de"] = "Gruppen";
-?>

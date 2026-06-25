@@ -1,4 +1,0 @@
-<?php
-$message["GROUP_ALL_DESC"]["en"] = "This group cannot be deleted. It contains all members of %_PROJECT_SUB_NOMS_BIG.";
-$message["GROUP_INDEX"]["en"] = "Groups";
-?>
