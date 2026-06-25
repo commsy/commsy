@@ -41,6 +41,21 @@ enum MailPlaceholder: string
     /** Name of the moderator / contact person sending or signing the mail. */
     case ModeratorName = 'moderatorName';
 
+    /** Title of the account's authentication source. */
+    case AuthSource = 'authSource';
+
+    /** Number of days until the action (lock/deletion) takes effect. */
+    case Days = 'days';
+
+    /** Number of days the account/room has already been inactive. */
+    case DaysInactive = 'daysInactive';
+
+    /** Title of the portal. */
+    case PortalTitle = 'portalTitle';
+
+    /** Absolute link offered in the mail (e.g. portal entry). */
+    case Link = 'link';
+
     /** The ICU token as it appears in the stored and rendered string. */
     public function token(): string
     {
@@ -56,6 +71,11 @@ enum MailPlaceholder: string
             self::RoomTitle => 'de' === $locale ? 'Raumname' : 'Workspace name',
             self::RoomTypeName => 'de' === $locale ? 'Raumart' : 'Workspace type',
             self::ModeratorName => 'de' === $locale ? 'Moderation' : 'Moderator',
+            self::AuthSource => 'de' === $locale ? 'Anmeldequelle' : 'Login source',
+            self::Days => 'de' === $locale ? 'Anzahl Tage' : 'Days',
+            self::DaysInactive => 'de' === $locale ? 'Tage inaktiv' : 'Days inactive',
+            self::PortalTitle => 'Portal',
+            self::Link => 'Link',
         };
     }
 
@@ -68,6 +88,11 @@ enum MailPlaceholder: string
             self::RoomTitle => 'de' === $locale ? 'Mein Kurs' : 'My Course',
             self::RoomTypeName => 'de' === $locale ? 'Projektraum' : 'project workspace',
             self::ModeratorName => 'M. Mustermann',
+            self::AuthSource => 'CommSy',
+            self::Days => '14',
+            self::DaysInactive => '90',
+            self::PortalTitle => 'de' === $locale ? 'CommSy Uni' : 'CommSy University',
+            self::Link => 'https://commsy.example/portal/1',
         };
     }
 }

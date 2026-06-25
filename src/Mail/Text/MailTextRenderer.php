@@ -86,6 +86,32 @@ final readonly class MailTextRenderer
     }
 
     /**
+     * The editable starting template for a mail text, in the named-token format: the system
+     * default with each value shown as its placeholder token and the room-type noun replaced
+     * by {roomTypeName}. Derived from the single xlf source, so the editor always starts from
+     * the real default text -- not a hand-maintained copy.
+     */
+    public function templateFor(string $legacyMessageId, string $locale): string
+    {
+        $definition = $this->catalog->byLegacyId($legacyMessageId);
+        if (null === $definition) {
+            return '';
+        }
+
+        $tokens = array_map(static fn (MailPlaceholder $p): string => $p->token(), $definition->positionalParams);
+        $text = $this->renderRaw($legacyMessageId, 'project', $locale, $tokens, []);
+
+        if ($definition->roomTypeAware) {
+            $projectNoun = $this->roomTypeNameResolver->nominative('project', $locale);
+            if ('' !== $projectNoun) {
+                $text = str_replace($projectNoun, MailPlaceholder::RoomTypeName->token(), $text);
+            }
+        }
+
+        return $text;
+    }
+
+    /**
      * Map the positional values onto their named placeholders and add the resolved room-type noun.
      *
      * @param list<string>         $values

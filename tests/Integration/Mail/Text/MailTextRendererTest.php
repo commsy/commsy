@@ -37,6 +37,24 @@ final class MailTextRendererTest extends KernelTestCase
         }
     }
 
+    public function testEditableTemplateUsesNamedTokensAndRoomTypeName(): void
+    {
+        self::bootKernel();
+        $renderer = self::getContainer()->get(MailTextRenderer::class);
+
+        // room-type aware: the room noun becomes {roomTypeName}, the user id becomes {accountId}
+        $statusUser = $renderer->templateFor('MAIL_BODY_USER_STATUS_USER', 'de');
+        self::assertStringContainsString('{accountId}', $statusUser);
+        self::assertStringContainsString('{roomTitle}', $statusUser);
+        self::assertStringContainsString('{roomTypeName}', $statusUser);
+        self::assertStringNotContainsString('{p1}', $statusUser);
+        self::assertStringNotContainsString('Projektraum', $statusUser);
+
+        // not room-type aware: just the recipient token, no {roomTypeName}
+        $salutation = $renderer->templateFor('MAIL_BODY_HELLO', 'de');
+        self::assertSame('Hallo {recipientName},', $salutation);
+    }
+
     public function testOverridePathSubstitutesNamedTokens(): void
     {
         self::bootKernel();

@@ -20,14 +20,13 @@ namespace App\Mail\Text;
  * may override, their modern translation key, the legacy MsgID their override is stored
  * under, and the placeholders each offers.
  *
- * This first cut covers the nine texts the room moderation editor exposes (the portal
- * editor additionally exposes inactivity / password / room-lifecycle texts -- those follow
- * the exact same structure and get added once their positional params are verified against
- * their senders).
+ * Covers the fifteen mail texts that are actually sent and have a modern default: the nine
+ * account/status texts (room moderation editor + AccountMail) and the six deprovisioning /
+ * inactivity texts (the AccountActivity and RoomActivity messages). The legacy editor also
+ * offered password and room-lifecycle texts, but nothing sends those any more (their only
+ * code reference is the cs_translator suffix table), so they are intentionally left out.
  *
- * The placeholder contracts below are taken verbatim from the (already migrated) sender
- * App\Utils\AccountMail: the salutation carries the recipient name, every status/account
- * body carries the user id + room title, and the goodbye carries the moderator + room title.
+ * The placeholder contracts are taken verbatim from the (already migrated) senders.
  */
 final class MailTextCatalog
 {
@@ -55,6 +54,20 @@ final class MailTextCatalog
         $this->register(new MailTextDefinition('mail.body.status_read_only', 'MAIL_BODY_USER_STATUS_USER_READ_ONLY', 'Change status: read only user', [$account, $room], roomTypeAware: true));
         $this->register(new MailTextDefinition('mail.body.make_contact_person', 'MAIL_BODY_USER_MAKE_CONTACT_PERSON', 'Make contact', [$account, $room], roomTypeAware: true));
         $this->register(new MailTextDefinition('mail.body.unmake_contact_person', 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', 'Remove contact', [$account, $room], roomTypeAware: true));
+
+        // deprovisioning / inactivity notifications: single texts (no room-type variants)
+        $auth = MailPlaceholder::AuthSource;
+        $days = MailPlaceholder::Days;
+        $daysInactive = MailPlaceholder::DaysInactive;
+        $portal = MailPlaceholder::PortalTitle;
+        $link = MailPlaceholder::Link;
+
+        $this->register(new MailTextDefinition('mail.inactivity_lock_next', 'EMAIL_INACTIVITY_LOCK_NEXT_BODY', 'Lock userid in X days', [$name, $auth, $days, $link, $portal], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_lock_now', 'EMAIL_INACTIVITY_LOCK_NOW_BODY', 'Userid was locked', [$name, $auth, $link, $portal], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_delete_next', 'EMAIL_INACTIVITY_DELETE_NEXT_BODY', 'Delete userid in X days', [$name, $auth, $days, $link, $portal], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_delete_now', 'EMAIL_INACTIVITY_DELETE_NOW_BODY', 'Userid was deleted', [$name, $auth, $link, $portal], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_room_lock_upcoming', 'EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY', 'Lock room after X days', [$room, $daysInactive, $days], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_room_delete_upcoming', 'EMAIL_INACTIVITY_ROOM_DELETE_UPCOMING_BODY', 'Delete room after X day', [$room, $daysInactive, $days], roomTypeAware: false));
     }
 
     /**
