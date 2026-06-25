@@ -105,6 +105,7 @@ services:
             - '../src/Form/Model/'
             - '../src/Kernel.php'
             - '../src/Mail/Messages/'
+            - '../src/Mail/Text/MailTextDefinition.php'
             - '../src/Message/'
             - '../src/Model/'
             - '../src/Proxy/'
