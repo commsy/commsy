@@ -805,7 +805,54 @@ class cs_environment
             $parameters['%'.($index + 1)] = $value;
         }
 
-        return $this->getSymfonyContainer()->get('translator')->trans($key, $parameters, 'legacy', $language);
+        return $this->getSymfonyContainer()->get('translator')->trans($key, $parameters, 'legacy', mb_strtolower($language, 'UTF-8'));
+    }
+
+    /**
+     * Format a MySQL datetime to the localized date (replaces cs_translator::getDateInLang):
+     * de "d.m.Y", en "m/d/Y".
+     */
+    public function formatDate(string $datetime): string
+    {
+        if ('' === trim($datetime)) {
+            return '';
+        }
+
+        $date = new \DateTimeImmutable($datetime);
+
+        return 'de' === $this->getSelectedLanguage() ? $date->format('d.m.Y') : $date->format('m/d/Y');
+    }
+
+    /**
+     * Format a time string to the localized time (replaces cs_translator::getTimeLanguage):
+     * de "H:i", en "h:i am/pm".
+     */
+    public function formatTime(string $timestring): string
+    {
+        if (2 === mb_substr_count($timestring, ':')) {
+            $hour = $timestring[0].$timestring[1];
+            $min = $timestring[3].$timestring[4];
+        } else {
+            $hour = $timestring[0].$timestring[1];
+            $min = $timestring[2].$timestring[3];
+        }
+
+        if ('en' === $this->getSelectedLanguage()) {
+            $ampm = ' am';
+            if ($hour > 12) {
+                $hour -= 12;
+                $ampm = ' pm';
+            } elseif (12 == $hour) {
+                $ampm = ' pm';
+            }
+            if (1 === mb_strlen((string) $hour)) {
+                $hour = '0'.$hour;
+            }
+
+            return $hour.':'.$min.$ampm;
+        }
+
+        return $hour.':'.$min;
     }
 
     public function getSelectedLanguage(): string
