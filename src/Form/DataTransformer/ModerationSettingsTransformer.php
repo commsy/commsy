@@ -13,6 +13,7 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Mail\Text\MailTextRenderer;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_room_item;
@@ -33,7 +34,8 @@ class ModerationSettingsTransformer extends AbstractTransformer
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly ParameterBagInterface $parameterBag,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly MailTextRenderer $mailTextRenderer,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->emailTexts = [
@@ -83,7 +85,6 @@ class ModerationSettingsTransformer extends AbstractTransformer
             }
 
             // Usage Infos
-            $translator = $this->legacyEnvironment->getTranslationObject();
             $array_info_text = [];
             $temp_array['rubric'] = $this->translator->trans('rubric.home', [], 'settings');
             $temp_array['key'] = 'home';
@@ -107,7 +108,7 @@ class ModerationSettingsTransformer extends AbstractTransformer
                     'TODO' => $this->translator->trans('rubric.todo', [], 'settings'),
                     'TOPIC' => $this->translator->trans('rubric.topic', [], 'settings'),
                     'USER' => $this->translator->trans('rubric.user', [], 'settings'),
-                    default => $translator->getMessage('COMMON_MESSAGETAG_ERROR cs_configuration_usageinfo_form(113) '),
+                    default => mb_strtoupper((string) $rubric, 'UTF-8'),
                 };
                 $temp_array['key'] = $rubric;
                 $temp_array['title'] = $roomItem->getUsageInfoHeaderForRubric($rubric);
@@ -135,7 +136,7 @@ class ModerationSettingsTransformer extends AbstractTransformer
             $emailDefaultValues = [];
             foreach (array_values($this->emailTexts) as $message_tag) {
                 foreach (['de', 'en'] as $language) {
-                    $emailDefaultValues[mb_strtolower(str_replace('CHOICE', 'BODY', (string) $message_tag)).'_'.$language] = $translator->getEmailMessageInLang($language, $message_tag);
+                    $emailDefaultValues[mb_strtolower(str_replace('CHOICE', 'BODY', (string) $message_tag)).'_'.$language] = $this->mailTextRenderer->templateFor($message_tag, $language);
                 }
             }
 
