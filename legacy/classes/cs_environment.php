@@ -785,6 +785,29 @@ class cs_environment
         return $this->instance['translation_object'];
     }
 
+    /**
+     * Translate a legacy message key via the Symfony translator (domain "legacy"), using the
+     * currently selected language. Bridge that lets legacy classes drop cs_translator: the
+     * positional arguments map to the %1..%n placeholders kept verbatim in the legacy catalog.
+     */
+    public function translate(string $key, string ...$params): string
+    {
+        return $this->translateInLang($this->getSelectedLanguage(), $key, ...$params);
+    }
+
+    /**
+     * Translate a legacy message key in an explicit language (replaces getMessageInLang()).
+     */
+    public function translateInLang(string $language, string $key, string ...$params): string
+    {
+        $parameters = [];
+        foreach ($params as $index => $value) {
+            $parameters['%'.($index + 1)] = $value;
+        }
+
+        return $this->getSymfonyContainer()->get('translator')->trans($key, $parameters, 'legacy', $language);
+    }
+
     public function getSelectedLanguage(): string
     {
         return $this->getUserLanguage();
