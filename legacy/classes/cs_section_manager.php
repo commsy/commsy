@@ -70,7 +70,7 @@ class cs_section_manager extends cs_manager
         parent::__construct($environment);
         $this->_db_table = CS_SECTION_TYPE;
 
-        $this->translator = $environment->getTranslationObject();
+        $this->translator = $environment;
     }
 
     /** reset limits

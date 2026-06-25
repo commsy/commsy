@@ -145,8 +145,8 @@ class cs_privateroom_item extends cs_room_item
         if ($this->_issetExtra('TEMPLATE_TITLE')) {
             $retour = $this->_getExtra('TEMPLATE_TITLE');
         } else {
-            $translator = $this->_environment->getTranslationObject();
-            $retour = $translator->getMessage('PRIVATE_ROOM_TITLE');
+            $translator = $this->_environment;
+            $retour = $translator->translate('PRIVATE_ROOM_TITLE');
             unset($translator);
             $owner = $this->getOwnerUserItem();
             $retour .= ' '.$owner->getFullname();
@@ -547,8 +547,8 @@ class cs_privateroom_item extends cs_room_item
         if ('PRIVATE_ROOM' == $title
             or 'PRIVATEROOM' == $title
         ) {
-            $translator = $this->_environment->getTranslationObject();
-            $retour = $translator->getMessage('COMMON_PRIVATEROOM');
+            $translator = $this->_environment;
+            $retour = $translator->translate('COMMON_PRIVATEROOM');
         } else {
             $retour = $title;
             if (stristr($retour, '%1')) {
@@ -559,8 +559,8 @@ class cs_privateroom_item extends cs_room_item
                 unset($user);
             } else {
                 // use the translated default title for the user's private room (instead of the title of its database entry)
-                $translator = $this->_environment->getTranslationObject();
-                $retour = $translator->getMessage('COMMON_PRIVATEROOM');
+                $translator = $this->_environment;
+                $retour = $translator->translate('COMMON_PRIVATEROOM');
             }
         }
 

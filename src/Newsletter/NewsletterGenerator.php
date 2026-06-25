@@ -105,13 +105,10 @@ class NewsletterGenerator
         $newsletterData = [];
         $roomsData = [];
 
-        $translator = $this->legacyEnvironment->getTranslationObject();
-
         $mailSequence = $privateRoom->getPrivateRoomNewsletterActivity();
         $newsletterData['mailSequence'] = $mailSequence;
 
         $roomList = $this->getRoomListForUserWithPrivatRoom($privateRoom);
-        $translator->setRubricTranslationArray($privateRoom->getRubricTranslationArray());
 
         // rooms
         foreach ($roomList as $roomItem) {

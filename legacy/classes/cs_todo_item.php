@@ -59,9 +59,9 @@ class cs_todo_item extends cs_item
     public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getTranslationObject();
+            $translator = $this->_environment;
 
-            return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+            return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
         } else {
             return $this->_getValue('title');
         }
@@ -93,9 +93,9 @@ class cs_todo_item extends cs_item
     public function getDescription()
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getTranslationObject();
+            $translator = $this->_environment;
 
-            return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+            return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {
             return $this->_getValue('description');
         }
@@ -145,20 +145,20 @@ class cs_todo_item extends cs_item
      */
     public function getStatus(): int|string
     {
-        $translator = $this->_environment->getTranslationObject();
+        $translator = $this->_environment;
         $value = $this->_getValue('status');
         if ('2' == $value) {
-            return $translator->getMessage('TODO_IN_POGRESS');
+            return $translator->translate('TODO_IN_POGRESS');
         } elseif ('3' == $value) {
-            return $translator->getMessage('TODO_DONE');
+            return $translator->translate('TODO_DONE');
         } else {
-            // return $translator->getMessage('TODO_NOT_STARTED');
+            // return $translator->translate('TODO_NOT_STARTED');
             $context_item = $this->_environment->getCurrentContextItem();
             $extra_status_array = $context_item->getExtraToDoStatusArray();
             if (isset($extra_status_array[$value])) {
                 return $extra_status_array[$value];
             } else {
-                return $translator->getMessage('TODO_NOT_STARTED');
+                return $translator->translate('TODO_NOT_STARTED');
             }
         }
     }
@@ -208,7 +208,7 @@ class cs_todo_item extends cs_item
         $file_list = new cs_list();
 
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getTranslationObject();
+            $translator = $this->_environment;
 
             return $file_list;
         } else {

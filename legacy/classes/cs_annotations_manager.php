@@ -30,7 +30,7 @@ class cs_annotations_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'annotations';
-        $this->translator = $environment->getTranslationObject();
+        $this->translator = $environment;
     }
 
     /**

@@ -61,7 +61,7 @@ class cs_discussion_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'discussions';
-        $this->_translator = $environment->getTranslationObject();
+        $this->_translator = $environment;
     }
 
     /** reset limits

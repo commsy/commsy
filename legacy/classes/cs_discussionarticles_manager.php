@@ -70,7 +70,7 @@ class cs_discussionarticles_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'discussionarticles';
-        $this->_translator = $environment->getTranslationObject();
+        $this->_translator = $environment;
     }
 
     /** reset limits

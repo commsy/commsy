@@ -13,7 +13,7 @@
 
 namespace App\Legacy;
 
-use cs_translator;
+use cs_environment;
 
 /**
  * Locale-aware date parsing/naming used by the legacy date rendering.
@@ -21,7 +21,7 @@ use cs_translator;
  * Interim Legacy->App bridge: holds the bodies of the former global functions
  * convertDateFromInput()/getShortMonthNameToInt()/getDayNameFromInt() from
  * legacy/functions/date_functions.php so that file can be removed. These need
- * localised month/weekday names, so the legacy cs_translator is passed in
+ * localised month/weekday names, so the legacy cs_environment is passed in
  * (instead of the old global $environment) — which also makes them testable.
  */
 final class LegacyDateText
@@ -32,7 +32,7 @@ final class LegacyDateText
      *
      * @return array<string, mixed>
      */
-    public static function convertDate($date, $language, cs_translator $translator): array
+    public static function convertDate($date, $language, cs_environment $environment): array
     {
         $year = null;
         $month = null;
@@ -91,7 +91,7 @@ final class LegacyDateText
                 } else {
                     $year = date('Y');
                 }
-                $month = self::monthNameToInt($matches[2], $translator);
+                $month = self::monthNameToInt($matches[2], $environment);
                 $day = $matches[1];
             }
         }
@@ -132,33 +132,33 @@ final class LegacyDateText
      * Maps a localised (short or long) month name to its two-digit number,
      * or returns the input unchanged. Migrated from getShortMonthNameToInt().
      */
-    public static function monthNameToInt($month, cs_translator $translator): string
+    public static function monthNameToInt($month, cs_environment $environment): string
     {
         return match ($month) {
-            $translator->getMessage('COMMON_DATE_JANUARY_SHORT') => '01',
-            $translator->getMessage('COMMON_DATE_FEBRUARY_SHORT') => '02',
-            $translator->getMessage('COMMON_DATE_MARCH_SHORT') => '03',
-            $translator->getMessage('COMMON_DATE_APRIL_SHORT') => '04',
-            $translator->getMessage('COMMON_DATE_MAY_SHORT') => '05',
-            $translator->getMessage('COMMON_DATE_JUNE_SHORT') => '06',
-            $translator->getMessage('COMMON_DATE_JULY_SHORT') => '07',
-            $translator->getMessage('COMMON_DATE_AUGUST_SHORT') => '08',
-            $translator->getMessage('COMMON_DATE_SEPTEMBER_SHORT') => '09',
-            $translator->getMessage('COMMON_DATE_OCTOBER_SHORT') => '10',
-            $translator->getMessage('COMMON_DATE_NOVEMBER_SHORT') => '11',
-            $translator->getMessage('COMMON_DATE_DECEMBER_SHORT') => '12',
-            $translator->getMessage('COMMON_DATE_JANUARY_LONG') => '01',
-            $translator->getMessage('COMMON_DATE_FEBRUARY_LONG') => '02',
-            $translator->getMessage('COMMON_DATE_MARCH_LONG') => '03',
-            $translator->getMessage('COMMON_DATE_APRIL_LONG') => '04',
-            $translator->getMessage('COMMON_DATE_MAY_LONG') => '05',
-            $translator->getMessage('COMMON_DATE_JUNE_LONG') => '06',
-            $translator->getMessage('COMMON_DATE_JULY_LONG') => '07',
-            $translator->getMessage('COMMON_DATE_AUGUST_LONG') => '08',
-            $translator->getMessage('COMMON_DATE_SEPTEMBER_LONG') => '09',
-            $translator->getMessage('COMMON_DATE_OCTOBER_LONG') => '10',
-            $translator->getMessage('COMMON_DATE_NOVEMBER_LONG') => '11',
-            $translator->getMessage('COMMON_DATE_DECEMBER_LONG') => '12',
+            $environment->translate('COMMON_DATE_JANUARY_SHORT') => '01',
+            $environment->translate('COMMON_DATE_FEBRUARY_SHORT') => '02',
+            $environment->translate('COMMON_DATE_MARCH_SHORT') => '03',
+            $environment->translate('COMMON_DATE_APRIL_SHORT') => '04',
+            $environment->translate('COMMON_DATE_MAY_SHORT') => '05',
+            $environment->translate('COMMON_DATE_JUNE_SHORT') => '06',
+            $environment->translate('COMMON_DATE_JULY_SHORT') => '07',
+            $environment->translate('COMMON_DATE_AUGUST_SHORT') => '08',
+            $environment->translate('COMMON_DATE_SEPTEMBER_SHORT') => '09',
+            $environment->translate('COMMON_DATE_OCTOBER_SHORT') => '10',
+            $environment->translate('COMMON_DATE_NOVEMBER_SHORT') => '11',
+            $environment->translate('COMMON_DATE_DECEMBER_SHORT') => '12',
+            $environment->translate('COMMON_DATE_JANUARY_LONG') => '01',
+            $environment->translate('COMMON_DATE_FEBRUARY_LONG') => '02',
+            $environment->translate('COMMON_DATE_MARCH_LONG') => '03',
+            $environment->translate('COMMON_DATE_APRIL_LONG') => '04',
+            $environment->translate('COMMON_DATE_MAY_LONG') => '05',
+            $environment->translate('COMMON_DATE_JUNE_LONG') => '06',
+            $environment->translate('COMMON_DATE_JULY_LONG') => '07',
+            $environment->translate('COMMON_DATE_AUGUST_LONG') => '08',
+            $environment->translate('COMMON_DATE_SEPTEMBER_LONG') => '09',
+            $environment->translate('COMMON_DATE_OCTOBER_LONG') => '10',
+            $environment->translate('COMMON_DATE_NOVEMBER_LONG') => '11',
+            $environment->translate('COMMON_DATE_DECEMBER_LONG') => '12',
             default => $month,
         };
     }
@@ -167,16 +167,16 @@ final class LegacyDateText
      * Maps a weekday number ("0"=Sunday … "6"=Saturday) to its localised name,
      * or "" for an unknown value. Migrated from getDayNameFromInt().
      */
-    public static function weekdayName($day, cs_translator $translator): string
+    public static function weekdayName($day, cs_environment $environment): string
     {
         return match ($day) {
-            '0' => $translator->getMessage('COMMON_DATE_SUNDAY'),
-            '1' => $translator->getMessage('COMMON_DATE_MONDAY'),
-            '2' => $translator->getMessage('COMMON_DATE_TUESDAY'),
-            '3' => $translator->getMessage('COMMON_DATE_WEDNESDAY'),
-            '4' => $translator->getMessage('COMMON_DATE_THURSDAY'),
-            '5' => $translator->getMessage('COMMON_DATE_FRIDAY'),
-            '6' => $translator->getMessage('COMMON_DATE_SATURDAY'),
+            '0' => $environment->translate('COMMON_DATE_SUNDAY'),
+            '1' => $environment->translate('COMMON_DATE_MONDAY'),
+            '2' => $environment->translate('COMMON_DATE_TUESDAY'),
+            '3' => $environment->translate('COMMON_DATE_WEDNESDAY'),
+            '4' => $environment->translate('COMMON_DATE_THURSDAY'),
+            '5' => $environment->translate('COMMON_DATE_FRIDAY'),
+            '6' => $environment->translate('COMMON_DATE_SATURDAY'),
             default => '',
         };
     }

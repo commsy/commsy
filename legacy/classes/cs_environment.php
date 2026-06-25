@@ -349,8 +349,8 @@ class cs_environment
                 }
             }
         }
-        $translator = $this->getTranslationObject();
-        if (isset($retour['search']) and ($retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_ROOM') || $retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_RUBRIC'))) {
+        $translator = $this;
+        if (isset($retour['search']) and ($retour['search'] == $translator->translate('COMMON_SEARCH_IN_ROOM') || $retour['search'] == $translator->translate('COMMON_SEARCH_IN_RUBRIC'))) {
             unset($retour['search']);
         }
         array_walk_recursive($retour, $this->cleanBadCode(...));
@@ -855,9 +855,20 @@ class cs_environment
         return $hour.':'.$min;
     }
 
+    private ?string $selectedLanguageOverride = null;
+
+    /**
+     * Override the selected language (e.g. while building a mail for a specific recipient).
+     * Pass null to fall back to the request locale again.
+     */
+    public function setSelectedLanguage(?string $language): void
+    {
+        $this->selectedLanguageOverride = $language;
+    }
+
     public function getSelectedLanguage(): string
     {
-        return $this->getUserLanguage();
+        return $this->selectedLanguageOverride ?? $this->getUserLanguage();
     }
 
     public function getUserLanguage(): string

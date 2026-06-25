@@ -129,15 +129,16 @@ readonly class MessageBuilder
             $subject = $this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail');
             $email->subject($subject);
 
-            // Body: set legacy translator to the same locale so getParameters() produces translated content
-            $legacyTranslator = $this->legacyEnvironment->getEnvironment()->getTranslationObject();
-            $previousLanguage = $legacyTranslator->getSelectedLanguage();
-            $legacyTranslator->setSelectedLanguage($effectiveLocale);
+            // Body: set the legacy environment locale so getParameters() (which reads
+            // getSelectedLanguage()) renders the recipient's language
+            $environment = $this->legacyEnvironment->getEnvironment();
+            $previousLanguage = $environment->getSelectedLanguage();
+            $environment->setSelectedLanguage($effectiveLocale);
             try {
                 $email->htmlTemplate($message->getTemplateName());
                 $email->context($message->getParameters());
             } finally {
-                $legacyTranslator->setSelectedLanguage($previousLanguage);
+                $environment->setSelectedLanguage($previousLanguage);
             }
         });
 
