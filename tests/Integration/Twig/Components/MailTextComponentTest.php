@@ -85,5 +85,11 @@ final class MailTextComponentTest extends KernelTestCase
         // live preview rendered with sample values: {accountId} -> sample, {roomTypeName} -> Projektraum
         self::assertStringContainsString('abeispiel', $rendered);
         self::assertStringContainsString('Projektraum', $rendered);
+
+        // the insert action must use the same (dash-normalised) identifier as the controller,
+        // otherwise Stimulus never fires it and clicking a badge inserts nothing
+        self::assertStringContainsString('data-controller="mailtexts-editor', $rendered);
+        self::assertStringContainsString('data-action="mailtexts-editor#insert"', $rendered);
+        self::assertStringContainsString('data-mailtexts-editor-token-param="{accountId}"', $rendered);
     }
 }
