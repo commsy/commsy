@@ -99,14 +99,6 @@ class ItemVoter extends Voter
             $itemId = $subject;
             if ($itemId) {
                 $item = $this->itemService->getTypedItem($itemId);
-
-                if (!$item) {
-                    $portal = $this->entityManager->getRepository(Portal::class)->find($itemId);
-
-                    if ($portal) {
-                        $item = new PortalProxy($portal, $this->legacyEnvironment);
-                    }
-                }
             }
         }
 
