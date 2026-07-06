@@ -15,8 +15,20 @@ final class MailTextCatalogTest extends TestCase
         foreach (MailPlaceholder::cases() as $placeholder) {
             self::assertMatchesRegularExpression('/^[a-zA-Z][a-zA-Z0-9]*$/', $placeholder->value, "ICU named args must be plain identifiers: {$placeholder->value}");
             self::assertSame('{'.$placeholder->value.'}', $placeholder->token());
-            self::assertNotSame('', $placeholder->label('de'));
-            self::assertNotSame('', $placeholder->label('en'));
+            // label/sample are translation keys (text lives in translations/portal.{de,en}.xlf)
+            self::assertSame('mail_text.placeholder.'.$placeholder->value, $placeholder->labelKey());
+            self::assertSame('mail_text.sample.'.$placeholder->value, $placeholder->sampleKey());
+        }
+    }
+
+    public function testEveryPlaceholderKeyExistsInThePortalTranslations(): void
+    {
+        $xlf = file_get_contents(dirname(__DIR__, 4).'/translations/portal.de.xlf');
+        self::assertNotFalse($xlf);
+
+        foreach (MailPlaceholder::cases() as $placeholder) {
+            self::assertStringContainsString('<source>'.$placeholder->labelKey().'</source>', $xlf, "placeholder label has no portal translation: {$placeholder->labelKey()}");
+            self::assertStringContainsString('<source>'.$placeholder->sampleKey().'</source>', $xlf, "placeholder sample has no portal translation: {$placeholder->sampleKey()}");
         }
     }
 
@@ -28,7 +40,6 @@ final class MailTextCatalogTest extends TestCase
         foreach ($catalog->all() as $definition) {
             self::assertNotSame('', $definition->key);
             self::assertNotSame('', $definition->legacyMessageId);
-            self::assertNotSame('', $definition->label);
             self::assertNotEmpty($definition->positionalParams);
 
             self::assertSame($definition, $catalog->byKey($definition->key));

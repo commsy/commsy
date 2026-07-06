@@ -43,17 +43,17 @@ final class MailTextCatalog
         $room = MailPlaceholder::RoomTitle;
         $moderator = MailPlaceholder::ModeratorName;
 
-        $this->register(new MailTextDefinition('mail.salutation', 'MAIL_BODY_HELLO', 'Salutation', [$name], roomTypeAware: false));
-        $this->register(new MailTextDefinition('mail.goodbye', 'MAIL_BODY_CIAO', 'Goodbye', [$moderator, $room], roomTypeAware: true));
+        $this->register(new MailTextDefinition('mail.salutation', 'MAIL_BODY_HELLO', [$name], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.goodbye', 'MAIL_BODY_CIAO', [$moderator, $room], roomTypeAware: true));
 
         // status / account bodies: all carry (%1 = user id, %2 = room title) and vary by room type
-        $this->register(new MailTextDefinition('mail.body.account_delete', 'MAIL_BODY_USER_ACCOUNT_DELETE', 'Delete user id(s)', [$account, $room], roomTypeAware: true));
-        $this->register(new MailTextDefinition('mail.body.account_lock', 'MAIL_BODY_USER_ACCOUNT_LOCK', 'Lock user id(s)', [$account, $room], roomTypeAware: true));
-        $this->register(new MailTextDefinition('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER', 'Activate user id(s)', [$account, $room], roomTypeAware: true));
-        $this->register(new MailTextDefinition('mail.body.status_moderator', 'MAIL_BODY_USER_STATUS_MODERATOR', 'Status moderator', [$account, $room], roomTypeAware: true));
-        $this->register(new MailTextDefinition('mail.body.status_read_only', 'MAIL_BODY_USER_STATUS_USER_READ_ONLY', 'Change status: read only user', [$account, $room], roomTypeAware: true));
-        $this->register(new MailTextDefinition('mail.body.make_contact_person', 'MAIL_BODY_USER_MAKE_CONTACT_PERSON', 'Make contact', [$account, $room], roomTypeAware: true));
-        $this->register(new MailTextDefinition('mail.body.unmake_contact_person', 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', 'Remove contact', [$account, $room], roomTypeAware: true));
+        $this->register(new MailTextDefinition('mail.body.account_delete', 'MAIL_BODY_USER_ACCOUNT_DELETE', [$account, $room], roomTypeAware: true));
+        $this->register(new MailTextDefinition('mail.body.account_lock', 'MAIL_BODY_USER_ACCOUNT_LOCK', [$account, $room], roomTypeAware: true));
+        $this->register(new MailTextDefinition('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER', [$account, $room], roomTypeAware: true));
+        $this->register(new MailTextDefinition('mail.body.status_moderator', 'MAIL_BODY_USER_STATUS_MODERATOR', [$account, $room], roomTypeAware: true));
+        $this->register(new MailTextDefinition('mail.body.status_read_only', 'MAIL_BODY_USER_STATUS_USER_READ_ONLY', [$account, $room], roomTypeAware: true));
+        $this->register(new MailTextDefinition('mail.body.make_contact_person', 'MAIL_BODY_USER_MAKE_CONTACT_PERSON', [$account, $room], roomTypeAware: true));
+        $this->register(new MailTextDefinition('mail.body.unmake_contact_person', 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', [$account, $room], roomTypeAware: true));
 
         // deprovisioning / inactivity notifications: single texts (no room-type variants)
         $auth = MailPlaceholder::AuthSource;
@@ -62,12 +62,12 @@ final class MailTextCatalog
         $portal = MailPlaceholder::PortalTitle;
         $link = MailPlaceholder::Link;
 
-        $this->register(new MailTextDefinition('mail.inactivity_lock_next', 'EMAIL_INACTIVITY_LOCK_NEXT_BODY', 'Lock userid in X days', [$name, $auth, $days, $link, $portal], roomTypeAware: false));
-        $this->register(new MailTextDefinition('mail.inactivity_lock_now', 'EMAIL_INACTIVITY_LOCK_NOW_BODY', 'Userid was locked', [$name, $auth, $link, $portal], roomTypeAware: false));
-        $this->register(new MailTextDefinition('mail.inactivity_delete_next', 'EMAIL_INACTIVITY_DELETE_NEXT_BODY', 'Delete userid in X days', [$name, $auth, $days, $link, $portal], roomTypeAware: false));
-        $this->register(new MailTextDefinition('mail.inactivity_delete_now', 'EMAIL_INACTIVITY_DELETE_NOW_BODY', 'Userid was deleted', [$name, $auth, $link, $portal], roomTypeAware: false));
-        $this->register(new MailTextDefinition('mail.inactivity_room_lock_upcoming', 'EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY', 'Lock room after X days', [$room, $daysInactive, $days], roomTypeAware: false));
-        $this->register(new MailTextDefinition('mail.inactivity_room_delete_upcoming', 'EMAIL_INACTIVITY_ROOM_DELETE_UPCOMING_BODY', 'Delete room after X day', [$room, $daysInactive, $days], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_lock_next', 'EMAIL_INACTIVITY_LOCK_NEXT_BODY', [$name, $auth, $days, $link, $portal], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_lock_now', 'EMAIL_INACTIVITY_LOCK_NOW_BODY', [$name, $auth, $link, $portal], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_delete_next', 'EMAIL_INACTIVITY_DELETE_NEXT_BODY', [$name, $auth, $days, $link, $portal], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_delete_now', 'EMAIL_INACTIVITY_DELETE_NOW_BODY', [$name, $auth, $link, $portal], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_room_lock_upcoming', 'EMAIL_INACTIVITY_ROOM_LOCK_UPCOMING_BODY', [$room, $daysInactive, $days], roomTypeAware: false));
+        $this->register(new MailTextDefinition('mail.inactivity_room_delete_upcoming', 'EMAIL_INACTIVITY_ROOM_DELETE_UPCOMING_BODY', [$room, $daysInactive, $days], roomTypeAware: false));
     }
 
     /**

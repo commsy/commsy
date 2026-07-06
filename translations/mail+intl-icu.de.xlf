@@ -782,6 +782,19 @@ grouproom {Ihr Status in dem CommSy-Gruppenraum "{p2}" hat sich geändert: Sie s
 other {Ihr Status im CommSy-Portal "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für das Portal mehr.}
 }</target>
             </trans-unit>
+            <!-- room type nouns for the {roomTypeName} placeholder (overridable per context) -->
+            <trans-unit id="mail_room_type_project">
+                <source>mail.room_type.project</source>
+                <target>Projektraum</target>
+            </trans-unit>
+            <trans-unit id="mail_room_type_community">
+                <source>mail.room_type.community</source>
+                <target>Gemeinschaftsraum</target>
+            </trans-unit>
+            <trans-unit id="mail_room_type_grouproom">
+                <source>mail.room_type.grouproom</source>
+                <target>Gruppenraum</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

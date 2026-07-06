@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace App\Mail\Text;
 
+use Symfony\Component\DependencyInjection\Attribute\Exclude;
+
 /**
  * Contract of a single customizable mail text: its modern translation key, the legacy
  * MsgID its override is still stored under, and which placeholders it offers.
@@ -27,19 +29,18 @@ namespace App\Mail\Text;
  *    room-type aware text it additionally offers {@see MailPlaceholder::RoomTypeName},
  *    which legacy used to bake into the text variants (_PR/_GR/_GP) but is now a token.
  */
+#[Exclude]
 final readonly class MailTextDefinition
 {
     /**
      * @param string                $key             modern translation key in the "mail" domain (e.g. "mail.body.account_delete")
      * @param string                $legacyMessageId legacy MsgID the override is stored under (e.g. "MAIL_BODY_USER_ACCOUNT_DELETE")
-     * @param string                $label           admin-facing name of the mail text (localized via the form translation domain)
      * @param list<MailPlaceholder> $positionalParams legacy positional params, index 0 = %1
      * @param bool                  $roomTypeAware   whether the default text varies by room type (ICU room_type select)
      */
     public function __construct(
         public string $key,
         public string $legacyMessageId,
-        public string $label,
         public array $positionalParams,
         public bool $roomTypeAware,
     ) {

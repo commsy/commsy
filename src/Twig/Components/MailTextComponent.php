@@ -130,7 +130,7 @@ final class MailTextComponent extends AbstractController
         $locale = $this->translator->getLocale();
         $placeholders = [];
         foreach ($definition->availablePlaceholders() as $placeholder) {
-            $placeholders[] = ['token' => $placeholder->token(), 'label' => $placeholder->label($locale)];
+            $placeholders[] = ['token' => $placeholder->token(), 'label' => $this->translator->trans($placeholder->labelKey(), [], 'portal', $locale)];
         }
 
         return $placeholders;
@@ -152,7 +152,7 @@ final class MailTextComponent extends AbstractController
             return '';
         }
 
-        $sampleValues = array_map(static fn ($placeholder) => $placeholder->sample($lang), $definition->positionalParams);
+        $sampleValues = array_map(fn ($placeholder) => $this->translator->trans($placeholder->sampleKey(), [], 'portal', $lang), $definition->positionalParams);
 
         return $this->renderer->render($definition->key, $selected, 'project', $lang, $sampleValues, [$selected => [$lang => $content]]);
     }

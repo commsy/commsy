@@ -1591,6 +1591,88 @@
                 <source>mail_text.preview</source>
                 <target>Vorschau</target>
             </trans-unit>
+            <!-- mail text placeholders: admin-facing labels for the editor's insert menu -->
+            <trans-unit id="mail_text.placeholder.recipientName">
+                <source>mail_text.placeholder.recipientName</source>
+                <target>Empfänger:in</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.accountId">
+                <source>mail_text.placeholder.accountId</source>
+                <target>Kennung</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.roomTitle">
+                <source>mail_text.placeholder.roomTitle</source>
+                <target>Raumname</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.roomTypeName">
+                <source>mail_text.placeholder.roomTypeName</source>
+                <target>Raumart</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.moderatorName">
+                <source>mail_text.placeholder.moderatorName</source>
+                <target>Moderation</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.authSource">
+                <source>mail_text.placeholder.authSource</source>
+                <target>Anmeldequelle</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.days">
+                <source>mail_text.placeholder.days</source>
+                <target>Anzahl Tage</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.daysInactive">
+                <source>mail_text.placeholder.daysInactive</source>
+                <target>Tage inaktiv</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.portalTitle">
+                <source>mail_text.placeholder.portalTitle</source>
+                <target>Portal</target>
+            </trans-unit>
+            <trans-unit id="mail_text.placeholder.link">
+                <source>mail_text.placeholder.link</source>
+                <target>Link</target>
+            </trans-unit>
+            <!-- mail text placeholders: example values for the editor's live preview -->
+            <trans-unit id="mail_text.sample.recipientName">
+                <source>mail_text.sample.recipientName</source>
+                <target>Anna Beispiel</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.accountId">
+                <source>mail_text.sample.accountId</source>
+                <target>abeispiel</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.roomTitle">
+                <source>mail_text.sample.roomTitle</source>
+                <target>Mein Kurs</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.roomTypeName">
+                <source>mail_text.sample.roomTypeName</source>
+                <target>Projektraum</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.moderatorName">
+                <source>mail_text.sample.moderatorName</source>
+                <target>M. Mustermann</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.authSource">
+                <source>mail_text.sample.authSource</source>
+                <target>CommSy</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.days">
+                <source>mail_text.sample.days</source>
+                <target>14</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.daysInactive">
+                <source>mail_text.sample.daysInactive</source>
+                <target>90</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.portalTitle">
+                <source>mail_text.sample.portalTitle</source>
+                <target>CommSy Uni</target>
+            </trans-unit>
+            <trans-unit id="mail_text.sample.link">
+                <source>mail_text.sample.link</source>
+                <target>https://commsy.example/portal/1</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

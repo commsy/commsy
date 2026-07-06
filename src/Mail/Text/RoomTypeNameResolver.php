@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace App\Mail\Text;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 /**
  * Resolves the {@see MailPlaceholder::RoomTypeName} token to the room type's noun, so a
  * mail-text author writes one text and never picks a room type.
@@ -23,21 +25,25 @@ namespace App\Mail\Text;
  * community nouns may be renamed per context (the context item's RUBRIC_TRANSLATION_ARRAY,
  * exposed via getRubricTranslationArray()), otherwise the standard noun is used. The legacy
  * group-room texts hard-coded "Gruppenraum" (no rubric entry exists for it), which the
- * default below reproduces.
+ * standard noun reproduces.
  *
- * Only the nominative singular is provided: the three standard nouns are all masculine, so
- * the surrounding article ("den"/"dem") is identical across them and stays literal text in
- * the author's hands. German nouns are capitalised; the English base form is lower case and
- * meant for mid-sentence use.
+ * The standard nouns are not inlined here: each room type maps to a "mail" domain key
+ * (translations/mail+intl-icu.{de,en}.xlf). Only the nominative singular is provided: the
+ * three standard nouns are all masculine, so the surrounding article ("den"/"dem") is
+ * identical across them and stays literal text in the author's hands.
  */
-final class RoomTypeNameResolver
+final readonly class RoomTypeNameResolver
 {
-    /** @var array<string, array<string, string>> roomType => locale => standard nominative noun */
-    private const DEFAULTS = [
-        'project' => ['de' => 'Projektraum', 'en' => 'project workspace'],
-        'community' => ['de' => 'Gemeinschaftsraum', 'en' => 'community workspace'],
-        'grouproom' => ['de' => 'Gruppenraum', 'en' => 'group workspace'],
+    /** @var array<string, string> roomType => "mail" domain translation key of the standard nominative noun */
+    private const KEYS = [
+        'project' => 'mail.room_type.project',
+        'community' => 'mail.room_type.community',
+        'grouproom' => 'mail.room_type.grouproom',
     ];
+
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
 
     /**
      * @param array<string, mixed> $rubricTranslationArray the context item's getRubricTranslationArray()
@@ -53,6 +59,8 @@ final class RoomTypeNameResolver
             return $override;
         }
 
-        return self::DEFAULTS[$type][$lang] ?? '';
+        $key = self::KEYS[$type] ?? null;
+
+        return null === $key ? '' : $this->translator->trans($key, [], 'mail', $lang);
     }
 }

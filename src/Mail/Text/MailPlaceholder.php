@@ -62,37 +62,21 @@ enum MailPlaceholder: string
         return '{'.$this->value.'}';
     }
 
-    /** Admin-facing label for the editor's insert menu. */
-    public function label(string $locale): string
+    /**
+     * Translation key (portal domain) for the admin-facing label shown in the editor's insert
+     * menu. The text itself lives in translations/portal.{de,en}.xlf -- never inline here.
+     */
+    public function labelKey(): string
     {
-        return match ($this) {
-            self::RecipientName => 'de' === $locale ? 'Empfänger:in' : 'Recipient',
-            self::AccountId => 'de' === $locale ? 'Kennung' : 'User ID',
-            self::RoomTitle => 'de' === $locale ? 'Raumname' : 'Workspace name',
-            self::RoomTypeName => 'de' === $locale ? 'Raumart' : 'Workspace type',
-            self::ModeratorName => 'de' === $locale ? 'Moderation' : 'Moderator',
-            self::AuthSource => 'de' === $locale ? 'Anmeldequelle' : 'Login source',
-            self::Days => 'de' === $locale ? 'Anzahl Tage' : 'Days',
-            self::DaysInactive => 'de' === $locale ? 'Tage inaktiv' : 'Days inactive',
-            self::PortalTitle => 'Portal',
-            self::Link => 'Link',
-        };
+        return 'mail_text.placeholder.'.$this->value;
     }
 
-    /** Example value used for the editor's live preview. */
-    public function sample(string $locale): string
+    /**
+     * Translation key (portal domain) for the example value used in the editor's live preview.
+     * The text itself lives in translations/portal.{de,en}.xlf -- never inline here.
+     */
+    public function sampleKey(): string
     {
-        return match ($this) {
-            self::RecipientName => 'de' === $locale ? 'Anna Beispiel' : 'Anna Example',
-            self::AccountId => 'abeispiel',
-            self::RoomTitle => 'de' === $locale ? 'Mein Kurs' : 'My Course',
-            self::RoomTypeName => 'de' === $locale ? 'Projektraum' : 'project workspace',
-            self::ModeratorName => 'M. Mustermann',
-            self::AuthSource => 'CommSy',
-            self::Days => '14',
-            self::DaysInactive => '90',
-            self::PortalTitle => 'de' === $locale ? 'CommSy Uni' : 'CommSy University',
-            self::Link => 'https://commsy.example/portal/1',
-        };
+        return 'mail_text.sample.'.$this->value;
     }
 }
