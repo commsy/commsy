@@ -22,6 +22,7 @@ use App\Utils\AccountMail;
 use cs_environment;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Tests\Factory\RoomFactory;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -66,9 +67,12 @@ final class AccountMailCurrentContextCharacterizationTest extends KernelTestCase
             ->getEnvironment();
         $this->account = AccountStory::get('account');
 
-        // Pin a known language so the rendered mail texts are deterministic
-        // regardless of the (test-order dependent) request locale.
-        $this->legacyEnvironment->setSelectedLanguage('de');
+        // Pin a known language so the rendered mail texts are deterministic regardless of
+        // the (test-order dependent) request locale. getSelectedLanguage() reads the request
+        // locale, so pin it through the same mechanism the application uses.
+        $request = new Request();
+        $request->setLocale('de');
+        self::getContainer()->get('request_stack')->push($request);
     }
 
     public function testSubjectIncorporatesCurrentContextRoomTitle(): void

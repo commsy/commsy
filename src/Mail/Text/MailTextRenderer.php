@@ -45,8 +45,12 @@ final readonly class MailTextRenderer
      * @param list<string>                         $values
      * @param array<string, array<string, string>> $overrides
      * @param array<string, mixed>                 $rubricConfig
+     *
+     * A null $locale falls back to the translator's current locale (the request locale, or the
+     * recipient locale a LocaleSwitcher has set around mail building) -- callers only pass an
+     * explicit locale when it differs from the active one (e.g. a specific recipient).
      */
-    public function render(string $key, string $legacyMessageId, string $roomType, string $locale, array $values = [], array $overrides = [], array $rubricConfig = []): string
+    public function render(string $key, string $legacyMessageId, string $roomType, ?string $locale = null, array $values = [], array $overrides = [], array $rubricConfig = []): string
     {
         return $this->normalizeParagraphs($this->renderRaw($key, $legacyMessageId, $roomType, $locale, $values, $overrides, $rubricConfig));
     }
@@ -56,8 +60,10 @@ final readonly class MailTextRenderer
      * @param array<string, array<string, string>> $overrides
      * @param array<string, mixed>                 $rubricConfig
      */
-    public function renderRaw(string $key, string $legacyMessageId, string $roomType, string $locale, array $values = [], array $overrides = [], array $rubricConfig = []): string
+    public function renderRaw(string $key, string $legacyMessageId, string $roomType, ?string $locale = null, array $values = [], array $overrides = [], array $rubricConfig = []): string
     {
+        $locale ??= $this->translator->getLocale();
+
         $override = $overrides[$legacyMessageId][mb_strtoupper($locale, 'UTF-8')]
             ?? $overrides[$legacyMessageId][mb_strtolower($locale, 'UTF-8')]
             ?? null;

@@ -349,7 +349,7 @@ class cs_environment
                 }
             }
         }
-        $translator = $this;
+        $translator = $this->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         if (isset($retour['search']) and ($retour['search'] == $translator->translate('COMMON_SEARCH_IN_ROOM') || $retour['search'] == $translator->translate('COMMON_SEARCH_IN_RUBRIC'))) {
             unset($retour['search']);
         }
@@ -622,13 +622,9 @@ class cs_environment
         }
     }
 
-    public function unsetAllInstancesExceptTranslator()
+    public function unsetAllInstances(): void
     {
-        foreach ($this->instance as $instance => $value) {
-            if ('translation_object' !== $instance) {
-                unset($this->instance[$instance]);
-            }
-        }
+        $this->instance = [];
     }
 
     /**
@@ -752,90 +748,9 @@ class cs_environment
         return $this->getCurrentContextItem()->isServer();
     }
 
-    /**
-     * Translate a legacy message key via the Symfony translator (domain "legacy"), using the
-     * currently selected language. Bridge that lets legacy classes drop cs_translator: the
-     * positional arguments map to the %1..%n placeholders kept verbatim in the legacy catalog.
-     */
-    public function translate(string $key, string ...$params): string
-    {
-        return $this->translateInLang($this->getSelectedLanguage(), $key, ...$params);
-    }
-
-    /**
-     * Translate a legacy message key in an explicit language (replaces getMessageInLang()).
-     */
-    public function translateInLang(string $language, string $key, string ...$params): string
-    {
-        $parameters = [];
-        foreach ($params as $index => $value) {
-            $parameters['%'.($index + 1)] = $value;
-        }
-
-        return $this->getSymfonyContainer()->get('translator')->trans($key, $parameters, 'legacy', mb_strtolower($language, 'UTF-8'));
-    }
-
-    /**
-     * Format a MySQL datetime to the localized date (replaces cs_translator::getDateInLang):
-     * de "d.m.Y", en "m/d/Y".
-     */
-    public function formatDate(string $datetime): string
-    {
-        if ('' === trim($datetime)) {
-            return '';
-        }
-
-        $date = new \DateTimeImmutable($datetime);
-
-        return 'de' === $this->getSelectedLanguage() ? $date->format('d.m.Y') : $date->format('m/d/Y');
-    }
-
-    /**
-     * Format a time string to the localized time (replaces cs_translator::getTimeLanguage):
-     * de "H:i", en "h:i am/pm".
-     */
-    public function formatTime(string $timestring): string
-    {
-        if (2 === mb_substr_count($timestring, ':')) {
-            $hour = $timestring[0].$timestring[1];
-            $min = $timestring[3].$timestring[4];
-        } else {
-            $hour = $timestring[0].$timestring[1];
-            $min = $timestring[2].$timestring[3];
-        }
-
-        if ('en' === $this->getSelectedLanguage()) {
-            $ampm = ' am';
-            if ($hour > 12) {
-                $hour -= 12;
-                $ampm = ' pm';
-            } elseif (12 == $hour) {
-                $ampm = ' pm';
-            }
-            if (1 === mb_strlen((string) $hour)) {
-                $hour = '0'.$hour;
-            }
-
-            return $hour.':'.$min.$ampm;
-        }
-
-        return $hour.':'.$min;
-    }
-
-    private ?string $selectedLanguageOverride = null;
-
-    /**
-     * Override the selected language (e.g. while building a mail for a specific recipient).
-     * Pass null to fall back to the request locale again.
-     */
-    public function setSelectedLanguage(?string $language): void
-    {
-        $this->selectedLanguageOverride = $language;
-    }
-
     public function getSelectedLanguage(): string
     {
-        return $this->selectedLanguageOverride ?? $this->getUserLanguage();
+        return $this->getUserLanguage();
     }
 
     public function getUserLanguage(): string

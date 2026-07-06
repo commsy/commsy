@@ -48,7 +48,7 @@ class cs_discussion_manager extends cs_manager
     /*
      * Translation Object
      */
-    private cs_environment $_translator;
+    private \App\Legacy\LegacyTranslator $_translator;
 
     /** constructor
      * the only available constructor, initial values for internal variables
@@ -61,7 +61,7 @@ class cs_discussion_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'discussions';
-        $this->_translator = $environment;
+        $this->_translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
     /** reset limits

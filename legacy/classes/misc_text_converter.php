@@ -905,7 +905,7 @@ class misc_text_converter
     private function _text_objectTag2rss($text)
     {
         // find object tags and replace them with a hint and a link
-        $translator = $this->_environment;
+        $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         $translation = $translator->translate('RSS_OBJECT_TAG_REPLACE');
         $replace = '<a href="\\1">[' . $translation . ']</a>';
 

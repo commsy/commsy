@@ -779,7 +779,7 @@ class cs_room_item extends cs_context_item
 
     public function getUsageInfoHeaderForRubric($rubric)
     {
-        $translator = $this->_environment;
+        $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         if ($this->_issetExtra('USAGE_INFO_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_HEADER');
             if (empty($retour)) {
@@ -813,7 +813,7 @@ class cs_room_item extends cs_context_item
 
     public function getUsageInfoHeaderForRubricForm($rubric)
     {
-        $translator = $this->_environment;
+        $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         if ($this->_issetExtra('USAGE_INFO_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_HEADER');
             if (empty($retour)) {

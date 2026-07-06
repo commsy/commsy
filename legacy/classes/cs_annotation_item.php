@@ -42,7 +42,7 @@ class cs_annotation_item extends cs_item
     public function getDescription(): string
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {

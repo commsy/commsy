@@ -59,7 +59,7 @@ class cs_todo_item extends cs_item
     public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
         } else {
@@ -93,7 +93,7 @@ class cs_todo_item extends cs_item
     public function getDescription()
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {
@@ -145,7 +145,7 @@ class cs_todo_item extends cs_item
      */
     public function getStatus(): int|string
     {
-        $translator = $this->_environment;
+        $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         $value = $this->_getValue('status');
         if ('2' == $value) {
             return $translator->translate('TODO_IN_POGRESS');
@@ -208,7 +208,7 @@ class cs_todo_item extends cs_item
         $file_list = new cs_list();
 
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $file_list;
         } else {

@@ -71,7 +71,7 @@ class cs_tag_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = CS_TAG_TYPE;
-        $this->_translator = $environment;
+        $this->_translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
     /** reset limits

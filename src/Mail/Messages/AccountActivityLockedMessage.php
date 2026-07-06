@@ -51,7 +51,6 @@ class AccountActivityLockedMessage extends Message
         $overrides = $this->portal->getEmailTextArray();
         // account-level mail: the legacy translator resolved this in portal context (_PO)
         $roomType = 'other';
-        $locale = $this->legacyEnvironment->getSelectedLanguage();
 
         $contactModerators = $this->portal->getContactModeratorList($this->legacyEnvironment);
         /** @var cs_user_item|false $firstContactModerator */
@@ -62,7 +61,7 @@ class AccountActivityLockedMessage extends Message
                 'mail.salutation',
                 'MAIL_BODY_HELLO',
                 $roomType,
-                $locale,
+                null,
                 ["{$this->account->getFirstname()} {$this->account->getLastname()}"],
                 $overrides
             ),
@@ -70,7 +69,7 @@ class AccountActivityLockedMessage extends Message
                 'mail.inactivity_lock_now',
                 'EMAIL_INACTIVITY_LOCK_NOW_BODY',
                 $roomType,
-                $locale,
+                null,
                 [
                     $this->account->getDisplayName(),
                     $this->account->getAuthSource()->getTitle(),
@@ -85,7 +84,7 @@ class AccountActivityLockedMessage extends Message
                 'mail.goodbye',
                 'MAIL_BODY_CIAO',
                 $roomType,
-                $locale,
+                null,
                 [$firstContactModerator ? $firstContactModerator->getFullName() : '', $this->portal->getTitle()],
                 $overrides
             ),

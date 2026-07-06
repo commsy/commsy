@@ -13,9 +13,9 @@
 
 namespace Tests\Unit\Legacy;
 
-use App\Legacy\LegacyDateText;
-use cs_environment;
+use App\Legacy\LegacyTranslator;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LegacyDateTextTest extends TestCase
 {
@@ -23,7 +23,7 @@ class LegacyDateTextTest extends TestCase
     {
         self::assertSame(
             ['conforms' => true, 'timestamp' => '20240312', 'datetime' => '2024-03-12', 'display' => '', 'error' => false],
-            LegacyDateText::convertDate('12.03.2024', 'de', $this->createMock(cs_environment::class))
+            \App\Legacy\LegacyDateText::convertDate('12.03.2024', 'de', $this->translator())
         );
     }
 
@@ -31,7 +31,7 @@ class LegacyDateTextTest extends TestCase
     {
         self::assertSame(
             ['conforms' => true, 'timestamp' => '20240315', 'datetime' => '2024-03-15', 'display' => '', 'error' => false],
-            LegacyDateText::convertDate('2024-03-15', 'de', $this->createMock(cs_environment::class))
+            \App\Legacy\LegacyDateText::convertDate('2024-03-15', 'de', $this->translator())
         );
     }
 
@@ -39,28 +39,38 @@ class LegacyDateTextTest extends TestCase
     {
         self::assertSame(
             ['conforms' => true, 'timestamp' => '20240312', 'datetime' => '2024-03-12', 'display' => '', 'error' => false],
-            LegacyDateText::convertDate('03/12/2024', 'en', $this->createMock(cs_environment::class))
+            \App\Legacy\LegacyDateText::convertDate('03/12/2024', 'en', $this->translator())
         );
     }
 
     public function testMonthNameToInt(): void
     {
-        // translator echoes the message key, so the input below is that key
-        $translator = $this->createMock(cs_environment::class);
-        $translator->method('translate')->willReturnArgument(0);
+        // the translator echoes the message key, so the input below is that key
+        $translator = $this->translator();
 
-        self::assertSame('03', LegacyDateText::monthNameToInt('COMMON_DATE_MARCH_SHORT', $translator));
-        self::assertSame('12', LegacyDateText::monthNameToInt('COMMON_DATE_DECEMBER_LONG', $translator));
-        self::assertSame('unknown', LegacyDateText::monthNameToInt('unknown', $translator));
+        self::assertSame('03', \App\Legacy\LegacyDateText::monthNameToInt('COMMON_DATE_MARCH_SHORT', $translator));
+        self::assertSame('12', \App\Legacy\LegacyDateText::monthNameToInt('COMMON_DATE_DECEMBER_LONG', $translator));
+        self::assertSame('unknown', \App\Legacy\LegacyDateText::monthNameToInt('unknown', $translator));
     }
 
     public function testWeekdayName(): void
     {
-        $translator = $this->createMock(cs_environment::class);
-        $translator->method('translate')->willReturnArgument(0);
+        $translator = $this->translator();
 
-        self::assertSame('COMMON_DATE_SUNDAY', LegacyDateText::weekdayName('0', $translator));
-        self::assertSame('COMMON_DATE_SATURDAY', LegacyDateText::weekdayName('6', $translator));
-        self::assertSame('', LegacyDateText::weekdayName('9', $translator));
+        self::assertSame('COMMON_DATE_SUNDAY', \App\Legacy\LegacyDateText::weekdayName('0', $translator));
+        self::assertSame('COMMON_DATE_SATURDAY', \App\Legacy\LegacyDateText::weekdayName('6', $translator));
+        self::assertSame('', \App\Legacy\LegacyDateText::weekdayName('9', $translator));
+    }
+
+    /**
+     * A real LegacyTranslator (final, so not mockable) wrapping a stubbed Symfony translator
+     * that echoes the message key back — keeps the date-name assertions key-based.
+     */
+    private function translator(): LegacyTranslator
+    {
+        $symfonyTranslator = $this->createMock(TranslatorInterface::class);
+        $symfonyTranslator->method('trans')->willReturnArgument(0);
+
+        return new LegacyTranslator($symfonyTranslator);
     }
 }

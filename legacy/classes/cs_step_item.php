@@ -37,7 +37,7 @@ class cs_step_item extends cs_item
     public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
         } else {
@@ -124,7 +124,7 @@ class cs_step_item extends cs_item
     public function getDescription()
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {

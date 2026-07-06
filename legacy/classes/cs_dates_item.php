@@ -53,7 +53,7 @@ class cs_dates_item extends cs_item
     public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
         } else {
@@ -157,7 +157,7 @@ class cs_dates_item extends cs_item
     public function getDescription()
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {
@@ -274,12 +274,12 @@ class cs_dates_item extends cs_item
 
     public function getStartingDayName()
     {
-        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getStartingDay())), $this->_environment);
+        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getStartingDay())), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
     }
 
     public function getEndingDayName()
     {
-        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getEndingDay())), $this->_environment);
+        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getEndingDay())), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
     }
 
     /** set starting time of a dates
@@ -625,14 +625,14 @@ class cs_dates_item extends cs_item
      public function getDateDescription()
      {
          $converter = $this->_environment->getTextConverter();
-         $translator = $this->_environment;
+         $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
          // set up style of days and times
          // time
          $parse_time_start = \App\Utils\DateHelper::convertTimeFromInput($this->getStartingTime());
          $conforms = $parse_time_start['conforms'];
          if (true === $conforms) {
-             $start_time_print = $this->_environment->formatTime($parse_time_start['datetime']);
+             $start_time_print = \App\Utils\DateHelper::formatTime($parse_time_start['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $start_time_print = $converter->text_as_html_short($this->getStartingTime());
@@ -641,25 +641,25 @@ class cs_dates_item extends cs_item
          $parse_time_end = \App\Utils\DateHelper::convertTimeFromInput($this->getEndingTime());
          $conforms = $parse_time_end['conforms'];
          if (true === $conforms) {
-             $end_time_print = $this->_environment->formatTime($parse_time_end['datetime']);
+             $end_time_print = \App\Utils\DateHelper::formatTime($parse_time_end['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $end_time_print = $converter->text_as_html_short($this->getEndingTime());
          }
          // day
-         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment);
+         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
          $conforms = $parse_day_start['conforms'];
          if (true === $conforms) {
-             $start_day_print = $this->getStartingDayName().', '.$translator->formatDate($parse_day_start['datetime']);
+             $start_day_print = $this->getStartingDayName().', '.\App\Utils\DateHelper::formatDate($parse_day_start['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $start_day_print = $converter->text_as_html_short($this->getStartingDay());
          }
 
-         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment);
+         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
          $conforms = $parse_day_end['conforms'];
          if (true === $conforms) {
-             $end_day_print = $this->getEndingDayName().', '.$translator->formatDate($parse_day_end['datetime']);
+             $end_day_print = $this->getEndingDayName().', '.\App\Utils\DateHelper::formatDate($parse_day_end['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $end_day_print = $converter->text_as_html_short($this->getEndingDay());
@@ -774,14 +774,14 @@ class cs_dates_item extends cs_item
      public function getDateListDescription()
      {
          $converter = $this->_environment->getTextConverter();
-         $translator = $this->_environment;
+         $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
          // set up style of days and times
          // time
          $parse_time_start = \App\Utils\DateHelper::convertTimeFromInput($this->getStartingTime());
          $conforms = $parse_time_start['conforms'];
          if (true === $conforms) {
-             $start_time_print = $this->_environment->formatTime($parse_time_start['datetime']);
+             $start_time_print = \App\Utils\DateHelper::formatTime($parse_time_start['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $start_time_print = $converter->text_as_html_short($this->getStartingTime());
@@ -790,25 +790,25 @@ class cs_dates_item extends cs_item
          $parse_time_end = \App\Utils\DateHelper::convertTimeFromInput($this->getEndingTime());
          $conforms = $parse_time_end['conforms'];
          if (true === $conforms) {
-             $end_time_print = $this->_environment->formatTime($parse_time_end['datetime']);
+             $end_time_print = \App\Utils\DateHelper::formatTime($parse_time_end['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $end_time_print = $converter->text_as_html_short($this->getEndingTime());
          }
          // day
-         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment);
+         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
          $conforms = $parse_day_start['conforms'];
          if (true === $conforms) {
-             $start_day_print = $translator->formatDate($parse_day_start['datetime']);
+             $start_day_print = \App\Utils\DateHelper::formatDate($parse_day_start['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $start_day_print = $converter->text_as_html_short($this->getStartingDay());
          }
 
-         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment);
+         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
          $conforms = $parse_day_end['conforms'];
          if (true === $conforms) {
-             $end_day_print = $translator->formatDate($parse_day_end['datetime']);
+             $end_day_print = \App\Utils\DateHelper::formatDate($parse_day_end['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $end_day_print = $converter->text_as_html_short($this->getEndingDay());

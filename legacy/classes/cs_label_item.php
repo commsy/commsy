@@ -73,7 +73,7 @@ class cs_label_item extends cs_item
      */
     public function _setItemData($data_array): void
     {
-        $translator = $this->_environment;
+        $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         $this->_data = $data_array;
         if (!empty($this->_data['name']) and $this->_data['name'] == $translator->translate('ALL_MEMBERS')) {
             $this->_is_system_label = true;
@@ -277,7 +277,7 @@ class cs_label_item extends cs_item
     public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
         } else {
@@ -293,7 +293,7 @@ class cs_label_item extends cs_item
     public function getDescription()
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment;
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
             return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {

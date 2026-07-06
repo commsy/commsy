@@ -24,13 +24,13 @@ class cs_annotations_manager extends cs_manager
     /**
      * @var cs_environment
      */
-    private cs_environment $translator;
+    private \App\Legacy\LegacyTranslator $translator;
 
     public function __construct($environment)
     {
         parent::__construct($environment);
         $this->_db_table = 'annotations';
-        $this->translator = $environment;
+        $this->translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
     /**
