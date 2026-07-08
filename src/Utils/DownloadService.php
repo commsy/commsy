@@ -96,7 +96,6 @@ class DownloadService
             unlink($zipFile);
         }
 
-        include_once 'functions/misc_functions.php';
         $zip = new ZipArchive();
         $filename = $zipFile;
 
@@ -140,7 +139,7 @@ class DownloadService
                     if (!is_file($file_path)) {
                         // Skip parent and root directories
                         if (('.' !== $file) and ('..' !== $file)) {
-                            addFolderToZip($file_path, $zipArchive, $zip_path);
+                            $this->addFolderToZip($file_path, $zipArchive, $zip_path);
                         }
                     } else {
                         // Add the files
