@@ -449,7 +449,6 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     {
         return [
             'id' => $this->id,
-            'portal' => $this->portal,
             'username' => $this->username,
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
@@ -461,7 +460,6 @@ class Account implements UserInterface, PasswordAuthenticatedUserInterface, Pass
     public function __unserialize(array $data): void
     {
         $this->id = $data['id'];
-        $this->portal = $data['portal'];
         $this->username = $data['username'];
         $this->firstname = $data['firstname'];
         $this->lastname = $data['lastname'];

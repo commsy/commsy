@@ -18,8 +18,13 @@ use DateTimeInterface;
 
 final class ResetPasswordToken
 {
-    public function __construct(private string $token, private DateTimeInterface $expiresAt, private Account $account, private string $ip)
-    {
+    public function __construct(
+        private string $token,
+        private DateTimeInterface $expiresAt,
+        private int $portalId,
+        private string $username,
+        private string $ip
+    )  {
     }
 
     public function getToken(): string
@@ -46,14 +51,26 @@ final class ResetPasswordToken
         return $this;
     }
 
-    public function getAccount(): Account
+    public function getUsername(): string
     {
-        return $this->account;
+        return $this->username;
     }
 
-    public function setAccount(Account $account): self
+    public function setUsername(string $username): self
     {
-        $this->account = $account;
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getPortalId(): int
+    {
+        return $this->portalId;
+    }
+
+    public function setPortalId(int $portalId): self
+    {
+        $this->portalId = $portalId;
 
         return $this;
     }
