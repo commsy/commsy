@@ -105,6 +105,21 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Dismiss (delete) every notification an account holds for one source item.
+     * Backs "dismiss the whole grouped entry" in the activity panel.
+     *
+     * @return int number of rows deleted
+     */
+    public function dismissForAccountAndSourceItem(Account $account, int $sourceItemId): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQuery('DELETE App\Entity\Notification n WHERE n.recipient = :account AND n.sourceItemId = :item')
+            ->setParameter('account', $account)
+            ->setParameter('item', $sourceItemId)
+            ->execute();
+    }
+
+    /**
      * Dismiss (delete) every notification of an account within one room.
      *
      * @return int number of rows deleted

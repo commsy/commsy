@@ -78,6 +78,22 @@
                 <source>attachments</source>
                 <target>Anhänge</target>
             </trans-unit>
+            <trans-unit id="action.created">
+                <source>action.created</source>
+                <target>Erstellt</target>
+            </trans-unit>
+            <trans-unit id="action.edited">
+                <source>action.edited</source>
+                <target>Bearbeitet</target>
+            </trans-unit>
+            <trans-unit id="action.annotated">
+                <source>action.annotated</source>
+                <target>Annotiert</target>
+            </trans-unit>
+            <trans-unit id="createdBy">
+                <source>createdBy</source>
+                <target>Erstellt von: %name%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

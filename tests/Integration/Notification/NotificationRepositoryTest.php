@@ -168,6 +168,19 @@ class NotificationRepositoryTest extends KernelTestCase
         self::assertSame(1, $this->repository()->countForAccount($other));
     }
 
+    public function testDismissForAccountAndSourceItemClearsAllEventsOfThatItem(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+
+        $this->persist($account, sourceItemId: 42); // created
+        $this->persist($account, sourceItemId: 42); // edited (same item)
+        $this->persist($account, sourceItemId: 99); // a different item
+
+        self::assertSame(2, $this->repository()->dismissForAccountAndSourceItem($account, 42));
+        self::assertSame(1, $this->repository()->countForAccount($account), 'only item 99 remains');
+    }
+
     public function testDismissAllForAccountClearsOnlyThatAccount(): void
     {
         self::bootKernel();

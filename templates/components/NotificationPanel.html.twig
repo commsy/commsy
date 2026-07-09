@@ -5,16 +5,12 @@
             {% set panel = outerScope.this %}
             {# Rubric icons mirror MenuBuilder::getRubricIcon (UIKit 2 / FontAwesome). #}
             {% set rubricIcons = {
-                announcement: 'uk-icon-comment-o',
-                material: 'uk-icon-file-o',
-                date: 'uk-icon-calendar',
-                discussion: 'uk-icon-comments-o',
-                todo: 'uk-icon-check-square-o',
-                group: 'uk-icon-group',
-                topic: 'uk-icon-book'
+                announcement: 'uk-icon-comment-o', material: 'uk-icon-file-o', date: 'uk-icon-calendar',
+                discussion: 'uk-icon-comments-o', todo: 'uk-icon-check-square-o', group: 'uk-icon-group', topic: 'uk-icon-book'
             } %}
+            {% set actionIcons = { created: 'uk-icon-plus-circle', edited: 'uk-icon-pencil', annotated: 'uk-icon-comment' } %}
 
-            {% if panel.notifications is empty %}
+            {% if panel.groups is empty %}
                 <p class="uk-text-muted uk-margin-remove">{{ 'noNotifications'|trans({}, 'notification') }}</p>
             {% else %}
                 <div class="uk-text-right uk-margin-small-bottom">
@@ -23,65 +19,76 @@
                     </a>
                 </div>
                 <ul class="uk-comment-list">
-                    {% for notification in panel.notifications %}
-                        {% set icon = rubricIcons[notification.sourceItemType]|default('uk-icon-bell-o') %}
-                        {% set link = panel.linkFor(notification) %}
-                        {% set p = notification.payload %}
-                        {% set start = panel.scheduledStart(notification) %}
-                        {% set end = panel.scheduledEnd(notification) %}
+                    {% for group in panel.groups %}
+                        {% set origin = group.origin %}
+                        {% set latest = group.latest %}
+                        {% set p = latest.payload %}
+                        {% set icon = rubricIcons[group.sourceItemType]|default('uk-icon-bell-o') %}
+                        {% set link = panel.linkFor(latest) %}
+                        {% set start = panel.scheduledStart(latest) %}
+                        {% set end = panel.scheduledEnd(latest) %}
                         <li>
-                            <article class="uk-comment{{ notification.unread ? ' cs-notification-unread' : '' }}" style="position: relative;">
-                                {# The rubric icon must stay the first child: article.uk-comment > i:first-child is right-aligned by cs-theme (comment.less). #}
-                                <i class="{{ icon }} uk-icon-small {{ notification.unread ? 'uk-text-primary' : 'uk-text-muted' }}"></i>
+                            <article class="uk-comment{{ group.unread ? ' cs-notification-unread' : '' }}" style="position: relative;">
+                                {# The rubric icon must stay the first child: article.uk-comment > i:first-child is right-aligned by cs-theme. #}
+                                <i class="{{ icon }} uk-icon-small {{ group.unread ? 'uk-text-primary' : 'uk-text-muted' }}"></i>
+                                {% if group.indicatorStatus == 'new' %}
+                                    <div class="cs-comment-change-info" data-uk-tooltip title="{{ 'newEntry'|trans({}) }}"><i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i></div>
+                                {% elseif group.indicatorStatus == 'changed' %}
+                                    <div class="cs-comment-change-info" data-uk-tooltip title="{{ 'changedEntry'|trans({}) }}"><i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i></div>
+                                {% endif %}
                                 <a href="#" class="uk-text-muted" style="position: absolute; top: 5px; right: 40px; padding: 2px;"
-                                   data-action="live#action" data-live-action-param="dismiss" data-live-id-param="{{ notification.id }}"
+                                   data-action="live#action" data-live-action-param="dismiss" data-live-id-param="{{ group.sourceItemId }}"
                                    title="{{ 'dismiss'|trans({}, 'notification') }}">
                                     <i class="uk-icon-close"></i>
                                 </a>
                                 <header class="uk-comment-header uk-margin-remove uk-flex">
                                     <div class="uk-margin-right uk-flex-item-none">
-                                        {% if p.actorId %}
-                                            <a href="{{ path('app_user_detail', {'roomId': notification.contextId, 'itemId': p.actorId}) }}">
+                                        {% if origin.payload.actorId %}
+                                            <a href="{{ path('app_user_detail', {'roomId': group.contextId, 'itemId': origin.payload.actorId}) }}">
                                                 <img class="uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;"
-                                                     src="{{ path('app_user_image', {'roomId': notification.contextId, 'itemId': p.actorId}) }}"
-                                                     title="{{ notification.actorName }}" data-uk-tooltip>
+                                                     src="{{ path('app_user_image', {'roomId': group.contextId, 'itemId': origin.payload.actorId}) }}"
+                                                     title="{{ origin.actorName }}" data-uk-tooltip>
                                             </a>
                                         {% else %}
                                             <img class="uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;"
-                                                 src="{{ path('app_user_guestimage') }}" title="{{ notification.actorName|default('') }}" data-uk-tooltip>
+                                                 src="{{ path('app_user_guestimage') }}" title="{{ origin.actorName|default('') }}" data-uk-tooltip>
                                         {% endif %}
                                         <div class="uk-comment-meta">
                                             <span class="uk-text-nowrap">
-                                                {% if notification.createdAt|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                                    {{ 'today'|trans({})|capitalize }}, {{ notification.createdAt|date("H:i") }}
+                                                {% if origin.createdAt|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                    {{ 'today'|trans({})|capitalize }}, {{ origin.createdAt|date("H:i") }}
                                                 {% else %}
-                                                    {{ notification.createdAt|format_date }}
+                                                    {{ origin.createdAt|format_date }}
                                                 {% endif %}
                                             </span>
                                         </div>
                                     </div>
                                     <div>
                                         <div class="uk-comment-meta">
-                                            <a href="{{ path('app_room_home', {'roomId': notification.contextId}) }}">{{ notification.roomTitle }}</a>
+                                            <a href="{{ path('app_room_home', {'roomId': group.contextId}) }}">{{ group.roomTitle }}</a>
                                         </div>
                                         <h4 class="uk-comment-title uk-margin-remove">
-                                            {% if link %}
-                                                <a href="{{ link }}"{% if notification.unread %} class="uk-text-bold"{% endif %}>{{ notification.title }}</a>
-                                            {% else %}
-                                                <span{% if notification.unread %} class="uk-text-bold"{% endif %}>{{ notification.title }}</span>
-                                            {% endif %}
+                                            {% if link %}<a href="{{ link }}"{% if group.unread %} class="uk-text-bold"{% endif %}>{{ group.title }}</a>
+                                            {% else %}<span{% if group.unread %} class="uk-text-bold"{% endif %}>{{ group.title }}</span>{% endif %}
                                         </h4>
                                         <div class="uk-comment-meta">
-                                            {%- if notification.sourceItemType == 'date' -%}
-                                                {% if start %}{{ start|format_date }}{% if not p.wholeDay %}, {{ start|format_time('short') }}{% endif %}{% if end and end != start and not p.wholeDay %} – {{ end|format_time('short') }}{% endif %}{% endif %}
-                                                {%- if p.place %}{% if start %}, {% endif %}{{ p.place }}{% endif -%}
-                                            {%- elseif notification.sourceItemType == 'material' -%}
-                                                {{ 'by'|trans({})|capitalize }}: {{ p.materialAuthor|default(p.creatorName)|default(notification.actorName) }}{% if p.publishingDate %} ({{ p.publishingDate }}){% endif %}
-                                            {%- elseif p.creatorName -%}
-                                                {{ 'by'|trans({})|capitalize }}: {{ p.creatorName }}
+                                            {%- if origin.action.value == 'created' -%}
+                                                {{ 'createdBy'|trans({'%name%': origin.payload.creatorName|default(origin.actorName)}, 'notification') }}
+                                            {%- else -%}
+                                                {{ ('action.' ~ origin.action.value)|trans({}, 'notification') }} {{ 'byCreator'|trans({'%name%': origin.actorName}, 'notification') }}
                                             {%- endif -%}
+                                            {%- if group.sourceItemType == 'date' and start %} &middot; {{ start|format_date }}{% if not p.wholeDay %}, {{ start|format_time('short') }}{% endif %}{% if end and end != start and not p.wholeDay %} – {{ end|format_time('short') }}{% endif %}{% if p.place %}, {{ p.place }}{% endif %}{% endif %}
+                                            {%- if group.sourceItemType == 'material' and p.materialAuthor %} &middot; {{ p.materialAuthor }}{% if p.publishingDate %} ({{ p.publishingDate }}){% endif %}{% endif %}
                                             {%- if p.hasAttachments %} <i class="uk-icon-paperclip uk-margin-small-left" title="{{ 'attachments'|trans({}, 'notification') }}" data-uk-tooltip></i>{% endif %}
                                         </div>
+                                        {% if group.events|length > 1 %}
+                                            <div class="uk-comment-meta uk-margin-small-top">
+                                                {% for event in group.events %}
+                                                    <i class="{{ actionIcons[event.action.value]|default('uk-icon-circle-o') }} uk-margin-small-right {{ event.unread ? 'uk-text-primary' : 'uk-text-muted' }}"
+                                                       data-uk-tooltip title="{{ ('action.' ~ event.action.value)|trans({}, 'notification') }} · {{ event.actorName }} · {% if event.createdAt|date('d.m.Y') == 'now'|date('d.m.Y') %}{{ 'today'|trans({})|capitalize }}, {{ event.createdAt|date('H:i') }}{% else %}{{ event.createdAt|format_date }}{% endif %}"></i>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </header>
                             </article>

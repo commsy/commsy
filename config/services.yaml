@@ -119,6 +119,8 @@ services:
             - '../src/Mail/Messages/'
             - '../src/Message/'
             - '../src/Model/'
+            - '../src/Notification/NotificationGroup.php'
+            - '../src/Notification/NotificationPayload.php'
             - '../src/Proxy/'
             - '../src/Tests/'
             - '../src/WOPI/REST/Request'

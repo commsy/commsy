@@ -15,6 +15,7 @@ namespace App\Twig\Components;
 
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Notification\NotificationGroup;
 use App\Notification\NotificationLinkResolver;
 use App\Repository\NotificationRepository;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
@@ -48,7 +49,8 @@ final class NotificationPanel
     #[LiveProp]
     public ?string $title = null;
 
-    private const LIMIT = 50;
+    /** Upper bound on notification rows fetched before grouping into entries. */
+    private const FETCH_LIMIT = 200;
 
     public function __construct(
         private readonly NotificationRepository $notificationRepository,
@@ -59,8 +61,9 @@ final class NotificationPanel
     #[LiveAction]
     public function dismiss(#[LiveArg] int $id): void
     {
+        // $id is the source item id: dismissing an entry clears all its events.
         if ($this->account !== null) {
-            $this->notificationRepository->dismiss($this->account, $id);
+            $this->notificationRepository->dismissForAccountAndSourceItem($this->account, $id);
         }
     }
 
@@ -79,13 +82,35 @@ final class NotificationPanel
     }
 
     /**
-     * @return Notification[]
+     * The account's notifications grouped into one entry per source item, newest
+     * activity first; each group's events are ordered oldest-first.
+     *
+     * @return NotificationGroup[]
      */
-    public function getNotifications(): array
+    public function getGroups(): array
     {
-        return $this->account !== null
-            ? $this->notificationRepository->findForAccount($this->account, $this->contextId, self::LIMIT)
-            : [];
+        if ($this->account === null) {
+            return [];
+        }
+
+        $notifications = $this->notificationRepository->findForAccount($this->account, $this->contextId, self::FETCH_LIMIT);
+
+        /** @var array<int|string, Notification[]> $byItem */
+        $byItem = [];
+        foreach ($notifications as $notification) {
+            $key = $notification->getSourceItemId() ?? 'n'.$notification->getId();
+            $byItem[$key][] = $notification;
+        }
+
+        $groups = [];
+        foreach ($byItem as $events) {
+            usort($events, static fn (Notification $a, Notification $b): int => [$a->getCreatedAt(), $a->getId()] <=> [$b->getCreatedAt(), $b->getId()]);
+            $groups[] = new NotificationGroup($events);
+        }
+
+        usort($groups, static fn (NotificationGroup $a, NotificationGroup $b): int => $b->sortKey() <=> $a->sortKey());
+
+        return $groups;
     }
 
     public function getUnreadCount(): int
