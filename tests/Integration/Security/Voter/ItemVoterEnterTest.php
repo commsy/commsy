@@ -203,20 +203,15 @@ final class ItemVoterEnterTest extends KernelTestCase
             'expected' => true,
         ];
 
-        // ---- Private rooms: voter shortcut returns true unconditionally ----
-        // The Voter has `if ($item->isPrivateRoom()) return true;` BEFORE any
-        // mayEnter check. Private rooms are per-user — production routes only
-        // ever land you on YOUR OWN private room — and the voter trusts that.
-        yield 'any_authenticated_user_can_enter_private_room' => [
+        // ---- Private rooms: only the owner (or root) may enter ----
+        // A private room is a single user's personal dashboard. The owner is
+        // its sole moderator (status=3), so a logged-in account that is the
+        // moderator of the room may enter it. Non-owner / foreign / guest
+        // scenarios live in dedicated methods below because they need a
+        // *second* account as the owner.
+        yield 'owner_can_enter_own_private_room' => [
             'roomBuilder' => fn(self $t) => $t->createPrivateRoom(),
-            'memberStatus' => null,
-            'accountUsername' => null,
-            'expected' => true,
-        ];
-
-        yield 'rejected_user_can_enter_private_room_voter_shortcut' => [
-            'roomBuilder' => fn(self $t) => $t->createPrivateRoom(),
-            'memberStatus' => 0,
+            'memberStatus' => 3,
             'accountUsername' => null,
             'expected' => true,
         ];
@@ -256,6 +251,58 @@ final class ItemVoterEnterTest extends KernelTestCase
                 $actual ? 'true' : 'false',
                 $expected ? 'true' : 'false',
             ),
+        );
+    }
+
+    // ---------- Private rooms: a private room is a single user's personal
+    //            dashboard. The voter used to return true for ANY private
+    //            room, which let anyone reach a foreign dashboard — and, via
+    //            /room/{id}/all, the portal-wide room list — merely by knowing
+    //            (or guessing) a private-room id. Entry is now owner-only.
+
+    public function testNonOwnerCannotEnterForeignPrivateRoom(): void
+    {
+        $room = $this->createPrivateRoom();
+
+        // The private room's owner is its sole moderator — a *different*
+        // account than the one attempting to enter below.
+        $owner = $this->createPortalAccount('privateroom-owner');
+        RoomUserFactory::createOne([
+            'account' => $owner,
+            'room' => $room,
+            'status' => 3,
+        ]);
+
+        // An unrelated authenticated account tries to open the foreign
+        // dashboard (the /room/{foreignPrivateRoomId}/all attack).
+        $intruder = $this->createPortalAccount('privateroom-intruder');
+        $this->loginAs($intruder);
+
+        self::assertFalse(
+            $this->authChecker->isGranted(ItemVoter::ENTER, $room->getItemId()),
+            'A user must not enter another user\'s private room (dashboard); '
+            . 'this is the /room/{id}/all room-list leak.',
+        );
+    }
+
+    public function testRootCanEnterForeignPrivateRoom(): void
+    {
+        $room = $this->createPrivateRoom();
+
+        $owner = $this->createPortalAccount('privateroom-owner-for-root');
+        RoomUserFactory::createOne([
+            'account' => $owner,
+            'room' => $room,
+            'status' => 3,
+        ]);
+
+        // Account.username='root' short-circuit still wins for private rooms.
+        $rootAccount = $this->createPortalAccount('root');
+        $this->actAsRoot($rootAccount);
+
+        self::assertTrue(
+            $this->authChecker->isGranted(ItemVoter::ENTER, $room->getItemId()),
+            'root may enter any private room via the top-level short-circuit.',
         );
     }
 
