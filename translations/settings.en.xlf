@@ -757,10 +757,6 @@
                 <source>New invitation</source>
                 <target>New invitation</target>
             </trans-unit>
-            <trans-unit id="New invitation text">
-                <source>New invitation text</source>
-                <target>Please give the email address you want to send the invitation to. The invitee will receive an email with a one time usable invitation code.</target>
-            </trans-unit>
             <trans-unit id="Remove invitation">
                 <source>Remove invitation</source>
                 <target>Remove invitation</target>

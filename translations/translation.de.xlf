@@ -26,6 +26,10 @@
                 <source>ROOM_SETTINGS_SLUG_HELP</source>
                 <target>Hilfetext Raumkennung</target>
             </trans-unit>
+            <trans-unit id="ROOM_INVITATION_HELP">
+                <source>ROOM_INVITATION_HELP</source>
+                <target>Hilfetext Raumeinladung</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

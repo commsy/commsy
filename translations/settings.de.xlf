@@ -757,10 +757,6 @@
                 <source>New invitation</source>
                 <target>Neue Einladung</target>
             </trans-unit>
-            <trans-unit id="New invitation text">
-                <source>New invitation text</source>
-                <target>Geben Sie hier die E-Mail Adresse für eine neue Einladung an. Der Empfänger erhält eine E-Mail mit einem einmalig nutzbaren Aktivierungscode.</target>
-            </trans-unit>
             <trans-unit id="Remove invitation">
                 <source>Remove invitation</source>
                 <target>Einladungen löschen</target>

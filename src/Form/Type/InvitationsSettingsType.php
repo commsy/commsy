@@ -13,6 +13,8 @@
 
 namespace App\Form\Type;
 
+use App\Repository\TranslationRepository;
+use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use Symfony\Component\Form\AbstractType;
@@ -21,13 +23,18 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\LocaleSwitcher;
 
 class InvitationsSettingsType extends AbstractType
 {
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly CurrentContextResolver $currentContextResolver,
+        private readonly TranslationRepository $translationRepository,
+        private readonly LocaleSwitcher $localeSwitcher,
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -43,6 +50,7 @@ class InvitationsSettingsType extends AbstractType
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($options['roomId']);
+        $portalItem = $this->currentContextResolver->getPortalItem();
 
         $builder
             ->add('email', TextType::class, [
@@ -52,6 +60,9 @@ class InvitationsSettingsType extends AbstractType
                     'class' => 'uk-form-width-medium',
                 ],
                 'required' => false,
+                'help' => $this->translationRepository
+                    ->findOneByContextAndKey($portalItem->getItemId(), 'ROOM_INVITATION_HELP')
+                    ->getTranslationForLocale($this->localeSwitcher->getLocale()),
             ])
             ->add('send', SubmitType::class, [
                 'label' => 'Send',

@@ -70,6 +70,13 @@ readonly class PortalCreatorFacade
         $translation->setTranslationEn('');
         $manager->persist($translation);
 
+        $translation = new Translation();
+        $translation->setContextId($portal->getId());
+        $translation->setTranslationKey('ROOM_INVITATION_HELP');
+        $translation->setTranslationDe('Geben Sie hier die E-Mail Adresse für eine neue Einladung an. Der Empfänger erhält eine E-Mail mit einem einmalig nutzbaren Aktivierungscode.');
+        $translation->setTranslationEn('Please give the email address you want to send the invitation to. The invitee will receive an email with a one time usable invitation code.');
+        $manager->persist($translation);
+
         $manager->flush();
     }
 }
