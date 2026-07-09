@@ -28,6 +28,13 @@ use App\Enum\NotificationAction;
  * snapshot. Routed to the async transport by the `App\Message\*` routing rule
  * in config/packages/messenger.yaml.
  *
+ * Two user ids are carried on purpose: {@see $actorUserItemId} is who caused
+ * this event (creator on create, editor on edit, annotator on annotate) and is
+ * excluded from the fan-out, while {@see $creatorUserItemId} is the item's
+ * original creator, used only for the visibility check (a creator may see their
+ * own deactivated item). They differ when someone edits/annotates another
+ * person's entry.
+ *
  * @see \App\Notification\NotificationPayload for the payload shape
  */
 final readonly class NotifyNewEntryMessage
@@ -41,6 +48,7 @@ final readonly class NotifyNewEntryMessage
         public string $sourceItemType,
         public string $title,
         public int $creatorUserItemId,
+        public int $actorUserItemId,
         public ?string $actorName = null,
         public bool $isDeactivated = false,
         public NotificationAction $action = NotificationAction::Created,

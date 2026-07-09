@@ -104,6 +104,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
             $parent->getContextID(),
             $parent->getItemType(),
             $parent->getTitle(),
+            $parent->getCreatorID(),
             // The annotator is the actor and is excluded from the fan-out.
             $annotation->getCreatorID(),
             $annotation->getCreatorItem()?->getFullName(),
@@ -130,14 +131,19 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
 
     private function signalFor(cs_item $item, NotificationAction $action): NotifyNewEntryMessage
     {
+        // The actor (excluded from the fan-out) is whoever caused this event:
+        // the creator on a create, the modificator on an edit.
+        $actorUserItemId = $action === NotificationAction::Edited
+            ? (int) ($item->getModificatorItem()?->getItemID() ?? $item->getCreatorID())
+            : (int) $item->getCreatorID();
+
         return new NotifyNewEntryMessage(
             $item->getItemID(),
             $item->getContextID(),
             $item->getItemType(),
             $item->getTitle(),
             $item->getCreatorID(),
-            // The actor is whoever caused this event: the modificator (on a
-            // create that is the creator, on an edit the editor).
+            $actorUserItemId,
             $item->getModificatorItem()?->getFullName(),
             (bool) $item->isNotActivated(),
             $action,

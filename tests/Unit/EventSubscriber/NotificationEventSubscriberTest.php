@@ -55,6 +55,7 @@ class NotificationEventSubscriberTest extends TestCase
                     && 'material' === $message->sourceItemType
                     && 'My entry' === $message->title
                     && 7 === $message->creatorUserItemId
+                    && 7 === $message->actorUserItemId
                     && 'Jane Doe' === $message->actorName
                     && true === $message->isDeactivated
                     && NotificationAction::Created === $message->action
@@ -67,12 +68,16 @@ class NotificationEventSubscriberTest extends TestCase
 
     public function testSavingPublishedEntryDispatchesEditedSignal(): void
     {
+        $editor = $this->createMock(cs_user_item::class);
+        $editor->method('getItemID')->willReturn(7);
+        $editor->method('getFullName')->willReturn('The Editor');
+
         $item = $this->item('material', isDraft: false);
         $item->method('getItemID')->willReturn(50);
         $item->method('getContextID')->willReturn(9);
         $item->method('getTitle')->willReturn('Edited title');
         $item->method('getCreatorID')->willReturn(3);
-        $item->method('getModificatorItem')->willReturn(null);
+        $item->method('getModificatorItem')->willReturn($editor);
         $item->method('getModificationDate')->willReturn('2026-06-16 09:30:00');
 
         $bus = $this->createMock(MessageBusInterface::class);
@@ -80,7 +85,10 @@ class NotificationEventSubscriberTest extends TestCase
             ->method('dispatch')
             ->with($this->callback(function (NotifyNewEntryMessage $message): bool {
                 return 50 === $message->sourceItemId
-                    && NotificationAction::Edited === $message->action;
+                    && NotificationAction::Edited === $message->action
+                    && 3 === $message->creatorUserItemId  // the item's creator (visibility)
+                    && 7 === $message->actorUserItemId    // the editor, excluded from the fan-out
+                    && 'The Editor' === $message->actorName;
             }))
             ->willReturn(new Envelope(new \stdClass()));
 
@@ -159,7 +167,8 @@ class NotificationEventSubscriberTest extends TestCase
                 return 70 === $message->sourceItemId
                     && NotificationAction::Annotated === $message->action
                     && 'Cara Ann' === $message->actorName
-                    && 88 === $message->creatorUserItemId; // the annotator, excluded from the fan-out
+                    && 88 === $message->actorUserItemId   // the annotator, excluded from the fan-out
+                    && 1 === $message->creatorUserItemId;  // the parent's creator (visibility only)
             }))
             ->willReturn(new Envelope(new \stdClass()));
 

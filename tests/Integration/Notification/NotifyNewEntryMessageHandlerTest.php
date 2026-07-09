@@ -54,6 +54,7 @@ class NotifyNewEntryMessageHandlerTest extends KernelTestCase
             sourceItemType: 'announcement',
             title: 'Hello room',
             creatorUserItemId: $creator->getItemId(),
+            actorUserItemId: $creator->getItemId(),
             actorName: 'Creator Name',
         ));
 

@@ -93,6 +93,28 @@ class NotificationManagerTest extends KernelTestCase
         self::assertContains(NotificationAction::Edited, $actions);
     }
 
+    public function testEditByNonCreatorNotifiesTheCreatorAndExcludesTheEditor(): void
+    {
+        $room = $this->createRoom();
+        $creator = $this->member($room, $this->account);       // owns the entry
+        $editor = $this->member($room, $this->newAccount());   // a different member edits it
+
+        // The actor is the editor, not the item's creator.
+        $this->manager()->notifyNewEntry($this->signal(
+            $room,
+            $creator,
+            sourceItemId: 999,
+            action: NotificationAction::Edited,
+            actor: $editor,
+        ));
+
+        $rows = $this->repository()->findAll();
+        $recipientIds = array_map(static fn (Notification $n): int => $n->getRecipient()->getId(), $rows);
+
+        self::assertContains($creator->getAccount()->getId(), $recipientIds, 'the creator is notified about the edit');
+        self::assertNotContains($editor->getAccount()->getId(), $recipientIds, 'the editor who caused the event is not notified');
+    }
+
     public function testRepublishDoesNotDuplicate(): void
     {
         $room = $this->createRoom();
@@ -216,6 +238,7 @@ class NotificationManagerTest extends KernelTestCase
         NotificationAction $action = NotificationAction::Created,
         ?\DateTimeImmutable $occurredAt = null,
         array $payload = [],
+        ?User $actor = null,
     ): NotifyNewEntryMessage {
         return new NotifyNewEntryMessage(
             $sourceItemId,
@@ -223,6 +246,7 @@ class NotificationManagerTest extends KernelTestCase
             $type,
             $title,
             $creator->getItemId(),
+            ($actor ?? $creator)->getItemId(),
             'Creator Name',
             $isDeactivated,
             $action,

@@ -71,7 +71,7 @@ class NotificationManager
             hasOverwrittenContent: false,
         );
 
-        $recipients = $this->resolveRecipients($signal->contextId, $signal->creatorUserItemId, $subject);
+        $recipients = $this->resolveRecipients($signal->contextId, $signal->actorUserItemId, $subject);
         if ($recipients === []) {
             return;
         }
@@ -98,18 +98,19 @@ class NotificationManager
     }
 
     /**
-     * Active members of the room who may see the entry, minus the creator,
-     * de-duplicated per account.
+     * Active members of the room who may see the entry, minus the event's actor
+     * (its creator on a create, the editor on an edit, the annotator on an
+     * annotation), de-duplicated per account.
      *
      * @return Account[]
      */
-    private function resolveRecipients(int $contextId, int $creatorUserItemId, ItemViewSubject $subject): array
+    private function resolveRecipients(int $contextId, int $actorUserItemId, ItemViewSubject $subject): array
     {
         $recipients = [];
 
         foreach ($this->userRepository->findActiveUsers($contextId) as $user) {
-            if ($user->getItemId() === $creatorUserItemId) {
-                continue; // never notify the author about their own entry
+            if ($user->getItemId() === $actorUserItemId) {
+                continue; // never notify whoever caused this event
             }
             if (!$this->itemViewChecker->canSee($user, $subject)) {
                 continue; // respect ITEM_SEE: only notify members who may see it
