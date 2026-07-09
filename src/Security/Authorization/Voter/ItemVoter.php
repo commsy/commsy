@@ -30,6 +30,7 @@ use App\Utils\UserService;
 use App\WOPI\Discovery\DiscoveryService;
 use cs_environment;
 use cs_item;
+use cs_privateroom_item;
 use cs_room_item;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
@@ -304,7 +305,21 @@ class ItemVoter extends Voter
     private function canEnter(cs_item|PortalProxy $item, $currentUser, $user): bool
     {
         if ($item->isPrivateRoom()) {
-            return true;
+            // A private room is a single user's personal dashboard. Only its
+            // owner may enter it. Without this check anyone who knows (or
+            // guesses) a private-room id could reach that user's dashboard
+            // and, via /room/{id}/all, the portal-wide room list — even as a
+            // guest. Identity is keyed by account_id (see cs_user_item).
+            // (The root account is already short-circuited in voteOnAttribute.)
+            if (!$item instanceof cs_privateroom_item || !$user instanceof Account) {
+                return false;
+            }
+
+            $owner = $item->getOwnerUserItem();
+
+            return $owner !== null
+                && $owner->getAccountID() !== null
+                && $owner->getAccountID() === $user->getId();
         }
 
         if ($item->isPortal()) {
