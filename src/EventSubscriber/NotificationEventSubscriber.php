@@ -15,6 +15,7 @@ namespace App\EventSubscriber;
 
 use App\Enum\NotificationAction;
 use App\Event\CommsyEditEvent;
+use App\Event\ItemAnnotatedEvent;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemPublishedEvent;
 use App\Message\NotifyNewEntryMessage;
@@ -65,6 +66,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
         return [
             ItemPublishedEvent::NAME => 'onPublished',
             CommsyEditEvent::SAVE => 'onSaved',
+            ItemAnnotatedEvent::NAME => 'onAnnotated',
             ItemDeletedEvent::NAME => 'onItemDeleted',
         ];
     }
@@ -85,6 +87,31 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
         }
 
         $this->dispatchFor($item, NotificationAction::Edited);
+    }
+
+    public function onAnnotated(ItemAnnotatedEvent $event): void
+    {
+        $parent = $event->getItem();
+
+        if (!in_array($parent->getItemType(), self::NOTIFIABLE_TYPES, true)) {
+            return;
+        }
+
+        $annotation = $event->getAnnotation();
+
+        $this->messageBus->dispatch(new NotifyNewEntryMessage(
+            $parent->getItemID(),
+            $parent->getContextID(),
+            $parent->getItemType(),
+            $parent->getTitle(),
+            // The annotator is the actor and is excluded from the fan-out.
+            $annotation->getCreatorID(),
+            $annotation->getCreatorItem()?->getFullName(),
+            (bool) $parent->isNotActivated(),
+            NotificationAction::Annotated,
+            $this->occurredAt($annotation),
+            $this->payloadFactory->fromItem($parent)->toArray(),
+        ));
     }
 
     public function onItemDeleted(ItemDeletedEvent $event): void

@@ -15,6 +15,7 @@ namespace Tests\Unit\EventSubscriber;
 
 use App\Enum\NotificationAction;
 use App\Event\CommsyEditEvent;
+use App\Event\ItemAnnotatedEvent;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemPublishedEvent;
 use App\EventSubscriber\NotificationEventSubscriber;
@@ -133,6 +134,44 @@ class NotificationEventSubscriberTest extends TestCase
 
             $this->subscriber($bus)->onSaved(new CommsyEditEvent($item));
         }
+    }
+
+    public function testAnnotationDispatchesAnnotatedSignalForTheParent(): void
+    {
+        $annotator = $this->createMock(cs_user_item::class);
+        $annotator->method('getFullName')->willReturn('Cara Ann');
+
+        $parent = $this->item('material');
+        $parent->method('getItemID')->willReturn(70);
+        $parent->method('getContextID')->willReturn(9);
+        $parent->method('getTitle')->willReturn('Annotated material');
+        $parent->method('getCreatorID')->willReturn(1);
+
+        $annotation = $this->createMock(cs_item::class);
+        $annotation->method('getCreatorID')->willReturn(88);
+        $annotation->method('getCreatorItem')->willReturn($annotator);
+        $annotation->method('getModificationDate')->willReturn('2026-06-18 08:00:00');
+
+        $bus = $this->createMock(MessageBusInterface::class);
+        $bus->expects($this->once())
+            ->method('dispatch')
+            ->with($this->callback(function (NotifyNewEntryMessage $message): bool {
+                return 70 === $message->sourceItemId
+                    && NotificationAction::Annotated === $message->action
+                    && 'Cara Ann' === $message->actorName
+                    && 88 === $message->creatorUserItemId; // the annotator, excluded from the fan-out
+            }))
+            ->willReturn(new Envelope(new \stdClass()));
+
+        $this->subscriber($bus)->onAnnotated(new ItemAnnotatedEvent($parent, $annotation));
+    }
+
+    public function testAnnotationOnNonNotifiableParentDispatchesNothing(): void
+    {
+        $bus = $this->createMock(MessageBusInterface::class);
+        $bus->expects($this->never())->method('dispatch');
+
+        $this->subscriber($bus)->onAnnotated(new ItemAnnotatedEvent($this->item('discussionarticle'), $this->createMock(cs_item::class)));
     }
 
     public function testItemDeletedRemovesItsNotifications(): void

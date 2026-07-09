@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Event\ItemAnnotatedEvent;
 use App\Form\DataTransformer\AnnotationTransformer;
 use App\Form\Type\AnnotationType;
 use App\Rubric\Annotation\AnnotationDeleter;
@@ -21,6 +22,7 @@ use App\Utils\AnnotationService;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -137,6 +139,7 @@ class AnnotationController extends AbstractController
         ItemService $itemService,
         AnnotationService $annotationService,
         Request $request,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId,
         ?int $firstTagId = null,
@@ -153,6 +156,11 @@ class AnnotationController extends AbstractController
 
                 // create new annotation
                 $annotationId = $annotationService->addAnnotation($roomId, $itemId, $data['description']);
+
+                $annotation = $itemService->getTypedItem($annotationId);
+                if ($annotation !== null) {
+                    $eventDispatcher->dispatch(new ItemAnnotatedEvent($item, $annotation), ItemAnnotatedEvent::NAME);
+                }
 
                 $routeArray = [];
                 $routeArray['roomId'] = $roomId;

@@ -17,11 +17,13 @@ namespace App\Enum;
  * What happened to the source item the {@see \App\Entity\Notification} reports.
  *
  * Mirrors the room/dashboard activity feed, which surfaces both freshly created
- * and edited entries. Each edit is logged as its own notification, so the action
- * tells the view whether to read the event as "created" or "edited".
+ * and edited entries, plus annotations. Each event is logged as its own
+ * notification, so the action tells the view whether to read it as "created",
+ * "edited" or "annotated".
  */
 enum NotificationAction: string
 {
     case Created = 'created';
     case Edited = 'edited';
+    case Annotated = 'annotated';
 }
