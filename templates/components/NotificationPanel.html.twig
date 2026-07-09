@@ -31,12 +31,13 @@
                         {% set end = panel.scheduledEnd(notification) %}
                         <li>
                             <article class="uk-comment{{ notification.unread ? ' cs-notification-unread' : '' }}" style="position: relative;">
-                                <a href="#" class="uk-position-top-right uk-text-muted" style="padding: 4px;"
+                                {# The rubric icon must stay the first child: article.uk-comment > i:first-child is right-aligned by cs-theme (comment.less). #}
+                                <i class="{{ icon }} uk-icon-small {{ notification.unread ? 'uk-text-primary' : 'uk-text-muted' }}"></i>
+                                <a href="#" class="uk-text-muted" style="position: absolute; top: 5px; right: 40px; padding: 2px;"
                                    data-action="live#action" data-live-action-param="dismiss" data-live-id-param="{{ notification.id }}"
                                    title="{{ 'dismiss'|trans({}, 'notification') }}">
                                     <i class="uk-icon-close"></i>
                                 </a>
-                                <i class="{{ icon }} uk-icon-small {{ notification.unread ? 'uk-text-primary' : 'uk-text-muted' }}"></i>
                                 <header class="uk-comment-header uk-margin-remove uk-flex">
                                     <div class="uk-margin-right uk-flex-item-none">
                                         {% if p.actorId %}
