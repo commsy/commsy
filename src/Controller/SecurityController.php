@@ -245,7 +245,8 @@ class SecurityController extends AbstractController
                 $resetPasswordToken = new ResetPasswordToken(
                     uniqid(),
                     $expiresAt,
-                    $localAccount,
+                    $portal->getId(),
+                    $localAccount->getUsername(),
                     $request->getClientIp()
                 );
                 $session->set('ResetPasswordToken', $resetPasswordToken);
@@ -262,7 +263,7 @@ class SecurityController extends AbstractController
                 $subject = $translator->getMessage('USER_PASSWORD_MAIL_SUBJECT', $portal->getTitle());
                 $body = $translator->getMessage(
                     'USER_PASSWORD_MAIL_BODY',
-                    $resetPasswordToken->getAccount()->getUsername(),
+                    $resetPasswordToken->getUsername(),
                     $portal->getTitle(),
                     $resetUrl,
                     '15'
@@ -334,19 +335,16 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Account $accountFromToken */
-            $accountFromToken = $resetPasswordToken->getAccount();
-
             // update password
             $localSource = $managerRegistry->getRepository(AuthSourceLocal::class)
                 ->findOneBy([
-                    'portal' => $accountFromToken->getContextId(),
+                    'portal' => $resetPasswordToken->getPortalId(),
                     'enabled' => 1,
                 ]);
             /** @var Account $localAccount */
             $localAccount = $managerRegistry->getRepository(Account::class)
                 ->findOneByCredentials(
-                    $accountFromToken->getUsername(),
+                    $resetPasswordToken->getUsername(),
                     $localSource->getPortal(),
                     $localSource
                 );
