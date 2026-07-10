@@ -249,7 +249,7 @@ final class FileList extends AbstractController
 
     private function updateIndex(): void
     {
-        $item = $this->itemService->getItem($this->itemId);
+        $item = $this->itemService->getTypedItem($this->itemId);
         $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
     }
 
