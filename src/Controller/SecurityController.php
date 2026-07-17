@@ -242,7 +242,8 @@ class SecurityController extends AbstractController
                 $resetPasswordToken = new ResetPasswordToken(
                     uniqid(),
                     $expiresAt,
-                    $localAccount,
+                    $portal->getId(),
+                    $localAccount->getUsername(),
                     $request->getClientIp()
                 );
                 $session->set('ResetPasswordToken', $resetPasswordToken);
@@ -252,9 +253,11 @@ class SecurityController extends AbstractController
                     'token' => $resetPasswordToken->getToken(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
+                // Modern translator (10.5); the account username comes straight from the token
+                // (#5429 fix from 10.4: getAccount()->getUsername() threw when the account was not loaded).
                 $subject = $symfonyTranslator->trans('mail.password_mail_subject', ['p1' => $portal->getTitle()], 'mail');
                 $body = $symfonyTranslator->trans('mail.password_mail_body', [
-                    'p1' => $resetPasswordToken->getAccount()->getUsername(),
+                    'p1' => $resetPasswordToken->getUsername(),
                     'p2' => $portal->getTitle(),
                     'p3' => $resetUrl,
                     'p4' => '15',
@@ -326,19 +329,16 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Account $accountFromToken */
-            $accountFromToken = $resetPasswordToken->getAccount();
-
             // update password
             $localSource = $managerRegistry->getRepository(AuthSourceLocal::class)
                 ->findOneBy([
-                    'portal' => $accountFromToken->getContextId(),
+                    'portal' => $resetPasswordToken->getPortalId(),
                     'enabled' => 1,
                 ]);
             /** @var Account $localAccount */
             $localAccount = $managerRegistry->getRepository(Account::class)
                 ->findOneByCredentials(
-                    $accountFromToken->getUsername(),
+                    $resetPasswordToken->getUsername(),
                     $localSource->getPortal(),
                     $localSource
                 );
