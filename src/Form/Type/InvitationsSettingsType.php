@@ -62,7 +62,7 @@ class InvitationsSettingsType extends AbstractType
                 'required' => false,
                 'help' => $this->translationRepository
                     ->findOneByContextAndKey($portalItem->getItemId(), 'ROOM_INVITATION_HELP')
-                    ->getTranslationForLocale($this->localeSwitcher->getLocale()),
+                    ?->getTranslationForLocale($this->localeSwitcher->getLocale()) ?? '',
             ])
             ->add('send', SubmitType::class, [
                 'label' => 'Send',

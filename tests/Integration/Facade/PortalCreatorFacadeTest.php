@@ -69,10 +69,11 @@ class PortalCreatorFacadeTest extends KernelTestCase
 
         $translationRepository = $container->get(TranslationRepository::class);
         $translations = $translationRepository->findBy(['contextId' => $portal->getId()]);
-        $this->assertCount(3, $translations);
+        $this->assertCount(4, $translations);
 
         //EMAIL_REGEX_ERROR
         //REGISTRATION_USERNAME_HELP
         //ROOM_SETTINGS_SLUG_HELP
+        //ROOM_INVITATION_HELP
     }
 }
