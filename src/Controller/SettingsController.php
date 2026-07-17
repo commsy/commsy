@@ -368,8 +368,8 @@ class SettingsController extends AbstractController
         Request $request,
         RoomService $roomService,
         ExtensionSettingsTransformer $extensionSettingsTransformer,
-        LegacyEnvironment $legacyEnvironment,
         EventDispatcherInterface $eventDispatcher,
+        TranslatorInterface $translator,
         int $roomId
     ): Response {
         $templates = [];
@@ -390,8 +390,7 @@ class SettingsController extends AbstractController
             $templates = $roomService->getAvailableTemplates($roomItem->getType());
         }
 
-        $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
-        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+        $msg = $translator->trans('template.no_choice', [], 'settings');
         $templates['*'.$msg] = '-1';
 
         uasort($templates, fn ($a, $b) => $a <=> $b);

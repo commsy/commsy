@@ -585,6 +585,66 @@
                 <source>Traffic light red text</source>
                 <target>Rot</target>
             </trans-unit>
+            <trans-unit id="workflow.traffic_light.green_default">
+                <source>workflow.traffic_light.green_default</source>
+                <target>gültig</target>
+            </trans-unit>
+            <trans-unit id="workflow.traffic_light.yellow_default">
+                <source>workflow.traffic_light.yellow_default</source>
+                <target>Entwurf</target>
+            </trans-unit>
+            <trans-unit id="workflow.traffic_light.red_default">
+                <source>workflow.traffic_light.red_default</source>
+                <target>ungültig</target>
+            </trans-unit>
+            <trans-unit id="rubric.home">
+                <source>rubric.home</source>
+                <target>Home</target>
+            </trans-unit>
+            <trans-unit id="rubric.announcement">
+                <source>rubric.announcement</source>
+                <target>Ankündigungen</target>
+            </trans-unit>
+            <trans-unit id="rubric.date">
+                <source>rubric.date</source>
+                <target>Termine</target>
+            </trans-unit>
+            <trans-unit id="rubric.discussion">
+                <source>rubric.discussion</source>
+                <target>Diskussionen</target>
+            </trans-unit>
+            <trans-unit id="rubric.group">
+                <source>rubric.group</source>
+                <target>Gruppen</target>
+            </trans-unit>
+            <trans-unit id="rubric.material">
+                <source>rubric.material</source>
+                <target>Materialien</target>
+            </trans-unit>
+            <trans-unit id="rubric.todo">
+                <source>rubric.todo</source>
+                <target>Aufgaben</target>
+            </trans-unit>
+            <trans-unit id="rubric.user">
+                <source>rubric.user</source>
+                <target>Personen</target>
+            </trans-unit>
+            <trans-unit id="rubric.project">
+                <source>rubric.project</source>
+                <target>Projekträume</target>
+            </trans-unit>
+            <trans-unit id="rubric.topic">
+                <source>rubric.topic</source>
+                <target>Themen</target>
+            </trans-unit>
+            <trans-unit id="rubric.institution">
+                <source>rubric.institution</source>
+                <target>Rubriken</target>
+            </trans-unit>
+            <trans-unit id="template.no_choice">
+                <source>template.no_choice</source>
+                <target>Keine Vorlage</target>
+            </trans-unit>
             <trans-unit id="reader">
                 <source>Reader</source>
                 <target>In diesem Raum verwenden</target>

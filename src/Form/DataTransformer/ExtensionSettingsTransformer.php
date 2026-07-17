@@ -13,17 +13,13 @@
 
 namespace App\Form\DataTransformer;
 
-use App\Services\LegacyEnvironment;
-use cs_environment;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use cs_room_item;
 
 class ExtensionSettingsTransformer extends AbstractTransformer
 {
-    private readonly cs_environment $legacyEnvironment;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
@@ -36,8 +32,6 @@ class ExtensionSettingsTransformer extends AbstractTransformer
         $roomData = [];
 
         if ($roomItem) {
-            $translator = $this->legacyEnvironment->getTranslationObject();
-
             $roomData['assessment'] = $roomItem->isAssessmentActive();
             $roomData['workflow'] = [];
 
@@ -48,17 +42,17 @@ class ExtensionSettingsTransformer extends AbstractTransformer
             if ('' != $roomItem->getWorkflowTrafficLightTextGreen()) {
                 $traffic_light['green_text'] = $roomItem->getWorkflowTrafficLightTextGreen();
             } else {
-                $traffic_light['green_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_GREEN_DEFAULT');
+                $traffic_light['green_text'] = $this->translator->trans('workflow.traffic_light.green_default', [], 'settings');
             }
             if ('' != $roomItem->getWorkflowTrafficLightTextYellow()) {
                 $traffic_light['yellow_text'] = $roomItem->getWorkflowTrafficLightTextYellow();
             } else {
-                $traffic_light['yellow_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT');
+                $traffic_light['yellow_text'] = $this->translator->trans('workflow.traffic_light.yellow_default', [], 'settings');
             }
             if ('' != $roomItem->getWorkflowTrafficLightTextRed()) {
                 $traffic_light['red_text'] = $roomItem->getWorkflowTrafficLightTextRed();
             } else {
-                $traffic_light['red_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
+                $traffic_light['red_text'] = $this->translator->trans('workflow.traffic_light.red_default', [], 'settings');
             }
 
             $roomData['workflow']['traffic_light'] = $traffic_light;

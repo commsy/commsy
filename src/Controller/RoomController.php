@@ -50,6 +50,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use UnexpectedValueException;
 
 /**
@@ -448,6 +449,7 @@ class RoomController extends AbstractController
         EventDispatcherInterface $eventDispatcher,
         CalendarsService $calendarsService,
         LegacyCopy $legacyCopy,
+        TranslatorInterface $translator,
         int $roomId
     ): Response {
         $legacyEnvironment = $environment->getEnvironment();
@@ -506,8 +508,7 @@ class RoomController extends AbstractController
             $type = 'project'; // TODO: what is supposed to happen here? Initial, type is null - with this, the next method errors
         }
 
-        $translator = $legacyEnvironment->getTranslationObject();
-        $msg = $translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE');
+        $msg = $translator->trans('template.no_choice', [], 'settings');
 
         $templates = $roomService->getAvailableTemplates($type);
 

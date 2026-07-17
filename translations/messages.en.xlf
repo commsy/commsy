@@ -482,6 +482,18 @@
                 <source>messages.load_all</source>
                 <target>Load all datasets</target>
             </trans-unit>
+            <trans-unit id="common.new">
+                <source>common.new</source>
+                <target>New</target>
+            </trans-unit>
+            <trans-unit id="common.privateroom">
+                <source>common.privateroom</source>
+                <target>My stack</target>
+            </trans-unit>
+            <trans-unit id="common.datasecurity">
+                <source>common.datasecurity</source>
+                <target>(hidden because of datasecurity)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

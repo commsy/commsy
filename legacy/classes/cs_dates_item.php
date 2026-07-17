@@ -53,9 +53,9 @@ class cs_dates_item extends cs_item
     public function getTitle(): string
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getTranslationObject();
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
-            return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+            return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
         } else {
             return $this->_getValue('title');
         }
@@ -157,9 +157,9 @@ class cs_dates_item extends cs_item
     public function getDescription()
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getTranslationObject();
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
-            return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+            return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {
             return $this->_getValue('description');
         }
@@ -274,12 +274,12 @@ class cs_dates_item extends cs_item
 
     public function getStartingDayName()
     {
-        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getStartingDay())), $this->_environment->getTranslationObject());
+        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getStartingDay())), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
     }
 
     public function getEndingDayName()
     {
-        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getEndingDay())), $this->_environment->getTranslationObject());
+        return \App\Legacy\LegacyDateText::weekdayName(date('w', strtotime($this->getEndingDay())), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
     }
 
     /** set starting time of a dates
@@ -625,14 +625,14 @@ class cs_dates_item extends cs_item
      public function getDateDescription()
      {
          $converter = $this->_environment->getTextConverter();
-         $translator = $this->_environment->getTranslationObject();
+         $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
          // set up style of days and times
          // time
          $parse_time_start = \App\Utils\DateHelper::convertTimeFromInput($this->getStartingTime());
          $conforms = $parse_time_start['conforms'];
          if (true === $conforms) {
-             $start_time_print = $this->_environment->getTranslationObject()->getTimeLanguage($parse_time_start['datetime']);
+             $start_time_print = \App\Utils\DateHelper::formatTime($parse_time_start['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $start_time_print = $converter->text_as_html_short($this->getStartingTime());
@@ -641,25 +641,25 @@ class cs_dates_item extends cs_item
          $parse_time_end = \App\Utils\DateHelper::convertTimeFromInput($this->getEndingTime());
          $conforms = $parse_time_end['conforms'];
          if (true === $conforms) {
-             $end_time_print = $this->_environment->getTranslationObject()->getTimeLanguage($parse_time_end['datetime']);
+             $end_time_print = \App\Utils\DateHelper::formatTime($parse_time_end['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $end_time_print = $converter->text_as_html_short($this->getEndingTime());
          }
          // day
-         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getTranslationObject());
+         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
          $conforms = $parse_day_start['conforms'];
          if (true === $conforms) {
-             $start_day_print = $this->getStartingDayName().', '.$translator->getDateInLang($parse_day_start['datetime']);
+             $start_day_print = $this->getStartingDayName().', '.\App\Utils\DateHelper::formatDate($parse_day_start['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $start_day_print = $converter->text_as_html_short($this->getStartingDay());
          }
 
-         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getTranslationObject());
+         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
          $conforms = $parse_day_end['conforms'];
          if (true === $conforms) {
-             $end_day_print = $this->getEndingDayName().', '.$translator->getDateInLang($parse_day_end['datetime']);
+             $end_day_print = $this->getEndingDayName().', '.\App\Utils\DateHelper::formatDate($parse_day_end['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $end_day_print = $converter->text_as_html_short($this->getEndingDay());
@@ -671,93 +671,93 @@ class cs_dates_item extends cs_item
 
          if ('' !== $end_day_print) {
              // with ending day
-             $date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$translator->getMessage('DATES_TILL').' '.$end_day_print;
+             $date_print = $translator->translate('DATES_AS_OF').' '.$start_day_print.' '.$translator->translate('DATES_TILL').' '.$end_day_print;
              if ($parse_day_start['conforms'] && $parse_day_end['conforms']) {
                  // start and end are dates, not string <- ???
-                 $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+                 $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->translate('DATES_DAYS').')';
              }
 
              if ('' !== $start_time_print && '' === $end_time_print && !$this->isWholeDay()) {
                  // only start time given
-                 $time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                 $time_print = $translator->translate('DATES_AS_OF_LOWER').' '.$start_time_print;
 
                  if (true === $parse_time_start['conforms']) {
-                     $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
              } elseif ('' === $start_time_print && '' !== $end_time_print && !$this->isWholeDay()) {
                  // only end time given
-                 $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $translator->translate('DATES_TILL').' '.$end_time_print;
 
                  if (true === $parse_time_end['conforms']) {
-                     $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
              } elseif ('' !== $start_time_print && '' !== $end_time_print) {
                  // all times given
                  if (!$this->isWholeDay()) {
                      if (true === $parse_time_end['conforms']) {
-                         $end_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                         $end_time_print .= ' '.$translator->translate('DATES_OCLOCK');
                      }
 
                      if (true === $parse_time_start['conforms']) {
-                         $start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                         $start_time_print .= ' '.$translator->translate('DATES_OCLOCK');
                      }
 
-                     $date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.' '.
-                                   $translator->getMessage('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
+                     $date_print = $translator->translate('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.' '.
+                                   $translator->translate('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
                  } else {
-                     $date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.
-                                   $translator->getMessage('DATES_TILL').' '.$end_day_print;
+                     $date_print = $translator->translate('DATES_AS_OF').' '.$start_day_print.' '.
+                                   $translator->translate('DATES_TILL').' '.$end_day_print;
                  }
 
                  if ($parse_day_start['conforms'] && $parse_day_end['conforms']) {
-                     $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+                     $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->translate('DATES_DAYS').')';
                  }
              }
          } else {
              // without ending day
-             $date_print = $translator->getMessage('DATES_ON_DAY_UPPER').' '.$start_day_print;
+             $date_print = $translator->translate('DATES_ON_DAY_UPPER').' '.$start_day_print;
 
              if ('' !== $start_time_print && '' == $end_time_print && !$this->isWholeDay()) {
                  // starting time given
-                 $time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                 $time_print = $translator->translate('DATES_AS_OF_LOWER').' '.$start_time_print;
 
                  if (true === $parse_time_start['conforms']) {
-                     $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
              } elseif ('' === $start_time_print && '' !== $end_time_print && !$this->isWholeDay()) {
                  // end time given
-                 $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $translator->translate('DATES_TILL').' '.$end_time_print;
 
                  if (true === $parse_time_end['conforms']) {
-                     $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
              } elseif ('' !== $start_time_print && '' !== $end_time_print && !$this->isWholeDay()) {
                  // all times given
                  if (true === $parse_time_end['conforms']) {
-                     $end_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $end_time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
 
                  if (true === $parse_time_start['conforms']) {
-                     $start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $start_time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
 
-                 $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $translator->translate('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->translate('DATES_TILL').' '.$end_time_print;
              }
          }
 
          if ($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
-             $date_print = $translator->getMessage('DATES_ON_DAY_UPPER').' '.$start_day_print;
+             $date_print = $translator->translate('DATES_ON_DAY_UPPER').' '.$start_day_print;
 
              if (!$this->isWholeDay()) {
                  if ('' !== $start_time_print && '' === $end_time_print) {
                      // starting time given
-                     $time_print = $translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                     $time_print = $translator->translate('DATES_AS_OF_LOWER').' '.$start_time_print;
                  } elseif ('' === $start_time_print && '' !== $end_time_print) {
                      // endtime given
-                     $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+                     $time_print = $translator->translate('DATES_TILL').' '.$end_time_print;
                  } elseif ('' !== $start_time_print && '' !== $end_time_print) {
                      // all times given
-                     $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
+                     $time_print = $translator->translate('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->translate('DATES_TILL').' '.$end_time_print;
                  }
              }
          }
@@ -774,14 +774,14 @@ class cs_dates_item extends cs_item
      public function getDateListDescription()
      {
          $converter = $this->_environment->getTextConverter();
-         $translator = $this->_environment->getTranslationObject();
+         $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
          // set up style of days and times
          // time
          $parse_time_start = \App\Utils\DateHelper::convertTimeFromInput($this->getStartingTime());
          $conforms = $parse_time_start['conforms'];
          if (true === $conforms) {
-             $start_time_print = $this->_environment->getTranslationObject()->getTimeLanguage($parse_time_start['datetime']);
+             $start_time_print = \App\Utils\DateHelper::formatTime($parse_time_start['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $start_time_print = $converter->text_as_html_short($this->getStartingTime());
@@ -790,25 +790,25 @@ class cs_dates_item extends cs_item
          $parse_time_end = \App\Utils\DateHelper::convertTimeFromInput($this->getEndingTime());
          $conforms = $parse_time_end['conforms'];
          if (true === $conforms) {
-             $end_time_print = $this->_environment->getTranslationObject()->getTimeLanguage($parse_time_end['datetime']);
+             $end_time_print = \App\Utils\DateHelper::formatTime($parse_time_end['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $end_time_print = $converter->text_as_html_short($this->getEndingTime());
          }
          // day
-         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getTranslationObject());
+         $parse_day_start = \App\Legacy\LegacyDateText::convertDate($this->getStartingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
          $conforms = $parse_day_start['conforms'];
          if (true === $conforms) {
-             $start_day_print = $translator->getDateInLang($parse_day_start['datetime']);
+             $start_day_print = \App\Utils\DateHelper::formatDate($parse_day_start['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $start_day_print = $converter->text_as_html_short($this->getStartingDay());
          }
 
-         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getTranslationObject());
+         $parse_day_end = \App\Legacy\LegacyDateText::convertDate($this->getEndingDay(), $this->_environment->getSelectedLanguage(), $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class));
          $conforms = $parse_day_end['conforms'];
          if (true === $conforms) {
-             $end_day_print = $translator->getDateInLang($parse_day_end['datetime']);
+             $end_day_print = \App\Utils\DateHelper::formatDate($parse_day_end['datetime'], $this->_environment->getSelectedLanguage());
          } else {
              // TODO: compareWithSearchText
              $end_day_print = $converter->text_as_html_short($this->getEndingDay());
@@ -820,10 +820,10 @@ class cs_dates_item extends cs_item
 
          if ('' !== $end_day_print) {
              // with ending day
-             $date_print = $start_day_print.' '.$translator->getMessage('DATES_TILL').' '.$end_day_print;
+             $date_print = $start_day_print.' '.$translator->translate('DATES_TILL').' '.$end_day_print;
              if ($parse_day_start['conforms'] && $parse_day_end['conforms']) {
                  // start and end are dates, not string <- ???
-                 $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+                 $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->translate('DATES_DAYS').')';
              }
 
              if ('' !== $start_time_print && '' === $end_time_print && !$this->isWholeDay()) {
@@ -831,34 +831,34 @@ class cs_dates_item extends cs_item
                  $time_print = $start_time_print;
 
                  if (true === $parse_time_start['conforms']) {
-                     $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
              } elseif ('' === $start_time_print && '' !== $end_time_print && !$this->isWholeDay()) {
                  // only end time given
-                 $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $translator->translate('DATES_TILL').' '.$end_time_print;
 
                  if (true === $parse_time_end['conforms']) {
-                     $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
              } elseif ('' !== $start_time_print && '' !== $end_time_print) {
                  // all times given
                  if (!$this->isWholeDay()) {
                      if (true === $parse_time_end['conforms']) {
-                         $end_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                         $end_time_print .= ' '.$translator->translate('DATES_OCLOCK');
                      }
 
                      if (true === $parse_time_start['conforms']) {
-                         $start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                         $start_time_print .= ' '.$translator->translate('DATES_OCLOCK');
                      }
 
                      $date_print = $start_day_print.', '.$start_time_print.' '.
-                                   $translator->getMessage('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
+                                   $translator->translate('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
                  } else {
                      $date_print = $start_day_print.' '.
-                                   $translator->getMessage('DATES_TILL').' '.$end_day_print;
+                                   $translator->translate('DATES_TILL').' '.$end_day_print;
                  }
                  if ($parse_day_start['conforms'] && $parse_day_end['conforms']) {
-                     $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
+                     $date_print .= ' ('.\App\Utils\DateHelper::daysBetween($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->translate('DATES_DAYS').')';
                  }
              }
          } else {
@@ -870,35 +870,35 @@ class cs_dates_item extends cs_item
                  $time_print = $start_time_print;
 
                  if (true === $parse_time_start['conforms']) {
-                     $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
              } elseif ('' === $start_time_print && '' !== $end_time_print && !$this->isWholeDay()) {
                  // end time given
-                 $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $translator->translate('DATES_TILL').' '.$end_time_print;
 
                  if (true === $parse_time_end['conforms']) {
-                     $time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
              } elseif ('' !== $start_time_print && '' !== $end_time_print && !$this->isWholeDay()) {
                  // all times given
                  if (true === $parse_time_end['conforms']) {
-                     $end_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $end_time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
 
                  if (true === $parse_time_start['conforms']) {
-                     $start_time_print .= ' '.$translator->getMessage('DATES_OCLOCK');
+                     $start_time_print .= ' '.$translator->translate('DATES_OCLOCK');
                  }
 
                  if ($start_time_print === $end_time_print) {
-                     $time_print = $translator->getMessage('DATES_AT_TIME').' '.$start_time_print;
+                     $time_print = $translator->translate('DATES_AT_TIME').' '.$start_time_print;
                  } else {
-                     $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
+                     $time_print = $translator->translate('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->translate('DATES_TILL').' '.$end_time_print;
                  }
              }
          }
 
          if ($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
-             $date_print = $translator->getMessage('DATES_ON_DAY_UPPER').' '.$start_day_print;
+             $date_print = $translator->translate('DATES_ON_DAY_UPPER').' '.$start_day_print;
 
              if (!$this->isWholeDay()) {
                  if ('' !== $start_time_print && '' === $end_time_print) {
@@ -906,13 +906,13 @@ class cs_dates_item extends cs_item
                      $time_print = $start_time_print;
                  } elseif ('' === $start_time_print && '' !== $end_time_print) {
                      // endtime given
-                     $time_print = $translator->getMessage('DATES_TILL').' '.$end_time_print;
+                     $time_print = $translator->translate('DATES_TILL').' '.$end_time_print;
                  } elseif ('' !== $start_time_print && '' !== $end_time_print) {
                      // all times given
                      if ($start_time_print === $end_time_print) {
-                         $time_print = $translator->getMessage('DATES_AT_TIME').' '.$start_time_print;
+                         $time_print = $translator->translate('DATES_AT_TIME').' '.$start_time_print;
                      } else {
-                         $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
+                         $time_print = $translator->translate('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->translate('DATES_TILL').' '.$end_time_print;
                      }
                  }
              }

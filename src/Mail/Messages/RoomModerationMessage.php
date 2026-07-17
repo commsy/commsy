@@ -5,6 +5,7 @@ namespace App\Mail\Messages;
 use App\Mail\Message;
 use App\Proxy\PortalProxy;
 use App\Services\LegacyEnvironment;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use cs_context_item;
 use cs_environment;
 use cs_room_item;
@@ -18,6 +19,7 @@ class RoomModerationMessage extends Message
         private readonly PortalProxy|cs_context_item|null $parentContext,
         private readonly string $changeType,
         LegacyEnvironment $legacyEnvironment,
+        private readonly TranslatorInterface $translator,
         private readonly array $oldLinkedIds = [],
         private readonly array $newLinkedIds = [],
     ) {
@@ -46,7 +48,6 @@ class RoomModerationMessage extends Message
     public function getParameters(): array
     {
         $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
-        $translator = $this->legacyEnvironment->getTranslationObject();
 
         $linkedCommunityRoomNames = [];
         $unlinkedCommunityRoomNames = [];
@@ -56,7 +57,7 @@ class RoomModerationMessage extends Message
                 $communityRoom = $roomManager->getItem($roomId);
                 if ($communityRoom) {
                     $linkedCommunityRoomNames[] = $communityRoom->getTitle() . (!in_array($roomId, $this->oldLinkedIds) ?
-                        " [{$translator->getMessage('COMMON_NEW')}]" :
+                        " [{$this->translator->trans('common.new', [], 'messages', $this->legacyEnvironment->getSelectedLanguage())}]" :
                         '');
                 }
             }

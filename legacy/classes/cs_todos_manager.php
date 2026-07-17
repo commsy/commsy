@@ -70,7 +70,7 @@ class cs_todos_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'todos';
-        $this->_translator = $environment->getTranslationObject();
+        $this->_translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
     /** reset limits

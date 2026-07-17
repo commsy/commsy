@@ -17,6 +17,7 @@ use App\Form\DataTransformer\RoomSlugCollectionToStringTransformer;
 use App\Repository\TranslationRepository;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
+use App\Utils\TimePulsesService;
 use cs_community_item;
 use cs_environment;
 use Symfony\Component\Form\AbstractType;
@@ -206,16 +207,17 @@ class GeneralSettingsType extends AbstractType
     {
         $timeChoices = [$this->translator->trans('Select some options') => ''];
 
-        $translator = $this->legacyEnvironment->getTranslationObject();
+        $locale = $this->legacyEnvironment->getSelectedLanguage();
 
         $portalItem = $this->currentContextResolver->getPortalItem();
         if ($portalItem->showTime()) {
+            $timeTextArray = $portalItem->getTimeTextArray();
             $timeList = $portalItem->getTimeList();
             if ($timeList->isNotEmpty()) {
                 $timeItem = $timeList->getFirst();
 
                 while ($timeItem) {
-                    $translatedTitle = $translator->getTimeMessage($timeItem->getTitle());
+                    $translatedTitle = TimePulsesService::renderTimePulseTitle($timeTextArray, $timeItem->getTitle(), $locale);
                     $timeChoices[$translatedTitle] = $timeItem->getItemID();
 
                     $timeItem = $timeList->getNext();

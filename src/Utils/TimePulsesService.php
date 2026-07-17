@@ -32,6 +32,57 @@ class TimePulsesService
     }
 
     /**
+     * Renders the display title of a concrete time pulse (e.g. "2024_1") from the portal's
+     * time pulse templates. Faithful replacement for the legacy cs_translator::getTimeMessage():
+     * the template title (per language) may use %1..%6 placeholders for the year and its
+     * neighbours / two-digit forms.
+     *
+     * @param array<int|string, array<string, string>> $timeTextArray portal->getTimeTextArray()
+     * @param string                                    $timePulseName the time label title, "<year>_<templateId>"
+     * @param string                                    $locale        de|en
+     */
+    public static function renderTimePulseTitle(array $timeTextArray, string $timePulseName, string $locale): string
+    {
+        $parts = explode('_', $timePulseName);
+        if (!isset($parts[1])) {
+            return $timePulseName;
+        }
+
+        $template = $timeTextArray[$parts[1]][mb_strtoupper($locale, 'UTF-8')] ?? null;
+        if (empty($template)) {
+            return $timePulseName;
+        }
+
+        $year = $parts[0];
+        $yearSmall = $year[2].$year[3];
+
+        // NOTE: the two if blocks are intentionally sequential (not elseif), faithfully
+        // mirroring the legacy getTimeMessageInLang() -- so the 100 -> '00' case is then also
+        // caught by the "< 10" block and becomes '000'.
+        $yearSmallPlus = $yearSmall + 1;
+        if (100 == $yearSmallPlus) {
+            $yearSmallPlus = '00';
+        }
+        if ($yearSmallPlus < 10) {
+            $yearSmallPlus = '0'.$yearSmallPlus;
+        }
+
+        $yearSmallMinus = $yearSmall - 1;
+        if (-1 == $yearSmallMinus) {
+            $yearSmallMinus = '99';
+        }
+        if ($yearSmallMinus < 10) {
+            $yearSmallMinus = '0'.$yearSmallMinus;
+        }
+
+        return str_replace(
+            ['%1', '%2', '%3', '%4', '%5', '%6'],
+            [(string) $year, (string) ($year + 1), (string) ($year - 1), (string) $yearSmall, (string) $yearSmallPlus, (string) $yearSmallMinus],
+            $template
+        );
+    }
+
+    /**
      * Returns all time pulse templates defined for the given portal as an array of TimePulseTemplate
      * data objects.
      *

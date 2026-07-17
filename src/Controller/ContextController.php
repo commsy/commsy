@@ -19,6 +19,7 @@ use App\Form\Type\ContextRequestType;
 use App\Mail\Factories\RoomMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
+use App\Mail\Text\MailTextRenderer;
 use App\Repository\RoomRepository;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -39,6 +40,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ContextController.
@@ -65,6 +67,8 @@ class ContextController extends AbstractController
         RoomMessageFactory $roomMessageFactory,
         RoomRepository $roomRepository,
         Mailer $mailer,
+        MailTextRenderer $mailTextRenderer,
+        TranslatorInterface $symfonyTranslator,
         int $roomId,
         int $itemId
     ): Response {
@@ -218,11 +222,7 @@ class ContextController extends AbstractController
                     $modFullName = $contactModerator ? $contactModerator->getFullname() : '';
                     $modEmail = $contactModerator ? $contactModerator->getEmail() : '';
 
-                    $translator = $legacyEnvironment->getTranslationObject();
-                    $translator->setEmailTextArray($roomItem->getEmailTextArray());
-                    $translator->setContext('project');
-
-                    $savedLanguage = $translator->getSelectedLanguage();
+                    $overrides = $roomItem->getEmailTextArray();
 
                     $language = $roomItem->getLanguage();
                     if ('user' == $language) {
@@ -233,36 +233,31 @@ class ContextController extends AbstractController
                     }
 
                     if ($this->currentContextResolver->getPortalItem()->getHideAccountname()) {
-                        $userId = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
+                        $userId = 'XXX '.$symfonyTranslator->trans('common.datasecurity', [], 'messages', $language);
                     } else {
                         $userId = $newUser->getUserID();
                     }
 
-                    $translator->setSelectedLanguage($language);
+                    $subject = $symfonyTranslator->trans('mail.subject.status_user', ['p1' => $roomItem->getTitle()], 'mail', $language);
 
-                    $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER', $roomItem->getTitle());
+                    // legacy MAIL_AUTO footer: localized "sent automatically at <date> - <time>"
+                    $now = new DateTimeImmutable();
+                    $autoDate = 'de' === $language ? $now->format('d.m.Y') : $now->format('m/d/Y');
+                    $autoTime = 'de' === $language ? $now->format('H:i') : $now->format('h:ia');
 
-                    $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date('Y-m-d H:i:s')),
-                        $translator->getTimeInLang(date('Y-m-d H:i:s')));
+                    $body = $symfonyTranslator->trans('mail.auto_sent', ['p1' => $autoDate, 'p2' => $autoTime], 'mail', $language);
                     $body .= "\n\n";
-                    $body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $newUser->getFullname());
+                    $body .= $mailTextRenderer->render('mail.salutation', 'MAIL_BODY_HELLO', 'project', $language, [$newUser->getFullname()], $overrides);
                     $body .= "\n\n";
                     if ($roomItem->isCommunityRoom()) {
-                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GR', $userId,
-                            $roomItem->getTitle());
-                    } else {
-                        if ($roomItem->isProjectRoom()) {
-                            $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_PR', $userId,
-                                $roomItem->getTitle());
-                        } else {
-                            if ($roomItem->isGroupRoom()) {
-                                $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GP', $userId,
-                                    $roomItem->getTitle());
-                            }
-                        }
+                        $body .= $mailTextRenderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_GR', 'community', $language, [$userId, $roomItem->getTitle()], $overrides);
+                    } elseif ($roomItem->isProjectRoom()) {
+                        $body .= $mailTextRenderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_PR', 'project', $language, [$userId, $roomItem->getTitle()], $overrides);
+                    } elseif ($roomItem->isGroupRoom()) {
+                        $body .= $mailTextRenderer->render('mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER_GP', 'grouproom', $language, [$userId, $roomItem->getTitle()], $overrides);
                     }
                     $body .= "\n\n";
-                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $modFullName, $roomItem->getTitle());
+                    $body .= $mailTextRenderer->render('mail.goodbye', 'MAIL_BODY_CIAO', 'project', $language, [$modFullName, $roomItem->getTitle()], $overrides);
                     $body .= "\n\n";
                     $body .= $this->generateUrl('app_room_home', [
                         'roomId' => $roomItem->getItemID(),
@@ -283,8 +278,6 @@ class ContextController extends AbstractController
                         $roomItem->getContextItem()->getTitle(),
                         $replyTo
                     );
-
-                    $translator->setSelectedLanguage($savedLanguage);
                 }
 
                 $event = new UserJoinedRoomEvent($newUser, $roomItem);

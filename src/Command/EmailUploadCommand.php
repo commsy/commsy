@@ -25,6 +25,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand('commsy:cron:emailupload', 'commsy email upload cron')]
 class EmailUploadCommand extends Command
@@ -45,6 +46,7 @@ class EmailUploadCommand extends Command
         private readonly CurrentContextResolver $currentContextResolver,
         private readonly Mailer $mailer,
         private readonly PortalRepository $portalRepository,
+        private readonly TranslatorInterface $translator,
         private $projectDir,
         private $uploadEnabled,
         private $uploadServer,
@@ -101,18 +103,15 @@ class EmailUploadCommand extends Command
     private function emailToCommsy($mail): void
     {
         $translation = [];
-        $translator = $this->legacyEnvironment->getTranslationObject();
 
         // split the plain text part
         $bodyLines = preg_split('/\\r\\n|\\r|\\n/', (string) $mail->textPlain);
 
         // account / secret translations
-        $translator->setSelectedLanguage('de');
-        $translation['de']['password'] = $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD');
-        $translation['de']['account'] = $translator->getMessage('EMAIL_TO_COMMSY_ACCOUNT');
-        $translator->setSelectedLanguage('en');
-        $translation['en']['password'] = $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD');
-        $translation['en']['account'] = $translator->getMessage('EMAIL_TO_COMMSY_ACCOUNT');
+        $translation['de']['password'] = $this->translator->trans('mail.email_upload.password', [], 'mail', 'de');
+        $translation['de']['account'] = $this->translator->trans('mail.email_upload.account', [], 'mail', 'de');
+        $translation['en']['password'] = $this->translator->trans('mail.email_upload.password', [], 'mail', 'en');
+        $translation['en']['account'] = $this->translator->trans('mail.email_upload.account', [], 'mail', 'en');
 
         $hasFooter = false;
         $footerStart = 0;
@@ -197,7 +196,7 @@ class EmailUploadCommand extends Command
                 $privateRoomUser = $matchedUser->getRelatedPrivateRoomUserItem();
                 $privateRoom = $privateRoomUser->getOwnRoom();
 
-                $translator->setSelectedLanguage($privateRoom->getLanguage());
+                $lang = $privateRoom->getLanguage();
 
                 if ($privateRoom->getEmailToCommSy()) {
                     $privateSecret = $privateRoom->getEmailToCommSySecret();
@@ -254,7 +253,7 @@ class EmailUploadCommand extends Command
                         $materialItem->save();
 
                         // send e-mail with 'material created in your private room' back to sender
-                        $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $privateRoomUser->getFullName())."\n\n";
+                        $body = $this->translator->trans('mail.email_upload.success', ['p1' => $privateRoomUser->getFullName()], 'mail', $lang)."\n\n";
 
                         if (!empty($sizeErrors)) {
                             $filesToLarge = '';
@@ -263,10 +262,10 @@ class EmailUploadCommand extends Command
                                 $filesToLarge .= '- '.$sizeError['name'].' ('.round($sizeError['size'] / (1024 * 1024), 2).' MB)'."\n";
                             }
 
-                            $body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE', $portalMaxFileSize / (1024 * 1024), $filesToLarge)."\n\n";
+                            $body .= $this->translator->trans('mail.email_upload.files_too_large', ['p1' => $portalMaxFileSize / (1024 * 1024), 'p2' => $filesToLarge], 'mail', $lang)."\n\n";
                         }
 
-                        $body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_REGARDS');
+                        $body .= $this->translator->trans('mail.email_upload.regards', [], 'mail', $lang);
 
                         $recipient = RecipientFactory::createFromRaw($mail->fromAddress);
                         $this->mailer->sendRaw(
@@ -277,7 +276,7 @@ class EmailUploadCommand extends Command
                         );
                     } else {
                         // send e-mail with 'password or subject not correct' back to sender
-                        $body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FAILURE', $privateRoomUser->getFullName(), $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD'));
+                        $body = $this->translator->trans('mail.email_upload.failure', ['p1' => $privateRoomUser->getFullName(), 'p2' => $this->translator->trans('mail.email_upload.password', [], 'mail', $lang)], 'mail', $lang);
 
                         $recipient = RecipientFactory::createFromRaw($mail->fromAddress);
                         $this->mailer->sendRaw(

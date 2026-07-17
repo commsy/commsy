@@ -396,7 +396,7 @@ class cs_grouproom_item extends cs_room_item
 
     public function getUsageInfoHeaderForRubric($rubric)
     {
-        $translator = $this->_environment->getTranslationObject();
+        $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         if ($this->_issetExtra('USAGE_INFO_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_HEADER');
             if (empty($retour)) {
@@ -408,7 +408,7 @@ class cs_grouproom_item extends cs_room_item
         if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
-            $retour = $translator->getMessage('USAGE_INFO_HEADER');
+            $retour = $translator->translate('USAGE_INFO_HEADER');
         }
 
         return $retour;
@@ -430,7 +430,7 @@ class cs_grouproom_item extends cs_room_item
 
     public function getUsageInfoHeaderForRubricForm($rubric)
     {
-        $translator = $this->_environment->getTranslationObject();
+        $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         if ($this->_issetExtra('USAGE_INFO_HEADER')) {
             $retour = $this->_getExtra('USAGE_INFO_HEADER');
             if (empty($retour)) {
@@ -442,7 +442,7 @@ class cs_grouproom_item extends cs_room_item
         if (isset($retour[mb_strtoupper((string) $rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper((string) $rubric, 'UTF-8')])) {
             $retour = $retour[mb_strtoupper((string) $rubric, 'UTF-8')];
         } else {
-            $retour = $translator->getMessage('USAGE_INFO_HEADER');
+            $retour = $translator->translate('USAGE_INFO_HEADER');
         }
 
         return $retour;

@@ -13,10 +13,12 @@
 
 namespace App\Form\DataTransformer;
 
+use App\Mail\Text\MailTextRenderer;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_room_item;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ModerationSettingsTransformer extends AbstractTransformer
 {
@@ -31,7 +33,9 @@ class ModerationSettingsTransformer extends AbstractTransformer
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private readonly ParameterBagInterface $parameterBag
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly TranslatorInterface $translator,
+        private readonly MailTextRenderer $mailTextRenderer,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->emailTexts = [
@@ -81,9 +85,8 @@ class ModerationSettingsTransformer extends AbstractTransformer
             }
 
             // Usage Infos
-            $translator = $this->legacyEnvironment->getTranslationObject();
             $array_info_text = [];
-            $temp_array['rubric'] = $translator->getMessage('HOME_INDEX');
+            $temp_array['rubric'] = $this->translator->trans('rubric.home', [], 'settings');
             $temp_array['key'] = 'home';
             $temp_array['title'] = $roomItem->getUsageInfoHeaderForRubric('home');
             $temp_array['text'] = $roomItem->getUsageInfoTextForRubricInForm('home');
@@ -92,18 +95,20 @@ class ModerationSettingsTransformer extends AbstractTransformer
             $roomData['usernotice']['description_home'] = $roomItem->getUsageInfoTextForRubricInForm('home');
             foreach ($roomItem->getAvailableRubrics() as $rubric) {
                 $temp_array = [];
+                // The grammar-bearing rubric names (project/topic/institution) are baked
+                // to their declined plural form, matching the legacy engine's output.
                 $temp_array['rubric'] = match (mb_strtoupper((string) $rubric, 'UTF-8')) {
-                    'ANNOUNCEMENT' => $translator->getMessage('ANNOUNCEMENT_INDEX'),
-                    'DATE' => $translator->getMessage('DATE_INDEX'),
-                    'DISCUSSION' => $translator->getMessage('DISCUSSION_INDEX'),
-                    'INSTITUTION' => $translator->getMessage('INSTITUTION_INDEX'),
-                    'GROUP' => $translator->getMessage('GROUP_INDEX'),
-                    'MATERIAL' => $translator->getMessage('MATERIAL_INDEX'),
-                    'PROJECT' => $translator->getMessage('PROJECT_INDEX'),
-                    'TODO' => $translator->getMessage('TODO_INDEX'),
-                    'TOPIC' => $translator->getMessage('TOPIC_INDEX'),
-                    'USER' => $translator->getMessage('USER_INDEX'),
-                    default => $translator->getMessage('COMMON_MESSAGETAG_ERROR cs_configuration_usageinfo_form(113) '),
+                    'ANNOUNCEMENT' => $this->translator->trans('rubric.announcement', [], 'settings'),
+                    'DATE' => $this->translator->trans('rubric.date', [], 'settings'),
+                    'DISCUSSION' => $this->translator->trans('rubric.discussion', [], 'settings'),
+                    'INSTITUTION' => $this->translator->trans('rubric.institution', [], 'settings'),
+                    'GROUP' => $this->translator->trans('rubric.group', [], 'settings'),
+                    'MATERIAL' => $this->translator->trans('rubric.material', [], 'settings'),
+                    'PROJECT' => $this->translator->trans('rubric.project', [], 'settings'),
+                    'TODO' => $this->translator->trans('rubric.todo', [], 'settings'),
+                    'TOPIC' => $this->translator->trans('rubric.topic', [], 'settings'),
+                    'USER' => $this->translator->trans('rubric.user', [], 'settings'),
+                    default => mb_strtoupper((string) $rubric, 'UTF-8'),
                 };
                 $temp_array['key'] = $rubric;
                 $temp_array['title'] = $roomItem->getUsageInfoHeaderForRubric($rubric);
@@ -131,7 +136,7 @@ class ModerationSettingsTransformer extends AbstractTransformer
             $emailDefaultValues = [];
             foreach (array_values($this->emailTexts) as $message_tag) {
                 foreach (['de', 'en'] as $language) {
-                    $emailDefaultValues[mb_strtolower(str_replace('CHOICE', 'BODY', (string) $message_tag)).'_'.$language] = $translator->getEmailMessageInLang($language, $message_tag);
+                    $emailDefaultValues[mb_strtolower(str_replace('CHOICE', 'BODY', (string) $message_tag)).'_'.$language] = $this->mailTextRenderer->templateFor($message_tag, $language);
                 }
             }
 

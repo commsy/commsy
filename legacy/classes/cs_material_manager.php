@@ -91,7 +91,7 @@ class cs_material_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'materials';
-        $this->_translator = $environment->getTranslationObject();
+        $this->_translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
     /** reset data

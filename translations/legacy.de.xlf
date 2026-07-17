@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="file.ext">
+    <body>
+      <trans-unit id="ALL_MEMBERS">
+        <source>ALL_MEMBERS</source>
+        <target>Alle Mitglieder</target>
+      </trans-unit>
+      <trans-unit id="COMMON_AUTOMATIC_DELETE_DESCRIPTION">
+        <source>COMMON_AUTOMATIC_DELETE_DESCRIPTION</source>
+        <target>Dieser Eintrag wurde auf Wunsch des Erstellers/der Erstellerin wie alle &#xFC;brigen Eintr&#xE4;ge dieser Person in diesem Raum automatisch entfernt. Der Beitrag ist durch diesen Eintrag ersetzt worden, um den Zusammenhang zu anderen Eintr&#xE4;gen zu wahren. Bei Bedarf kann dieser Eintrag jederzeit gel&#xF6;scht werden.</target>
+      </trans-unit>
+      <trans-unit id="COMMON_AUTOMATIC_DELETE_TITLE">
+        <source>COMMON_AUTOMATIC_DELETE_TITLE</source>
+        <target>Gel&#xF6;schter Eintrag (aus Datenschutzgr&#xFC;nden)</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_APRIL_LONG">
+        <source>COMMON_DATE_APRIL_LONG</source>
+        <target>April</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_APRIL_SHORT">
+        <source>COMMON_DATE_APRIL_SHORT</source>
+        <target>Apr</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_AUGUST_LONG">
+        <source>COMMON_DATE_AUGUST_LONG</source>
+        <target>August</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_AUGUST_SHORT">
+        <source>COMMON_DATE_AUGUST_SHORT</source>
+        <target>Aug</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_DECEMBER_LONG">
+        <source>COMMON_DATE_DECEMBER_LONG</source>
+        <target>Dezember</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_DECEMBER_SHORT">
+        <source>COMMON_DATE_DECEMBER_SHORT</source>
+        <target>Dez</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_FEBRUARY_LONG">
+        <source>COMMON_DATE_FEBRUARY_LONG</source>
+        <target>Februar</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_FEBRUARY_SHORT">
+        <source>COMMON_DATE_FEBRUARY_SHORT</source>
+        <target>Feb</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_FRIDAY">
+        <source>COMMON_DATE_FRIDAY</source>
+        <target>Freitag</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_JANUARY_LONG">
+        <source>COMMON_DATE_JANUARY_LONG</source>
+        <target>Januar</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_JANUARY_SHORT">
+        <source>COMMON_DATE_JANUARY_SHORT</source>
+        <target>Jan</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_JULY_LONG">
+        <source>COMMON_DATE_JULY_LONG</source>
+        <target>Juli</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_JULY_SHORT">
+        <source>COMMON_DATE_JULY_SHORT</source>
+        <target>Jul</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_JUNE_LONG">
+        <source>COMMON_DATE_JUNE_LONG</source>
+        <target>Juni</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_JUNE_SHORT">
+        <source>COMMON_DATE_JUNE_SHORT</source>
+        <target>Jun</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_MARCH_LONG">
+        <source>COMMON_DATE_MARCH_LONG</source>
+        <target>M&#xE4;rz</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_MARCH_SHORT">
+        <source>COMMON_DATE_MARCH_SHORT</source>
+        <target>M&#xE4;r</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_MAY_LONG">
+        <source>COMMON_DATE_MAY_LONG</source>
+        <target>Mai</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_MAY_SHORT">
+        <source>COMMON_DATE_MAY_SHORT</source>
+        <target>Mai</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_MONDAY">
+        <source>COMMON_DATE_MONDAY</source>
+        <target>Montag</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_NOVEMBER_LONG">
+        <source>COMMON_DATE_NOVEMBER_LONG</source>
+        <target>November</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_NOVEMBER_SHORT">
+        <source>COMMON_DATE_NOVEMBER_SHORT</source>
+        <target>Nov</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_OCTOBER_LONG">
+        <source>COMMON_DATE_OCTOBER_LONG</source>
+        <target>Oktober</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_OCTOBER_SHORT">
+        <source>COMMON_DATE_OCTOBER_SHORT</source>
+        <target>Okt</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_SATURDAY">
+        <source>COMMON_DATE_SATURDAY</source>
+        <target>Samstag</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_SEPTEMBER_LONG">
+        <source>COMMON_DATE_SEPTEMBER_LONG</source>
+        <target>September</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_SEPTEMBER_SHORT">
+        <source>COMMON_DATE_SEPTEMBER_SHORT</source>
+        <target>Sept</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_SUNDAY">
+        <source>COMMON_DATE_SUNDAY</source>
+        <target>Sonntag</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_THURSDAY">
+        <source>COMMON_DATE_THURSDAY</source>
+        <target>Donnerstag</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_TUESDAY">
+        <source>COMMON_DATE_TUESDAY</source>
+        <target>Dienstag</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DATE_WEDNESDAY">
+        <source>COMMON_DATE_WEDNESDAY</source>
+        <target>Mittwoch</target>
+      </trans-unit>
+      <trans-unit id="COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC">
+        <source>COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC</source>
+        <target>&lt;p&gt;Dieser Beitrag wurde gel&#xF6;scht und durch einen Platzhalter ersetzt, um den Zusammenhang zu anderen Beitr&#xE4;gen zu wahren.&lt;/p&gt;</target>
+      </trans-unit>
+      <trans-unit id="COMMON_PRIVATEROOM">
+        <source>COMMON_PRIVATEROOM</source>
+        <target>Meine Ablage</target>
+      </trans-unit>
+      <trans-unit id="COMMON_SEARCH_IN_ROOM">
+        <source>COMMON_SEARCH_IN_ROOM</source>
+        <target>Suche im Raum</target>
+      </trans-unit>
+      <trans-unit id="COMMON_SEARCH_IN_RUBRIC">
+        <source>COMMON_SEARCH_IN_RUBRIC</source>
+        <target>Suche in Rubrik</target>
+      </trans-unit>
+      <trans-unit id="DATES_AS_OF">
+        <source>DATES_AS_OF</source>
+        <target>Ab</target>
+      </trans-unit>
+      <trans-unit id="DATES_AS_OF_LOWER">
+        <source>DATES_AS_OF_LOWER</source>
+        <target>ab</target>
+      </trans-unit>
+      <trans-unit id="DATES_AT_TIME">
+        <source>DATES_AT_TIME</source>
+        <target>um</target>
+      </trans-unit>
+      <trans-unit id="DATES_DAYS">
+        <source>DATES_DAYS</source>
+        <target>Tage</target>
+      </trans-unit>
+      <trans-unit id="DATES_FROM_TIME_LOWER">
+        <source>DATES_FROM_TIME_LOWER</source>
+        <target>von</target>
+      </trans-unit>
+      <trans-unit id="DATES_OCLOCK">
+        <source>DATES_OCLOCK</source>
+        <target>Uhr</target>
+      </trans-unit>
+      <trans-unit id="DATES_ON_DAY_UPPER">
+        <source>DATES_ON_DAY_UPPER</source>
+        <target>Am</target>
+      </trans-unit>
+      <trans-unit id="DATES_TILL">
+        <source>DATES_TILL</source>
+        <target>bis</target>
+      </trans-unit>
+      <trans-unit id="GROUP_ALL_DESC">
+        <source>GROUP_ALL_DESC</source>
+        <target>In diese Gruppe werden automatisch alle Mitglieder des Projektraums eingetragen. Sie wurde vom System erzeugt und kann nicht gel&#xF6;scht werden.</target>
+      </trans-unit>
+      <trans-unit id="PRIVATE_ROOM_TITLE">
+        <source>PRIVATE_ROOM_TITLE</source>
+        <target>Private Ablage von</target>
+      </trans-unit>
+      <trans-unit id="TODO_DONE">
+        <source>TODO_DONE</source>
+        <target>erledigt</target>
+      </trans-unit>
+      <trans-unit id="TODO_IN_POGRESS">
+        <source>TODO_IN_POGRESS</source>
+        <target>in Bearbeitung</target>
+      </trans-unit>
+      <trans-unit id="TODO_NOT_STARTED">
+        <source>TODO_NOT_STARTED</source>
+        <target>nicht bearbeitet</target>
+      </trans-unit>
+      <trans-unit id="USAGE_INFO_HEADER">
+        <source>USAGE_INFO_HEADER</source>
+        <target>Nutzungshinweise</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

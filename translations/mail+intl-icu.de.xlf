@@ -461,6 +461,340 @@
                 <source>mail.account_merge_ignore</source>
                 <target>Falls Sie dieses Zusammenlegen nicht angefordert haben, ignorieren Sie diese E-Mail bitte. Es wird dann nichts verändert.</target>
             </trans-unit>
+            <trans-unit id="mail_salutation">
+                <source>mail.salutation</source>
+                <target>Hallo {p1},</target>
+            </trans-unit>
+            <trans-unit id="mail_goodbye">
+                <source>mail.goodbye</source>
+                <target>{room_type, select,
+project {Gruß ... {p1}
+CommSy-Projektraum "{p2}"}
+community {Gruß ... {p1}
+Moderation "{p2}"}
+grouproom {Gruß ... {p1}
+CommSy-Gruppenraum "{p2}"}
+other {Gruß ... {p1}
+Moderation "{p2}"}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_lock_now">
+                <source>mail.inactivity_lock_now</source>
+                <target>Ihre Kennung {p1} ({p2}) wurde wegen Inaktivität gesperrt. Bitte wenden Sie sich an Ihre Portal-Moderation.
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_lock_next">
+                <source>mail.inactivity_lock_next</source>
+                <target>Ihre Kennung {p1} ({p2}) wird in {p3} Tagen wegen Inaktivität gesperrt. Bitte loggen Sie sich innerhalb dieser Zeit ein, um eine automatische Sperrung zu verhindern.
+
+{p4}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_delete_next">
+                <source>mail.inactivity_delete_next</source>
+                <target>Ihre Kennung {p1} ({p2}) wird in {p3} Tagen gelöscht.
+
+{p4}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_delete_now">
+                <source>mail.inactivity_delete_now</source>
+                <target>Ihre Kennung {p1} ({p2}) wurde gelöscht.
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_room_lock_upcoming">
+                <source>mail.inactivity_room_lock_upcoming</source>
+                <target>Der Raum "{p1}" wurde seit {p2} Tagen nicht mehr verwendet. Daher wird er in {p3} Tagen gesperrt.
+
+Wenn Sie nicht wollen, dass der Raum gesperrt wird, betreten Sie Ihn innerhalb der nächsten {p3} Tage.</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_room_delete_upcoming">
+                <source>mail.inactivity_room_delete_upcoming</source>
+                <target>Der Raum "{p1}" wurde seit {p2} Tagen nicht mehr verwendet. Daher findet eine Löschung in {p3} Tagen statt.
+
+Wenn Sie nicht wollen, dass der Raum gelöscht wird, kontaktieren Sie inner der nächsten {p3} Tage die Portalmoderation mit der Bitte ihn zu entsperren.</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_delete">
+                <source>mail.subject.account_delete</source>
+                <target>{p1}: Kennung gelöscht</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_lock">
+                <source>mail.subject.account_lock</source>
+                <target>{p1}: Kennung gesperrt</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_free">
+                <source>mail.subject.account_free</source>
+                <target>{p1}: Kennung freigeschaltet</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_user">
+                <source>mail.subject.status_user</source>
+                <target>{p1}: neuer Status - BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_moderator">
+                <source>mail.subject.status_moderator</source>
+                <target>{p1}: neuer Status - Moderator</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_read_only_user">
+                <source>mail.subject.status_read_only_user</source>
+                <target>{p1}: neuer Status - LesendeR BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_make_contact_person">
+                <source>mail.subject.make_contact_person</source>
+                <target>{p1}: neuer Status - AnsprechpartnerIn</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_unmake_contact_person">
+                <source>mail.subject.unmake_contact_person</source>
+                <target>{p1}: keinE AnsprechpartnerIn mehr</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_merge">
+                <source>mail.subject.account_merge</source>
+                <target>{p1}: doppelte Kennungen</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_password">
+                <source>mail.subject.account_password</source>
+                <target>{p1}: Kennung und Passwort</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_generic">
+                <source>mail.subject.generic</source>
+                <target>Betreff:</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_password">
+                <source>mail.email_upload.password</source>
+                <target>Upload-Kennwort</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_account">
+                <source>mail.email_upload.account</source>
+                <target>Kennung</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_success">
+                <source>mail.email_upload.success</source>
+                <target>Hallo {p1},
+
+der Upload per E-Mail in Ihre persönliche Ablage war erfolgreich.
+
+Das neue Material finden sie in Ihrer CommSy-Leiste.
+</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_files_too_large">
+                <source>mail.email_upload.files_too_large</source>
+                <target>Folgende Dateien waren leider größer als die erlaubte Upload-Grenze des Portals ({p1} MB):
+
+{p2}
+Diese Dateien wurden nicht an das neue Material angehängt.</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_regards">
+                <source>mail.email_upload.regards</source>
+                <target>Gruß ... CommSy Administrator</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_failure">
+                <source>mail.email_upload.failure</source>
+                <target>Hallo {p1},
+
+der Upload per E-Mail in Ihre Ablage war leider nicht erfolgreich.
+
+Bitte überprüfen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennwort mit folgender Zeile angegeben haben:
+
+{p2}: IHR_UPLOAD_KENNWORT
+
+Gruß ... CommSy Administrator</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_resubmission_body">
+                <source>mail.workflow.resubmission_body</source>
+                <target>Im Raum "{p1}" wurde das Wiedervorlage-Datum f&amp;uuml;r den Eintrag "{p2}" erreicht:
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_resubmission_subject">
+                <source>mail.workflow.resubmission_subject</source>
+                <target>{p1} - Das Wiedervorlage-Datum eines Eintrags wurde erreicht</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_validity_body">
+                <source>mail.workflow.validity_body</source>
+                <target>Im Raum "{p1}" wurde das zweite Wiedervorlage-Datum f&amp;uuml;r den Eintrag "{p2}" erreicht:
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_validity_subject">
+                <source>mail.workflow.validity_subject</source>
+                <target>{p1} - Das zweite Wiedervorlage-Datum eines Eintrags wurde erreicht</target>
+            </trans-unit>
+            <trans-unit id="mail_account_forget_subject">
+                <source>mail.account_forget_subject</source>
+                <target>Kennung zusenden</target>
+            </trans-unit>
+            <trans-unit id="mail_account_forget_body">
+                <source>mail.account_forget_body</source>
+                <target>Im CommSy *{p1}* sind folgende Kennungen auf Ihre E-Mail-Adresse registriert:
+
+{p2}</target>
+            </trans-unit>
+            <trans-unit id="mail_password_mail_subject">
+                <source>mail.password_mail_subject</source>
+                <target>{p1}: Passwortänderung</target>
+            </trans-unit>
+            <trans-unit id="mail_password_mail_body">
+                <source>mail.password_mail_body</source>
+                <target>für Ihre Kennung
+   {p1}
+
+auf dem CommSy-Portal
+   {p2}
+
+wurde der Mechanismus "Passwort vergessen" aktiviert.
+
+Über den Link
+{p3}
+
+können Sie Ihr Passwort in den nächsten {p4} Minuten neu setzen. Er ist nur von dem PC aus nutzbar, von dem der "Passwort-vergessen"-Mechanismus aus angestoßen wurde.
+
+---
+
+Sofern Sie nicht gerade auf "Passwort vergessen?" geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.</target>
+            </trans-unit>
+            <trans-unit id="mail_body_account_delete">
+                <source>mail.body.account_delete</source>
+                <target>{room_type, select,
+project {Ihre Kennung
+   {p1}
+
+wurde in dem CommSy-Projektraum "{p2}" gelöscht.}
+community {Ihre Kennung
+   {p1}
+
+wurde in dem Gemeinschaftsraum "{p2}" gelöscht.}
+grouproom {Ihre Kennung
+   {p1}
+
+wurde in dem CommSy-Gruppenraum "{p2}" gelöscht.}
+other {Ihre Kennung
+   {p1}
+
+wurde auf dem Portal "{p2}" und damit auch in allen Räumen des Portals gelöscht.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_account_lock">
+                <source>mail.body.account_lock</source>
+                <target>{room_type, select,
+project {Ihre Kennung
+   {p1}
+
+in dem CommSy-Projektraum "{p2}" ist gesperrt worden.}
+community {Ihre Kennung
+   {p1}
+
+in dem Gemeinschaftsraum "{p2}" ist gesperrt worden.
+
+Bitte wenden Sie sich an die Moderation des Gemeinschaftsraums "{p2}", wenn Sie weitere Informationen wünschen.}
+grouproom {Ihre Kennung
+   {p1}
+
+in dem CommSy-Gruppenraum "{p2}" ist gesperrt worden.}
+other {Ihre Kennung
+   {p1}
+
+im Portal "{p2}" ist gesperrt worden.
+
+Bitte wenden Sie sich an die Moderation des Portals "{p2}", wenn Sie weitere Informationen wünschen.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_auto_sent">
+                <source>mail.auto_sent</source>
+                <target>[Diese E-Mail wurde am {p1} um {p2} Uhr automatisch vom System verschickt.]</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_login_expiration">
+                <source>mail.subject.login_expiration</source>
+                <target>{p1}: Einloggen als XYZ ist abgelaufen</target>
+            </trans-unit>
+            <trans-unit id="mail_body_login_expiration">
+                <source>mail.body.login_expiration</source>
+                <target>die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_user">
+                <source>mail.body.status_user</source>
+                <target>{room_type, select,
+project {Ihre Kennung
+   {p1}
+
+für den CommSy-Projektraum "{p2}" hat nun den Status "BenutzerIn" und Sie können alle Möglichkeiten in dem Projektraum "{p2}" nutzen.}
+community {Ihre Kennung
+   {p1}
+
+für den Gemeinschaftsraum "{p2}" hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten in dem Gemeinschaftsraum "{p2}" nutzen.}
+grouproom {Ihre Kennung
+   {p1}
+
+für den CommSy-Gruppenraum "{p2}" hat nun den Status "BenutzerIn" und Sie können alle Möglichkeiten im Gruppenraum "{p2}" nutzen.}
+other {Ihre Kennung
+   {p1}
+
+für das Portal "{p2}" hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten im Portal "{p2}" nutzen. Ihre Kennung gilt außerdem für alle Räume im Portal "{p2}", in denen Sie sich als Teilnehmer anmelden.
+
+Noch zwei Hinweise zu den Räumen:
+- TeilnehmerIn in einem Raum können Sie werden, indem Sie auf der zum Raum zugehörigen Seite auf den Link "Teilnahme beantragen" klicken.
+
+- Einen Raum können Sie eröffnen, indem Sie auf dem Portal dem Link "Raum neu eröffnen" folgen. Der Raum steht Ihnen anschließend sofort zur Verfügung.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_moderator">
+                <source>mail.body.status_moderator</source>
+                <target>{room_type, select,
+project {der Status Ihrer Kennung
+   {p1}
+
+in dem CommSy-Projektraum "{p2}" hat sich geändert: Sie sind nun "Projektraum-ModeratorIn".
+
+Sie können nun den CommSy-Projektraum "{p2}" konfigurieren: Farben einstellen, Kennungen verwalten, ...}
+community {Sie gehören nun zur "Moderation" des Gemeinschaftsraums "{p2}". Damit können Sie diesen Gemeinschaftsraum administrieren, Kennungen freischalten und Materialien zur weltweiten Veröffentlichung freischalten.}
+grouproom {der Status Ihrer Kennung
+   {p1}
+
+in dem CommSy-Gruppenraum "{p2}" hat sich geändert: Sie sind nun "ModeratorIn".
+
+Sie können nun den CommSy-Gruppenraum "{p2}" konfigurieren: Farben einstellen, Kennungen verwalten, ...}
+other {Der Status Ihrer Kennung
+   {p1}
+
+hat sich geändert. Sie gehören nun zur Moderation des Portals "{p2}". Damit können Sie auf diesem Portal Kennungen und Räume freischalten bzw. sperren.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_read_only">
+                <source>mail.body.status_read_only</source>
+                <target>Ihre Kennung
+   {p1}
+
+für den CommSy-Raum "{p2}" hat nun den Status "LesendeR BenutzerIn" und Sie können nun lesend auf die Inhalte im Raum "{p2}" zugreifen.</target>
+            </trans-unit>
+            <trans-unit id="mail_body_make_contact_person">
+                <source>mail.body.make_contact_person</source>
+                <target>{room_type, select,
+project {Ihr Status in dem CommSy-Projektraum "{p2}" hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.}
+community {Ihr Status in dem CommSy-Gemeinschaftsraum "{p2}" hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.}
+grouproom {Ihr Status in dem CommSy-Gruppenraum "{p2}" hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.}
+other {Ihr Status im CommSy-Portal "{p2}" hat sich geändert: Sie sind nun AnsprechpartnerIn für das Portal.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_unmake_contact_person">
+                <source>mail.body.unmake_contact_person</source>
+                <target>{room_type, select,
+project {Ihr Status in dem CommSy-Projektraum "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.}
+community {Ihr Status in dem CommSy-Gemeinschaftsraum "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raums nicht mehr angezeigt.}
+grouproom {Ihr Status in dem CommSy-Gruppenraum "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.}
+other {Ihr Status im CommSy-Portal "{p2}" hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für das Portal mehr.}
+}</target>
+            </trans-unit>
+            <!-- room type nouns for the {roomTypeName} placeholder (overridable per context) -->
+            <trans-unit id="mail_room_type_project">
+                <source>mail.room_type.project</source>
+                <target>Projektraum</target>
+            </trans-unit>
+            <trans-unit id="mail_room_type_community">
+                <source>mail.room_type.community</source>
+                <target>Gemeinschaftsraum</target>
+            </trans-unit>
+            <trans-unit id="mail_room_type_grouproom">
+                <source>mail.room_type.grouproom</source>
+                <target>Gruppenraum</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

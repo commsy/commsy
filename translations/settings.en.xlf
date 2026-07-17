@@ -584,6 +584,66 @@
                 <source>Traffic light red text</source>
                 <target>Red</target>
             </trans-unit>
+            <trans-unit id="workflow.traffic_light.green_default">
+                <source>workflow.traffic_light.green_default</source>
+                <target>valid</target>
+            </trans-unit>
+            <trans-unit id="workflow.traffic_light.yellow_default">
+                <source>workflow.traffic_light.yellow_default</source>
+                <target>Draft</target>
+            </trans-unit>
+            <trans-unit id="workflow.traffic_light.red_default">
+                <source>workflow.traffic_light.red_default</source>
+                <target>invalid</target>
+            </trans-unit>
+            <trans-unit id="rubric.home">
+                <source>rubric.home</source>
+                <target>Home</target>
+            </trans-unit>
+            <trans-unit id="rubric.announcement">
+                <source>rubric.announcement</source>
+                <target>Announcements</target>
+            </trans-unit>
+            <trans-unit id="rubric.date">
+                <source>rubric.date</source>
+                <target>Events</target>
+            </trans-unit>
+            <trans-unit id="rubric.discussion">
+                <source>rubric.discussion</source>
+                <target>Discussions</target>
+            </trans-unit>
+            <trans-unit id="rubric.group">
+                <source>rubric.group</source>
+                <target>Groups</target>
+            </trans-unit>
+            <trans-unit id="rubric.material">
+                <source>rubric.material</source>
+                <target>Materials</target>
+            </trans-unit>
+            <trans-unit id="rubric.todo">
+                <source>rubric.todo</source>
+                <target>Tasks</target>
+            </trans-unit>
+            <trans-unit id="rubric.user">
+                <source>rubric.user</source>
+                <target>Members</target>
+            </trans-unit>
+            <trans-unit id="rubric.project">
+                <source>rubric.project</source>
+                <target>Project workspaces</target>
+            </trans-unit>
+            <trans-unit id="rubric.topic">
+                <source>rubric.topic</source>
+                <target>Topics</target>
+            </trans-unit>
+            <trans-unit id="rubric.institution">
+                <source>rubric.institution</source>
+                <target>Rubrics</target>
+            </trans-unit>
+            <trans-unit id="template.no_choice">
+                <source>template.no_choice</source>
+                <target>No template</target>
+            </trans-unit>
             <trans-unit id="reader">
                 <source>Reader</source>
                 <target>Use in this workspace</target>

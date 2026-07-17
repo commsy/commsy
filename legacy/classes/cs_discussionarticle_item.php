@@ -70,10 +70,10 @@ class cs_discussionarticle_item extends cs_item
     {
         $public = $this->getPublic();
         if ('-1' == $public || '-2' == $public) {
-            $translator = $this->_environment->getTranslationObject();
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
             $message = ('-1' == $public) ? 'COMMON_AUTOMATIC_DELETE_DESCRIPTION' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC';
 
-            return $translator->getMessage($message);
+            return $translator->translate($message);
         }
 
         return $this->_getValue('description');

@@ -13,7 +13,6 @@
 
 namespace App\Mail;
 
-use App\Services\LegacyEnvironment;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Psr\Log\LoggerInterface;
@@ -31,7 +30,6 @@ readonly class MessageBuilder
         private string $emailFrom,
         private LoggerInterface $logger,
         private LocaleSwitcher $localeSwitcher,
-        private LegacyEnvironment $legacyEnvironment,
         #[Autowire(param: 'locale')]
         private string $defaultLocale,
     ) {
@@ -120,25 +118,17 @@ readonly class MessageBuilder
         // Reply-To
         $email = $this->addReplyToAddresses($email, $replyTo);
 
-        $this->localeSwitcher->runWithLocale($recipient->getLanguage(), function(string $locale) use ($message, $email) {
-            // use recipient's locale
-            $effectiveLocale = $locale === 'browser' ? $this->defaultLocale : $locale;
-            $email->locale($effectiveLocale);
+        // Render subject and body in the recipient's language. The LocaleSwitcher makes the
+        // recipient locale the translator's current locale, which both the subject translation
+        // and the mail-text renderer (read in getParameters()) pick up by default -- no need to
+        // push a language onto the legacy environment.
+        $effectiveLocale = 'browser' === $recipient->getLanguage() ? $this->defaultLocale : $recipient->getLanguage();
+        $email->locale($effectiveLocale);
 
-            // Subject
-            $subject = $this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail');
-            $email->subject($subject);
-
-            // Body: set legacy translator to the same locale so getParameters() produces translated content
-            $legacyTranslator = $this->legacyEnvironment->getEnvironment()->getTranslationObject();
-            $previousLanguage = $legacyTranslator->getSelectedLanguage();
-            $legacyTranslator->setSelectedLanguage($effectiveLocale);
-            try {
-                $email->htmlTemplate($message->getTemplateName());
-                $email->context($message->getParameters());
-            } finally {
-                $legacyTranslator->setSelectedLanguage($previousLanguage);
-            }
+        $this->localeSwitcher->runWithLocale($effectiveLocale, function () use ($message, $email) {
+            $email->subject($this->translator->trans($message->getSubject(), $message->getTranslationParameters(), 'mail'));
+            $email->htmlTemplate($message->getTemplateName());
+            $email->context($message->getParameters());
         });
 
         return $email;

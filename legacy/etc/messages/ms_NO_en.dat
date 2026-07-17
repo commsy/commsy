@@ -1,3 +1,0 @@
-<?php
-$message["NO_DATES_FILE_FOUND"]["en"] = "You have to choose a file before continue.";
-?>

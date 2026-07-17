@@ -43,9 +43,9 @@ class cs_discussion_item extends cs_item
    public function getTitle(): string
    {
        if ('-1' == $this->getPublic()) {
-           $translator = $this->_environment->getTranslationObject();
+           $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
-           return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+           return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
        } else {
            return $this->_getValue('title');
        }
@@ -377,9 +377,9 @@ class cs_discussion_item extends cs_item
     public function getDescription(): string
     {
         if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getTranslationObject();
+            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
 
-            return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+            return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
         } else {
             return (string) $this->_getValue('description');
         }

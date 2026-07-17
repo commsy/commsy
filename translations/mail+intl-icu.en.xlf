@@ -461,6 +461,339 @@
                 <source>mail.account_merge_ignore</source>
                 <target>If you did not request this merge, please ignore this e-mail. Nothing will be changed.</target>
             </trans-unit>
+            <trans-unit id="mail_salutation">
+                <source>mail.salutation</source>
+                <target>Dear {p1},</target>
+            </trans-unit>
+            <trans-unit id="mail_goodbye">
+                <source>mail.goodbye</source>
+                <target>{room_type, select,
+project {Best wishes ... {p1}
+CommSy project workspace "{p2}"}
+community {Best regards ... {p1}
+Moderator/s {p2}}
+grouproom {Best regards ... {p1}
+CommSy group workspace "{p2}"}
+other {Best wishes ... {p1}
+Moderator/s {p2}}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_lock_now">
+                <source>mail.inactivity_lock_now</source>
+                <target>your account {p1} ({p2}) is locked because of inactivity.
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_lock_next">
+                <source>mail.inactivity_lock_next</source>
+                <target>your account {p1} ({p2}) will be locked in {p3} days because of inactivity. Log on to your account will prevent you from getting locked.
+
+{p4}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_delete_next">
+                <source>mail.inactivity_delete_next</source>
+                <target>Your account {p1} ({p2}) will be deleted in {p3} days.
+
+{p4}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_delete_now">
+                <source>mail.inactivity_delete_now</source>
+                <target>Your account {p1} ({p2}) has been deleted.
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_room_lock_upcoming">
+                <source>mail.inactivity_room_lock_upcoming</source>
+                <target>The workspace "{p1}" is unused for almost {p2} days. It will be locked in {p3} days.
+
+If you want to continue using the workspace, please enter it within the following {p3} days.</target>
+            </trans-unit>
+            <trans-unit id="mail_inactivity_room_delete_upcoming">
+                <source>mail.inactivity_room_delete_upcoming</source>
+                <target>The worksapce "{p1}" is unused for almost {p2} days. It will be deleted in {p3} days.
+
+If you want to continue using the workspace please contact a portal moderator within the following {p3} days and ask for unlocking.</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_delete">
+                <source>mail.subject.account_delete</source>
+                <target>{p1}: account deleted</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_lock">
+                <source>mail.subject.account_lock</source>
+                <target>{p1}: account locked</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_free">
+                <source>mail.subject.account_free</source>
+                <target>{p1}: account approved</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_user">
+                <source>mail.subject.status_user</source>
+                <target>{p1}: new status - user</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_moderator">
+                <source>mail.subject.status_moderator</source>
+                <target>{p1}: new status - moderator</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_status_read_only_user">
+                <source>mail.subject.status_read_only_user</source>
+                <target>{p1}: new status - read only user</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_make_contact_person">
+                <source>mail.subject.make_contact_person</source>
+                <target>{p1}: new status - contact person</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_unmake_contact_person">
+                <source>mail.subject.unmake_contact_person</source>
+                <target>{p1}: not a contact person anymore</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_merge">
+                <source>mail.subject.account_merge</source>
+                <target>{p1}: multiple accounts</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_account_password">
+                <source>mail.subject.account_password</source>
+                <target>{p1}: account and password</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_generic">
+                <source>mail.subject.generic</source>
+                <target>Subject:</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_password">
+                <source>mail.email_upload.password</source>
+                <target>Upload-Password</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_account">
+                <source>mail.email_upload.account</source>
+                <target>Account</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_success">
+                <source>mail.email_upload.success</source>
+                <target>Hello {p1},
+
+the upload via e-mail to CommSy was successful.
+
+You can view the new material in your CommSy Stack
+</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_files_too_large">
+                <source>mail.email_upload.files_too_large</source>
+                <target>The following files exceeded the upload-limit of the portal ({p1} MB):
+
+{p2}
+Those files haven not been attached to the new material.</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_regards">
+                <source>mail.email_upload.regards</source>
+                <target>Best regards ... CommSy Administrator</target>
+            </trans-unit>
+            <trans-unit id="mail_email_upload_failure">
+                <source>mail.email_upload.failure</source>
+                <target>Hello {p1},
+
+the upload via e-mail to CommSy was not successful.
+
+Please make sure that you stated your upload-password in the following manner in a single line:
+
+{p2}: YOUR_UPLOAD_PASSWORT
+
+Best regards ... CommSy Administrator</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_resubmission_body">
+                <source>mail.workflow.resubmission_body</source>
+                <target>For the workspace "{p1}", the resubmission date for the entry "{p2}" has been reached:
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_resubmission_subject">
+                <source>mail.workflow.resubmission_subject</source>
+                <target>{p1} - The resubmission date of an entry has been reached</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_validity_body">
+                <source>mail.workflow.validity_body</source>
+                <target>For the workspace "{p1}", the second resubmission date for the entry "{p2}" has been reached:
+
+{p3}</target>
+            </trans-unit>
+            <trans-unit id="mail_workflow_validity_subject">
+                <source>mail.workflow.validity_subject</source>
+                <target>{p1} - The second resubmission date of an entry has been reached</target>
+            </trans-unit>
+            <trans-unit id="mail_account_forget_subject">
+                <source>mail.account_forget_subject</source>
+                <target>Send account data</target>
+            </trans-unit>
+            <trans-unit id="mail_account_forget_body">
+                <source>mail.account_forget_body</source>
+                <target>There are the following accounts registered in the CommSy *{p1}*:
+
+{p2}</target>
+            </trans-unit>
+            <trans-unit id="mail_password_mail_subject">
+                <source>mail.password_mail_subject</source>
+                <target>{p1}: Change password</target>
+            </trans-unit>
+            <trans-unit id="mail_password_mail_body">
+                <source>mail.password_mail_body</source>
+                <target>the mechanism "password forget" has been activated for your account
+   {p1}
+
+at the CommSy portal
+   {p2}
+
+If you just actived it, please follow this url:
+{p3}
+
+You can change your password via this url in the next % minutes from the computer which actived this mechanism.
+
+---
+
+If you have not followed the link "password forget?", please delete this email. Your password has not changed und nobody capter your account.</target>
+            </trans-unit>
+            <trans-unit id="mail_body_account_delete">
+                <source>mail.body.account_delete</source>
+                <target>{room_type, select,
+project {your account
+    {p1}
+
+has been deleted at the CommSy Project workspace "{p2}".}
+community {your account
+    {p1}
+
+has been deleted at the Community workspace "{p2}".}
+grouproom {your account
+    {p1}
+
+has been deleted in CommSy group workspace "{p2}".}
+other {your account
+    {p1}
+
+has been deleted on portal "{p2}" as well as in all contained workspaces.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_account_lock">
+                <source>mail.body.account_lock</source>
+                <target>{room_type, select,
+project {the status of your membership for the CommSy Project workspace "{p2}" has changed:
+Your account {p1} has locked.}
+community {the status of your membership for the Community workspace "{p2}" has changed:
+
+Your account {p1} has locked.
+
+Please contact the moderator/s of the Community workspace "{p2}" for further information.}
+grouproom {the status of your membership in CommSy group workspace "{p2}" has changed:
+your account {p1} has been locked.}
+other {the status of your membership for the portal "{p2}" has changed: Your account {p1} has been locked.
+
+Please contact the moderator/s of the portal "{p2}" for further information.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_auto_sent">
+                <source>mail.auto_sent</source>
+                <target>[This e-mail was sent automatically at {p1} - {p2}.]</target>
+            </trans-unit>
+            <trans-unit id="mail_subject_login_expiration">
+                <source>mail.subject.login_expiration</source>
+                <target>{p1}: Login as another user is deactivated</target>
+            </trans-unit>
+            <trans-unit id="mail_body_login_expiration">
+                <source>mail.body.login_expiration</source>
+                <target>your right to login as another user is deactivated now.
+
+Best regards ... %2</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_user">
+                <source>mail.body.status_user</source>
+                <target>{room_type, select,
+project {your account
+   {p1}
+
+for the commsy Project workspace "{p2}" has now the status "user". You can use the whole range of functions of the Project workspace "{p2}" now.}
+community {your account
+   {p1}
+
+for the Community workspace "{p2}" has now the status "user". You can now use the whole range of functions on "{p2}".}
+grouproom {your account
+   {p1}
+
+has now the status "user" in CommSy group workspace "{p2}". You can use the whole range of functions of the group workspace "{p2}" now.}
+other {your account
+   {p1}
+
+for the portal "{p2}" has now the status "user". You can now use the whole range of functions on "{p2}". Your account is valid for all rooms that you want to participate in.
+
+Two more details for the rooms:
+- you can open a room by making the accordant entry after the link "enter new room".
+
+- to become a member of a certain room, click on the hyperlink "become a member" on the details for the room.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_moderator">
+                <source>mail.body.status_moderator</source>
+                <target>{room_type, select,
+project {the status of your account
+   {p1}
+
+for the CommSy Project workspace "{p2}" has been changed: You are now a "moderator".
+
+As a moderator you can configure Project workspace: Select colours, administrate accounts, ...}
+community {the status of your account
+   {p1}
+
+for the Community workspace "{p2}" has changed:
+
+You are now an "moderator" of "{p2}". That gives you the possibility to administrate this Community workspace, activate accounts and activate the worldwide publication of materials.}
+grouproom {the status of your account
+   {p1}
+
+in CommSy group workspace "{p2}" has changed: You are a "moderator" now.
+
+You now have access to group workspace settings, such as: Select colours, administrate accounts, ...}
+other {the status of your account
+   {p1}
+
+for the portal "{p2}" has changed:
+
+You are a "moderator" now of "{p2}". You now have access to user and workspace management controls for the entire CommSy installation.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_status_read_only">
+                <source>mail.body.status_read_only</source>
+                <target>your account
+   {p1}
+
+for the commsy Project workspace "{p2}" has now the status "read only user".</target>
+            </trans-unit>
+            <trans-unit id="mail_body_make_contact_person">
+                <source>mail.body.make_contact_person</source>
+                <target>{room_type, select,
+project {your status for the CommSy Project workspace "{p2}" has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.}
+community {your status for the CommSy Community workspace "{p2}" has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.}
+grouproom {your status for the CommSy group workspace "{p2}" has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.}
+other {your status for the CommSy portal "{p2}" has been changed: You are now a contact person.}
+}</target>
+            </trans-unit>
+            <trans-unit id="mail_body_unmake_contact_person">
+                <source>mail.body.unmake_contact_person</source>
+                <target>{room_type, select,
+project {your status for the CommSy Project workspace "{p2}" has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.}
+community {your status for the CommSy Community workspace "{p2}" has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.}
+grouproom {your status for the CommSy group workspace "{p2}" has changed: You are not a contact person anymore. So your name will not be displayed as part of the public room description.}
+other {your status for the CommSy portal "{p2}" has changed: You are not a contact person anymore.}
+}</target>
+            </trans-unit>
+            <!-- room type nouns for the {roomTypeName} placeholder (overridable per context) -->
+            <trans-unit id="mail_room_type_project">
+                <source>mail.room_type.project</source>
+                <target>project workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_type_community">
+                <source>mail.room_type.community</source>
+                <target>community workspace</target>
+            </trans-unit>
+            <trans-unit id="mail_room_type_grouproom">
+                <source>mail.room_type.grouproom</source>
+                <target>group workspace</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

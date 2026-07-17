@@ -14,6 +14,7 @@
 namespace App\Mail\Messages;
 
 use App\Entity\Portal;
+use App\Mail\Text\MailTextRenderer;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
 use cs_environment;
@@ -26,7 +27,8 @@ class RoomActivityDeleteWarningMessage extends Message
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly Portal $portal,
-        private readonly object $room
+        private readonly object $room,
+        private readonly MailTextRenderer $mailTextRenderer
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -43,17 +45,21 @@ class RoomActivityDeleteWarningMessage extends Message
 
     public function getParameters(): array
     {
-        $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
-
         $now = new DateTimeImmutable();
         $numDaysInactive = $now->diff($this->room->getLastLogin(), true)->format('%a');
 
         return [
             'room' => $this->room,
-            'content' => $legacyTranslator->getEmailMessage('EMAIL_INACTIVITY_ROOM_DELETE_UPCOMING_BODY',
-                $this->room->getTitle(),
-                $numDaysInactive,
-                $this->portal->getClearInactiveRoomsDeleteDays()
+            'content' => $this->mailTextRenderer->render(
+                'mail.inactivity_room_delete_upcoming',
+                'EMAIL_INACTIVITY_ROOM_DELETE_UPCOMING_BODY',
+                'other',
+                null,
+                [
+                    $this->room->getTitle(),
+                    $numDaysInactive,
+                    $this->portal->getClearInactiveRoomsDeleteDays(),
+                ]
             ),
         ];
     }

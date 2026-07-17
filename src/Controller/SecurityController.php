@@ -158,14 +158,9 @@ class SecurityController extends AbstractController
                         $usernames[] = $matchingAccount->getUsername();
                     }
 
-                    /**
-                     * TODO: Refactor message creation, do not use legacy translator.
-                     */
-                    $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
-                    $subject = $translator->getMessage('USER_ACCOUNT_FORGET_HEADLINE', $portal->getTitle());
-                    $body = $translator->getMessage('USER_ACCOUNT_FORGET_MAIL_BODY', $portal->getTitle(),
-                        implode(', ', $usernames));
-                    $body .= '. <br><br>'.$translator->getMessage('MAIL_BODY_CIAO_GR', 'CommSy', $portal->getTitle());
+                    $subject = $symfonyTranslator->trans('mail.account_forget_subject', [], 'mail');
+                    $body = $symfonyTranslator->trans('mail.account_forget_body', ['p1' => $portal->getTitle(), 'p2' => implode(', ', $usernames)], 'mail');
+                    $body .= '. <br><br>'.$symfonyTranslator->trans('mail.goodbye', ['room_type' => 'community', 'p1' => 'CommSy', 'p2' => $portal->getTitle()], 'mail');
 
                     $mailer->sendRaw(
                         $subject,
@@ -174,9 +169,10 @@ class SecurityController extends AbstractController
                         $portal->getTitle()
                     );
 
-                    $flashMessage = $translator->getMessage(
-                        'USER_ACCOUNT_FORGET_SUCCESS_TEXT',
-                        $requestAccounts->getEmail()
+                    $flashMessage = $symfonyTranslator->trans(
+                        'login.request_accounts_success',
+                        ['%email%' => $requestAccounts->getEmail()],
+                        'login'
                     );
                 } else {
                     $flashMessage = $symfonyTranslator->trans('login.request_accounts_none', [], 'login');
@@ -206,7 +202,8 @@ class SecurityController extends AbstractController
         LegacyEnvironment $legacyEnvironment,
         Mailer $mailer,
         RouterInterface $router,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
+        TranslatorInterface $symfonyTranslator
     ): Response {
         $localAccount = new LocalAccount($portal->getId());
         $form = $this->createForm(RequestPasswordResetType::class, $localAccount);
@@ -255,18 +252,13 @@ class SecurityController extends AbstractController
                     'token' => $resetPasswordToken->getToken(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                /**
-                 * TODO: Refactor message creation, do not use legacy translator.
-                 */
-                $translator = $legacyEnvironment->getEnvironment()->getTranslationObject();
-                $subject = $translator->getMessage('USER_PASSWORD_MAIL_SUBJECT', $portal->getTitle());
-                $body = $translator->getMessage(
-                    'USER_PASSWORD_MAIL_BODY',
-                    $resetPasswordToken->getAccount()->getUsername(),
-                    $portal->getTitle(),
-                    $resetUrl,
-                    '15'
-                );
+                $subject = $symfonyTranslator->trans('mail.password_mail_subject', ['p1' => $portal->getTitle()], 'mail');
+                $body = $symfonyTranslator->trans('mail.password_mail_body', [
+                    'p1' => $resetPasswordToken->getAccount()->getUsername(),
+                    'p2' => $portal->getTitle(),
+                    'p3' => $resetUrl,
+                    'p4' => '15',
+                ], 'mail');
 
                 $mailer->sendRaw(
                     $subject,
@@ -275,7 +267,7 @@ class SecurityController extends AbstractController
                     $portal->getTitle()
                 );
 
-                $flashMessage = $translator->getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT');
+                $flashMessage = $symfonyTranslator->trans('login.password_reset_success', [], 'login');
                 $this->addFlash('primary', str_replace('<br/>', '', $flashMessage));
 
                 return $this->redirectToRoute('app_login', [

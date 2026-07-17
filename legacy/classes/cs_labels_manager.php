@@ -104,7 +104,7 @@ class cs_labels_manager extends cs_manager
     {
         parent::__construct($environment);
         $this->_db_table = 'labels';
-        $this->_translator = $environment->getTranslationObject();
+        $this->_translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
   /** reset limits
@@ -693,10 +693,10 @@ class cs_labels_manager extends cs_manager
   public function _buildItem(array $db_array): object
   {
       if ('ALL' == $db_array['name']) {
-          $translator = $this->_environment->getTranslationObject();
-          $db_array['name'] = $translator->getMessage('ALL_MEMBERS');
+          $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
+          $db_array['name'] = $translator->translate('ALL_MEMBERS');
           if ('GROUP_ALL_DESC' == $db_array['description']) {
-              $db_array['description'] = $translator->getMessage('GROUP_ALL_DESC');
+              $db_array['description'] = $translator->translate('GROUP_ALL_DESC');
           }
       }
 

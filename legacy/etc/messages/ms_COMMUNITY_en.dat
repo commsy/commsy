@@ -1,5 +1,0 @@
-<?php
-$message["COMMUNITY_ACCESS_NOT_GRANTED"]["en"] = "You are not allowed to enter the %_COMMUNITY_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> because you are not a member of the %_COMMUNITY_SUB_NOMS_LOW. You can %2 here.";
-$message["COMMUNITY_INDEX"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
-$message["COMMUNITY_SHORT_DESCRIPTION"]["en"] = "active";
-?>

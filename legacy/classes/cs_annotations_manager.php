@@ -22,15 +22,15 @@ class cs_annotations_manager extends cs_manager
     private int $linkedItemId = 0;
 
     /**
-     * @var cs_translator
+     * @var cs_environment
      */
-    private cs_translator $translator;
+    private \App\Legacy\LegacyTranslator $translator;
 
     public function __construct($environment)
     {
         parent::__construct($environment);
         $this->_db_table = 'annotations';
-        $this->translator = $environment->getTranslationObject();
+        $this->translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
     /**

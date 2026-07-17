@@ -478,6 +478,18 @@
                 <source>messages.load_all</source>
                 <target>Alle Datensätze laden</target>
             </trans-unit>
+            <trans-unit id="common.new">
+                <source>common.new</source>
+                <target>Neu</target>
+            </trans-unit>
+            <trans-unit id="common.privateroom">
+                <source>common.privateroom</source>
+                <target>Meine Ablage</target>
+            </trans-unit>
+            <trans-unit id="common.datasecurity">
+                <source>common.datasecurity</source>
+                <target>(aus Datenschutzgründen verborgen)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
