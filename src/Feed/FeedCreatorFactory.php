@@ -19,7 +19,7 @@ use App\Utils\ItemService;
 use cs_environment;
 use FeedIo\Feed\Item;
 use RuntimeException;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Traversable;
@@ -36,7 +36,7 @@ class FeedCreatorFactory
         LegacyEnvironment $legacyEnvironment,
         private readonly TranslatorInterface $translator,
         private readonly RouterInterface $router,
-        #[TaggedIterator('app.feed.creator')] iterable $creators
+        #[AutowireIterator('app.feed.creator')] iterable $creators
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
