@@ -20,7 +20,7 @@ use cs_item;
 
 /**
  * Thin wrapper around {@see MaterialDeleter::softDeleteItem()} — drops
- * every version of the material (CS_ALL semantic).
+ * every version of the material (all versions).
  */
 class DeleteMaterial implements DeleteInterface
 {

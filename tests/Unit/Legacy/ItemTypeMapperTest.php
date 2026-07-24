@@ -67,7 +67,7 @@ class ItemTypeMapperTest extends TestCase
 
     public function testFromDbTableReturnsUnknownTableAsIs(): void
     {
-        // e.g. "tags" has no mapping -> returned verbatim (CS_TAG_TYPE is 'tag')
+        // e.g. "tags" has no mapping -> returned verbatim (the 'tag' type)
         self::assertSame('tags', ItemTypeMapper::fromDbTable('tags'));
     }
 }
