@@ -2017,17 +2017,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     convert_exception?: bool|Param, // Default: false
  *     remove_first_page_param?: bool|Param, // Default: false
  * }
- * @psalm-type WhiteOctoberBreadcrumbsConfig = array{
- *     separator?: scalar|Param|null, // Default: "/"
- *     separatorClass?: scalar|Param|null, // Default: "separator"
- *     listId?: scalar|Param|null, // Default: "wo-breadcrumbs"
- *     listClass?: scalar|Param|null, // Default: "breadcrumb"
- *     itemClass?: scalar|Param|null, // Default: ""
- *     linkRel?: scalar|Param|null, // Default: ""
- *     locale?: scalar|Param|null, // Default: null
- *     translation_domain?: scalar|Param|null, // Default: null
- *     viewTemplate?: scalar|Param|null, // Default: "@WhiteOctoberBreadcrumbs/microdata.html.twig"
- * }
  * @psalm-type TwigExtraConfig = array{
  *     cache?: bool|array{
  *         enabled?: bool|Param, // Default: false
@@ -2511,6 +2500,17 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     dump_destination?: scalar|Param|null, // A stream URL where dumps should be written to. // Default: null
  *     theme?: "dark"|"light"|Param, // Changes the color of the dump() output when rendered directly on the templating. "dark" (default) or "light". // Default: "dark"
  * }
+ * @psalm-type HulutiBreadcrumbsConfig = array{
+ *     separator?: scalar|Param|null, // Default: "/"
+ *     separatorClass?: scalar|Param|null, // Default: "separator"
+ *     listId?: scalar|Param|null, // Default: "wo-breadcrumbs"
+ *     listClass?: scalar|Param|null, // Default: "breadcrumb"
+ *     itemClass?: scalar|Param|null, // Default: ""
+ *     linkRel?: scalar|Param|null, // Default: ""
+ *     locale?: scalar|Param|null, // Default: null
+ *     translation_domain?: scalar|Param|null, // Default: null
+ *     viewTemplate?: scalar|Param|null, // Default: "@HulutiBreadcrumbs/microdata.html.twig"
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -2530,7 +2530,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *     vich_uploader?: VichUploaderConfig,
  *     knp_paginator?: KnpPaginatorConfig,
- *     white_october_breadcrumbs?: WhiteOctoberBreadcrumbsConfig,
  *     twig_extra?: TwigExtraConfig,
  *     sylius_theme?: SyliusThemeConfig,
  *     nelmio_cors?: NelmioCorsConfig,
@@ -2539,6 +2538,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     stimulus?: StimulusConfig,
  *     live_component?: LiveComponentConfig,
  *     webpack_encore?: WebpackEncoreConfig,
+ *     huluti_breadcrumbs?: HulutiBreadcrumbsConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -2560,7 +2560,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *         vich_uploader?: VichUploaderConfig,
  *         knp_paginator?: KnpPaginatorConfig,
- *         white_october_breadcrumbs?: WhiteOctoberBreadcrumbsConfig,
  *         twig_extra?: TwigExtraConfig,
  *         sylius_theme?: SyliusThemeConfig,
  *         nelmio_cors?: NelmioCorsConfig,
@@ -2571,6 +2570,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         webpack_encore?: WebpackEncoreConfig,
  *         zenstruck_foundry?: ZenstruckFoundryConfig,
  *         debug?: DebugConfig,
+ *         huluti_breadcrumbs?: HulutiBreadcrumbsConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -2591,7 +2591,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *         vich_uploader?: VichUploaderConfig,
  *         knp_paginator?: KnpPaginatorConfig,
- *         white_october_breadcrumbs?: WhiteOctoberBreadcrumbsConfig,
  *         twig_extra?: TwigExtraConfig,
  *         sylius_theme?: SyliusThemeConfig,
  *         nelmio_cors?: NelmioCorsConfig,
@@ -2600,6 +2599,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stimulus?: StimulusConfig,
  *         live_component?: LiveComponentConfig,
  *         webpack_encore?: WebpackEncoreConfig,
+ *         huluti_breadcrumbs?: HulutiBreadcrumbsConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -2621,7 +2621,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *         vich_uploader?: VichUploaderConfig,
  *         knp_paginator?: KnpPaginatorConfig,
- *         white_october_breadcrumbs?: WhiteOctoberBreadcrumbsConfig,
  *         twig_extra?: TwigExtraConfig,
  *         sylius_theme?: SyliusThemeConfig,
  *         nelmio_cors?: NelmioCorsConfig,
@@ -2632,6 +2631,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         webpack_encore?: WebpackEncoreConfig,
  *         dama_doctrine_test?: DamaDoctrineTestConfig,
  *         zenstruck_foundry?: ZenstruckFoundryConfig,
+ *         huluti_breadcrumbs?: HulutiBreadcrumbsConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,
