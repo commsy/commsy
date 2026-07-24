@@ -28,6 +28,8 @@ use App\Form\DataTransformer\TopicTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\TopicPathType;
 use App\Form\Type\TopicType;
+use App\Rubric\Label\LabelType;
+use App\Rubric\RubricType;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CurrentContextResolver;
@@ -99,7 +101,7 @@ class TopicController extends BaseController
         // get topic list from manager service
         $itemsCountArray = $this->topicService->getCountArray($roomId);
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_TOPIC_TYPE, CS_LABEL_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ LabelType::Topic->value, RubricType::Label->value ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('topic')) {
@@ -110,8 +112,8 @@ class TopicController extends BaseController
         return $this->render('topic/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_TOPIC_TYPE,
-            'relatedModule' => CS_LABEL_TYPE,
+            'module' => LabelType::Topic->value,
+            'relatedModule' => RubricType::Label->value,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
             'showHashTags' => $roomItem->withBuzzwords(),

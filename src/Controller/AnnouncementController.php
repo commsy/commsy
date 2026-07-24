@@ -28,6 +28,7 @@ use App\Filter\AnnouncementFilterType;
 use App\Form\DataTransformer\AnnouncementTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\AnnouncementType;
+use App\Rubric\RubricType;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CurrentContextResolver;
@@ -247,7 +248,7 @@ class AnnouncementController extends BaseController
         // get announcement list from manager service
         $itemsCountArray = $this->announcementService->getCountArray($roomId);
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_ANNOUNCEMENT_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ RubricType::Announcement->value ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('announcement')) {
@@ -258,7 +259,7 @@ class AnnouncementController extends BaseController
         return $this->render('announcement/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_ANNOUNCEMENT_TYPE,
+            'module' => RubricType::Announcement->value,
             'relatedModule' => null,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),

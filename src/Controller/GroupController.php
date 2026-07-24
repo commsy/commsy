@@ -31,6 +31,8 @@ use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
+use App\Rubric\Label\LabelType;
+use App\Rubric\RubricType;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Security\Authorization\Voter\ItemVoter;
@@ -132,7 +134,7 @@ class GroupController extends BaseController
         // get group list from manager service
         $itemsCountArray = $this->groupService->getCountArray($roomId);
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_GROUP_TYPE, CS_LABEL_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ LabelType::Group->value, RubricType::Label->value ]);
 
         $usageInfo = [];
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('group')) {
@@ -143,8 +145,8 @@ class GroupController extends BaseController
         return $this->render('group/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_GROUP_TYPE,
-            'relatedModule' => CS_LABEL_TYPE,
+            'module' => LabelType::Group->value,
+            'relatedModule' => RubricType::Label->value,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,
             'showHashTags' => $roomItem->withBuzzwords(),

@@ -33,8 +33,10 @@ use App\Form\Type\MaterialSectionType;
 use App\Form\Type\MaterialType;
 use App\Form\Type\SectionType;
 use App\Http\JsonRedirectResponse;
+use App\Item\ItemType;
 use App\Repository\LicenseRepository;
 use App\Rubric\Material\MaterialDeleter;
+use App\Rubric\RubricType;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CurrentContextResolver;
@@ -225,7 +227,7 @@ class MaterialController extends BaseController
         // get material list from manager service
         $itemsCountArray = $this->materialService->getCountArray($roomId);
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_MATERIAL_TYPE, CS_SECTION_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ RubricType::Material->value, ItemType::Section->value ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('material')) {
@@ -236,8 +238,8 @@ class MaterialController extends BaseController
         return $this->render('material/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_MATERIAL_TYPE,
-            'relatedModule' => CS_SECTION_TYPE,
+            'module' => RubricType::Material->value,
+            'relatedModule' => ItemType::Section->value,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showAssociations' => $roomItem->withAssociations(),
@@ -958,7 +960,7 @@ class MaterialController extends BaseController
 
                 $typedItem->save();
 
-                if (CS_SECTION_TYPE == $typedItem->getItemType()) {
+                if (ItemType::Section->value == $typedItem->getItemType()) {
                     $linkedMaterialItem = $this->materialService->getMaterial($typedItem->getlinkedItemID());
                     $linkedMaterialItem->save();
                 }

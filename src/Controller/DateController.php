@@ -33,6 +33,7 @@ use App\Form\Type\DateImportType;
 use App\Form\Type\DateType;
 use App\Hash\HashManager;
 use App\Repository\CalendarsRepository;
+use App\Rubric\RubricType;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\DateVoter;
 use App\Security\Authorization\Voter\ItemVoter;
@@ -219,12 +220,12 @@ class DateController extends BaseController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId, 'external_url' => ['', null]]);
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DATE_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ RubricType::Date->value ]);
 
         return $this->render('date/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_DATE_TYPE,
+            'module' => RubricType::Date->value,
             'relatedModule' => null,
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => $usageInfo,
@@ -347,12 +348,12 @@ class DateController extends BaseController
 
         $calendars = $calendarsRepository->findBy(['context_id' => $roomId, 'external_url' => ['', null]]);
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DATE_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ RubricType::Date->value ]);
 
         return $this->render('date/calendar.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_DATE_TYPE,
+            'module' => RubricType::Date->value,
             'relatedModule' => null,
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
