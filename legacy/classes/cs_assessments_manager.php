@@ -26,7 +26,7 @@ class cs_assessments_manager extends cs_manager
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_db_table = CS_ASSESSMENT_TYPE;
+        $this->_db_table = \App\Item\ItemType::Assessment->value;
     }
 
      public function setCacheOff()

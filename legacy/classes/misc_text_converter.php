@@ -132,7 +132,7 @@ class misc_text_converter
         $text = ' ' . $text;
         $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; // everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
         // $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
-        $url_string .= '([' . RFC1738_CHARS . ']+?))'; // All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
+        $url_string .= '([' . \App\Legacy\Chars::RFC1738_CHARS . ']+?))'; // All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
         // separating Links from COMMSY_FCKEDITOR tag
         $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;|COMMSY_FCKEDITOR)))'; // behind the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
         $url_string .= '(?![\s\w\d]*</a>)^u'; // if there's a </a>-tag behind the link, it is assumed that there's already a complete <a href="">link</a> contruct comming from the editor. These links are omitted.
@@ -142,7 +142,7 @@ class misc_text_converter
         $text = preg_replace_callback('~">(.[^"]+)</a>~u', \App\Legacy\AutoLinkText::shortenAnchorText(...), $text);
         $text = preg_replace('~<a href="www~u', '<a href="http://www', $text); // add "http://" to links that were activated with www in front only
         // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
-        $text = preg_replace('^( |\^|>|\n)(mailto:)?(([' . RFC2822_CHARS . ']+(\.[' . RFC2822_CHARS . ']+)*)@([' . RFC2822_CHARS . ']+(\.[' . RFC2822_CHARS . ']+)*\.([A-z]{2,})))^u', '$1<a href="mailto:$3">$3</a>', $text);
+        $text = preg_replace('^( |\^|>|\n)(mailto:)?(([' . \App\Legacy\Chars::RFC2822_CHARS . ']+(\.[' . \App\Legacy\Chars::RFC2822_CHARS . ']+)*)@([' . \App\Legacy\Chars::RFC2822_CHARS . ']+(\.[' . \App\Legacy\Chars::RFC2822_CHARS . ']+)*\.([A-z]{2,})))^u', '$1<a href="mailto:$3">$3</a>', $text);
         $text = substr($text, 1, strlen($text));
         foreach ($values as $key => $value) {
             $text = str_replace('COMMSY_FCKEDITOR' . $key . ' ', $value, $text);
@@ -185,7 +185,7 @@ class misc_text_converter
                     $line_html .= $this->_close_list($last_list_type);
                     $list_open = false;
                 }
-                $line_html .= LF . '<hr/>' . LF;
+                $line_html .= \App\Legacy\Chars::LF . '<hr/>' . \App\Legacy\Chars::LF;
                 $hr_line = true;
             } // process lists
             elseif (!$hr_line and preg_match('~^(-|#)(\s*)(.*)~su', (string)$line, $matches)) {
@@ -204,7 +204,7 @@ class misc_text_converter
                         $last_list_type = $list_type;
                     }
                 }
-                $line_html .= '<li>' . $matches[3] . '</li>' . LF;
+                $line_html .= '<li>' . $matches[3] . '</li>' . \App\Legacy\Chars::LF;
             } // All other lines without anything special
             else {
                 if ($list_open) {
@@ -259,7 +259,7 @@ class misc_text_converter
         $matches_with_text = [];
 
         // ids with text: <text>[<number>] becomes a link under <text> to the commsy-object with id <number>
-        preg_match_all('~([\w.' . SPECIAL_CHARS . '&;-]+)\[(\d+)\]~iu', (string)$text, $matches_with_text);
+        preg_match_all('~([\w.' . \App\Legacy\Chars::SPECIAL_CHARS . '&;-]+)\[(\d+)\]~iu', (string)$text, $matches_with_text);
         if ((is_countable($matches_with_text[0]) ? count($matches_with_text[0]) : 0) > 0) {
             $result = $text;
             $word_part = $matches_with_text[1];
@@ -285,7 +285,7 @@ class misc_text_converter
         }
 
         // urls with text: <text>[<url>] becomes a link under <text> to the url <url>
-        preg_match_all('^([.\w' . SPECIAL_CHARS . '-]+)\[(https?:\/\/[' . RFC1738_CHARS . ']*)\]^iu', (string)$text, $matches_with_urls); // preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
+        preg_match_all('^([.\w' . \App\Legacy\Chars::SPECIAL_CHARS . '-]+)\[(https?:\/\/[' . \App\Legacy\Chars::RFC1738_CHARS . ']*)\]^iu', (string)$text, $matches_with_urls); // preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
         if ((is_countable($matches_with_urls[0]) ? count($matches_with_urls[0]) : 0) > 0) {
             $result = $text;
             $word_part = $matches_with_urls[1];
@@ -306,7 +306,7 @@ class misc_text_converter
 
         // long urls: [<url>|<sentence with spaces>|<flag>] becomes a link to <url> under <sentence with spaces>
         // <flag> cann be "internal" or "_blank". Internal opens <url> in this browser window, _blank uses another
-        preg_match_all('^\[(http?://[' . RFC1738_CHARS . ']*)\|([\w' . SPECIAL_CHARS . ' \)?!&;-]+)\|(\w+)\]^u', (string)$text, $matches_with_long_urls);
+        preg_match_all('^\[(http?://[' . \App\Legacy\Chars::RFC1738_CHARS . ']*)\|([\w' . \App\Legacy\Chars::SPECIAL_CHARS . ' \)?!&;-]+)\|(\w+)\]^u', (string)$text, $matches_with_long_urls);
         if ((is_countable($matches_with_long_urls[0]) ? count($matches_with_long_urls[0]) : 0) > 0) {
             $result = $text;
             $http_part = $matches_with_long_urls[1];
@@ -329,8 +329,8 @@ class misc_text_converter
         }
 
         // long urls: [ITEM_ID|<sentence with spaces>] becomes a link to <url> under <sentence with spaces>
-        preg_match_all('^\[([0-9]*)\|([\w' . SPECIAL_CHARS . ' \)?!&;-]+)\]^u', (string)$text, $matches_with_long_urls);
-        // preg_match_all('§\[([0-9]*)\|([\w'.SPECIAL_CHARS.' -]+)\]§', $text, $matches_with_long_urls);
+        preg_match_all('^\[([0-9]*)\|([\w' . \App\Legacy\Chars::SPECIAL_CHARS . ' \)?!&;-]+)\]^u', (string)$text, $matches_with_long_urls);
+        // preg_match_all('§\[([0-9]*)\|([\w'.\App\Legacy\Chars::SPECIAL_CHARS.' -]+)\]§', $text, $matches_with_long_urls);
         if ((is_countable($matches_with_long_urls[0]) ? count($matches_with_long_urls[0]) : 0) > 0) {
             $result = $text;
             $http_part = $matches_with_long_urls[1];
@@ -745,14 +745,12 @@ class misc_text_converter
             $type = $item_manager->getItemType($word);
             unset($item_manager);
 
-            if (CS_ROOM_TYPE == $type ||
-                CS_COMMUNITY_TYPE == $type ||
-                CS_PRIVATEROOM_TYPE == $type ||
-                CS_GROUPROOM_TYPE == $type ||
-                CS_MYROOM_TYPE == $type ||
-                CS_PROJECT_TYPE == $type/* ||
-                CS_PORTAL_TYPE == $type ||
-                $type == CS_SERVER_TYPE*/) {
+            if (\App\Item\ItemType::Room->value == $type ||
+                \App\Room\RoomType::Community->value == $type ||
+                \App\Room\RoomType::PrivateRoom->value == $type ||
+                \App\Room\RoomType::GroupRoom->value == $type ||
+                \App\Item\ItemType::MyRoom->value == $type ||
+                \App\Room\RoomType::Project->value == $type) {
                 $image_text = \App\Legacy\CommsyUrl::ahref($word, 'home', 'index', '', $word);
             } else {
                 $image_text = \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', $target, '');
@@ -844,24 +842,24 @@ class misc_text_converter
     private function _text_encode($text, $mode)
     {
         switch ($mode) {
-            case FROM_DB:
-            case NONE:
+            case \App\Legacy\TextConverterMode::FROM_DB:
+            case \App\Legacy\TextConverterMode::NONE:
                 return $text;
-            case AS_HTML_SHORT:
+            case \App\Legacy\TextConverterMode::AS_HTML_SHORT:
                 return $this->text_as_html_short($text);
-            case AS_MAIL:
+            case \App\Legacy\TextConverterMode::AS_MAIL:
                 return $this->_text_php2mail($text);
-            case AS_RSS:
+            case \App\Legacy\TextConverterMode::AS_RSS:
                 return $this->_text_php2rss($text);
-            case AS_FORM:
+            case \App\Legacy\TextConverterMode::AS_FORM:
                 return $this->text_as_form($text);
-            case AS_DB:
+            case \App\Legacy\TextConverterMode::AS_DB:
                 return $this->_text_php2db($text);
-            case AS_FILE:
+            case \App\Legacy\TextConverterMode::AS_FILE:
                 return $this->_text_php2file($text);
-            case FROM_FILE:
+            case \App\Legacy\TextConverterMode::FROM_FILE:
                 return $this->_text_file2php($text);
-            case FROM_GET:
+            case \App\Legacy\TextConverterMode::FROM_GET:
                 return $this->_text_get2php($text);
         }
         trigger_error('You need to specify a mode for text translation.', E_USER_WARNING);

@@ -46,7 +46,7 @@ class cs_todo_item extends cs_item
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_type = CS_TODO_TYPE;
+        $this->_type = \App\Rubric\RubricType::Todo->value;
     }
 
     /** get title of a todo
@@ -238,7 +238,7 @@ class cs_todo_item extends cs_item
     public function getProcessorItemList()
     {
         $members = new cs_list();
-        $member_ids = $this->getLinkedItemIDArray(CS_USER_TYPE);
+        $member_ids = $this->getLinkedItemIDArray(\App\Item\ItemType::User->value);
         if (!empty($member_ids)) {
             $user_manager = $this->_environment->getUserManager();
             $user_manager->setIDArrayLimit($member_ids);
@@ -269,7 +269,7 @@ class cs_todo_item extends cs_item
 
     public function isProcessor($user)
     {
-        $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
+        $link_member_list = $this->getLinkItemList(\App\Item\ItemType::User->value);
         $link_member_item = $link_member_list->getFirst();
         $is_member = false;
         while ($link_member_item) {
@@ -298,7 +298,7 @@ class cs_todo_item extends cs_item
     public function removeProcessor($user)
     {
         $bridge = $this->_environment->getSymfonyContainer()->get(LegacySoftDeleteBridge::class);
-        $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
+        $link_member_list = $this->getLinkItemList(\App\Item\ItemType::User->value);
         $link_member_item = $link_member_list->getFirst();
         while ($link_member_item) {
             $linked_user_id = $link_member_item->getLinkedItemID($this);

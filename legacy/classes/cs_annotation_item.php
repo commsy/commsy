@@ -23,7 +23,7 @@ class cs_annotation_item extends cs_item
     {
         parent::__construct($environment);
 
-        $this->_type = CS_ANNOTATION_TYPE;
+        $this->_type = \App\Rubric\RubricType::Annotation->value;
     }
 
     public function getTitle(): string
@@ -134,7 +134,7 @@ class cs_annotation_item extends cs_item
      */
     public function getMaterialList()
     {
-        return $this->getLinkedItemList(CS_MATERIAL_TYPE);
+        return $this->getLinkedItemList(\App\Rubric\RubricType::Material->value);
     }
 
     /** set materials of a announcement item by item id and version id
@@ -148,7 +148,7 @@ class cs_annotation_item extends cs_item
      */
     public function setMaterialListByID($value)
     {
-        $this->setLinkedItemsByID(CS_MATERIAL_TYPE, $value);
+        $this->setLinkedItemsByID(\App\Rubric\RubricType::Material->value, $value);
     }
 
     /** set materials of a announcement
@@ -160,7 +160,7 @@ class cs_annotation_item extends cs_item
      */
     public function setMaterialList($value)
     {
-        $this->_setObject(CS_MATERIAL_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\RubricType::Material->value, $value, false);
     }
 
     /** set the version id of the annotated item.

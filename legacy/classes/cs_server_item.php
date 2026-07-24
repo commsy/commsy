@@ -27,7 +27,7 @@ class cs_server_item extends cs_guide_item
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_type = CS_SERVER_TYPE;
+        $this->_type = \App\Item\ItemType::Server->value;
     }
 
     public function isServer(): bool

@@ -70,7 +70,7 @@ class cs_tag_manager extends cs_manager
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_db_table = CS_TAG_TYPE;
+        $this->_db_table = \App\Item\ItemType::Tag->value;
         $this->_translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
@@ -490,7 +490,7 @@ class cs_tag_manager extends cs_manager
         $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
                  'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
-                 'type="'.CS_TAG_TYPE.'"';
+                 'type="'.\App\Item\ItemType::Tag->value.'"';
 
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {

@@ -26,7 +26,7 @@ class cs_tag2tag_manager extends cs_manager
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_db_table = CS_TAG2TAG_TYPE;
+        $this->_db_table = \App\Item\ItemType::Tag2Tag->value;
     }
 
     public function _buildItem(array $db_array): object

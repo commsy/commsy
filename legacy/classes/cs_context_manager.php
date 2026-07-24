@@ -189,15 +189,15 @@ class cs_context_manager extends cs_manager
        $retour = null;
        if (empty($type)) {
            $retour = null;
-       } elseif (CS_PROJECT_TYPE == $type) {
+       } elseif (\App\Room\RoomType::Project->value == $type) {
            $retour = new cs_project_item($this->_environment);
-       } elseif (CS_SERVER_TYPE == $type) {
+       } elseif (\App\Item\ItemType::Server->value == $type) {
            $retour = new cs_server_item($this->_environment);
-       } elseif (CS_COMMUNITY_TYPE == $type) {
+       } elseif (\App\Room\RoomType::Community->value == $type) {
            $retour = new cs_community_item($this->_environment);
-       } elseif (CS_PRIVATEROOM_TYPE == $type) {
+       } elseif (\App\Room\RoomType::PrivateRoom->value == $type) {
            $retour = new cs_privateroom_item($this->_environment);
-       } elseif (CS_GROUPROOM_TYPE == $type) {
+       } elseif (\App\Room\RoomType::GroupRoom->value == $type) {
            $retour = new cs_grouproom_item($this->_environment);
        } elseif (cs_userroom_item::ROOM_TYPE_USER == $type) {
            $retour = new cs_userroom_item($this->_environment);
@@ -230,7 +230,7 @@ class cs_context_manager extends cs_manager
 
         $isGuest = $accountId === null;
 
-        if ($isGuest && CS_COMMUNITY_TYPE !== $this->_room_type) {
+        if ($isGuest && \App\Room\RoomType::Community->value !== $this->_room_type) {
             // only community rooms may be open for guests
             return $list;
         }
@@ -287,12 +287,12 @@ class cs_context_manager extends cs_manager
 
             if (isset($this->_room_type) && !empty($this->_room_type)) {
                 $current_portal = $this->_environment->getCurrentPortalItem();
-                if ($isGuest && CS_COMMUNITY_TYPE === $this->_room_type) {
+                if ($isGuest && \App\Room\RoomType::Community->value === $this->_room_type) {
                     $queryBuilder->andWhere('c.is_open_for_guests = "1"');
                     $queryBuilder->andWhere('c.type = :roomType');
                     $queryBuilder->setParameter('roomType', $this->_room_type);
                 } elseif (
-                    CS_PROJECT_TYPE == $this->_room_type &&
+                    \App\Room\RoomType::Project->value == $this->_room_type &&
                     (
                         (isset($current_portal) && $current_portal->withGroupRoomFunctions()) ||
                         $grouproom
@@ -300,21 +300,21 @@ class cs_context_manager extends cs_manager
                 ) {
                     $queryBuilder->andWhere('(c.type = :roomType OR c.type = :groupRoomType)');
                     $queryBuilder->setParameter('roomType', $this->_room_type);
-                    $queryBuilder->setParameter('groupRoomType', CS_GROUPROOM_TYPE);
+                    $queryBuilder->setParameter('groupRoomType', \App\Room\RoomType::GroupRoom->value);
                 } else {
                     $queryBuilder->andWhere('c.type = :roomType');
                     $queryBuilder->setParameter('roomType', $this->_room_type);
 
-                    if (CS_GROUPROOM_TYPE != $this->_room_type) {
+                    if (\App\Room\RoomType::GroupRoom->value != $this->_room_type) {
                         $queryBuilder->andWhere('c.type != :groupRoomType');
-                        $queryBuilder->setParameter('groupRoomType', CS_GROUPROOM_TYPE);
+                        $queryBuilder->setParameter('groupRoomType', \App\Room\RoomType::GroupRoom->value);
                     }
                 }
             } else {
                 $current_portal = $this->_environment->getCurrentPortalItem();
                 if ((isset($current_portal) && !$current_portal->withGroupRoomFunctions()) || !$grouproom) {
                     $queryBuilder->andWhere('c.type != :groupRoomType');
-                    $queryBuilder->setParameter('groupRoomType', CS_GROUPROOM_TYPE);
+                    $queryBuilder->setParameter('groupRoomType', \App\Room\RoomType::GroupRoom->value);
                 }
             }
 
@@ -369,10 +369,10 @@ class cs_context_manager extends cs_manager
            // FLAG: group room
            // ##################BEGIN####################
            $current_portal = $this->_environment->getCurrentPortalItem();
-           if (CS_PROJECT_TYPE == $this->_room_type
+           if (\App\Room\RoomType::Project->value == $this->_room_type
                 and ($current_portal->withGroupRoomFunctions()
                 or $grouproom)) {
-               $query .= ' AND ('.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'" or '.$this->addDatabasePrefix($this->_db_table).'.type = "'.CS_GROUPROOM_TYPE.'")';
+               $query .= ' AND ('.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'" or '.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Room\RoomType::GroupRoom->value.'")';
            } else {
                // ###################END#####################
                // FLAG: group room
@@ -694,8 +694,8 @@ class cs_context_manager extends cs_manager
    {
        $retour = 0;
        $query = 'SELECT MAX(activity) AS max FROM '.$this->addDatabasePrefix($this->_db_table).'';
-       $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
-       $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
+       $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.\App\Room\RoomType::Community->value.'"))) ';
+       $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.\App\Room\RoomType::Community->value.'"))) ';
        $query .= 'WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = '.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'';
        $query .= ' AND ( (l31.context_id="'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'" AND (l31.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($community_room_limit).'" OR l31.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($community_room_limit).'"))';
        $query .= ' OR ( l32.context_id="'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'" AND (l32.first_item_id = "'.\App\Legacy\SqlStringEscaper::escape($community_room_limit).'" OR l32.second_item_id = "'.\App\Legacy\SqlStringEscaper::escape($community_room_limit).'")));';

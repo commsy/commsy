@@ -320,8 +320,8 @@ class cs_labels_manager extends cs_manager
       if (!isset($this->_attribute_limit) || (isset($this->_attribute_limit) and ('modificator' == $this->_attribute_limit)) || (isset($this->_attribute_limit) and ('all' == $this->_attribute_limit))) {
           if (isset($this->_sort_order) and ('modificator' == $this->_sort_order or 'modificator_rev' == $this->_sort_order)) {
               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('labels').'.creator_id = '.$this->addDatabasePrefix('user').'.item_id';
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
+              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.\App\Item\ItemType::User->value.'")))';
+              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.\App\Item\ItemType::User->value.'")))';
               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user1 ON user1.item_id = l41.second_item_id';
               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user2 ON user2.item_id = l42.first_item_id';
 
@@ -331,8 +331,8 @@ class cs_labels_manager extends cs_manager
           // look in filenames of linked files for the search_limit
           } elseif (isset($this->_order) and 'creator' == $this->_order) {
               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('labels').'.creator_id = '.$this->addDatabasePrefix('user').'.item_id';
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.CS_USER_TYPE.'")))';
-              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.CS_USER_TYPE.'")))';
+              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON (l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.\App\Item\ItemType::User->value.'")))';
+              $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON (l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.\App\Item\ItemType::User->value.'")))';
               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user1 ON user1.item_id = l41.second_item_id';
               $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user2 ON user2.item_id = l42.first_item_id';
 
@@ -350,17 +350,17 @@ class cs_labels_manager extends cs_manager
       }
 
       if (isset($this->_topic_limit)) {
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l21.second_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l22.first_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
       }
       if (isset($this->_group_limit)) {
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l31.second_item_type="'.\App\Rubric\Label\LabelType::Group->value.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l32.first_item_type="'.\App\Rubric\Label\LabelType::Group->value.'"))) ';
       }
 
       if (isset($this->_tag_limit)) {
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.\App\Item\ItemType::Tag->value.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.\App\Item\ItemType::Tag->value.'"))) ';
       }
 
       if (isset($this->_buzzword_limit)) {
@@ -740,7 +740,7 @@ class cs_labels_manager extends cs_manager
              ->setParameter('public', $item->isPublic() ? 1 : 0)
              ->setParameter('itemId', $item->getItemID());
 
-         if (!(CS_GROUP_TYPE == $item->getLabelType() && $item->isSystemLabel())) {
+         if (!(\App\Rubric\Label\LabelType::Group->value == $item->getLabelType() && $item->isSystemLabel())) {
              $queryBuilder
                  ->set('name', ':name')
                  ->setParameter('name', $item->getTitle());
@@ -876,7 +876,7 @@ class cs_labels_manager extends cs_manager
                   'creation_date="'.$current_datetime.'",'.
                   'modifier_id="'.\App\Legacy\SqlStringEscaper::escape($modificator->getItemID()).'",'.
                   'modification_date="'.$current_datetime.'",';
-        if (!(CS_GROUP_TYPE == $item->getLabelType() and $item->isSystemLabel())) {
+        if (!(\App\Rubric\Label\LabelType::Group->value == $item->getLabelType() and $item->isSystemLabel())) {
             $query .= 'name="'.\App\Legacy\SqlStringEscaper::escape($item->getTitle()).'",';
         }
         $query .= 'description="'.\App\Legacy\SqlStringEscaper::escape($item->getDescription()).'",'.

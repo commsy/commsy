@@ -701,9 +701,9 @@ class cs_links_manager extends cs_manager
              if (!isset($this->_available[$type])) {
                  $context_item = $this->_environment->getCurrentContextItem();
                  if ('relevant_for' == $type || 'member_of' == $type) {
-                     $this->_available[$type] = $context_item->withRubric(CS_GROUP_TYPE);
+                     $this->_available[$type] = $context_item->withRubric(\App\Rubric\Label\LabelType::Group->value);
                  } elseif ('material_for' == $type) {
-                     $this->_available[$type] = $context_item->withRubric(CS_MATERIAL_TYPE);
+                     $this->_available[$type] = $context_item->withRubric(\App\Rubric\RubricType::Material->value);
                  }
              }
 
@@ -880,7 +880,7 @@ class cs_links_manager extends cs_manager
 
      public function saveLinksMaterialToBuzzword($new_array, $item_id)
      {
-         $this->setItemTypeLimit(CS_MATERIAL_TYPE);
+         $this->setItemTypeLimit(\App\Rubric\RubricType::Material->value);
          $this->setItemIDLimit($item_id);
          $result_array = $this->_performQuery();
          $insert_array = [];

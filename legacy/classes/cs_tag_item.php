@@ -34,7 +34,7 @@ class cs_tag_item extends cs_item
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_type = CS_TAG_TYPE;
+        $this->_type = \App\Item\ItemType::Tag->value;
     }
 
     /** sets the data of the item.

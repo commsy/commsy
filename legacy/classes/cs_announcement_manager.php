@@ -62,7 +62,7 @@ class cs_announcement_manager extends cs_manager
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_db_table = CS_ANNOUNCEMENT_TYPE;
+        $this->_db_table = \App\Rubric\RubricType::Announcement->value;
         $this->_translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 
@@ -267,7 +267,7 @@ class cs_announcement_manager extends cs_manager
 
     public function getItemList(array $id_array): cs_list
     {
-        return $this->_getItemList(CS_ANNOUNCEMENT_TYPE, $id_array);
+        return $this->_getItemList(\App\Rubric\RubricType::Announcement->value, $id_array);
     }
 
     /** build a new announcement item

@@ -23,7 +23,7 @@ class cs_assessments_item extends cs_item
     public function __construct($environment)
     {
         $this->_environment = $environment;
-        $this->_type = CS_ASSESSMENT_TYPE;
+        $this->_type = \App\Item\ItemType::Assessment->value;
     }
 
     /** is the type of the list = $type ?

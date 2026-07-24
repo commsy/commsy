@@ -71,7 +71,7 @@ class cs_room_manager extends cs_context_manager
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_db_table = CS_ROOM_TYPE;
+        $this->_db_table = \App\Item\ItemType::Room->value;
         $this->_room_type = '';
     }
 
@@ -244,12 +244,12 @@ class cs_room_manager extends cs_context_manager
         // ##################################
         // FLAG: group room
         // ##################################
-        if ((empty($this->_room_type) or CS_GROUPROOM_TYPE != $this->_room_type) && !$this->_limit_only_grouproom) {
+        if ((empty($this->_room_type) or \App\Room\RoomType::GroupRoom->value != $this->_room_type) && !$this->_limit_only_grouproom) {
             if (!isset($this->_id_array_limit) && !$this->_limit_with_grouproom) {
-                $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "'.CS_GROUPROOM_TYPE.'"';
+                $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "'.\App\Room\RoomType::GroupRoom->value.'"';
             }
         } elseif ($this->_limit_only_grouproom) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.CS_GROUPROOM_TYPE.'"';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Room\RoomType::GroupRoom->value.'"';
         }
         // ##################################
         // FLAG: group room
@@ -346,7 +346,7 @@ class cs_room_manager extends cs_context_manager
                         $temp_array = [];
                         $temp_array['item_id'] = -1;
                         $temp_array['title'] = '----------------------------';
-                        $temp_array['type'] = CS_PROJECT_TYPE;
+                        $temp_array['type'] = \App\Room\RoomType::Project->value;
                         $result[] = $temp_array;
                         unset($temp_array);
                     }

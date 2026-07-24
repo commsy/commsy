@@ -32,7 +32,7 @@ class cs_tag2tag_item
     public function __construct($environment)
     {
         $this->_environment = $environment;
-        $this->_type = CS_TAG2TAG_TYPE;
+        $this->_type = \App\Item\ItemType::Tag2Tag->value;
     }
 
     /** is the type of the list = $type ?

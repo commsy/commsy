@@ -30,7 +30,7 @@ class cs_topic_manager extends cs_labels_manager
     public function resetLimits(): void
     {
         parent::resetLimits();
-        $this->_type_limit = CS_TOPIC_TYPE;
+        $this->_type_limit = \App\Rubric\Label\LabelType::Topic->value;
     }
 
     public function getNewItem($label_type = ''): cs_topic_item

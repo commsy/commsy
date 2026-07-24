@@ -331,7 +331,7 @@ class cs_file_manager extends cs_manager
                 $do_it = true;
 
                 if (array_key_exists($query_result['files_id'], $current_data_array)) {
-                    $retour[CS_FILE_TYPE . $query_result['files_id']] = $current_data_array[$query_result['files_id']];
+                    $retour[\App\Item\ItemType::File->value . $query_result['files_id']] = $current_data_array[$query_result['files_id']];
                     $do_it = false;
                 }
 
@@ -389,7 +389,7 @@ class cs_file_manager extends cs_manager
                     } else {
                         $new_item_id = (int)$result_insert;
                         if (!empty($old_item_id)) {
-                            $retour[CS_FILE_TYPE . $old_item_id] = $new_item_id;
+                            $retour[\App\Item\ItemType::File->value . $old_item_id] = $new_item_id;
 
                             // copy file
                             $disc_manager = $this->_environment->getDiscManager();

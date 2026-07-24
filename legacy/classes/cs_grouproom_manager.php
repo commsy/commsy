@@ -41,7 +41,7 @@ class cs_grouproom_manager extends cs_room2_manager
     public function __construct($environment)
     {
         $this->_db_table = 'room';
-        $this->_room_type = CS_GROUPROOM_TYPE;
+        $this->_room_type = \App\Room\RoomType::GroupRoom->value;
         parent::__construct($environment);
     }
 
@@ -124,8 +124,8 @@ class cs_grouproom_manager extends cs_room2_manager
              }
          }
          if (isset($this->_topic_limit)) {
-             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l41.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l41.second_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
+             $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l42.first_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
          }
 
          // time (clock pulses)
@@ -263,7 +263,7 @@ class cs_grouproom_manager extends cs_room2_manager
 
      public function getItemList(array $id_array): cs_list
      {
-         return $this->_getItemList(CS_ROOM_TYPE, $id_array);
+         return $this->_getItemList(\App\Item\ItemType::Room->value, $id_array);
      }
 
     /** create a project - internal, do not use -> use method save

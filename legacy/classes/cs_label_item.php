@@ -63,7 +63,7 @@ class cs_label_item extends cs_item
     public function __construct($environment, $label_type = '')
     {
         parent::__construct($environment);
-        $this->_type = CS_LABEL_TYPE;
+        $this->_type = \App\Rubric\RubricType::Label->value;
         $this->_data['type'] = $label_type;
     }
 
@@ -119,7 +119,7 @@ class cs_label_item extends cs_item
      */
     public function getTopicList()
     {
-        $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_TOPIC_TYPE);
+        $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), \App\Rubric\Label\LabelType::Topic->value);
         $topic_list->sortBy('name');
 
         return $topic_list;
@@ -138,7 +138,7 @@ class cs_label_item extends cs_item
             $tmp_data['iid'] = $iid;
             $topic_array[] = $tmp_data;
         }
-        $this->_setValue(CS_TOPIC_TYPE, $topic_array, false);
+        $this->_setValue(\App\Rubric\Label\LabelType::Topic->value, $topic_array, false);
     }
 
     /** set topics of a label_item
@@ -148,7 +148,7 @@ class cs_label_item extends cs_item
      */
     public function setTopicList($value)
     {
-        $this->_setObject(CS_TOPIC_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\Label\LabelType::Topic->value, $value, false);
     }
 
     /** get materials of a label_item
@@ -158,7 +158,7 @@ class cs_label_item extends cs_item
      */
     public function getMaterialList()
     {
-        return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
+        return $this->_getLinkedItems($this->_environment->getMaterialManager(), \App\Rubric\RubricType::Material->value);
     }
 
     /** set materials of a label item by item id and version id
@@ -170,7 +170,7 @@ class cs_label_item extends cs_item
      */
     public function setMaterialListByID($value)
     {
-        $this->_setValue(CS_MATERIAL_TYPE, $value, false);
+        $this->_setValue(\App\Rubric\RubricType::Material->value, $value, false);
     }
 
     /** set materials of a label_item
@@ -180,13 +180,13 @@ class cs_label_item extends cs_item
      */
     public function setMaterialList($value)
     {
-        $this->_setObject(CS_MATERIAL_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\RubricType::Material->value, $value, false);
     }
 
      public function getMemberItemList(): cs_list
      {
          $members = new cs_list();
-         $member_ids = $this->getLinkedItemIDArray(CS_USER_TYPE);
+         $member_ids = $this->getLinkedItemIDArray(\App\Item\ItemType::User->value);
          if (!empty($member_ids)) {
              $user_manager = $this->_environment->getUserManager();
              $user_manager->setIDArrayLimit($member_ids);

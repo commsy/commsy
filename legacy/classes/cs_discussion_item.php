@@ -30,7 +30,7 @@ class cs_discussion_item extends cs_item
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_type = CS_DISCUSSION_TYPE;
+        $this->_type = \App\Rubric\RubricType::Discussion->value;
     }
 
    /** get title of a discussion

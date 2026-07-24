@@ -430,18 +430,18 @@ class cs_material_manager extends cs_manager
         $query .= ' INNER JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('materials').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
         if (isset($this->_topics_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l21.second_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l22.first_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
         }
         if (isset($this->_group_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l31.second_item_type="'.\App\Rubric\Label\LabelType::Group->value.'"))) ';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l32.first_item_type="'.\App\Rubric\Label\LabelType::Group->value.'"))) ';
         }
 
         if (isset($this->_tag_limit)) {
             $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'") ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'") ';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l41.second_item_type="'.\App\Item\ItemType::Tag->value.'") ';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l42.first_item_type="'.\App\Item\ItemType::Tag->value.'") ';
         }
 
         // restrict materials by buzzword (la4)
@@ -1007,7 +1007,7 @@ class cs_material_manager extends cs_manager
                 $room_item = $this->_environment->getCurrentRoomItem();
             }
 
-            return $room_item->withRubric(CS_MATERIAL_TYPE);
+            return $room_item->withRubric(\App\Rubric\RubricType::Material->value);
         } else {
             return true;
         }

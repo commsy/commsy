@@ -24,7 +24,7 @@ class cs_server_manager extends cs_context_manager
     public function __construct($environment)
     {
         $this->_db_table = 'server';
-        $this->_room_type = CS_SERVER_TYPE;
+        $this->_room_type = \App\Item\ItemType::Server->value;
         parent::__construct($environment);
     }
 }

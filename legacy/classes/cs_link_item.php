@@ -152,11 +152,11 @@ class cs_link_item extends cs_item
         } else {
             $type = $this->_getValue('first_item_type');
             // for caching -> use always room manager to get item
-            if (CS_PROJECT_TYPE == $type
-                 or CS_COMMUNITY_TYPE == $type
-                 or CS_GROUPROOM_TYPE == $type
+            if (\App\Room\RoomType::Project->value == $type
+                 or \App\Room\RoomType::Community->value == $type
+                 or \App\Room\RoomType::GroupRoom->value == $type
             ) {
-                $type = CS_ROOM_TYPE;
+                $type = \App\Item\ItemType::Room->value;
             }
             $item_manager = $this->_environment->getManager($type);
             $item = $item_manager->getItem($this->_getValue('first_item_id'));
@@ -179,11 +179,11 @@ class cs_link_item extends cs_item
         } else {
             $type = $this->_getValue('second_item_type');
             // for caching -> use always room manager to get item
-            if (CS_PROJECT_TYPE == $type
-                 or CS_COMMUNITY_TYPE == $type
-                 or CS_GROUPROOM_TYPE == $type
+            if (\App\Room\RoomType::Project->value == $type
+                 or \App\Room\RoomType::Community->value == $type
+                 or \App\Room\RoomType::GroupRoom->value == $type
             ) {
-                $type = CS_ROOM_TYPE;
+                $type = \App\Item\ItemType::Room->value;
             }
             $item_manager = $this->_environment->getManager($type);
             $item = $item_manager->getItem($this->_getValue('second_item_id'));
