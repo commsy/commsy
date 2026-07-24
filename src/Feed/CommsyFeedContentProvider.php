@@ -24,6 +24,7 @@ use DateTime;
 use FeedIo\Feed;
 use FeedIo\FeedInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -42,7 +43,8 @@ readonly class CommsyFeedContentProvider
     }
 
     /**
-     * @throws NotFoundHttpException
+     * @throws NotFoundHttpException     server/portal contexts have no feed
+     * @throws AccessDeniedHttpException a non-guest room requested without a valid RSS hash
      */
     public function getFeed(Request $request): FeedInterface
     {
@@ -50,54 +52,56 @@ readonly class CommsyFeedContentProvider
         $this->legacyEnvironment->setCurrentContextID($contextId);
         $currentContextItem = $this->currentContextResolver->getContextItem();
 
-        if ($this->isGranted($currentContextItem, $request)) {
-            $isGuestAccess = true;
-            if ($request->query->has('hid')) {
-                $isGuestAccess = false;
+        $this->assertFeedAccessible($currentContextItem, $request);
+
+        // Guest-open rooms are public; a hash switches to full (non-guest) mode.
+        $isGuestAccess = !$request->query->has('hid');
+        $this->feedCreatorFactory->setGuestAccess($isGuestAccess);
+
+        $feed = new Feed();
+        $feed->setTitle($this->getTitle($currentContextItem));
+        $feed->setDescription($this->getDescription($currentContextItem));
+        $feed->setLink($request->getSchemeAndHttpHost().$request->getBaseUrl());
+
+        $items = $this->getItems($currentContextItem);
+        $feed->setLastModified($this->getLastModified($items));
+
+        foreach ($items as $item) {
+            $feedItem = $this->feedCreatorFactory->createItem($item);
+            if ($feedItem) {
+                $feed->add($feedItem);
             }
-
-            $this->feedCreatorFactory->setGuestAccess($isGuestAccess);
-
-            $feed = new Feed();
-            $feed->setTitle($this->getTitle($currentContextItem));
-            $feed->setDescription($this->getDescription($currentContextItem));
-            $feed->setLink($request->getSchemeAndHttpHost().$request->getBaseUrl());
-
-            $items = $this->getItems($currentContextItem);
-            $feed->setLastModified($this->getLastModified($items));
-
-            foreach ($items as $item) {
-                $feedItem = $this->feedCreatorFactory->createItem($item);
-                if ($feedItem) {
-                    $feed->add($feedItem);
-                }
-            }
-
-            return $feed;
         }
 
-        throw new NotFoundHttpException('Feed not found or access denied.');
+        return $feed;
     }
 
-    private function isGranted($currentContextItem, Request $request): bool
+    /**
+     * Feeds exist only for rooms. Guest-open rooms are public; non-guest rooms
+     * require a valid RSS hash. Anything else is rejected.
+     *
+     * @throws NotFoundHttpException     server/portal contexts have no feed
+     * @throws AccessDeniedHttpException a non-guest room requested without a valid RSS hash
+     */
+    private function assertFeedAccessible($currentContextItem, Request $request): void
     {
+        // Server and portal contexts have no feed of their own.
+        if ($currentContextItem->isPortal() || $currentContextItem->isServer()) {
+            throw new NotFoundHttpException('This context has no feed.');
+        }
+
+        // Guest-open rooms are publicly readable without a hash.
         if ($currentContextItem->isOpenForGuests()) {
-            return true;
+            return;
         }
 
-        if (!$currentContextItem->isPortal() && !$currentContextItem->isServer()) {
-            if (!$currentContextItem->isLocked()) {
-                if ($request->query->has('hid')) {
-                    $hash = $request->query->get('hid');
-
-                    if ($this->hashManager->isRssHashValid($hash, $currentContextItem)) {
-                        return true;
-                    }
-                }
-            }
+        // Non-guest rooms require a valid, room-specific RSS hash.
+        $hash = (string) $request->query->get('hid', '');
+        if ($currentContextItem->isLocked()
+            || '' === $hash
+            || !$this->hashManager->isRssHashValid($hash, $currentContextItem)) {
+            throw new AccessDeniedHttpException('A valid RSS hash is required to access this feed.');
         }
-
-        return false;
     }
 
     private function getLastModified(array $items): DateTime
