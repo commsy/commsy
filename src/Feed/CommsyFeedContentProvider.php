@@ -21,14 +21,13 @@ use cs_manager;
 use cs_privateroom_item;
 use DateInterval;
 use DateTime;
-use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
-use Debril\RssAtomBundle\Provider\FeedProviderInterface;
 use FeedIo\Feed;
 use FeedIo\FeedInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-readonly class CommsyFeedContentProvider implements FeedProviderInterface
+readonly class CommsyFeedContentProvider
 {
     private cs_environment $legacyEnvironment;
 
@@ -43,7 +42,7 @@ readonly class CommsyFeedContentProvider implements FeedProviderInterface
     }
 
     /**
-     * @throws FeedNotFoundException
+     * @throws NotFoundHttpException
      */
     public function getFeed(Request $request): FeedInterface
     {
@@ -77,7 +76,7 @@ readonly class CommsyFeedContentProvider implements FeedProviderInterface
             return $feed;
         }
 
-        throw new FeedNotFoundException();
+        throw new NotFoundHttpException('Feed not found or access denied.');
     }
 
     private function isGranted($currentContextItem, Request $request): bool

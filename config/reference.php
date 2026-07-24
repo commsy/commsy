@@ -2017,13 +2017,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     convert_exception?: bool|Param, // Default: false
  *     remove_first_page_param?: bool|Param, // Default: false
  * }
- * @psalm-type DebrilRssAtomConfig = array{
- *     private?: bool|Param, // Change cache headers so the RSS feed is not cached by public caches (like reverse-proxies...). // Default: false
- *     force_refresh?: bool|Param, // Do not send 304 status if the feed has not been modified since last hit // Default: false
- *     content_type_json?: scalar|Param|null, // Content-Type header value to use for json feed generation. // Default: "application/json"
- *     content_type_xml?: scalar|Param|null, // Content-Type header value to use for xml feed generation (atom and rss). // Default: "application/xhtml+xml"
- *     date_formats?: list<scalar|Param|null>,
- * }
  * @psalm-type WhiteOctoberBreadcrumbsConfig = array{
  *     separator?: scalar|Param|null, // Default: "/"
  *     separatorClass?: scalar|Param|null, // Default: "separator"
@@ -2537,7 +2530,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *     vich_uploader?: VichUploaderConfig,
  *     knp_paginator?: KnpPaginatorConfig,
- *     debril_rss_atom?: DebrilRssAtomConfig,
  *     white_october_breadcrumbs?: WhiteOctoberBreadcrumbsConfig,
  *     twig_extra?: TwigExtraConfig,
  *     sylius_theme?: SyliusThemeConfig,
@@ -2568,7 +2560,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *         vich_uploader?: VichUploaderConfig,
  *         knp_paginator?: KnpPaginatorConfig,
- *         debril_rss_atom?: DebrilRssAtomConfig,
  *         white_october_breadcrumbs?: WhiteOctoberBreadcrumbsConfig,
  *         twig_extra?: TwigExtraConfig,
  *         sylius_theme?: SyliusThemeConfig,
@@ -2600,7 +2591,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *         vich_uploader?: VichUploaderConfig,
  *         knp_paginator?: KnpPaginatorConfig,
- *         debril_rss_atom?: DebrilRssAtomConfig,
  *         white_october_breadcrumbs?: WhiteOctoberBreadcrumbsConfig,
  *         twig_extra?: TwigExtraConfig,
  *         sylius_theme?: SyliusThemeConfig,
@@ -2631,7 +2621,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
  *         vich_uploader?: VichUploaderConfig,
  *         knp_paginator?: KnpPaginatorConfig,
- *         debril_rss_atom?: DebrilRssAtomConfig,
  *         white_october_breadcrumbs?: WhiteOctoberBreadcrumbsConfig,
  *         twig_extra?: TwigExtraConfig,
  *         sylius_theme?: SyliusThemeConfig,
