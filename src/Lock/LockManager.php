@@ -15,6 +15,9 @@ namespace App\Lock;
 
 use App\Entity\Account;
 use App\Entity\Lock;
+use App\Item\ItemType;
+use App\Rubric\Label\LabelType;
+use App\Rubric\RubricType;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
@@ -122,7 +125,7 @@ final readonly class LockManager
     {
         $item = $this->itemService->getTypedItem($itemId);
 
-        if (in_array($item->getItemType(), [CS_SECTION_TYPE, CS_STEP_TYPE, CS_DISCARTICLE_TYPE])) {
+        if (in_array($item->getItemType(), [ItemType::Section->value, ItemType::Step->value, ItemType::DiscussionArticle->value])) {
             /** @noinspection PhpPossiblePolymorphicInvocationInspection */
             return $item->getLinkedItemID();
         }
@@ -140,9 +143,9 @@ final readonly class LockManager
         }
 
         return in_array($baseItem->getItemType(), [
-            CS_MATERIAL_TYPE, CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE,
-            CS_GROUP_TYPE, CS_TODO_TYPE, CS_TOPIC_TYPE,
-            CS_SECTION_TYPE, CS_STEP_TYPE
+            RubricType::Material->value, RubricType::Announcement->value, RubricType::Date->value, RubricType::Discussion->value,
+            LabelType::Group->value, RubricType::Todo->value, LabelType::Topic->value,
+            ItemType::Section->value, ItemType::Step->value
         ]);
     }
 

@@ -207,7 +207,7 @@ final class DiscussionDeleterTest extends KernelTestCase
 
     /**
      * Hard-delete covers both `discussions` and `discussionarticles` —
-     * closes the legacy gap where CronHardDelete only swept CS_DISCUSSION_TYPE.
+     * closes the legacy gap where CronHardDelete only swept the 'discussion' type.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRowsIncludingArticles(): void

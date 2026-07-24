@@ -389,7 +389,7 @@ class cs_item
     public function getTagList(): cs_list
     {
         $list = new cs_list();
-        $tag_list = $this->getLinkItemList(CS_TAG_TYPE);
+        $tag_list = $this->getLinkItemList(\App\Item\ItemType::Tag->value);
         foreach ($tag_list as $tag) {
             $linked_item = $tag->getLinkedItem($this);  // Get the linked item
             if (isset($linked_item)) {
@@ -409,7 +409,7 @@ class cs_item
      */
     public function setTagListByID($value)
     {
-        $this->setLinkedItemsByID(CS_TAG_TYPE, $value);
+        $this->setLinkedItemsByID(\App\Item\ItemType::Tag->value, $value);
     }
 
     /** set materials of a announcement
@@ -419,7 +419,7 @@ class cs_item
      */
     public function setTagList($value)
     {
-        $this->_setObject(CS_TAG_TYPE, $value, false);
+        $this->_setObject(\App\Item\ItemType::Tag->value, $value, false);
     }
 
     /**
@@ -1112,7 +1112,7 @@ class cs_item
              if ($is_changed) {
                  if ('general' != $changed_key and 'section_for' != $changed_key and 'task_item' != $changed_key and 'copy_of' != $changed_key) {
                      // Abfrage nötig wegen langsamer Migration auf die neuen LinkTypen.
-                     if (in_array($changed_key, [CS_TOPIC_TYPE, CS_GROUP_TYPE, CS_PROJECT_TYPE, CS_PRIVATEROOM_TYPE, CS_MYROOM_TYPE, CS_COMMUNITY_TYPE, CS_ANNOUNCEMENT_TYPE, CS_MATERIAL_TYPE, CS_TAG_TYPE, CS_TODO_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_USER_TYPE])) {
+                     if (in_array($changed_key, [\App\Rubric\Label\LabelType::Topic->value, \App\Rubric\Label\LabelType::Group->value, \App\Room\RoomType::Project->value, \App\Room\RoomType::PrivateRoom->value, \App\Item\ItemType::MyRoom->value, \App\Room\RoomType::Community->value, \App\Rubric\RubricType::Announcement->value, \App\Rubric\RubricType::Material->value, \App\Item\ItemType::Tag->value, \App\Rubric\RubricType::Todo->value, \App\Rubric\RubricType::Date->value, \App\Rubric\RubricType::Discussion->value, \App\Item\ItemType::User->value])) {
                          if (is_object($this->_data[$changed_key])) { // a list of objects or one object
                              $this->_setObjectLinkItems($changed_key);
                          } elseif (is_array($this->_data[$changed_key])) { // an array
@@ -1167,9 +1167,9 @@ class cs_item
         // $old_link_item_list die Link items EINES TYPS, die das Link Item vor der Bearbeitung besa
         $link_manager = $this->_environment->getLinkItemManager();
         $link_manager->resetLimits();
-        if ((CS_COMMUNITY_TYPE == $changed_key and $this->isA(CS_PROJECT_TYPE))
+        if ((\App\Room\RoomType::Community->value == $changed_key and $this->isA(\App\Room\RoomType::Project->value))
              or
-            (CS_PROJECT_TYPE == $changed_key and $this->isA(CS_COMMUNITY_TYPE))
+            (\App\Room\RoomType::Project->value == $changed_key and $this->isA(\App\Room\RoomType::Community->value))
         ) {
             $link_manager->setContextLimit($this->getContextID());
         } else {
@@ -1225,24 +1225,24 @@ class cs_item
         $link_manager = $this->_environment->getLinkItemManager();
         $link_manager->resetLimits();
         if (
-            (CS_COMMUNITY_TYPE == $changed_key
-              and $this->isA(CS_PROJECT_TYPE)
+            (\App\Room\RoomType::Community->value == $changed_key
+              and $this->isA(\App\Room\RoomType::Project->value)
             )
-            or (CS_PROJECT_TYPE == $changed_key
-                  and $this->isA(CS_COMMUNITY_TYPE)
+            or (\App\Room\RoomType::Project->value == $changed_key
+                  and $this->isA(\App\Room\RoomType::Community->value)
             )
         ) {
             $link_manager->setContextLimit($this->getContextID());
         } else {
             $link_manager->setContextLimit($this->_environment->getCurrentContextID());
         }
-        if (CS_COMMUNITY_TYPE == $changed_key) {
+        if (\App\Room\RoomType::Community->value == $changed_key) {
             $change_all_items_in_community_room = true;
         } else {
             $change_all_items_in_community_room = false;
         }
         $link_manager->setLinkedItemLimit($this);
-        if (CS_MYROOM_TYPE == $changed_key) {
+        if (\App\Item\ItemType::MyRoom->value == $changed_key) {
             $type_array[0] = 'project';
             $type_array[1] = 'community';
             $link_manager->setTypeArrayLimit($type_array);
@@ -1444,7 +1444,7 @@ class cs_item
         $type_array = [];
         foreach ($rubrics as $rubric) {
             $rubric_array = explode('_', $rubric);
-            if ('none' != $rubric_array[1] and CS_USER_TYPE != $rubric_array[0]) {
+            if ('none' != $rubric_array[1] and \App\Item\ItemType::User->value != $rubric_array[0]) {
                 $type_array[] = $rubric_array[0];
             }
         }
@@ -1466,15 +1466,15 @@ class cs_item
          $conf = $context_item->getHomeConf();
 
          // translation of entry to rubrics for new private room
-         if ($this->_environment->inPrivateRoom() && mb_stristr((string) $conf, CS_ENTRY_TYPE)) {
+         if ($this->_environment->inPrivateRoom() && mb_stristr((string) $conf, \App\Item\ItemType::Entry->value)) {
              $temp_array = [];
              $temp_array3 = [];
              $rubric_array2 = [];
-             $temp_array[] = CS_ANNOUNCEMENT_TYPE;
-             $temp_array[] = CS_TODO_TYPE;
-             $temp_array[] = CS_DISCUSSION_TYPE;
-             $temp_array[] = CS_MATERIAL_TYPE;
-             $temp_array[] = CS_DATE_TYPE;
+             $temp_array[] = \App\Rubric\RubricType::Announcement->value;
+             $temp_array[] = \App\Rubric\RubricType::Todo->value;
+             $temp_array[] = \App\Rubric\RubricType::Discussion->value;
+             $temp_array[] = \App\Rubric\RubricType::Material->value;
+             $temp_array[] = \App\Rubric\RubricType::Date->value;
              foreach ($temp_array as $temp_rubric) {
                  if (!mb_stristr((string) $conf, $temp_rubric)) {
                      $temp_array3[] = $temp_rubric.'_nodisplay';
@@ -1482,7 +1482,7 @@ class cs_item
              }
              $rubric_array = explode(',', (string) $conf);
              foreach ($rubric_array as $temp_rubric) {
-                 if (!mb_stristr($temp_rubric, CS_ENTRY_TYPE)) {
+                 if (!mb_stristr($temp_rubric, \App\Item\ItemType::Entry->value)) {
                      $rubric_array2[] = $temp_rubric;
                  } else {
                      $rubric_array2 = [...$rubric_array2, ...$temp_array3];
@@ -1496,16 +1496,16 @@ class cs_item
          $type_array = [];
          foreach ($rubrics as $rubric) {
              $rubric_array = explode('_', $rubric);
-             if (('none' != $rubric_array[1] && CS_USER_TYPE != $rubric_array[0]) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_DATE_TYPE == $this->getItemType()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_TODO_TYPE == $this->getItemType()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_GROUP_TYPE == $this->getItemType()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_MATERIAL_TYPE == $this->getItemType()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_ANNOUNCEMENT_TYPE == $this->getItemType()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_TASK_TYPE == $this->getItemType()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_DISCUSSION_TYPE == $this->getItemType()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_TOPIC_TYPE == $this->getItemType()) ||
-                 (CS_USER_TYPE == $rubric_array[0] && CS_LABEL_TYPE == $this->getItemType())
+             if (('none' != $rubric_array[1] && \App\Item\ItemType::User->value != $rubric_array[0]) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Rubric\RubricType::Date->value == $this->getItemType()) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Rubric\RubricType::Todo->value == $this->getItemType()) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Rubric\Label\LabelType::Group->value == $this->getItemType()) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Rubric\RubricType::Material->value == $this->getItemType()) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Rubric\RubricType::Announcement->value == $this->getItemType()) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Item\ItemType::Task->value == $this->getItemType()) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Rubric\RubricType::Discussion->value == $this->getItemType()) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Rubric\Label\LabelType::Topic->value == $this->getItemType()) ||
+                 (\App\Item\ItemType::User->value == $rubric_array[0] && \App\Rubric\RubricType::Label->value == $this->getItemType())
              ) {
                  $type_array[] = $rubric_array[0];
              }
@@ -1525,7 +1525,7 @@ class cs_item
          $type_array = [];
          $link_item_manager = $this->_environment->getLinkItemManager();
          $link_item_manager->setLinkedItemLimit($this);
-         if (CS_MYROOM_TYPE == $type) {
+         if (\App\Item\ItemType::MyRoom->value == $type) {
              $type_array[0] = 'project';
              $type_array[1] = 'community';
              $link_item_manager->setTypeArrayLimit($type_array);
@@ -1534,18 +1534,18 @@ class cs_item
          }
 
          if (
-             (CS_COMMUNITY_TYPE == $type && $this->isA(CS_PROJECT_TYPE)) ||
-             (CS_PROJECT_TYPE == $type && $this->isA(CS_COMMUNITY_TYPE) ||
-                 (CS_COMMUNITY_TYPE == $type && $this->isA(CS_PROJECT_TYPE) && $this->_environment->inServer()) ||
-                 (CS_COMMUNITY_TYPE == $type && $this->isA(CS_PROJECT_TYPE) && $this->_environment->inGroupRoom() &&
+             (\App\Room\RoomType::Community->value == $type && $this->isA(\App\Room\RoomType::Project->value)) ||
+             (\App\Room\RoomType::Project->value == $type && $this->isA(\App\Room\RoomType::Community->value) ||
+                 (\App\Room\RoomType::Community->value == $type && $this->isA(\App\Room\RoomType::Project->value) && $this->_environment->inServer()) ||
+                 (\App\Room\RoomType::Community->value == $type && $this->isA(\App\Room\RoomType::Project->value) && $this->_environment->inGroupRoom() &&
                      $this->_environment->getCurrentContextItem()->getLinkedProjectItem()->getItemId() == $this->getItemId())
              )
          ) {
              $link_item_manager->setRoomLimit($this->getContextID());
-         } elseif ($this->isA(CS_LABEL_TYPE) && CS_GROUP_TYPE == $this->getLabelType()) {
+         } elseif ($this->isA(\App\Rubric\RubricType::Label->value) && \App\Rubric\Label\LabelType::Group->value == $this->getLabelType()) {
              // müsste dies nicht für alle Fälle gelten ???
              $link_item_manager->setRoomLimit($this->getContextID());
-         } elseif ($this->isA(CS_USER_TYPE) || $this->isA(CS_DATE_TYPE) || $this->isA(CS_TODO_TYPE)) {
+         } elseif ($this->isA(\App\Item\ItemType::User->value) || $this->isA(\App\Rubric\RubricType::Date->value) || $this->isA(\App\Rubric\RubricType::Todo->value)) {
              $link_item_manager->setRoomLimit($this->getContextID());
          } else {
              $link_item_manager->setRoomLimit($this->_environment->getCurrentContextID());
@@ -1624,7 +1624,7 @@ class cs_item
          foreach ($id_array as $iid) {
              $item = $item_manager->getItem($iid);
              $rubric = $item->getItemType();
-             if (CS_LABEL_TYPE == $rubric) {
+             if (\App\Rubric\RubricType::Label->value == $rubric) {
                  $label_manager = $this->_environment->getLabelManager();
                  $label_item = $label_manager->getItem($iid);
                  $rubric = $label_item->getLabelType();
@@ -1650,19 +1650,19 @@ class cs_item
          }
 
          // translation of entry to rubrics for new private room
-         if ($this->_environment->inPrivateRoom() && in_array(CS_ENTRY_TYPE, $rubric_array)) {
+         if ($this->_environment->inPrivateRoom() && in_array(\App\Item\ItemType::Entry->value, $rubric_array)) {
              $temp_array = [];
-             $temp_array[] = CS_ANNOUNCEMENT_TYPE;
-             $temp_array[] = CS_TODO_TYPE;
-             $temp_array[] = CS_DISCUSSION_TYPE;
-             $temp_array[] = CS_MATERIAL_TYPE;
-             $temp_array[] = CS_DATE_TYPE;
+             $temp_array[] = \App\Rubric\RubricType::Announcement->value;
+             $temp_array[] = \App\Rubric\RubricType::Todo->value;
+             $temp_array[] = \App\Rubric\RubricType::Discussion->value;
+             $temp_array[] = \App\Rubric\RubricType::Material->value;
+             $temp_array[] = \App\Rubric\RubricType::Date->value;
 
              $temp_array2 = array_filter($temp_array, fn ($rubric) => !in_array($rubric, $rubric_array));
 
              $rubric_array2 = [];
              foreach ($rubric_array as $temp_rubric) {
-                 if (CS_ENTRY_TYPE != $temp_rubric) {
+                 if (\App\Item\ItemType::Entry->value != $temp_rubric) {
                      $rubric_array2[] = $temp_rubric;
                  } else {
                      $rubric_array2 = [...$rubric_array2, ...$temp_array2];
@@ -1673,14 +1673,14 @@ class cs_item
 
          foreach ($rubric_array as $rubric) {
              if (
-                 CS_DATE_TYPE == $this->getItemType() ||
-                 CS_MATERIAL_TYPE == $this->getItemType() ||
-                 CS_GROUP_TYPE == $this->getItemType() ||
-                 CS_ANNOUNCEMENT_TYPE == $this->getItemType() ||
-                 CS_TASK_TYPE == $this->getItemType() ||
-                 CS_DISCUSSION_TYPE == $this->getItemType() ||
-                 CS_TOPIC_TYPE == $this->getItemType() ||
-                 CS_TODO_TYPE == $this->getItemType()
+                 \App\Rubric\RubricType::Date->value == $this->getItemType() ||
+                 \App\Rubric\RubricType::Material->value == $this->getItemType() ||
+                 \App\Rubric\Label\LabelType::Group->value == $this->getItemType() ||
+                 \App\Rubric\RubricType::Announcement->value == $this->getItemType() ||
+                 \App\Item\ItemType::Task->value == $this->getItemType() ||
+                 \App\Rubric\RubricType::Discussion->value == $this->getItemType() ||
+                 \App\Rubric\Label\LabelType::Topic->value == $this->getItemType() ||
+                 \App\Rubric\RubricType::Todo->value == $this->getItemType()
              ) {
                  if (isset($itemsByRubric[$rubric])) {
                      $this->_setValue($rubric, $itemsByRubric[$rubric], false);
@@ -1945,7 +1945,7 @@ class cs_item
 
     public function getTopicList()
     {
-        $topic_list = $this->getLinkedItemList(CS_TOPIC_TYPE);
+        $topic_list = $this->getLinkedItemList(\App\Rubric\Label\LabelType::Topic->value);
         $topic_list->sortBy('name');
 
         return $topic_list;
@@ -1959,12 +1959,12 @@ class cs_item
             $tmp_data['iid'] = $iid;
             $topic_array[] = $tmp_data;
         }
-        $this->_setValue(CS_TOPIC_TYPE, $topic_array, false);
+        $this->_setValue(\App\Rubric\Label\LabelType::Topic->value, $topic_array, false);
     }
 
     public function setTopicList($value)
     {
-        $this->_setObject(CS_TOPIC_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\Label\LabelType::Topic->value, $value, false);
     }
 
      public function setExternalViewerAccounts(array $user_id_array): void
@@ -1985,7 +1985,7 @@ class cs_item
 
     public function getGroupList()
     {
-        $group_list = $this->getLinkedItemList(CS_GROUP_TYPE);
+        $group_list = $this->getLinkedItemList(\App\Rubric\Label\LabelType::Group->value);
         $group_list->sortBy('name');
 
         return $group_list;
@@ -1993,27 +1993,27 @@ class cs_item
 
     public function setGroupListByID($value)
     {
-        $this->setLinkedItemsByID(CS_GROUP_TYPE, $value);
+        $this->setLinkedItemsByID(\App\Rubric\Label\LabelType::Group->value, $value);
     }
 
     public function setGroupList($value)
     {
-        $this->_setObject(CS_GROUP_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\Label\LabelType::Group->value, $value, false);
     }
 
     public function getMaterialList()
     {
-        return $this->getLinkedItemList(CS_MATERIAL_TYPE);
+        return $this->getLinkedItemList(\App\Rubric\RubricType::Material->value);
     }
 
     public function setMaterialListByID($value)
     {
-        $this->setLinkedItemsByID(CS_MATERIAL_TYPE, $value);
+        $this->setLinkedItemsByID(\App\Rubric\RubricType::Material->value, $value);
     }
 
     public function setMaterialList($value)
     {
-        $this->_setObject(CS_MATERIAL_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\RubricType::Material->value, $value, false);
     }
 
     // ------------------------------------------

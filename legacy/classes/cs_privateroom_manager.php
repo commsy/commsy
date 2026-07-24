@@ -52,7 +52,7 @@ class cs_privateroom_manager extends cs_room2_manager
         parent::__construct($environment);
 
         $this->_db_table = 'room';
-        $this->_room_type = CS_PRIVATEROOM_TYPE;
+        $this->_room_type = \App\Room\RoomType::PrivateRoom->value;
     }
 
     /** reset limits
@@ -65,7 +65,7 @@ class cs_privateroom_manager extends cs_room2_manager
         $this->_interval_limit = null;
         $this->_order = null;
         $this->_time_limit = null;
-        $this->_room_type = CS_PRIVATEROOM_TYPE;
+        $this->_room_type = \App\Room\RoomType::PrivateRoom->value;
         $this->_active_limit = false;
     }
 
@@ -331,7 +331,7 @@ class cs_privateroom_manager extends cs_room2_manager
                     if (isset($result[0])) {
                         $item = $this->_buildItem($result[0]);
                         if (isset($item)) {
-                            $item->setType(CS_PRIVATEROOM_TYPE);
+                            $item->setType(\App\Room\RoomType::PrivateRoom->value);
                             $this->roomArrayCache[$user_item->getItemID()] = $item;
 
                             return $this->roomArrayCache[$user_item->getItemID()];

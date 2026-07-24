@@ -390,7 +390,7 @@ class cs_room_item extends cs_context_item
      */
     public function getTopicList()
     {
-        $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_TOPIC_TYPE);
+        $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), \App\Rubric\Label\LabelType::Topic->value);
         $topic_list->sortBy('name');
 
         return $topic_list;
@@ -411,7 +411,7 @@ class cs_room_item extends cs_context_item
             $tmp_data['iid'] = $iid;
             $topic_array[] = $tmp_data;
         }
-        $this->_setValue(CS_TOPIC_TYPE, $topic_array, false);
+        $this->_setValue(\App\Rubric\Label\LabelType::Topic->value, $topic_array, false);
     }
 
     /** set topics of a project
@@ -423,7 +423,7 @@ class cs_room_item extends cs_context_item
      */
     public function setTopicList($value)
     {
-        $this->_setObject(CS_TOPIC_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\Label\LabelType::Topic->value, $value, false);
     }
 
     /** get materials of a project
@@ -435,7 +435,7 @@ class cs_room_item extends cs_context_item
      */
     public function getMaterialList()
     {
-        return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
+        return $this->_getLinkedItems($this->_environment->getMaterialManager(), \App\Rubric\RubricType::Material->value);
     }
 
     /** set materials of a project item by item id and version id
@@ -449,7 +449,7 @@ class cs_room_item extends cs_context_item
      */
     public function setMaterialListByID($value)
     {
-        $this->setLinkedItemsByID(CS_MATERIAL_TYPE, $value);
+        $this->setLinkedItemsByID(\App\Rubric\RubricType::Material->value, $value);
     }
 
     /** set materials of a project
@@ -461,7 +461,7 @@ class cs_room_item extends cs_context_item
      */
     public function setMaterialList($value)
     {
-        $this->_setObject(CS_MATERIAL_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\RubricType::Material->value, $value, false);
     }
 
     /**

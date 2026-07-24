@@ -144,7 +144,7 @@ class cs_link_manager extends cs_manager
 
      public function setTopicLimit()
      {
-         $this->setTypeLimit(CS_TOPIC_TYPE);
+         $this->setTypeLimit(\App\Rubric\Label\LabelType::Topic->value);
      }
 
      public function setRoomLimit($limit)
@@ -828,22 +828,22 @@ class cs_link_manager extends cs_manager
     {
         $query = '';
         switch ($type) {
-            case CS_MATERIAL_TYPE:
+            case \App\Rubric\RubricType::Material->value:
                 $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('materials').'.item_id FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('materials').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('materials').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('materials').'.modification_date DESC, '.$this->addDatabasePrefix('materials').'.title ASC';
                 break;
-            case CS_PROJECT_TYPE:
+            case \App\Room\RoomType::Project->value:
                 $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('room').'.item_id FROM '.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('room').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('room').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('room').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('room').'.type="project" ORDER BY '.$this->addDatabasePrefix('room').'.modification_date DESC, '.$this->addDatabasePrefix('room').'.title ASC';
                 break;
-            case CS_ANNOUNCEMENT_TYPE:
+            case \App\Rubric\RubricType::Announcement->value:
                 $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('announcement').'.item_id FROM '.$this->addDatabasePrefix('announcement').' WHERE '.$this->addDatabasePrefix('announcement').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('announcement').'.deleter_id IS NULL  AND '.$this->addDatabasePrefix('announcement').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
                 break;
-            case CS_DISCUSSION_TYPE:
+            case \App\Rubric\RubricType::Discussion->value:
                 $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussions').'.item_id FROM '.$this->addDatabasePrefix('discussions').' WHERE '.$this->addDatabasePrefix('discussions').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('discussions').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('discussions').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('discussions').'.modification_date DESC, '.$this->addDatabasePrefix('discussions').'.title DESC';
                 break;
-            case CS_TODO_TYPE:
+            case \App\Rubric\RubricType::Todo->value:
                 $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('todos').'.item_id FROM '.$this->addDatabasePrefix('todos').' WHERE '.$this->addDatabasePrefix('todos').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('todos').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('todos').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date DESC';
                 break;
-            case CS_DATE_TYPE:
+            case \App\Rubric\RubricType::Date->value:
                 $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('dates').'.item_id FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" AND '.$this->addDatabasePrefix('dates').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('dates').'.deletion_date IS NULL ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
                 break;
         }
@@ -856,7 +856,7 @@ class cs_link_manager extends cs_manager
                 $id_array[] = $query_result['item_id'];
             }
         }
-        if ('CS_DISCUSSION_TYPE' == $type) {
+        if ('\App\Rubric\RubricType::Discussion->value' == $type) {
             $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('discussionarticless').'.item_id FROM '.$this->addDatabasePrefix('discussionarticles').' WHERE '.$this->addDatabasePrefix('discussionarticles').'.creator_id ="'.\App\Legacy\SqlStringEscaper::escape($creator_id).'" OR '.$this->addDatabasePrefix('discussionarticles').'.deleter_id IS NULL  ORDER BY '.$this->addDatabasePrefix('discussionarticle').'.modification_date DESC, '.$this->addDatabasePrefix('discussionarticle').'.subject DESC';
             $result = $this->_db_connector->performQuery($query);
             $id_array = [];

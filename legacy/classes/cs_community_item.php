@@ -41,24 +41,24 @@ class cs_community_item extends cs_room_item
     {
         parent::__construct($environment);
 
-        $this->_type = CS_COMMUNITY_TYPE;
-        $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
-        $this->_default_rubrics_array[1] = CS_PROJECT_TYPE;
-        $this->_default_rubrics_array[2] = CS_TODO_TYPE;
-        $this->_default_rubrics_array[3] = CS_DATE_TYPE;
-        $this->_default_rubrics_array[4] = CS_MATERIAL_TYPE;
-        $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
-        $this->_default_rubrics_array[6] = CS_USER_TYPE;
-        $this->_default_rubrics_array[7] = CS_TOPIC_TYPE;
+        $this->_type = \App\Room\RoomType::Community->value;
+        $this->_default_rubrics_array[0] = \App\Rubric\RubricType::Announcement->value;
+        $this->_default_rubrics_array[1] = \App\Room\RoomType::Project->value;
+        $this->_default_rubrics_array[2] = \App\Rubric\RubricType::Todo->value;
+        $this->_default_rubrics_array[3] = \App\Rubric\RubricType::Date->value;
+        $this->_default_rubrics_array[4] = \App\Rubric\RubricType::Material->value;
+        $this->_default_rubrics_array[5] = \App\Rubric\RubricType::Discussion->value;
+        $this->_default_rubrics_array[6] = \App\Item\ItemType::User->value;
+        $this->_default_rubrics_array[7] = \App\Rubric\Label\LabelType::Topic->value;
 
-        $this->defaultHomeConf[CS_ANNOUNCEMENT_TYPE] = 'show';
-        $this->defaultHomeConf[CS_PROJECT_TYPE] = 'show';
-        $this->defaultHomeConf[CS_DATE_TYPE] = 'show';
-        $this->defaultHomeConf[CS_MATERIAL_TYPE] = 'show';
-        $this->defaultHomeConf[CS_USER_TYPE] = 'show';
-        $this->defaultHomeConf[CS_TOPIC_TYPE] = 'show';
-        $this->defaultHomeConf[CS_DISCUSSION_TYPE] = 'show';
-        $this->defaultHomeConf[CS_TODO_TYPE] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Announcement->value] = 'show';
+        $this->defaultHomeConf[\App\Room\RoomType::Project->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Date->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Material->value] = 'show';
+        $this->defaultHomeConf[\App\Item\ItemType::User->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\Label\LabelType::Topic->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Discussion->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Todo->value] = 'show';
     }
 
    public function isCommunityRoom(): bool
@@ -73,7 +73,7 @@ class cs_community_item extends cs_room_item
      */
     public function getProjectList(): cs_list
     {
-        return $this->getLinkedItemList(CS_PROJECT_TYPE);
+        return $this->getLinkedItemList(\App\Room\RoomType::Project->value);
     }
 
    /** get project ids of a community
@@ -83,7 +83,7 @@ class cs_community_item extends cs_room_item
     */
    public function getProjectIDArray()
    {
-       return $this->getLinkedItemIDArray(CS_PROJECT_TYPE);
+       return $this->getLinkedItemIDArray(\App\Room\RoomType::Project->value);
    }
 
    public function getInternalProjectIDArray()
@@ -145,7 +145,7 @@ class cs_community_item extends cs_room_item
     */
    public function getCommunityList()
    {
-       return $this->getLinkedItemList(CS_COMMUNITY_TYPE);
+       return $this->getLinkedItemList(\App\Room\RoomType::Community->value);
    }
 
    /** set projects of a project item by item id and version id
@@ -165,7 +165,7 @@ class cs_community_item extends cs_room_item
            $tmp_data['iid'] = $iid;
            $project_array[] = $tmp_data;
        }
-       $this->_setValue(CS_PROJECT_TYPE, $project_array, false);
+       $this->_setValue(\App\Room\RoomType::Project->value, $project_array, false);
    }
 
    /** set projects of a project
@@ -177,7 +177,7 @@ class cs_community_item extends cs_room_item
     */
    public function setProjectList($value)
    {
-       $this->_setObject(CS_PROJECT_TYPE, $value, false);
+       $this->_setObject(\App\Room\RoomType::Project->value, $value, false);
    }
 
    /** save community
@@ -477,7 +477,7 @@ class cs_community_item extends cs_room_item
 
    public function _setObjectLinkItems($changed_key)
    {
-       if (CS_PROJECT_TYPE == $changed_key) {
+       if (\App\Room\RoomType::Project->value == $changed_key) {
            $array = [];
            if (!empty($this->_data[$changed_key])
                 and is_object($this->_data[$changed_key])
@@ -494,7 +494,7 @@ class cs_community_item extends cs_room_item
 
    public function _setIDLinkItems($changed_key)
    {
-       if (CS_PROJECT_TYPE == $changed_key) {
+       if (\App\Room\RoomType::Project->value == $changed_key) {
            if (!empty($this->_data[$changed_key])
                 and is_array($this->_data[$changed_key])
            ) {

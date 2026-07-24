@@ -409,12 +409,12 @@ class cs_user_manager extends cs_manager
 
         $query .= ' FROM ' . $this->addDatabasePrefix('user');
         if (isset($this->_topic_limit)) {
-            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l41.second_item_type="' . CS_TOPIC_TYPE . '"))) ';
-            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l42.first_item_type="' . CS_TOPIC_TYPE . '"))) ';
+            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l41.second_item_type="' . \App\Rubric\Label\LabelType::Topic->value . '"))) ';
+            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l42.first_item_type="' . \App\Rubric\Label\LabelType::Topic->value . '"))) ';
         }
         if (isset($this->_group_limit) || (isset($this->_group_array_limit) and !empty($this->_group_array_limit))) {
-            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l31.second_item_type="' . CS_GROUP_TYPE . '"))) ';
-            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l32.first_item_type="' . CS_GROUP_TYPE . '"))) ';
+            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l31.second_item_type="' . \App\Rubric\Label\LabelType::Group->value . '"))) ';
+            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=' . $this->addDatabasePrefix('user') . '.item_id AND l32.first_item_type="' . \App\Rubric\Label\LabelType::Group->value . '"))) ';
         }
 
         $query .= ' WHERE 1';

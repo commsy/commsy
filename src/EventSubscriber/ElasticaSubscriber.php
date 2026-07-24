@@ -21,6 +21,7 @@ use App\Entity\Todos;
 use App\Entity\User;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
+use App\Item\ItemType;
 use App\Repository\MaterialsRepository;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
@@ -595,7 +596,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
-            if (CS_USER_TYPE !== $item->getItemType()) {
+            if (ItemType::User->value !== $item->getItemType()) {
                 return;
             }
 
@@ -623,7 +624,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
 
         if ($item) {
-            if (CS_USER_TYPE !== $item->getItemType()) {
+            if (ItemType::User->value !== $item->getItemType()) {
                 return;
             }
 

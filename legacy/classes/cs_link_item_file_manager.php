@@ -55,8 +55,8 @@ class cs_link_item_file_manager extends cs_link_father_manager
         $file_id_array = [];
         $file_id_array2 = [];
         foreach ($id_array as $key => $value) {
-            if (mb_stristr((string) $key, CS_FILE_TYPE)) {
-                $real_file_id = str_replace(CS_FILE_TYPE, '', (string) $key);
+            if (mb_stristr((string) $key, \App\Item\ItemType::File->value)) {
+                $real_file_id = str_replace(\App\Item\ItemType::File->value, '', (string) $key);
                 $file_id_array[] = $real_file_id;
                 $file_id_array2[] = $value;
             }
@@ -89,8 +89,8 @@ class cs_link_item_file_manager extends cs_link_father_manager
                     if (!empty($query_result['item_iid'])
                          and !empty($query_result['file_id'])
                          and !empty($id_array[$query_result['item_iid']])
-                         and !empty($id_array[CS_FILE_TYPE.$query_result['file_id']])
-                         and in_array([$id_array[$query_result['item_iid']], $id_array[CS_FILE_TYPE.$query_result['file_id']]], $current_data_array)
+                         and !empty($id_array[\App\Item\ItemType::File->value.$query_result['file_id']])
+                         and in_array([$id_array[$query_result['item_iid']], $id_array[\App\Item\ItemType::File->value.$query_result['file_id']]], $current_data_array)
                     ) {
                         $do_it = false;
                     }
@@ -117,8 +117,8 @@ class cs_link_item_file_manager extends cs_link_father_manager
                                     $do_it = false;
                                 }
                             } elseif ('file_id' == $key) {
-                                if (isset($id_array[CS_FILE_TYPE.$value])) {
-                                    $insert_query .= $before.$key.'="'.\App\Legacy\SqlStringEscaper::escape($id_array[CS_FILE_TYPE.$value]).'"';
+                                if (isset($id_array[\App\Item\ItemType::File->value.$value])) {
+                                    $insert_query .= $before.$key.'="'.\App\Legacy\SqlStringEscaper::escape($id_array[\App\Item\ItemType::File->value.$value]).'"';
                                 } else {
                                     $do_it = false;
                                 }

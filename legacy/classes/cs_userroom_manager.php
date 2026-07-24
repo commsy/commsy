@@ -41,7 +41,7 @@ class cs_userroom_manager extends cs_room2_manager
      */
     public function __construct(cs_environment $environment)
     {
-        $this->_db_table = CS_ROOM_TYPE;
+        $this->_db_table = \App\Item\ItemType::Room->value;
         $this->_room_type = cs_userroom_item::ROOM_TYPE_USER;
         cs_context_manager::__construct($environment);
     }
@@ -142,8 +142,8 @@ class cs_userroom_manager extends cs_room2_manager
             }
         }
         if (isset($this->_topic_limit)) {
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l41.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l41.second_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
+            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l42.first_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
         }
 
         // time (clock pulses)
@@ -303,7 +303,7 @@ class cs_userroom_manager extends cs_room2_manager
 
     public function getItemList(array $id_array): cs_list
     {
-        return $this->_getItemList(CS_ROOM_TYPE, $id_array);
+        return $this->_getItemList(\App\Item\ItemType::Room->value, $id_array);
     }
 
     /** save a user room item.

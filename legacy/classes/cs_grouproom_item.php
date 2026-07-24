@@ -44,23 +44,23 @@ class cs_grouproom_item extends cs_room_item
     {
         parent::__construct($environment);
 
-        $this->_type = CS_GROUPROOM_TYPE;
+        $this->_type = \App\Room\RoomType::GroupRoom->value;
 
-        $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
-        $this->_default_rubrics_array[1] = CS_TODO_TYPE;
-        $this->_default_rubrics_array[2] = CS_DATE_TYPE;
-        $this->_default_rubrics_array[3] = CS_MATERIAL_TYPE;
-        $this->_default_rubrics_array[4] = CS_DISCUSSION_TYPE;
-        $this->_default_rubrics_array[5] = CS_USER_TYPE;
-        $this->_default_rubrics_array[6] = CS_TOPIC_TYPE;
+        $this->_default_rubrics_array[0] = \App\Rubric\RubricType::Announcement->value;
+        $this->_default_rubrics_array[1] = \App\Rubric\RubricType::Todo->value;
+        $this->_default_rubrics_array[2] = \App\Rubric\RubricType::Date->value;
+        $this->_default_rubrics_array[3] = \App\Rubric\RubricType::Material->value;
+        $this->_default_rubrics_array[4] = \App\Rubric\RubricType::Discussion->value;
+        $this->_default_rubrics_array[5] = \App\Item\ItemType::User->value;
+        $this->_default_rubrics_array[6] = \App\Rubric\Label\LabelType::Topic->value;
 
-        $this->defaultHomeConf[CS_ANNOUNCEMENT_TYPE] = 'show';
-        $this->defaultHomeConf[CS_TODO_TYPE] = 'show';
-        $this->defaultHomeConf[CS_DATE_TYPE] = 'show';
-        $this->defaultHomeConf[CS_MATERIAL_TYPE] = 'show';
-        $this->defaultHomeConf[CS_DISCUSSION_TYPE] = 'show';
-        $this->defaultHomeConf[CS_USER_TYPE] = 'show';
-        $this->defaultHomeConf[CS_TOPIC_TYPE] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Announcement->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Todo->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Date->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Material->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\RubricType::Discussion->value] = 'show';
+        $this->defaultHomeConf[\App\Item\ItemType::User->value] = 'show';
+        $this->defaultHomeConf[\App\Rubric\Label\LabelType::Topic->value] = 'show';
     }
 
     public function isGroupRoom(): bool

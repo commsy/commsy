@@ -1136,10 +1136,10 @@ class cs_context_item extends cs_item
     {
         $retour = [];
         $rubric_array = [];
-        $rubric_array[] = CS_PROJECT_TYPE;
-        $rubric_array[] = CS_COMMUNITY_TYPE;
-        $rubric_array[] = CS_TOPIC_TYPE;
-        $rubric_array[] = CS_TIME_TYPE;
+        $rubric_array[] = \App\Room\RoomType::Project->value;
+        $rubric_array[] = \App\Room\RoomType::Community->value;
+        $rubric_array[] = \App\Rubric\Label\LabelType::Topic->value;
+        $rubric_array[] = \App\Item\ItemType::Time->value;
 
         foreach ($rubric_array as $rubric) {
             $retour[\App\Utils\StringCase::toUpper($rubric)] = $this->_getRubricArray($rubric);
@@ -1175,8 +1175,8 @@ class cs_context_item extends cs_item
             }
         }
         if (empty($retour)) {
-            if (CS_PROJECT_TYPE == $rubric) {
-                $retour['NAME'] = CS_PROJECT_TYPE;
+            if (\App\Room\RoomType::Project->value == $rubric) {
+                $retour['NAME'] = \App\Room\RoomType::Project->value;
                 $retour['DE']['GENUS'] = 'M';
                 $retour['DE']['NOMS'] = 'Projektraum';
                 $retour['DE']['GENS'] = 'Projektraums';
@@ -1204,8 +1204,8 @@ class cs_context_item extends cs_item
                 $retour['RU']['GENPL'] = 'salilor de proiecte';
                 $retour['RU']['AKKPL'] = 'salile de proiecte';
                 $retour['RU']['DATPL'] = 'salilor de proiecte';
-            } elseif (CS_COMMUNITY_TYPE == $rubric) {
-                $retour['NAME'] = CS_COMMUNITY_TYPE;
+            } elseif (\App\Room\RoomType::Community->value == $rubric) {
+                $retour['NAME'] = \App\Room\RoomType::Community->value;
                 $retour['DE']['GENUS'] = 'M';
                 $retour['DE']['NOMS'] = 'Gemeinschaftsraum';
                 $retour['DE']['GENS'] = 'Gemeinschaftsraums';
@@ -1233,8 +1233,8 @@ class cs_context_item extends cs_item
                 $retour['RU']['GENPL'] = 'salilor comunitare';
                 $retour['RU']['AKKPL'] = 'salile comunitare';
                 $retour['RU']['DATPL'] = 'salilor comunitare';
-            } elseif (CS_TOPIC_TYPE == $rubric) {
-                $retour['NAME'] = CS_TOPIC_TYPE;
+            } elseif (\App\Rubric\Label\LabelType::Topic->value == $rubric) {
+                $retour['NAME'] = \App\Rubric\Label\LabelType::Topic->value;
                 $retour['DE']['GENUS'] = 'N';
                 $retour['DE']['NOMS'] = 'Thema';
                 $retour['DE']['GENS'] = 'Themas';
@@ -2434,15 +2434,15 @@ class cs_context_item extends cs_item
             [$rubric_name, $rubric_status] = explode('_', $rubric);
             if ('none' != $rubric_status) {
                 $check_managers[] = $rubric_name;
-                if (CS_DISCUSSION_TYPE == $rubric_name) {
+                if (\App\Rubric\RubricType::Discussion->value == $rubric_name) {
                     $check_managers[] = 'discarticle';
                 }
-                if (CS_MATERIAL_TYPE == $rubric_name) {
-                    $check_managers[] = CS_SECTION_TYPE;
+                if (\App\Rubric\RubricType::Material->value == $rubric_name) {
+                    $check_managers[] = \App\Item\ItemType::Section->value;
                 }
             }
         }
-        $check_managers[] = CS_ANNOTATION_TYPE;
+        $check_managers[] = \App\Rubric\RubricType::Annotation->value;
         $item_manager = $this->_environment->getItemManager();
         $item_manager->setContextLimit($this->getItemID());
         $item_manager->setExistenceLimit($timespread);

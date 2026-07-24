@@ -26,7 +26,7 @@ class cs_group_manager extends cs_labels_manager
     public function resetLimits(): void
     {
         parent::resetLimits();
-        $this->_type_limit = CS_GROUP_TYPE;
+        $this->_type_limit = \App\Rubric\Label\LabelType::Group->value;
     }
 
     public function getNewItem($label_type = ''): cs_group_item

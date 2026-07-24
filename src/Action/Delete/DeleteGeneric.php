@@ -13,6 +13,7 @@
 
 namespace App\Action\Delete;
 
+use App\Item\ItemType;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Services\CurrentUserResolver;
@@ -56,7 +57,7 @@ class DeleteGeneric implements DeleteInterface
         if ($rubricType !== null && ($deleter = $this->findDeleter($rubricType)) !== null) {
             $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
             $deleter->softDeleteItem($item->getItemId(), $deleterId);
-        } elseif ($item->getItemType() === CS_USER_TYPE) {
+        } elseif ($item->getItemType() === ItemType::User->value) {
             $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
             $this->userMembershipDeleter->softDeleteMembership($item->getItemId(), $deleterId);
         } else {

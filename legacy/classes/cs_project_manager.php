@@ -50,7 +50,7 @@ class cs_project_manager extends cs_room2_manager
         parent::__construct($environment);
 
         $this->_db_table = 'room';
-        $this->_room_type = CS_PROJECT_TYPE;
+        $this->_room_type = \App\Room\RoomType::Project->value;
     }
 
   /** reset limits
@@ -155,13 +155,13 @@ class cs_project_manager extends cs_room2_manager
           $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS modificator ON (modificator.item_id='.$this->addDatabasePrefix($this->_db_table).'.modifier_id)';
       }
       if (isset($this->_community_room_limit)) {
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.\App\Room\RoomType::Community->value.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.\App\Room\RoomType::Community->value.'"))) ';
       }
 
       if (isset($this->_topic_limit)) {
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l41.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l41.second_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
+          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l42.first_item_type="'.\App\Rubric\Label\LabelType::Topic->value.'"))) ';
       }
 
       // time (clock pulses)
@@ -384,7 +384,7 @@ class cs_project_manager extends cs_room2_manager
     */
    public function getItemList(array $id_array): cs_list
    {
-       return $this->_getItemList(CS_ROOM_TYPE, $id_array);
+       return $this->_getItemList(\App\Item\ItemType::Room->value, $id_array);
    }
 
   /** create a project - internal, do not use -> use method save
@@ -419,8 +419,8 @@ class cs_project_manager extends cs_room2_manager
 
        $query = 'SELECT count('.$this->addDatabasePrefix($this->_db_table).'.item_id) as number FROM '.$this->addDatabasePrefix($this->_db_table);
        if (isset($this->_community_room_limit)) {
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
-           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.\App\Room\RoomType::Community->value.'"))) ';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.\App\Room\RoomType::Community->value.'"))) ';
        }
        $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.type = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'" AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'" AND (('.$this->addDatabasePrefix($this->_db_table).'.creation_date > "'.\App\Legacy\SqlStringEscaper::escape($start).'" AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.\App\Legacy\SqlStringEscaper::escape($end).'") OR ('.$this->addDatabasePrefix($this->_db_table).'.modification_date > "'.\App\Legacy\SqlStringEscaper::escape($start).'" AND '.$this->addDatabasePrefix($this->_db_table).'.modification_date < "'.\App\Legacy\SqlStringEscaper::escape($end).'"))';
 

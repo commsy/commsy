@@ -26,15 +26,15 @@ class cs_privateroom_item extends cs_room_item
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_type = CS_PRIVATEROOM_TYPE;
+        $this->_type = \App\Room\RoomType::PrivateRoom->value;
 
         // new private room
-        $this->_default_rubrics_array[0] = CS_MYROOM_TYPE;
-        $this->defaultHomeConf[CS_MYROOM_TYPE] = 'show';
-        $this->_default_rubrics_array[2] = CS_DATE_TYPE;
-        $this->defaultHomeConf[CS_DATE_TYPE] = 'show';
-        $this->_default_rubrics_array[7] = CS_ENTRY_TYPE;
-        $this->defaultHomeConf[CS_ENTRY_TYPE] = 'show';
+        $this->_default_rubrics_array[0] = \App\Item\ItemType::MyRoom->value;
+        $this->defaultHomeConf[\App\Item\ItemType::MyRoom->value] = 'show';
+        $this->_default_rubrics_array[2] = \App\Rubric\RubricType::Date->value;
+        $this->defaultHomeConf[\App\Rubric\RubricType::Date->value] = 'show';
+        $this->_default_rubrics_array[7] = \App\Item\ItemType::Entry->value;
+        $this->defaultHomeConf[\App\Item\ItemType::Entry->value] = 'show';
     }
 
     public function isPrivateRoom(): bool
@@ -49,7 +49,7 @@ class cs_privateroom_item extends cs_room_item
      */
     public function getProjectList()
     {
-        return $this->getLinkedItemList(CS_MYROOM_TYPE);
+        return $this->getLinkedItemList(\App\Item\ItemType::MyRoom->value);
     }
 
     /** get time spread for items on home
@@ -183,7 +183,7 @@ class cs_privateroom_item extends cs_room_item
             $tmp_data['iid'] = $iid;
             $project_array[] = $tmp_data;
         }
-        $this->_setValue(CS_MYROOM_TYPE, $project_array, false);
+        $this->_setValue(\App\Item\ItemType::MyRoom->value, $project_array, false);
     }
 
     /** save private room

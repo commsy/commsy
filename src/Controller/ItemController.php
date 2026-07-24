@@ -23,8 +23,11 @@ use App\Form\Type\ItemDescriptionType;
 use App\Form\Type\ItemLinksType;
 use App\Form\Type\ItemWorkflowType;
 use App\Form\Type\SendType;
+use App\Item\ItemType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
+use App\Rubric\Label\LabelType;
+use App\Rubric\RubricType;
 use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
 use App\Services\EtherpadService;
@@ -151,7 +154,7 @@ class ItemController extends AbstractController
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
-                if ($item->getItemType() == CS_MATERIAL_TYPE) {
+                if ($item->getItemType() == RubricType::Material->value) {
                     /** @var $item cs_material_item */
                     if ($item->getEtherpadEditor() && $item->getEtherpadEditorID()) {
                         // get description text from etherpad
@@ -166,7 +169,7 @@ class ItemController extends AbstractController
                 }
 
                 $item->save();
-                if ((CS_SECTION_TYPE == $item->getItemType()) || (CS_STEP_TYPE == $item->getItemType())) {
+                if ((ItemType::Section->value == $item->getItemType()) || (ItemType::Step->value == $item->getItemType())) {
                     /** @var $item cs_section_item|cs_step_item */
                     $linkedItem = $itemService->getTypedItem($item->getlinkedItemID());
                     $linkedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
@@ -432,7 +435,7 @@ class ItemController extends AbstractController
                 $item->setTagListByID($data['categories']);
                 $item->setBuzzwordListByID($data['hashtags']);
 
-                if (CS_TOPIC_TYPE == $item->getItemType()) {
+                if (LabelType::Topic->value == $item->getItemType()) {
                     if (empty($itemData)) {
                         $item->deactivatePath();
                     }
@@ -852,19 +855,19 @@ class ItemController extends AbstractController
         $itemType = $item->getType();
 
         $itemId = match ($itemType) {
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => $item->getLinkedItem()->getItemID(),
+            ItemType::Step->value, ItemType::Section->value, ItemType::DiscussionArticle->value, RubricType::Annotation->value => $item->getLinkedItem()->getItemID(),
             default => $item->getItemID(),
         };
 
         $viewType = match ($itemType) {
             // NOTE: edit.js currently handles redirects for cancelled newly created steps, sections or discarticles
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => 'detail',
+            ItemType::Step->value, ItemType::Section->value, ItemType::DiscussionArticle->value, RubricType::Annotation->value => 'detail',
             default => ($item->isDraft() ? 'list' : 'detail'),
         };
 
         $itemType = match ($itemType) {
-            CS_LABEL_TYPE => $item->getLabelType(),
-            CS_STEP_TYPE, CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_ANNOTATION_TYPE => $item->getLinkedItem()->getType(),
+            RubricType::Label->value => $item->getLabelType(),
+            ItemType::Step->value, ItemType::Section->value, ItemType::DiscussionArticle->value, RubricType::Annotation->value => $item->getLinkedItem()->getType(),
             default => $itemType,
         };
 

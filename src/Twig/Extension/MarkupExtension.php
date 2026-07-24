@@ -15,6 +15,7 @@ namespace App\Twig\Extension;
 
 use App\Entity\User;
 use App\Legacy\AutoLinkText;
+use App\Legacy\Chars;
 use App\Services\LegacyMarkup;
 use cs_item;
 use DOMNode;
@@ -85,8 +86,8 @@ class MarkupExtension extends AbstractExtension
 //
 //        return $text;
 
-        $RFC1738_CHARS = "A-Za-z0-9\?:@&=/;_\.\+!\*'(,%\$~#-";
-        $RFC2822_CHARS = "A-Za-z0-9!#\$%&'\*\+/=\?\^_`{\|}~-";
+        $RFC1738_CHARS = Chars::RFC1738_CHARS;
+        $RFC2822_CHARS = Chars::RFC2822_CHARS;
 
         preg_match('~<!-- KFC TEXT [a-z0-9]* -->~u', (string) $text, $values);
         foreach ($values as $key => $value) {
@@ -183,7 +184,7 @@ class MarkupExtension extends AbstractExtension
                     $line_html .= $this->_close_list($last_list_type);
                     $list_open = false;
                 }
-                $line_html .= LF.'<hr/>'.LF;
+                $line_html .= Chars::LF.'<hr/>'.Chars::LF;
             }
 
             // process lists
@@ -203,7 +204,7 @@ class MarkupExtension extends AbstractExtension
                         $last_list_type = $list_type;
                     }
                 }
-                $line_html .= '<li>'.$matches[3].'</li>'.LF;
+                $line_html .= '<li>'.$matches[3].'</li>'.Chars::LF;
             }
 
             // All other lines without anything special

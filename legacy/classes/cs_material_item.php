@@ -43,7 +43,7 @@ class cs_material_item extends cs_item
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_type = CS_MATERIAL_TYPE;
+        $this->_type = \App\Rubric\RubricType::Material->value;
     }
 
 // ##############  SET-METHODS
@@ -653,7 +653,7 @@ class cs_material_item extends cs_item
      */
     public function getProjectList()
     {
-        return $this->getLinkedItemList(CS_PROJECT_TYPE);
+        return $this->getLinkedItemList(\App\Room\RoomType::Project->value);
     }
 
     /** set projects of a material item by id
@@ -671,7 +671,7 @@ class cs_material_item extends cs_item
             $tmp_data['iid'] = $iid;
             $project_array[] = $tmp_data;
         }
-        $this->_setValue(CS_PROJECT_TYPE, $project_array, false);
+        $this->_setValue(\App\Room\RoomType::Project->value, $project_array, false);
     }
 
     /** set projects of a material
@@ -683,7 +683,7 @@ class cs_material_item extends cs_item
      */
     public function setProjectList($value)
     {
-        $this->_setObject(CS_PROJECT_TYPE, $value, false);
+        $this->_setObject(\App\Room\RoomType::Project->value, $value, false);
     }
 
     /** get label of a material
@@ -804,7 +804,7 @@ class cs_material_item extends cs_item
 
     public function getAttachedAnnouncementList()
     {
-        return $this->_getAttachedItemList(CS_ANNOUNCEMENT_TYPE);
+        return $this->_getAttachedItemList(\App\Rubric\RubricType::Announcement->value);
     }
 
     public function _getAttachedItemList($type)

@@ -120,9 +120,6 @@
         },
         "classmap": [
             "legacy/classes"
-        ],
-        "files": [
-            "legacy/etc/cs_constants.php"
         ]
     },
     "autoload-dev": {

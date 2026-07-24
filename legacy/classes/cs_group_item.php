@@ -26,7 +26,7 @@ class cs_group_item extends cs_label_item
      */
     public function __construct($environment)
     {
-        parent::__construct($environment, CS_GROUP_TYPE);
+        parent::__construct($environment, \App\Rubric\Label\LabelType::Group->value);
     }
 
     public function isGroupRoomActivated(): bool
@@ -224,7 +224,7 @@ class cs_group_item extends cs_label_item
 
     public function isMember($user): bool
     {
-        $linkMemberList = $this->getLinkItemList(CS_USER_TYPE);
+        $linkMemberList = $this->getLinkItemList(\App\Item\ItemType::User->value);
         foreach ($linkMemberList as $linkMemberItem) {
             $linkedUserId = $linkMemberItem->getLinkedItemID($this);
             if ($user->getItemID() == $linkedUserId) {
@@ -248,7 +248,7 @@ class cs_group_item extends cs_label_item
 
     public function removeMember(cs_user_item $user): void
     {
-        $linkedMemberList = $this->getLinkItemList(CS_USER_TYPE);
+        $linkedMemberList = $this->getLinkItemList(\App\Item\ItemType::User->value);
         foreach ($linkedMemberList as $linkedMemberItem) {
             $linkedUserId = $linkedMemberItem->getLinkedItemID($this);
             if ($user->getItemID() == $linkedUserId) {

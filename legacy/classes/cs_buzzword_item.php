@@ -23,7 +23,7 @@ class cs_buzzword_item extends cs_label_item
      */
     public function __construct($environment)
     {
-        parent::__construct($environment, CS_BUZZWORD_TYPE);
+        parent::__construct($environment, \App\Rubric\Label\LabelType::Buzzword->value);
     }
 
     /** save news item

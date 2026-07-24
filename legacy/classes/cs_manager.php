@@ -804,12 +804,12 @@ class cs_manager
 
        // special for links
        // should be deleted when data clean
-       if (CS_LINK_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+       if (\App\Item\ItemType::Link->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
            $query .= ' AND to_item_id != "-2"';
        }
 
        // not group ALL, which is already in the new room
-       if (CS_LABEL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+       if (\App\Rubric\RubricType::Label->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
            $query .= ' AND name != "ALL"';
            // for user rooms, don't copy any groups
            if ($newRoomType === cs_userroom_item::ROOM_TYPE_USER) {
@@ -818,7 +818,7 @@ class cs_manager
        }
 
        // not root tag, which is already in the new room
-       if (CS_TAG_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+       if (\App\Item\ItemType::Tag->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
            $query .= ' AND title != "CS_TAG_ROOT"';
        }
 
@@ -827,10 +827,10 @@ class cs_manager
            trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
        } else {
            $current_data_array = [];
-           if (CS_LABEL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table) || CS_TAG_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+           if (\App\Rubric\RubricType::Label->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table) || \App\Item\ItemType::Tag->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
                $title_field = 'title';
                $type_field = '';
-               if (CS_LABEL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+               if (\App\Rubric\RubricType::Label->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
                    $title_field = 'name';
                    $type_field = 'type';
                }
@@ -853,7 +853,7 @@ class cs_manager
                        }
                    }
                }
-           } elseif (CS_TAG2TAG_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+           } elseif (\App\Item\ItemType::Tag2Tag->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
                $sql = 'SELECT to_item_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.\App\Legacy\SqlStringEscaper::escape($new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
                $sql_result = $this->_db_connector->performQuery($sql);
                if (!isset($sql_result)) {
@@ -863,15 +863,15 @@ class cs_manager
                        $current_data_array[] = $sql_row['to_item_id'];
                    }
                }
-           } elseif (CS_MATERIAL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                      or CS_SECTION_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                      or CS_ANNOUNCEMENT_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                      or CS_DATE_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                      or CS_DISCUSSION_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                      or CS_TODO_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                      or CS_ANNOTATION_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                      or CS_DISCARTICLE_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                      or CS_STEP_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+           } elseif (\App\Rubric\RubricType::Material->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                      or \App\Item\ItemType::Section->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                      or \App\Rubric\RubricType::Announcement->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                      or \App\Rubric\RubricType::Date->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                      or \App\Rubric\RubricType::Discussion->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                      or \App\Rubric\RubricType::Todo->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                      or \App\Rubric\RubricType::Annotation->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                      or \App\Item\ItemType::DiscussionArticle->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                      or \App\Item\ItemType::Step->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
            ) {
                $item_id = 'item_id';
                $modification_date = 'modification_date';
@@ -887,7 +887,7 @@ class cs_manager
                        $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
                    }
                }
-           } elseif (CS_LINK_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+           } elseif (\App\Item\ItemType::Link->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
                $sql = 'SELECT from_item_id,to_item_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.\App\Legacy\SqlStringEscaper::escape($new_id).'"';
                $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
                $sql_result = $this->_db_connector->performQuery($sql);
@@ -898,7 +898,7 @@ class cs_manager
                        $current_data_array[] = [$sql_row['from_item_id'], $sql_row['to_item_id']];
                    }
                }
-           } elseif (CS_LINKITEM_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+           } elseif (\App\Item\ItemType::LinkItem->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
                $sql = 'SELECT first_item_id,second_item_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.\App\Legacy\SqlStringEscaper::escape($new_id).'"';
                $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
                $sql_result = $this->_db_connector->performQuery($sql);
@@ -914,7 +914,7 @@ class cs_manager
            foreach ($result as $query_result) {
                $do_it = true;
 
-               if (CS_LABEL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+               if (\App\Rubric\RubricType::Label->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                     and !empty($current_data_array)
                     and !empty($current_data_array[$query_result[$type_field]])
                     and is_array($current_data_array[$query_result[$type_field]])
@@ -922,35 +922,35 @@ class cs_manager
                ) {
                    $retour[$query_result['item_id']] = $current_data_array[$query_result[$type_field]][$query_result[$title_field]];
                    $do_it = false;
-               } elseif (CS_TAG_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+               } elseif (\App\Item\ItemType::Tag->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                           and array_key_exists($query_result[$title_field], $current_data_array)
                ) {
                    $retour[$query_result['item_id']] = $current_data_array[$query_result[$title_field]];
                    $do_it = false;
-               } elseif (CS_TAG2TAG_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+               } elseif (\App\Item\ItemType::Tag2Tag->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                           and in_array($id_array[$query_result['to_item_id']], $current_data_array)
                ) {
                    $do_it = false;
-               } elseif ((CS_MATERIAL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            or CS_SECTION_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            or CS_ANNOUNCEMENT_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            or CS_DATE_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            or CS_DISCUSSION_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            or CS_TODO_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            or CS_ANNOTATION_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            or CS_DISCARTICLE_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            or CS_STEP_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+               } elseif ((\App\Rubric\RubricType::Material->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            or \App\Item\ItemType::Section->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            or \App\Rubric\RubricType::Announcement->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            or \App\Rubric\RubricType::Date->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            or \App\Rubric\RubricType::Discussion->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            or \App\Rubric\RubricType::Todo->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            or \App\Rubric\RubricType::Annotation->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            or \App\Item\ItemType::DiscussionArticle->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            or \App\Item\ItemType::Step->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                )
                and array_key_exists($query_result['item_id'], $current_data_array)) {
                    $retour[$query_result['item_id']] = $current_data_array[$query_result['item_id']];
                    $do_it = false;
-               } elseif (CS_LINK_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+               } elseif (\App\Item\ItemType::Link->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                           and !empty($id_array[$query_result['from_item_id']])
                           and !empty($id_array[$query_result['to_item_id']])
                           and in_array([$id_array[$query_result['from_item_id']], $id_array[$query_result['to_item_id']]], $current_data_array)
                ) {
                    $do_it = false;
-               } elseif (CS_LINKITEM_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+               } elseif (\App\Item\ItemType::LinkItem->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                           and !empty($id_array[$query_result['first_item_id']])
                           and !empty($id_array[$query_result['second_item_id']])
                           and (in_array([$id_array[$query_result['first_item_id']], $id_array[$query_result['second_item_id']]], $current_data_array)
@@ -968,9 +968,9 @@ class cs_manager
                }
 
                if ($do_it
-                    and CS_LINKITEMFILE_TYPE != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                    and CS_LINK_TYPE != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                    and CS_TAG2TAG_TYPE != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                    and \App\Item\ItemType::LinkItemFile->value != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                    and \App\Item\ItemType::Link->value != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                    and \App\Item\ItemType::Tag2Tag->value != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                     and isset($query_result['item_id'])
                     and !isset($retour[$query_result['item_id']])
                ) {
@@ -1016,7 +1016,7 @@ class cs_manager
 
                        // special for ANNOTATION
                        elseif ('linked_item_id' == $key
-                                and CS_ANNOTATION_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                                and \App\Rubric\RubricType::Annotation->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                                 and isset($id_array[$value])
                        ) {
                            $insert_query .= $before.$key.'="'.$id_array[$value].'"';
@@ -1024,7 +1024,7 @@ class cs_manager
 
                        // special for DISCUSSIONARTICLE
                        elseif ('discussion_id' == $key
-                                and CS_DISCARTICLE_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                                and \App\Item\ItemType::DiscussionArticle->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                                 and isset($id_array[$value])
                        ) {
                            $insert_query .= $before.$key.'="'.$id_array[$value].'"';
@@ -1032,7 +1032,7 @@ class cs_manager
 
                        // special for SECTION
                        elseif ('material_item_id' == $key
-                                and CS_SECTION_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                                and \App\Item\ItemType::Section->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                                 and isset($id_array[$value])
                        ) {
                            $insert_query .= $before.$key.'="'.$id_array[$value].'"';
@@ -1040,7 +1040,7 @@ class cs_manager
 
                        // special for STEP
                        elseif ('todo_item_id' == $key
-                                and CS_STEP_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                                and \App\Item\ItemType::Step->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                                 and isset($id_array[$value])
                        ) {
                            $insert_query .= $before.$key.'="'.$id_array[$value].'"';
@@ -1049,8 +1049,8 @@ class cs_manager
                        // special for LINKS / TAG2TAG
                        elseif (('from_item_id' == $key
                                   or 'to_item_id' == $key
-                       ) and (CS_LINK_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                               or CS_TAG2TAG_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                       ) and (\App\Item\ItemType::Link->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                               or \App\Item\ItemType::Tag2Tag->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                        )
                        ) {
                            if (isset($id_array[$value])) {
@@ -1061,14 +1061,14 @@ class cs_manager
                        }
 
                        // special for TAG2TAG
-                       elseif ('link_id' == $key && CS_TAG2TAG_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                       elseif ('link_id' == $key && \App\Item\ItemType::Tag2Tag->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                        ) {
                            // link_id is primary key so don't insert it
                        }
 
                        // special for LINK_ITEM
                        elseif (('first_item_id' == $key or 'second_item_id' == $key)
-                                  and CS_LINKITEM_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                                  and \App\Item\ItemType::LinkItem->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                        ) {
                            if (isset($id_array[$value])) {
                                $insert_query .= $before.$key.'="'.$id_array[$value].'"';
@@ -1078,12 +1078,12 @@ class cs_manager
                        }
 
                        // special for MATERIAL
-                       elseif ('copy_of' == $key && empty($value) && CS_MATERIAL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+                       elseif ('copy_of' == $key && empty($value) && \App\Rubric\RubricType::Material->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
                            $insert_query .= $before.$key.'=NULL';
                        }
 
                        // special for labels
-                       elseif ('name' == $key && empty($value) && CS_LABEL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+                       elseif ('name' == $key && empty($value) && \App\Rubric\RubricType::Label->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
                            $insert_query .= $before.$key.'=" "';
                        }
 
@@ -1111,8 +1111,8 @@ class cs_manager
                    } else {
                        if (!empty($old_item_id)) {
                            if (!empty($new_item_id)) {
-                               if (CS_FILE_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
-                                   $retour[CS_FILE_TYPE.$old_item_id] = $new_item_id;
+                               if (\App\Item\ItemType::File->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+                                   $retour[\App\Item\ItemType::File->value.$old_item_id] = $new_item_id;
                                } else {
                                    $retour[$old_item_id] = $new_item_id;
                                }
@@ -1122,10 +1122,10 @@ class cs_manager
                        // link_item_modifier
                        if (!empty($new_item_id)
                             and !empty($user_id)
-                            and CS_FILE_TYPE != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            and CS_LINKITEMFILE_TYPE != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            and CS_LINK_TYPE != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
-                            and CS_TAG2TAG_TYPE != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            and \App\Item\ItemType::File->value != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            and \App\Item\ItemType::LinkItemFile->value != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            and \App\Item\ItemType::Link->value != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
+                            and \App\Item\ItemType::Tag2Tag->value != \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)
                        ) {
                            $this->_createEntryInLinkItemModifier($new_item_id, $user_id);
                        }
@@ -1274,16 +1274,16 @@ class cs_manager
            $query .= ',deletion_date=NULL';
        }
 
-       if (CS_FILE_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+       if (\App\Item\ItemType::File->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
            $query .= ' WHERE files_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['files_id']).'"';
-       } elseif (CS_TAG2TAG_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+       } elseif (\App\Item\ItemType::Tag2Tag->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
            $query .= ' WHERE link_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['link_id']).'"';
        } else {
            $query .= ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['item_id']).'"';
        }
        if (isset($data_array['version_id'])) {
            $query .= ' AND version_id="'.\App\Legacy\SqlStringEscaper::escape($data_array['version_id']).'"';
-       } elseif (CS_MATERIAL_TYPE == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
+       } elseif (\App\Rubric\RubricType::Material->value == \App\Legacy\ItemTypeMapper::fromDbTable($this->_db_table)) {
            $query .= ' AND version_id="0"';
        }
        $query .= ';';

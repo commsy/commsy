@@ -110,7 +110,7 @@ class cs_discussionarticle_item extends cs_item
      {
          $item_id = $this->getDiscussionID();
          if (!empty($item_id)) {
-             $type_manager = $this->_environment->getManager(CS_DISCUSSION_TYPE);
+             $type_manager = $this->_environment->getManager(\App\Rubric\RubricType::Discussion->value);
              return $type_manager->getItem($item_id);
          }
 
@@ -138,7 +138,7 @@ class cs_discussionarticle_item extends cs_item
      */
     public function setMaterialList($value)
     {
-        $this->_setObject(CS_MATERIAL_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\RubricType::Material->value, $value, false);
     }
 
     /** set materials of a discussionarticle item by id
@@ -150,7 +150,7 @@ class cs_discussionarticle_item extends cs_item
      */
     public function setMaterialListByID($value)
     {
-        $this->setLinkedItemsByID(CS_MATERIAL_TYPE, $value);
+        $this->setLinkedItemsByID(\App\Rubric\RubricType::Material->value, $value);
     }
 
     /** get materials of the discussionarticle item
@@ -160,7 +160,7 @@ class cs_discussionarticle_item extends cs_item
      */
     public function getMaterialList()
     {
-        return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
+        return $this->_getLinkedItems($this->_environment->getMaterialManager(), \App\Rubric\RubricType::Material->value);
     }
 
     /** save discussion article

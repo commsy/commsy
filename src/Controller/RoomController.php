@@ -26,6 +26,8 @@ use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
 use App\RoomFeed\RoomFeedGenerator;
+use App\Room\RoomType;
+use App\Rubric\RubricType;
 use App\Services\CalendarsService;
 use App\Services\CurrentContextResolver;
 use App\Services\CurrentUserResolver;
@@ -180,7 +182,7 @@ class RoomController extends AbstractController
             $homeInformationEntry = $itemService->getTypedItem($entryId);
 
             // This check is now present in settings form. Check also added here to secure display of rooms with old and invalid settings in database.
-            if (!in_array($homeInformationEntry->getItemType(), [CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE])) {
+            if (!in_array($homeInformationEntry->getItemType(), [RubricType::Announcement->value, RubricType::Date->value, RubricType::Material->value, RubricType::Todo->value])) {
                 $roomItem->setwithInformationBox(false);
                 $homeInformationEntry = null;
             } else {
@@ -285,9 +287,9 @@ class RoomController extends AbstractController
 
         $showRooms = $portal->getShowRoomsOnHome();
         $roomTypes = match ($showRooms) {
-            'onlyprojectrooms' => [CS_PROJECT_TYPE],
-            'onlycommunityrooms' => [CS_COMMUNITY_TYPE],
-            default => [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE],
+            'onlyprojectrooms' => [RoomType::Project->value],
+            'onlycommunityrooms' => [RoomType::Community->value],
+            default => [RoomType::Project->value, RoomType::Community->value],
         };
 
         $sort = $request->getSession()->get('sortRooms', $portal->getSortRoomsBy() ?? 'activity');
@@ -363,9 +365,9 @@ class RoomController extends AbstractController
 
         $showRooms = $portal->getShowRoomsOnHome();
         $roomTypes = match ($showRooms) {
-            'onlyprojectrooms' => [CS_PROJECT_TYPE],
-            'onlycommunityrooms' => [CS_COMMUNITY_TYPE],
-            default => [CS_PROJECT_TYPE, CS_COMMUNITY_TYPE],
+            'onlyprojectrooms' => [RoomType::Project->value],
+            'onlycommunityrooms' => [RoomType::Community->value],
+            default => [RoomType::Project->value, RoomType::Community->value],
         };
 
         if (empty($sort)) {
@@ -483,7 +485,7 @@ class RoomController extends AbstractController
 
             if ('portal' == $currentPortalItem->getProjectRoomCreationStatus()) {
                 $types['project'] = 'project';
-            } elseif (CS_COMMUNITY_TYPE == $roomItem->getType()) {
+            } elseif (RoomType::Community->value == $roomItem->getType()) {
                 $types['project'] = 'project';
             }
 

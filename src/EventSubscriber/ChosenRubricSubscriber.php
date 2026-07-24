@@ -14,6 +14,7 @@
 namespace App\EventSubscriber;
 
 use App\Model\SearchData;
+use App\Rubric\RubricType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type as Types;
@@ -43,7 +44,7 @@ class ChosenRubricSubscriber implements EventSubscriberInterface
         $searchData = $event->getData();
         $form = $event->getForm();
 
-        if (CS_TODO_TYPE === $searchData->getSelectedRubric()) {
+        if (RubricType::Todo->value === $searchData->getSelectedRubric()) {
             $form->add('selectedTodoStatus', Types\ChoiceType::class, [
                 'choice_loader' => new CallbackChoiceLoader(function () use ($searchData) {
                     $translatedTitleAny = $this->translator->trans('any', [], 'form');

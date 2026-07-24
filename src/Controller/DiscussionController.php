@@ -29,7 +29,9 @@ use App\Form\DataTransformer\DiscussionarticleTransformer;
 use App\Form\DataTransformer\DiscussionTransformer;
 use App\Form\Type\DiscussionAnswerType;
 use App\Form\Type\DiscussionType;
+use App\Item\ItemType;
 use App\Rubric\Discussion\DiscussionDeleter;
+use App\Rubric\RubricType;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\CurrentContextResolver;
@@ -171,7 +173,7 @@ class DiscussionController extends BaseController
         // get discussion list from manager service
         $itemsCountArray = $this->discussionService->getCountArray($roomId);
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_DISCUSSION_TYPE, CS_DISCARTICLE_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ RubricType::Discussion->value, ItemType::DiscussionArticle->value ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('discussion')) {
@@ -182,8 +184,8 @@ class DiscussionController extends BaseController
         return $this->render('discussion/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_DISCUSSION_TYPE,
-            'relatedModule' => CS_DISCARTICLE_TYPE,
+            'module' => RubricType::Discussion->value,
+            'relatedModule' => ItemType::DiscussionArticle->value,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),

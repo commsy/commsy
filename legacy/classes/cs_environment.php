@@ -297,7 +297,7 @@ class cs_environment
         if (!isset($this->_current_parameter_array)) {
             $this->_current_parameter_array = [];
             if (isset($_SERVER['QUERY_STRING'])) {
-                $retour = explode('&', (string) $this->getTextConverter()->encode(FROM_GET, $_SERVER['QUERY_STRING']));
+                $retour = explode('&', (string) $this->getTextConverter()->encode(\App\Legacy\TextConverterMode::FROM_GET, $_SERVER['QUERY_STRING']));
 
                 // GetParameterSäubern
                 $textConverter = $this->getTextConverter();
@@ -638,25 +638,25 @@ class cs_environment
             return null;
         }
 
-        if (CS_DATE_TYPE == $type) {
+        if (\App\Rubric\RubricType::Date->value == $type) {
             return $this->getDateManager();
-        } elseif (CS_TODO_TYPE == $type || 'todos' == $type) {
+        } elseif (\App\Rubric\RubricType::Todo->value == $type || 'todos' == $type) {
             return $this->getTodosManager();
-        } elseif ('contact' == $type || 'contacts' == $type || CS_USER_TYPE == $type || 'users' == $type || 'account' == $type) {
+        } elseif ('contact' == $type || 'contacts' == $type || \App\Item\ItemType::User->value == $type || 'users' == $type || 'account' == $type) {
             return $this->getUserManager();
-        } elseif (CS_MATERIAL_TYPE == $type || 'materials' == $type) {
+        } elseif (\App\Rubric\RubricType::Material->value == $type || 'materials' == $type) {
             return $this->getMaterialManager();
-        } elseif (CS_ANNOTATION_TYPE == $type || 'annotations' == $type) {
+        } elseif (\App\Rubric\RubricType::Annotation->value == $type || 'annotations' == $type) {
             return $this->getAnnotationManager();
-        } elseif (CS_ASSESSMENT_TYPE == $type || 'assessments' == $type) {
+        } elseif (\App\Item\ItemType::Assessment->value == $type || 'assessments' == $type) {
             return $this->getAssessmentManager();
         } elseif ('discussion' == $type || 'discussions' == $type) {
             return $this->getDiscussionManager();
         } elseif ('discarticle' == $type || 'discarticles' == $type) {
             return $this->getDiscussionArticlesManager();
-        } elseif ('announcements' == $type || CS_ANNOUNCEMENT_TYPE == $type) {
+        } elseif ('announcements' == $type || \App\Rubric\RubricType::Announcement->value == $type) {
             return $this->getAnnouncementManager();
-        } elseif (CS_TOPIC_TYPE == $type) {
+        } elseif (\App\Rubric\Label\LabelType::Topic->value == $type) {
             return $this->getTopicManager();
         } elseif ('group' == $type || 'groups' == $type) {
             return $this->getGroupManager();
@@ -666,41 +666,41 @@ class cs_environment
             return $this->getSectionManager();
         } elseif ('label' == $type) {
             return $this->getLabelManager();
-        } elseif (CS_PROJECT_TYPE == $type) {
+        } elseif (\App\Room\RoomType::Project->value == $type) {
             return $this->getProjectManager();
-        } elseif (CS_STEP_TYPE == $type) {
+        } elseif (\App\Item\ItemType::Step->value == $type) {
             return $this->getStepManager();
-        } elseif (CS_ROOM_TYPE == $type) {
+        } elseif (\App\Item\ItemType::Room->value == $type) {
             return $this->getRoomManager();
-        } elseif (CS_COMMUNITY_TYPE == $type) {
+        } elseif (\App\Room\RoomType::Community->value == $type) {
             return $this->getCommunityManager();
-        } elseif (CS_PRIVATEROOM_TYPE == $type) {
+        } elseif (\App\Room\RoomType::PrivateRoom->value == $type) {
             return $this->getPrivateRoomManager();
-        } elseif (CS_GROUPROOM_TYPE == $type) {
+        } elseif (\App\Room\RoomType::GroupRoom->value == $type) {
             return $this->getGroupRoomManager();
         } elseif (cs_userroom_item::ROOM_TYPE_USER == $type) {
             return $this->getUserRoomManager();
-        } elseif (CS_SERVER_TYPE == $type) {
+        } elseif (\App\Item\ItemType::Server->value == $type) {
             return $this->getServerManager();
-        } elseif (CS_FILE_TYPE == $type) {
+        } elseif (\App\Item\ItemType::File->value == $type) {
             return $this->getFileManager();
-        } elseif (CS_LINK_TYPE == $type) {
+        } elseif (\App\Item\ItemType::Link->value == $type) {
             return $this->getLinkManager();
-        } elseif (CS_LINKITEM_TYPE == $type) {
+        } elseif (\App\Item\ItemType::LinkItem->value == $type) {
             return $this->getLinkItemManager();
-        } elseif (CS_LINKMODITEM_TYPE == $type) {
+        } elseif (\App\Item\ItemType::LinkModifierItem->value == $type) {
             return $this->getLinkModifierItemManager();
-        } elseif (CS_LINKITEMFILE_TYPE == $type) {
+        } elseif (\App\Item\ItemType::LinkItemFile->value == $type) {
             return $this->getLinkItemFileManager();
-        } elseif (CS_ITEM_TYPE == $type || 'items' == $type) {
+        } elseif (\App\Item\ItemType::Item->value == $type || 'items' == $type) {
             return $this->getItemManager();
-        } elseif (CS_TIME_TYPE == $type) {
+        } elseif (\App\Item\ItemType::Time->value == $type) {
             return $this->getTimeManager();
-        } elseif (CS_TAG_TYPE == $type) {
+        } elseif (\App\Item\ItemType::Tag->value == $type) {
             return $this->getTagManager();
-        } elseif (CS_TAG2TAG_TYPE == $type) {
+        } elseif (\App\Item\ItemType::Tag2Tag->value == $type) {
             return $this->getTag2TagManager();
-        } elseif (CS_BUZZWORD_TYPE == $type) {
+        } elseif (\App\Rubric\Label\LabelType::Buzzword->value == $type) {
             return $this->getBuzzwordManager();
         } else {
             throw new LogicException('do not know this type [' . $type . ']');

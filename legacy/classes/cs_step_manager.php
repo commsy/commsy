@@ -71,7 +71,7 @@ class cs_step_manager extends cs_manager
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_db_table = CS_STEP_TYPE;
+        $this->_db_table = \App\Item\ItemType::Step->value;
         $this->_translator = $environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
     }
 

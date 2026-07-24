@@ -26,6 +26,7 @@ use App\Form\Type\Profile\AccountContactFormType;
 use App\Form\Type\SendType;
 use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
+use App\Item\ItemType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
 use App\Repository\UserRepository;
@@ -255,7 +256,7 @@ class UserController extends BaseController
             $itemsCountArray = $this->userService->getCountArray($roomId, $currentUser->isModerator());
         }
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_USER_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ ItemType::User->value ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('user')) {
@@ -269,7 +270,7 @@ class UserController extends BaseController
         return $this->render('user/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_USER_TYPE,
+            'module' => ItemType::User->value,
             'relatedModule' => null,
             'itemsCountArray' => $itemsCountArray,
             'showRating' => false,

@@ -409,7 +409,7 @@ class cs_discussionarticles_manager extends cs_manager
             ->setValue('draft', ':draft')
             ->setParameter('contextId', $discussionarticle_item->getContextID())
             ->setParameter('modificationDate', \App\Utils\MysqlDateTime::now())
-            ->setParameter('type', CS_DISCARTICLE_TYPE)
+            ->setParameter('type', \App\Item\ItemType::DiscussionArticle->value)
             ->setParameter('draft', $discussionarticle_item->isDraft());
 
         try {

@@ -13,7 +13,10 @@
 
 namespace App\Utils;
 
+use App\Item\ItemType;
 use App\Repository\ItemRepository;
+use App\Rubric\Label\LabelType;
+use App\Rubric\RubricType;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyEnvironment;
 use cs_dates_item;
@@ -160,13 +163,13 @@ class ItemService
 
         $itemManager = $this->itemManager;
         $searchableTypes = [
-            CS_ANNOUNCEMENT_TYPE,
-            CS_DATE_TYPE,
-            CS_DISCUSSION_TYPE,
-            CS_LABEL_TYPE, // groups, topics & institutions
-            CS_MATERIAL_TYPE,
-            CS_TODO_TYPE,
-            CS_USER_TYPE,
+            RubricType::Announcement->value,
+            RubricType::Date->value,
+            RubricType::Discussion->value,
+            RubricType::Label->value, // groups, topics & institutions
+            RubricType::Material->value,
+            RubricType::Todo->value,
+            ItemType::User->value,
             cs_userroom_item::ROOM_TYPE_USER,
         ];
 
@@ -190,8 +193,8 @@ class ItemService
      * If no $types are specified explicitly, this method will return pinned items of any type.
      *
      * Note that, to have this method return pinned group items (and only these), you must
-     * pass `[ CS_GROUP_TYPE, CS_LABEL_TYPE ]` as $types array. Similarly, to have this
-     * method return pinned topic items (and only these), pass `[ CS_TOPIC_TYPE, CS_LABEL_TYPE ]`
+     * pass `[ LabelType::Group->value, RubricType::Label->value ]` as $types array. Similarly, to have this
+     * method return pinned topic items (and only these), pass `[ LabelType::Topic->value, RubricType::Label->value ]`
      * as $types array.
      *
      * @param int $roomId
@@ -210,9 +213,9 @@ class ItemService
         $typedItems = array_map(fn ($item) => $this->getTypedItem($item->getItemID()), $items);
 
         if (!empty($types)) {
-            // for CS_LABEL_TYPE items in $typedItems, filter out label types not given in $types
+            // for RubricType::Label->value items in $typedItems, filter out label types not given in $types
             $typedItems = array_filter($typedItems, function ($typedItem) use ($types) {
-                if ($typedItem->getType() === CS_LABEL_TYPE && !in_array($typedItem->getLabelType(), $types)) {
+                if ($typedItem->getType() === RubricType::Label->value && !in_array($typedItem->getLabelType(), $types)) {
                     return false;
                 }
 

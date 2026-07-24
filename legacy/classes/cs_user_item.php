@@ -41,7 +41,7 @@ class cs_user_item extends cs_item
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_type = CS_USER_TYPE;
+        $this->_type = \App\Item\ItemType::User->value;
     }
 
     /** Checks and sets the data of the item.
@@ -125,7 +125,7 @@ class cs_user_item extends cs_item
      */
     public function setGroupListByID($value)
     {
-        $this->setLinkedItemsByID(CS_GROUP_TYPE, $value);
+        $this->setLinkedItemsByID(\App\Rubric\Label\LabelType::Group->value, $value);
     }
 
     /** set one group of a user item by id
@@ -148,8 +148,8 @@ class cs_user_item extends cs_item
     public function setGroup($value)
     {
         if (isset($value)
-            && $value->isA(CS_LABEL_TYPE)
-            && CS_GROUP_TYPE == $value->getLabelType()
+            && $value->isA(\App\Rubric\RubricType::Label->value)
+            && \App\Rubric\Label\LabelType::Group->value == $value->getLabelType()
             && $value->getItemID() > 0
         ) {
             $this->setGroupByID($value->getItemID());
@@ -164,9 +164,9 @@ class cs_user_item extends cs_item
     public function getTopicList()
     {
         $topic_manager = $this->_environment->getLabelManager();
-        $topic_manager->setTypeLimit(CS_TOPIC_TYPE);
+        $topic_manager->setTypeLimit(\App\Rubric\Label\LabelType::Topic->value);
 
-        return $this->_getLinkedItems($topic_manager, CS_TOPIC_TYPE);
+        return $this->_getLinkedItems($topic_manager, \App\Rubric\Label\LabelType::Topic->value);
     }
 
     /** set topics of a user
@@ -176,7 +176,7 @@ class cs_user_item extends cs_item
      */
     public function setTopicList($value): void
     {
-        $this->_setObject(CS_TOPIC_TYPE, $value, false);
+        $this->_setObject(\App\Rubric\Label\LabelType::Topic->value, $value, false);
     }
 
     /** set topics of a news item by id
@@ -188,7 +188,7 @@ class cs_user_item extends cs_item
      */
     public function setTopicListByID($value): void
     {
-        $this->setLinkedItemsByID(CS_TOPIC_TYPE, $value);
+        $this->setLinkedItemsByID(\App\Rubric\Label\LabelType::Topic->value, $value);
     }
 
     /**

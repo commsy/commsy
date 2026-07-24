@@ -112,8 +112,8 @@ class cs_item_manager extends cs_manager
         $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('labels') . ' AS label ON ' . $this->addDatabasePrefix('items') . '.item_id=label.item_id AND (label.type="institution" OR label.type="topic" OR label.type="group")';
 
         if (isset($this->_tag_limit)) {
-            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=' . $this->addDatabasePrefix('items') . '.item_id AND l41.second_item_type="' . CS_TAG_TYPE . '"))) ';
-            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=' . $this->addDatabasePrefix('items') . '.item_id AND l42.first_item_type="' . CS_TAG_TYPE . '"))) ';
+            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=' . $this->addDatabasePrefix('items') . '.item_id AND l41.second_item_type="' . \App\Item\ItemType::Tag->value . '"))) ';
+            $query .= ' LEFT JOIN ' . $this->addDatabasePrefix('link_items') . ' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=' . $this->addDatabasePrefix('items') . '.item_id AND l42.first_item_type="' . \App\Item\ItemType::Tag->value . '"))) ';
         }
 
         $query .= ' WHERE 1';
@@ -217,7 +217,7 @@ class cs_item_manager extends cs_manager
                 if (isset($this->_interval_limit)) {
                     $query .= $this->_interval_limit;
                 } else {
-                    $query .= CS_LIST_INTERVAL;
+                    $query .= 20; // home rubric list limit (former CS_LIST_INTERVAL global)
                 }
             }
         }

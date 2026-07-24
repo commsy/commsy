@@ -199,7 +199,7 @@ final class TodoDeleterTest extends KernelTestCase
 
     /**
      * Hard-delete covers both `todos` and `step` — closes the legacy gap
-     * where CronHardDelete only swept CS_TODO_TYPE.
+     * where CronHardDelete only swept the 'todo' type.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testHardDeleteOlderThanPhysicallyRemovesExpiredRowsIncludingSteps(): void

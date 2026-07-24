@@ -44,7 +44,7 @@ class cs_community_manager extends cs_room2_manager
     public function __construct($environment)
     {
         $this->_db_table = 'room';
-        $this->_room_type = CS_COMMUNITY_TYPE;
+        $this->_room_type = \App\Room\RoomType::Community->value;
         cs_context_manager::__construct($environment);
     }
 

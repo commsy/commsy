@@ -31,6 +31,8 @@ use App\Form\DataTransformer\TodoTransformer;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\StepType;
 use App\Form\Type\TodoType;
+use App\Item\ItemType;
+use App\Rubric\RubricType;
 use App\Rubric\Todo\TodoDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
@@ -111,7 +113,7 @@ class TodoController extends BaseController
         // get todo list from manager service
         $itemsCountArray = $this->todoService->getCountArray($roomId);
 
-        $pinnedItems = $itemService->getPinnedItems($roomId, [ CS_TODO_TYPE, CS_STEP_TYPE ]);
+        $pinnedItems = $itemService->getPinnedItems($roomId, [ RubricType::Todo->value, ItemType::Step->value ]);
 
         $usageInfo = false;
         if ('' != $roomItem->getUsageInfoTextForRubricInForm('todo')) {
@@ -122,8 +124,8 @@ class TodoController extends BaseController
         return $this->render('todo/list.html.twig', [
             'roomId' => $roomId,
             'form' => $filterForm,
-            'module' => CS_TODO_TYPE,
-            'relatedModule' => CS_STEP_TYPE,
+            'module' => RubricType::Todo->value,
+            'relatedModule' => ItemType::Step->value,
             'itemsCountArray' => $itemsCountArray,
             'showHashTags' => $roomItem->withBuzzwords(),
             'showAssociations' => $roomItem->withAssociations(),

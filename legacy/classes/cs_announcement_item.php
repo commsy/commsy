@@ -27,7 +27,7 @@ class cs_announcement_item extends cs_item
     public function __construct($environment)
     {
         parent::__construct($environment);
-        $this->_type = CS_ANNOUNCEMENT_TYPE;
+        $this->_type = \App\Rubric\RubricType::Announcement->value;
     }
 
     /** Checks and sets the data of the item.

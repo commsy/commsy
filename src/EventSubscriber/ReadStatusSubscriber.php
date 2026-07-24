@@ -15,6 +15,7 @@ namespace App\EventSubscriber;
 
 use App\Event\ItemReindexEvent;
 use App\Event\ReadStatusPreChangeEvent;
+use App\Rubric\RubricType;
 use App\Utils\ItemService;
 use App\Utils\ReaderService;
 use cs_annotation_item;
@@ -57,7 +58,7 @@ readonly class ReadStatusSubscriber implements EventSubscriberInterface
         }
 
         // for an annotation, also invalidate the read status cache of its linked (hosting) item
-        if (CS_ANNOTATION_TYPE === $item->getItemType()) {
+        if (RubricType::Annotation->value === $item->getItemType()) {
             /** @var cs_annotation_item $annotation */
             $annotation = $this->itemService->getTypedItem($itemId);
 

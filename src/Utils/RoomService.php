@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Room\Copy\LegacyCopy;
+use App\Room\RoomType;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -224,7 +225,7 @@ class RoomService
         $linkItemManager = $this->legacyEnvironment->getLinkItemManager();
         $linkItemManager->resetLimits();
         $linkItemManager->setLinkedItemLimit($room);
-        $linkItemManager->setTypeLimit(CS_COMMUNITY_TYPE);
+        $linkItemManager->setTypeLimit(RoomType::Community->value);
         $linkItemManager->setRoomLimit($room->getContextID());
         $linkItemManager->select();
         $linkList = $linkItemManager->get();

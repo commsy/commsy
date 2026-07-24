@@ -179,8 +179,8 @@ class LegacyAuxHardDeleter
     }
 
     /**
-     * Sweeps `link_items`. Legacy ran the same DELETE twice (via CS_LINK_TYPE
-     * and CS_LINKITEM_TYPE, both pointing at cs_link_manager); one call suffices.
+     * Sweeps `link_items`. Legacy ran the same DELETE twice (via the 'link'
+     * and 'link_item' types, both pointing at cs_link_manager); one call suffices.
      */
     public function hardDeleteLinkItemRows(int $days): void
     {

@@ -13,6 +13,7 @@
 
 namespace App\Room;
 
+use App\Room\RoomType;
 use App\Rubric\RubricDeletionHelper;
 use App\Services\LegacyEnvironment;
 use cs_community_item;
@@ -132,7 +133,7 @@ class RoomDeletionHelper
      */
     public function softDeleteLinkedGroupEntity(int $groupRoomId, int $deleterId): void
     {
-        $manager = $this->legacyEnvironment->getManager(CS_GROUPROOM_TYPE);
+        $manager = $this->legacyEnvironment->getManager(RoomType::GroupRoom->value);
         if (!$manager->existsItem($groupRoomId)) {
             return;
         }
@@ -199,7 +200,7 @@ class RoomDeletionHelper
      */
     public function nullifyPortalProjectLinks(int $projectRoomId): void
     {
-        $manager = $this->legacyEnvironment->getManager(CS_PROJECT_TYPE);
+        $manager = $this->legacyEnvironment->getManager(RoomType::Project->value);
         if (!$manager->existsItem($projectRoomId)) {
             return;
         }
