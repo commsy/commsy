@@ -10,4 +10,4 @@ api_login:
 
 api_doc:
     path: /api/v2/doc
-    controller: api_platform.swagger_ui.action
+    controller: api_platform.action.documentation
