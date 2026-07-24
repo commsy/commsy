@@ -22,10 +22,12 @@ use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class UserProvider implements UserProviderInterface
+class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 {
     public function __construct(
         private readonly RequestStack $requestStack,
@@ -114,6 +116,23 @@ class UserProvider implements UserProviderInterface
     public function supportsClass($class): bool
     {
         return Account::class === $class;
+    }
+
+    /**
+     * Persists a freshly re-hashed password when the current hasher reports the
+     * stored hash is outdated (e.g. after switching App\Entity\Account to the
+     * "auto" algorithm). Symfony calls this on a successful password login when
+     * needsRehash() is true. Only Account users are handled; the in-memory
+     * API/metrics users use a different provider and never reach this method.
+     */
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
+    {
+        if (!$user instanceof Account) {
+            return;
+        }
+
+        $user->setPassword($newHashedPassword);
+        $this->entityManager->flush();
     }
 
     private function loadUser(string $username, ?Portal $portal, ?int $authSourceId): ?Account

@@ -2,9 +2,13 @@ security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
 
     password_hashers:
-        # This is the new default encoder used by all migrated users
+        # Uses PHP's PASSWORD_DEFAULT (currently bcrypt) via Symfony's "auto"
+        # hasher. It verifies legacy hashes too and, together with UserProvider's
+        # PasswordUpgraderInterface, transparently re-hashes them on the next
+        # login when the parameters or the default algorithm change. Future-proof
+        # without changing today's algorithm.
         App\Entity\Account:
-            algorithm: bcrypt
+            algorithm: auto
 
         # This is the legacy encoder supporting MD5 until the user is migrated
         legacy_encoder:
@@ -100,12 +104,9 @@ security:
 when@test:
     security:
         password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
-#            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-#                algorithm: auto
-#                cost: 4 # Lowest possible value for bcrypt
-#                time_cost: 3 # Lowest possible value for argon
-#                memory_cost: 10 # Lowest possible value for argon
+            # Real users hash via App\Entity\Account (auto -> bcrypt). Lower the
+            # cost in tests so account creation/login stays fast. API/metrics
+            # keep their production plaintext hasher.
+            App\Entity\Account:
+                algorithm: auto
+                cost: 4 # lowest bcrypt cost
