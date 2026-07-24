@@ -85,6 +85,7 @@ use App\Repository\AccountsRepository;
 use App\Repository\LicenseRepository;
 use App\Repository\UserRepository;
 use App\Room\RoomManager;
+use App\Room\RoomType;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -287,7 +288,7 @@ class PortalSettingsController extends AbstractController
         RoomService $roomService
     ): Response {
         // community rooms creation form
-        $templateChoices = array_merge(['No template' => '-1'], $roomService->getAvailableTemplates(CS_COMMUNITY_TYPE));
+        $templateChoices = array_merge(['No template' => '-1'], $roomService->getAvailableTemplates(RoomType::Community->value));
 
         $communityRoomsForm = $this->createForm(CommunityRoomsCreationType::class, $portal, [
             'templateChoices' => $templateChoices,
@@ -302,7 +303,7 @@ class PortalSettingsController extends AbstractController
         }
 
         // project rooms creation form
-        $templateChoices = array_merge(['No template' => '-1'], $roomService->getAvailableTemplates(CS_PROJECT_TYPE));
+        $templateChoices = array_merge(['No template' => '-1'], $roomService->getAvailableTemplates(RoomType::Project->value));
 
         $projectRoomsForm = $this->createForm(ProjectRoomsCreationType::class, $portal, [
             'templateChoices' => $templateChoices,
