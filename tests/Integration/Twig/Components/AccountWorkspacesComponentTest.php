@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Twig\Components;
 
 use App\Entity\Account;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 use Tests\Story\AccountStory;
@@ -83,9 +84,7 @@ final class AccountWorkspacesComponentTest extends KernelTestCase
         yield 'filterLocked invalid → no crash' => ['filterLocked', 'invalid-value-from-bad-url'];
     }
 
-    /**
-     * @dataProvider filterProvider
-     */
+    #[DataProvider('filterProvider')]
     public function testWritableFilterPropTriggersReRender(string $prop, string $value): void
     {
         $component = $this->createLiveComponent(
