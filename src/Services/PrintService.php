@@ -15,6 +15,7 @@ namespace App\Services;
 
 use App\Entity\Files;
 use App\Repository\FilesRepository;
+use App\Room\RoomType;
 use App\Utils\FileService;
 use cs_environment;
 use Knp\Snappy\Pdf;
@@ -88,7 +89,7 @@ class PrintService
     private function setOptions(): void
     {
         $roomItem = $this->currentContextResolver->getContextItem();
-        if (CS_PRIVATEROOM_TYPE === $roomItem->getRoomType()) {
+        if (RoomType::PrivateRoom->value === $roomItem->getRoomType()) {
             $roomItem = $this->currentContextResolver->getPortalItem();
         }
 

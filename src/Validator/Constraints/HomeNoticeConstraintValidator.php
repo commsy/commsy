@@ -13,6 +13,7 @@
 
 namespace App\Validator\Constraints;
 
+use App\Rubric\RubricType;
 use App\Utils\ItemService;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -36,7 +37,7 @@ class HomeNoticeConstraintValidator extends ConstraintValidator
                     $validType = true;
 
                     $itemType = $item->getItemType();
-                    if (!in_array($itemType, [CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE])) {
+                    if (!in_array($itemType, [RubricType::Announcement->value, RubricType::Date->value, RubricType::Material->value, RubricType::Todo->value])) {
                         $validType = false;
                     }
 

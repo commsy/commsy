@@ -14,6 +14,8 @@
 namespace App\Room\Copy;
 
 use App\Event\ItemReindexEvent;
+use App\Item\ItemType;
+use App\Rubric\RubricType;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
@@ -300,14 +302,14 @@ class LegacyCopy implements CopyStrategy
         $new_id_array = [];
 
         $data_type_array = [];
-        $data_type_array[] = CS_ANNOUNCEMENT_TYPE;
-        $data_type_array[] = CS_DATE_TYPE;
-        $data_type_array[] = CS_DISCUSSION_TYPE;
-        $data_type_array[] = CS_LABEL_TYPE;
-        $data_type_array[] = CS_MATERIAL_TYPE;
-        $data_type_array[] = CS_FILE_TYPE;
-        $data_type_array[] = CS_TODO_TYPE;
-        $data_type_array[] = CS_TAG_TYPE;
+        $data_type_array[] = RubricType::Announcement->value;
+        $data_type_array[] = RubricType::Date->value;
+        $data_type_array[] = RubricType::Discussion->value;
+        $data_type_array[] = RubricType::Label->value;
+        $data_type_array[] = RubricType::Material->value;
+        $data_type_array[] = ItemType::File->value;
+        $data_type_array[] = RubricType::Todo->value;
+        $data_type_array[] = ItemType::Tag->value;
 
         foreach ($data_type_array as $type) {
             $manager = $this->legacyEnvironment->getManager($type);
@@ -322,10 +324,10 @@ class LegacyCopy implements CopyStrategy
 
         // copy secondary data
         $data_type_array = [];
-        $data_type_array[] = CS_ANNOTATION_TYPE;
-        $data_type_array[] = CS_DISCARTICLE_TYPE;
-        $data_type_array[] = CS_SECTION_TYPE;
-        $data_type_array[] = CS_STEP_TYPE;
+        $data_type_array[] = RubricType::Annotation->value;
+        $data_type_array[] = ItemType::DiscussionArticle->value;
+        $data_type_array[] = ItemType::Section->value;
+        $data_type_array[] = ItemType::Step->value;
 
         foreach ($data_type_array as $type) {
             $manager = $this->legacyEnvironment->getManager($type);
@@ -339,10 +341,10 @@ class LegacyCopy implements CopyStrategy
 
         // copy links
         $data_type_array = [];
-        $data_type_array[] = CS_LINK_TYPE;
-        $data_type_array[] = CS_LINKITEM_TYPE;
-        $data_type_array[] = CS_LINKITEMFILE_TYPE;
-        $data_type_array[] = CS_TAG2TAG_TYPE;
+        $data_type_array[] = ItemType::Link->value;
+        $data_type_array[] = ItemType::LinkItem->value;
+        $data_type_array[] = ItemType::LinkItemFile->value;
+        $data_type_array[] = ItemType::Tag2Tag->value;
 
         foreach ($data_type_array as $type) {
             $manager = $this->legacyEnvironment->getManager($type);
@@ -368,7 +370,7 @@ class LegacyCopy implements CopyStrategy
         // link modifier item
         $manager = $this->legacyEnvironment->getLinkModifierItemManager();
         foreach ($id_array as $value) {
-            if (!mb_stristr((string) $value, CS_FILE_TYPE)) {
+            if (!mb_stristr((string) $value, ItemType::File->value)) {
                 $manager->markEdited($value, $creator->getItemID());
             }
         }
@@ -376,15 +378,15 @@ class LegacyCopy implements CopyStrategy
         // now change all old item ids in descriptions with new IDs
         // copy data
         $data_type_array = [];
-        $data_type_array[] = CS_ANNOUNCEMENT_TYPE;
-        $data_type_array[] = CS_DATE_TYPE;
-        $data_type_array[] = CS_LABEL_TYPE;
-        $data_type_array[] = CS_MATERIAL_TYPE;
-        $data_type_array[] = CS_TODO_TYPE;
-        $data_type_array[] = CS_ANNOTATION_TYPE;
-        $data_type_array[] = CS_DISCARTICLE_TYPE;
-        $data_type_array[] = CS_SECTION_TYPE;
-        $data_type_array[] = CS_STEP_TYPE;
+        $data_type_array[] = RubricType::Announcement->value;
+        $data_type_array[] = RubricType::Date->value;
+        $data_type_array[] = RubricType::Label->value;
+        $data_type_array[] = RubricType::Material->value;
+        $data_type_array[] = RubricType::Todo->value;
+        $data_type_array[] = RubricType::Annotation->value;
+        $data_type_array[] = ItemType::DiscussionArticle->value;
+        $data_type_array[] = ItemType::Section->value;
+        $data_type_array[] = ItemType::Step->value;
         foreach ($data_type_array as $type) {
             $manager = $this->legacyEnvironment->getManager($type);
             $manager->refreshInDescLinks($target->getItemID(), $new_id_array);

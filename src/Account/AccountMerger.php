@@ -14,8 +14,10 @@
 namespace App\Account;
 
 use App\Entity\Account;
+use App\Item\ItemType;
 use App\Room\PrivateRoomDeleter;
 use App\Room\RoomDeletionOptions;
+use App\Rubric\RubricType;
 use App\Services\CurrentUserResolver;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -162,24 +164,24 @@ class AccountMerger
         $intoRoomUser->save();
 
         $managerList = [
-            CS_ANNOTATION_TYPE,
-            CS_ANNOUNCEMENT_TYPE,
-            CS_DATE_TYPE,
-            CS_DISCARTICLE_TYPE,
-            CS_DISCUSSION_TYPE,
-            CS_FILE_TYPE,
-            CS_LABEL_TYPE,
-            CS_LINK_TYPE,
-            CS_LINKITEM_TYPE,
-            CS_LINKMODITEM_TYPE,
-            CS_MATERIAL_TYPE,
-            CS_ROOM_TYPE,
-            CS_SECTION_TYPE,
-            CS_TASK_TYPE,
-            CS_TODO_TYPE,
-            CS_TAG_TYPE,
-            CS_TAG2TAG_TYPE,
-            CS_ITEM_TYPE,
+            RubricType::Annotation->value,
+            RubricType::Announcement->value,
+            RubricType::Date->value,
+            ItemType::DiscussionArticle->value,
+            RubricType::Discussion->value,
+            ItemType::File->value,
+            RubricType::Label->value,
+            ItemType::Link->value,
+            ItemType::LinkItem->value,
+            ItemType::LinkModifierItem->value,
+            RubricType::Material->value,
+            ItemType::Room->value,
+            ItemType::Section->value,
+            ItemType::Task->value,
+            RubricType::Todo->value,
+            ItemType::Tag->value,
+            ItemType::Tag2Tag->value,
+            ItemType::Item->value,
         ];
 
         $this->readerService->mergeAccounts($intoRoomUser->getItemID(), $fromRoomUser->getItemID());
@@ -211,7 +213,7 @@ class AccountMerger
 
         $newIds = [];
 
-        $primaryList = [CS_DATE_TYPE, CS_LABEL_TYPE, CS_MATERIAL_TYPE, CS_FILE_TYPE, CS_TAG_TYPE];
+        $primaryList = [RubricType::Date->value, RubricType::Label->value, RubricType::Material->value, ItemType::File->value, ItemType::Tag->value];
         foreach ($primaryList as $managerName) {
             $manager = $this->legacyEnvironment->getManager($managerName);
             $newIds += $manager->copyDataFromRoomToRoom(
@@ -220,7 +222,7 @@ class AccountMerger
                 $intoPrivateRoomUser->getItemID());
         }
 
-        $secondaryList = [CS_ANNOTATION_TYPE, CS_SECTION_TYPE];
+        $secondaryList = [RubricType::Annotation->value, ItemType::Section->value];
         foreach ($secondaryList as $managerName) {
             $manager = $this->legacyEnvironment->getManager($managerName);
             $newIds += $manager->copyDataFromRoomToRoom(
@@ -230,7 +232,7 @@ class AccountMerger
                 $newIds);
         }
 
-        $linkList = [CS_LINK_TYPE, CS_LINKITEM_TYPE, CS_LINKITEMFILE_TYPE, CS_TAG2TAG_TYPE];
+        $linkList = [ItemType::Link->value, ItemType::LinkItem->value, ItemType::LinkItemFile->value, ItemType::Tag2Tag->value];
         foreach ($linkList as $managerName) {
             $manager = $this->legacyEnvironment->getManager($managerName);
             $newIds += $manager->copyDataFromRoomToRoom(
@@ -245,7 +247,7 @@ class AccountMerger
             $linkModifierItemManager->markEdited($newId, $intoPrivateRoomUser->getItemID());
         }
 
-        $markupList = [CS_DATE_TYPE, CS_LABEL_TYPE, CS_MATERIAL_TYPE, CS_ANNOTATION_TYPE, CS_SECTION_TYPE];
+        $markupList = [RubricType::Date->value, RubricType::Label->value, RubricType::Material->value, RubricType::Annotation->value, ItemType::Section->value];
         foreach ($markupList as $managerName) {
             $manager = $this->legacyEnvironment->getManager($managerName);
             $manager->refreshInDescLinks($intoPrivateRoom->getItemID(), $newIds);

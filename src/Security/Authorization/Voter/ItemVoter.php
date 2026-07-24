@@ -19,6 +19,8 @@ use App\Entity\Portal;
 use App\Lock\FileLockManager;
 use App\Proxy\PortalProxy;
 use App\Repository\FilesRepository;
+use App\Room\RoomType;
+use App\Rubric\RubricType;
 use App\Security\Permission\Checker\ItemEditChecker;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Security\Permission\Resolver\PermissionResolver;
@@ -232,19 +234,19 @@ class ItemVoter extends Voter
 
         $itemType = $item->getItemType();
 
-        if (CS_PROJECT_TYPE == $itemType || CS_COMMUNITY_TYPE == $itemType) {
+        if (RoomType::Project->value == $itemType || RoomType::Community->value == $itemType) {
             if ($item->isLockedByModerator() && !$this->userService->userIsPortalModerator($currentUser)) {
                 return false;
             }
         }
 
-        if (CS_DATE_TYPE == $itemType) {
+        if (RubricType::Date->value == $itemType) {
             if ($item->isExternal()) {
                 return false;
             }
         }
 
-        if (CS_DISCUSSION_TYPE == $itemType) {
+        if (RubricType::Discussion->value == $itemType) {
             $request = $this->requestStack->getCurrentRequest();
             if ('app_discussion_createanswer' == $request?->attributes->get('_route')) {
                 return true;

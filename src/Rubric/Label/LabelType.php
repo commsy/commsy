@@ -22,9 +22,9 @@ namespace App\Rubric\Label;
  * this enum models the subtype discriminator that distinguishes a group from
  * a topic, institution or buzzword (hashtag).
  *
- * Values mirror the legacy `CS_GROUP_TYPE` / `CS_TOPIC_TYPE` /
- * `CS_INSTITUTION_TYPE` / `CS_BUZZWORD_TYPE` strings, so callers that read
- * `$label->getLabelType()` map in/out without surprise.
+ * Values mirror the legacy `labels.type` strings (`group`, `topic`,
+ * `institution`, `buzzword`), so callers that read `$label->getLabelType()`
+ * map in/out without surprise.
  */
 enum LabelType: string
 {

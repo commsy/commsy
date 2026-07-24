@@ -14,6 +14,7 @@
 namespace App\RoomFeed;
 
 use App\Entity\Account;
+use App\Item\ItemType;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use App\Utils\RoomService;
@@ -198,8 +199,8 @@ class RoomFeedGenerator
      */
     private function sortByModificationDate(cs_item $a, cs_item $b): int
     {
-        $isUserA = CS_USER_TYPE === $a->getItemType();
-        $isUserB = CS_USER_TYPE === $a->getItemType();
+        $isUserA = ItemType::User->value === $a->getItemType();
+        $isUserB = ItemType::User->value === $a->getItemType();
 
         $modDateA = ($isUserA) ? $a->getCreationDate() : $a->getModificationDate();
         $modDateB = ($isUserB) ? $b->getCreationDate() : $b->getModificationDate();

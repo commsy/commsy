@@ -13,6 +13,7 @@
 
 namespace App\Privacy;
 
+use App\Room\RoomType;
 use App\Services\CurrentContextResolver;
 use App\Utils\UserService;
 use cs_privateroom_item;
@@ -94,11 +95,11 @@ class PersonalDataCollector
             $roomID = $roomProfileData->getRoomID();
             $roomType = $roomProfileData->getRoomType();
 
-            if (CS_COMMUNITY_TYPE === $roomType) {
+            if (RoomType::Community->value === $roomType) {
                 $communityRoomProfileDataArray[$roomID] = $roomProfileData;
-            } elseif (CS_PROJECT_TYPE === $roomType) {
+            } elseif (RoomType::Project->value === $roomType) {
                 $projectRoomProfileDataArray[$roomID] = $roomProfileData;
-            } elseif (CS_GROUPROOM_TYPE === $roomType) {
+            } elseif (RoomType::GroupRoom->value === $roomType) {
                 $groupRoomProfileDataArray[$roomID] = $roomProfileData;
             } // NOTE: we ignore the user's private room since this doesn't have a user-facing room profile
         }

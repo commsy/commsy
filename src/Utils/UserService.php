@@ -18,6 +18,7 @@ use App\Entity\User;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\UserRepository;
+use App\Room\RoomType;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -654,7 +655,7 @@ class UserService
         }
 
         $roomType = $room->getType();
-        if (CS_PROJECT_TYPE === $roomType) {
+        if (RoomType::Project->value === $roomType) {
             // check if the given user corresponds to a moderator in a community room that hosts the given project room
             $communityRooms = $this->roomService->getCommunityRoomsForRoom($room);
             foreach ($communityRooms as $communityRoom) {
@@ -663,7 +664,7 @@ class UserService
                 }
             }
         } else {
-            if (CS_GROUPROOM_TYPE === $roomType) {
+            if (RoomType::GroupRoom->value === $roomType) {
                 // check if the given user is a moderator of the project room that hosts the given group room
                 $projectRoom = $room->getLinkedProjectItem();
                 if ($projectRoom && $this->userIsModeratorForRoom($projectRoom, $user)) {

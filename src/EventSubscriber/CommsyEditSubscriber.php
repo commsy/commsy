@@ -17,6 +17,7 @@ use App\Enum\EditableSection;
 use App\Event\CommsyEditEvent;
 use App\Event\ItemReindexEvent;
 use App\Lock\LockManager;
+use App\Rubric\RubricType;
 use App\Services\CalendarsService;
 use cs_item;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -61,7 +62,7 @@ final readonly class CommsyEditSubscriber implements EventSubscriberInterface
             $this->lockManager->unlockEntry($this->lockManager->getItemIdForLock($item->getItemID()));
         }
 
-        if (CS_DATE_TYPE == $item->getItemType()) {
+        if (RubricType::Date->value == $item->getItemType()) {
             if (!$item->isDraft()) {
                 $this->calendarsService->updateSynctoken($item->getCalendarId());
             }
