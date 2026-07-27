@@ -1,7 +1,6 @@
 'use strict';
 
-const flatpickr = require("flatpickr");
-//import flatpickr from "flatpickr";
+import flatpickr from "flatpickr";
 
 export class DatePicker {
     private defaultOptions = {

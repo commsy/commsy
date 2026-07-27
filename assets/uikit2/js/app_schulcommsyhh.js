@@ -1,3 +1,3 @@
-require('./common');
+import './common.js';
 
-require('../css/themes/schulcommsyhh/theme.less');
+import '../css/themes/schulcommsyhh/theme.less';

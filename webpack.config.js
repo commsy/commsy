@@ -93,6 +93,12 @@ Encore
 
     // configure Babel
     .configureBabel((config) => {
+        // Encore defaults to sourceType "unambiguous", which treats our
+        // import-less scripts (e.g. assets/uikit2/js/commsy/*.js) as CommonJS
+        // and makes the polyfill plugin inject require() calls — a runtime
+        // ReferenceError in ES modules. With "type": "module" all our files
+        // are ES modules, so tell Babel explicitly.
+        config.sourceType = 'module';
         config.plugins.push(['polyfill-corejs3', { method: 'usage-global', version: '3.49' }]);
     })
 

@@ -1,3 +1,3 @@
-require('./common');
+import './common.js';
 
-require('../css/themes/darkblue/theme.less');
+import '../css/themes/darkblue/theme.less';

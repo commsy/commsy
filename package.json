@@ -2,6 +2,7 @@
   "name": "commsy",
   "version": "1.0.0",
   "description": "CommSy is a web-based community system.",
+  "type": "module",
   "scripts": {
     "dev-server": "encore dev-server",
     "dev": "encore dev",
