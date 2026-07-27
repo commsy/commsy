@@ -1,5 +1,5 @@
-const Encore = require('@symfony/webpack-encore');
-let webpack = require('webpack');
+import Encore from '@symfony/webpack-encore';
+import webpack from 'webpack';
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -77,18 +77,23 @@ Encore
     .enableVersioning(Encore.isProduction())
 
     .enableBuildCache({
-        config: [__filename]
+        config: [import.meta.filename]
+    })
+
+    // Configure JS and CSS minimizers
+    // .configureJsMinimizerPlugin((options, MinimizerPlugin) => {
+    //     options.minify = MinimizerPlugin.esbuildMinify
+    // })
+
+    // Encore 7 no longer minifies CSS by default. cssnano is the PostCSS-based
+    // minifier closest to the previous default.
+    .configureCssMinimizerPlugin((options, MinimizerPlugin) => {
+        options.minify = MinimizerPlugin.cssnanoMinify;
     })
 
     // configure Babel
-    // .configureBabel((config) => {
-    //     config.plugins.push('@babel/a-babel-plugin');
-    // })
-
-    // enables and configure @babel/preset-env polyfills
-    .configureBabelPresetEnv((config) => {
-      config.useBuiltIns = 'usage';
-      config.corejs = '3.38';
+    .configureBabel((config) => {
+        config.plugins.push(['polyfill-corejs3', { method: 'usage-global', version: '3.49' }]);
     })
 
     .enableLessLoader(function(options) {
@@ -127,4 +132,4 @@ Encore
     })
 ;
 
-module.exports = Encore.getWebpackConfig();
+export default await Encore.getWebpackConfig();
