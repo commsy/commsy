@@ -16,8 +16,6 @@
         "0x46616c6b/etherpad-lite-client": "^0.7.0",
         "api-platform/doctrine-orm": "^4.1",
         "api-platform/symfony": "^4.1",
-        "composer/package-versions-deprecated": "^1.8",
-        "debril/rss-atom-bundle": "^5.2",
         "doctrine/dbal": "^3.8",
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/doctrine-migrations-bundle": "^3.2",
@@ -27,6 +25,7 @@
         "friendsofsymfony/ckeditor-bundle": "^2.5",
         "friendsofsymfony/elastica-bundle": "^6.4",
         "galbar/jsonpath": "^3.0",
+        "huluti/breadcrumbs-bundle": "^1.7",
         "knplabs/knp-menu-bundle": "^3.0",
         "knplabs/knp-paginator-bundle": "^6.2",
         "knplabs/knp-snappy-bundle": "^1.7",
@@ -34,10 +33,10 @@
         "lexik/jwt-authentication-bundle": "^3.1",
         "liip/imagine-bundle": "^2.3",
         "masterminds/html5": "^2.7",
-        "mhujer/breadcrumbs-bundle": "^1.5",
         "nelmio/cors-bundle": "^2.2",
         "nette/utils": "^4.0",
         "ozdemirburak/iris": "^3.1",
+        "php-feed-io/feed-io": "^6.4",
         "php-imap/php-imap": "^5.0",
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpseclib/phpseclib": "^3.0",
@@ -110,6 +109,7 @@
         },
         "sort-packages": true,
         "allow-plugins": {
+            "php-http/discovery": true,
             "symfony/flex": true,
             "symfony/runtime": true
         }

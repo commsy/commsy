@@ -14,6 +14,7 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use Doctrine\ORM\EntityManagerInterface;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -32,6 +33,28 @@ class SecurityControllerTest extends AbstractApplicationTestCase
             'password' => 'pcxEmQj6QzE5',
         ]);
         $this->assertResponseRedirects('/portal/server/enter');
+    }
+
+    public function testOutdatedPasswordHashIsUpgradedOnLogin(): void
+    {
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $repository = $entityManager->getRepository(Account::class);
+
+        // Seed root with a bcrypt hash at a higher cost than the test hasher
+        // (cost 4), so the "auto" hasher flags it as needing a rehash on login.
+        $root = $repository->findOneBy(['username' => 'root', 'portal' => null]);
+        $root->setPassword(password_hash('pcxEmQj6QzE5', PASSWORD_BCRYPT, ['cost' => 12]));
+        $entityManager->flush();
+        self::assertStringStartsWith('$2y$12$', (string) $root->getPassword());
+
+        // Log in through the real firewall (LoginFormAuthenticator + password).
+        $this->loginAsRoot();
+
+        // UserProvider::upgradePassword must have re-hashed and persisted the
+        // password at the current (lower) cost.
+        $entityManager->clear();
+        $reloaded = $repository->findOneBy(['username' => 'root', 'portal' => null]);
+        self::assertStringStartsWith('$2y$04$', (string) $reloaded->getPassword());
     }
 
     public function testLoginPageRendersForPortal(): void

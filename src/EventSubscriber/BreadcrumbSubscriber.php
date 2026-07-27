@@ -32,7 +32,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
+use Huluti\BreadcrumbsBundle\Model\Breadcrumbs;
 
 class BreadcrumbSubscriber implements EventSubscriberInterface
 {

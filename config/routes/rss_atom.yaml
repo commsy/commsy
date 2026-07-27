@@ -1,3 +1,0 @@
-app_rss:
-    path: /rss/{contextId}
-    defaults: { _controller: Debril\RssAtomBundle\Controller\StreamController::indexAction, "format": 'rss', "id": null }

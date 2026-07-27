@@ -361,9 +361,10 @@ services:
         arguments:
             $checks: !tagged_iterator app.database.check
 
-    # Feed
-    debril.rss_atom.provider:
-        class: App\Feed\CommsyFeedContentProvider
+    # Feed — feed-io serializes the feed built by CommsyFeedContentProvider;
+    # no HTTP client needed for formatting (NullClient/NullLogger defaults).
+    FeedIo\FeedIo:
+        arguments: []
 
     # Monolog
     commsy.monolog.handler.doctrine_orm:

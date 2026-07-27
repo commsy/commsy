@@ -18,6 +18,7 @@ namespace Tests\Integration\Twig\Components\FileList;
 use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 use Tests\Factory\MaterialFactory;
@@ -94,9 +95,7 @@ final class FileListTest extends KernelTestCase
         yield 'fileLimit off'              => ['fileLimit', false];
     }
 
-    /**
-     * @dataProvider writableFilterProvider
-     */
+    #[DataProvider('writableFilterProvider')]
     public function testWritableFilterPropTriggersReRender(string $prop, $value): void
     {
         $itemId = $this->createMaterialItemId();
