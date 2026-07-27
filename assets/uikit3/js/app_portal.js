@@ -1,40 +1,40 @@
-// CSS
-require('../css/commsy.less');
+// Globals first: the legacy inline scripts read window.jQuery, and ES module
+// imports are evaluated in order, so this must stay on top.
+import '../../globals.js';
 
-require('nprogress/nprogress.css');
-require("flatpickr/dist/themes/light.css");
+// CSS
+import '../css/commsy.less';
+import 'nprogress/nprogress.css';
+import 'flatpickr/dist/themes/light.css';
 
 // JS
-const $ = require('jquery');
-global.$ = global.jQuery = $;
-
-require('expose-loader?exposes=NProgress!nprogress/nprogress');
-require('moment/moment');
-require('expose-loader?exposes=URI!urijs/src/URI');
+import 'expose-loader?exposes=NProgress!nprogress/nprogress.js';
+import 'moment/moment.js';
+import 'expose-loader?exposes=URI!urijs/src/URI.js';
 
 import UIkit from 'uikit3';
-import Icons from 'uikit3/dist/js/uikit-icons';
+import Icons from 'uikit3/dist/js/uikit-icons.js';
 
 // loads the Icon plugin
 UIkit.use(Icons);
 
-// import {Edit} from "./commsy/Edit";
+// import {Edit} from "./commsy/Edit.ts";
 // Edit.bootstrap();
 
-import {Upload} from "./commsy/Upload";
+import {Upload} from "./commsy/Upload.ts";
 Upload.bootstrap();
 
-import {DatePicker} from "./commsy/DatePicker";
+import {DatePicker} from "./commsy/DatePicker.ts";
 DatePicker.bootstrap();
 
-import {LicenseEdit} from "./commsy/LicenseEdit";
+import {LicenseEdit} from "./commsy/LicenseEdit.ts";
 LicenseEdit.bootstrap();
 
-import {FormCollection} from "./commsy/FormCollection";
+import {FormCollection} from "./commsy/FormCollection.ts";
 FormCollection.bootstrap();
 
-import {handleShibIdPSelect} from "./commsy/Login";
+import {handleShibIdPSelect} from "./commsy/Login.ts";
 handleShibIdPSelect();
 
 // start the Stimulus application
-import '../../bootstrap';
+import '../../bootstrap.js';

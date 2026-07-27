@@ -1,3 +1,3 @@
-require('./common');
+import './common.js';
 
-require('../css/themes/sun/theme.less');
+import '../css/themes/sun/theme.less';

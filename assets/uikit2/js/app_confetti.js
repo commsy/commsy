@@ -1,3 +1,3 @@
-require('./common');
+import './common.js';
 
-require('../css/themes/confetti/theme.less');
+import '../css/themes/confetti/theme.less';

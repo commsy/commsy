@@ -1,61 +1,66 @@
+// Globals first: UIKit 2 and the legacy inline scripts read window.jQuery,
+// and ES module imports are evaluated in order, so this must stay on top.
+import '../../globals.js';
+
 // CSS
-require('jstree/dist/themes/default/style.css');
-require('nprogress/nprogress.css');
-require('tooltipster/dist/css/tooltipster.bundle.css');
-require('video.js/dist/video-js.css');
+import 'jstree/dist/themes/default/style.css';
+import 'nprogress/nprogress.css';
+import 'tooltipster/dist/css/tooltipster.bundle.css';
+import 'video.js/dist/video-js.css';
 
-// JS
-const $ = require('jquery');
-global.$ = global.jQuery = $;
+// jQuery plugins and standalone libraries
+import 'jstree/dist/jstree.js';
+import 'expose-loader?exposes=NProgress!nprogress/nprogress.js';
+import 'moment/moment.js';
+import 'tooltipster/dist/js/tooltipster.bundle.js';
+import 'expose-loader?exposes=URI!urijs/src/URI.js';
+import 'video.js/dist/video.js';
+import 'jscolor-picker/jscolor.js';
 
-require('jstree/dist/jstree');
-require('expose-loader?exposes=NProgress!nprogress/nprogress');
-require('moment/moment');
-require('tooltipster/dist/js/tooltipster.bundle');
-require('expose-loader?exposes=URI!urijs/src/URI');
-require('video.js/dist/video');
-require('jscolor-picker/jscolor');
+// UIKit 2 core, then its components (both expect window.jQuery/UIkit)
+import 'uikit';
+import 'uikit/dist/js/components/autocomplete.js';
+import 'uikit/dist/js/components/search.js';
+import 'uikit/dist/js/components/nestable.js';
+import 'uikit/dist/js/components/tooltip.js';
+import 'uikit/dist/js/components/grid.js';
+import 'uikit/dist/js/components/accordion.js';
+import 'uikit/dist/js/components/upload.js';
+import 'uikit/dist/js/components/sticky.js';
+import 'uikit/dist/js/components/slider.js';
+import 'uikit/dist/js/components/lightbox.js';
+import 'uikit/dist/js/components/sortable.js';
+import 'uikit/dist/js/components/notify.js';
+import 'uikit/dist/js/components/parallax.js';
+import 'uikit/dist/js/components/datepicker.js';
+import 'uikit/dist/js/components/timepicker.js';
+import 'uikit/dist/js/components/form-select.js';
 
-require(['uikit'], function () {
-  require('uikit/dist/js/components/autocomplete');
-  require('uikit/dist/js/components/search');
-  require('uikit/dist/js/components/nestable');
-  require('uikit/dist/js/components/tooltip');
-  require('uikit/dist/js/components/grid');
-  require('uikit/dist/js/components/accordion');
-  require('uikit/dist/js/components/upload');
-  require('uikit/dist/js/components/sticky');
-  require('uikit/dist/js/components/slider');
-  require('uikit/dist/js/components/lightbox');
-  require('uikit/dist/js/components/sortable');
-  require('uikit/dist/js/components/notify');
-  require('uikit/dist/js/components/parallax');
-  require('uikit/dist/js/components/datepicker');
-  require('uikit/dist/js/components/timepicker');
-  require('uikit/dist/js/components/form-select');
+import {DetailActionManager} from "./commsy/actions/DetailActionManager.ts";
+import {ListActionManager} from "./commsy/actions/ListActionManager.ts";
+import {MathJax} from "./commsy/MathJax.ts";
+import { setup as setupCalendar } from "./commsy/fullcalendar.ts";
 
-  // import commsy modules
-  var commsyModules = require.context('./commsy', true, /\.js$/);
-  commsyModules.keys().forEach(function(key) {
-      commsyModules(key);
-  });
+// start the Stimulus application
+import '../../bootstrap.js';
+
+// import commsy modules
+const commsyModules = import.meta.webpackContext('./commsy', {
+    recursive: true,
+    regExp: /\.js$/,
+});
+commsyModules.keys().forEach(function(key) {
+    commsyModules(key);
 });
 
-import {DetailActionManager} from "./commsy/actions/DetailActionManager";
 let detailActionManager = new DetailActionManager();
 detailActionManager.registerActors();
 
-import {ListActionManager} from "./commsy/actions/ListActionManager";
 let listActionManager = new ListActionManager();
 listActionManager.bootstrap();
 
-import {MathJax} from "./commsy/MathJax";
 let mathJax = new MathJax();
 mathJax.bootstrap();
 
-import { setup as setupCalendar } from "./commsy/fullcalendar";
 setupCalendar('calendar');
 setupCalendar('calendarDashboard', false);
-
-// start the Stimulus application
-import '../../bootstrap';
