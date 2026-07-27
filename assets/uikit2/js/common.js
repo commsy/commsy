@@ -6,7 +6,6 @@ import '../../globals.js';
 import 'jstree/dist/themes/default/style.css';
 import 'nprogress/nprogress.css';
 import 'tooltipster/dist/css/tooltipster.bundle.css';
-import 'video.js/dist/video-js.css';
 
 // jQuery plugins and standalone libraries
 import 'jstree/dist/jstree.js';
@@ -14,7 +13,6 @@ import 'expose-loader?exposes=NProgress!nprogress/nprogress.js';
 import 'moment/moment.js';
 import 'tooltipster/dist/js/tooltipster.bundle.js';
 import 'expose-loader?exposes=URI!urijs/src/URI.js';
-import 'video.js/dist/video.js';
 import 'jscolor-picker/jscolor.js';
 
 // UIKit 2 core, then its components (both expect window.jQuery/UIkit)
