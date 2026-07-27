@@ -50,8 +50,13 @@ Encore
     .enableSingleRuntimeChunk()
 
     .copyFiles([
-        { from: './assets/uikit2/img', includeSubdirectories: false },
-        { from: './node_modules/mathjax/es5', pattern: /tex-chtml\.js/, includeSubdirectories: false },
+        // The "to" patterns below are deliberate. Templates reference these
+        // files through fixed asset('build/...') paths, and without an explicit
+        // "to" Encore appends a content hash as soon as versioning is on - i.e.
+        // in production builds only, where those references then 404 silently:
+        // no logo in the portal header, and MathJax never rendering formulas.
+        { from: './assets/uikit2/img', to: '[path][name].[ext]', includeSubdirectories: false },
+        { from: './node_modules/mathjax/es5', pattern: /tex-chtml\.js/, to: '[path][name].[ext]', includeSubdirectories: false },
         { from: './node_modules/mathjax/es5/output/chtml/fonts/woff-v2', to: 'mathjax/fonts/[path][name].[ext]', includeSubdirectories: false },
     ])
 
