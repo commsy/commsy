@@ -93,6 +93,11 @@ Encore
 
     .enableLessLoader(function(options) {
         options.lessOptions = {
+            // Less 4 changed the default math mode to "parens-division", so a
+            // bare "/" no longer divides. UIKit 2 relies on the old behaviour
+            // (e.g. round(@form-icon-font-size / -2) in core/form.less), so keep
+            // Less 3 semantics until UIKit 2 is gone.
+            math: 'always',
             paths: [
                 'node_modules/uikit/src/less',
                 'node_modules/uikit3/src/less',
