@@ -1,13 +1,67 @@
 import { Controller } from '@hotwired/stimulus';
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import {
+  Autoformat,
+  BlockQuote,
+  Bold,
+  ClassicEditor,
+  Essentials,
+  Heading,
+  Indent,
+  Italic,
+  Link,
+  List,
+  Paragraph,
+  PasteFromOffice,
+  Table,
+  TableToolbar,
+  TextTransformation,
+} from 'ckeditor5';
+import 'ckeditor5/ckeditor5.css';
 import {getComponent} from "@symfony/ux-live-component";
 
 let germanEditor;
 let englishEditor;
 let focusedEditor;
 
-const toolbarConfig = {
-  removeItems: ['uploadImage', 'mediaEmbed']
+/*
+* The predefined @ckeditor/ckeditor5-build-classic package is no longer
+* maintained, so the editor is composed from the ckeditor5 package instead.
+* Plugins and toolbar reproduce what the classic build offered here: its
+* default toolbar minus uploadImage and mediaEmbed, which this editor used to
+* strip via removeItems.
+*/
+const editorConfig = {
+  // CKEditor 5 is dual-licensed; 'GPL' selects the open source terms, which
+  // match our own GPLv2. Since v44 the key has to be stated explicitly.
+  licenseKey: 'GPL',
+  plugins: [
+    Autoformat,
+    BlockQuote,
+    Bold,
+    Essentials,
+    Heading,
+    Indent,
+    Italic,
+    Link,
+    List,
+    Paragraph,
+    PasteFromOffice,
+    Table,
+    TableToolbar,
+    TextTransformation,
+  ],
+  toolbar: {
+    items: [
+      'undo', 'redo', '|',
+      'heading', '|',
+      'bold', 'italic', '|',
+      'link', 'insertTable', 'blockQuote', '|',
+      'bulletedList', 'numberedList', 'outdent', 'indent',
+    ],
+  },
+  table: {
+    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+  },
 }
 
 /*
@@ -47,9 +101,7 @@ export default class extends Controller {
   createEditor(node) {
     let htmlNode = document.getElementById(node);
 
-    return ClassicEditor.create(htmlNode, {
-      toolbar: toolbarConfig,
-    }).then(newEditor => {
+    return ClassicEditor.create(htmlNode, editorConfig).then(newEditor => {
       newEditor.model.document.on('change:data', () => {
         if (htmlNode.value !== newEditor.getData()) {
           htmlNode.value = newEditor.getData();
