@@ -21,7 +21,7 @@ use Symfony\Component\Finder\Finder;
 class ProfileHelper
 {
     public function __construct(
-        #[Autowire('%kernel.project_dir%/files/temp/user/')]
+        #[Autowire('%files_directory%/temp/user/')]
         private readonly string $uploadDir
     ) {}
 

@@ -53,7 +53,7 @@ class DownloadService
     {
         $itemIds = is_array($itemIds) ? $itemIds : [$itemIds];
 
-        $exportTempFolder = $this->parameterBag->get('kernel.project_dir').'/files/temp/zip_export/'.time();
+        $exportTempFolder = $this->parameterBag->get('files_directory').'/temp/zip_export/'.time();
 
         $fileSystem = new Filesystem();
 

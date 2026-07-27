@@ -73,6 +73,14 @@ when@test:
     parameters:
         commsy.online_office.proofkey_validation: false
 
+        # Keep tests out of the shared upload directory. Foundry resets the test
+        # database with reset mode "migrate", so every run replays all migrations
+        # against app_test while they read this parameter. Version20230301172618
+        # builds its exclude list from the portal table, which is empty in a fresh
+        # test database - it then treats real portal directories as stale and
+        # deletes them, destroying uploaded development files.
+        files_directory: '%kernel.project_dir%/var/test-files'
+
     services:
         _defaults:
             public: false

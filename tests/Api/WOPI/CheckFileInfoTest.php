@@ -27,7 +27,14 @@ class CheckFileInfoTest extends AbstractApiTestCase
 
     private Account $account;
 
-    private const string FILES_FOLDER = __DIR__ . '/../../../files/tmp';
+    /**
+     * Absolute path of the scratch folder, and the same path relative to the
+     * project directory (that is how Files::filepath is stored). Both are
+     * derived from the files_directory parameter, which points outside the
+     * shared upload directory under when@test.
+     */
+    private string $filesFolder;
+    private string $filesFolderRelative;
 
     public function setUp(): void
     {
@@ -36,27 +43,31 @@ class CheckFileInfoTest extends AbstractApiTestCase
         $this->tokenGenerator = static::getContainer()->get(AccessTokenGenerator::class);
         $this->account = AccountFactory::createOne();
 
+        $projectDir = static::getContainer()->getParameter('kernel.project_dir');
+        $this->filesFolder = static::getContainer()->getParameter('files_directory') . '/tmp';
+        $this->filesFolderRelative = ltrim(str_replace($projectDir, '', $this->filesFolder), '/');
+
         $filesystem = new Filesystem();
-        if ($filesystem->exists(self::FILES_FOLDER)) {
-            $filesystem->remove(self::FILES_FOLDER);
+        if ($filesystem->exists($this->filesFolder)) {
+            $filesystem->remove($this->filesFolder);
         }
 
-        $filesystem->mkdir(self::FILES_FOLDER);
+        $filesystem->mkdir($this->filesFolder);
     }
 
     protected function tearDown(): void
     {
         $filesystem = new Filesystem();
-        if ($filesystem->exists(self::FILES_FOLDER)) {
-            $filesystem->remove(self::FILES_FOLDER);
+        if (isset($this->filesFolder) && $filesystem->exists($this->filesFolder)) {
+            $filesystem->remove($this->filesFolder);
         }
     }
 
     public function testCheckFileInfoReturnsResponseForViewer(): void
     {
-        file_put_contents(self::FILES_FOLDER . '/test.txt', 'sample content');
+        file_put_contents($this->filesFolder . '/test.txt', 'sample content');
         $file = FilesFactory::createOne([
-            'filepath' => 'files/tmp/test.txt',
+            'filepath' => $this->filesFolderRelative . '/test.txt',
             'size' => 14,
             'creatorId' => (string) $this->account->getId(),
         ]);

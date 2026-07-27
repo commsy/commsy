@@ -135,10 +135,10 @@ class UploadControllerTest extends AbstractApplicationTestCase
 
     public function testMailAttachmentsCollectsFiles(): void
     {
-        // the controller writes into <project>/files/temp/; make sure the
+        // the controller writes into <files_directory>/temp/; make sure the
         // directory exists for the test run (it's normally provisioned by
         // the production installer)
-        $targetDir = self::getContainer()->getParameter('kernel.project_dir').'/files/temp';
+        $targetDir = self::getContainer()->getParameter('files_directory').'/temp';
         if (!is_dir($targetDir)) {
             @mkdir($targetDir, 0777, true);
         }

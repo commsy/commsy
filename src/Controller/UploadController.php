@@ -289,7 +289,7 @@ class UploadController extends AbstractController
                 return $response->setData(['attachmentInfo' => [], 'error' => $error]);
             }
 
-            $tempUploadDir = $this->getParameter('kernel.project_dir').'/files/temp/';
+            $tempUploadDir = $this->getParameter('files_directory').'/temp/';
             $fileId = md5(uniqid());
             $fileName = $fileId.'.'.$file->guessExtension();
             $filePath = $tempUploadDir.$fileName;

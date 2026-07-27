@@ -27,26 +27,37 @@ class WOPITest extends AbstractApiTestCase
 
     private Account $account;
 
-    private const string FILES_FOLDER = __DIR__ . '/../../files/tmp';
+    /**
+     * Absolute path of the scratch folder, and the same path relative to the
+     * project directory (that is how Files::filepath is stored). Both are
+     * derived from the files_directory parameter, which points outside the
+     * shared upload directory under when@test.
+     */
+    private string $filesFolder;
+    private string $filesFolderRelative;
 
     public function setUp(): void
     {
         $this->tokenGenerator = static::getContainer()->get(AccessTokenGenerator::class);
         $this->account = AccountFactory::createOne();
 
+        $projectDir = static::getContainer()->getParameter('kernel.project_dir');
+        $this->filesFolder = static::getContainer()->getParameter('files_directory') . '/tmp';
+        $this->filesFolderRelative = ltrim(str_replace($projectDir, '', $this->filesFolder), '/');
+
         $filesystem = new Filesystem();
-        if ($filesystem->exists(self::FILES_FOLDER)) {
-            $filesystem->remove(self::FILES_FOLDER);
+        if ($filesystem->exists($this->filesFolder)) {
+            $filesystem->remove($this->filesFolder);
         }
 
-        $filesystem->mkdir(self::FILES_FOLDER);
+        $filesystem->mkdir($this->filesFolder);
     }
 
     protected function tearDown(): void
     {
         $filesystem = new Filesystem();
-        if ($filesystem->exists(self::FILES_FOLDER)) {
-            $filesystem->remove(self::FILES_FOLDER);
+        if (isset($this->filesFolder) && $filesystem->exists($this->filesFolder)) {
+            $filesystem->remove($this->filesFolder);
         }
     }
 
@@ -306,9 +317,9 @@ class WOPITest extends AbstractApiTestCase
 
     public function testGetFileContent(): void
     {
-        file_put_contents(self::FILES_FOLDER . '/test.txt', 'sample content');
+        file_put_contents($this->filesFolder . '/test.txt', 'sample content');
 
-        $file = FilesFactory::createOne(['lockingId' => null, 'filepath' => 'files/tmp/test.txt']);
+        $file = FilesFactory::createOne(['lockingId' => null, 'filepath' => $this->filesFolderRelative . '/test.txt']);
         $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
         $client = static::createClient();
         $client->request('GET', "/api/v2/wopi/files/{$file->getFilesId()}/contents", [
@@ -322,7 +333,7 @@ class WOPITest extends AbstractApiTestCase
         $this->assertResponseIsSuccessful();
 
         $response = $client->getResponse()->getBrowserKitResponse()->getContent();
-        $this->assertEquals(file_get_contents(self::FILES_FOLDER . '/test.txt'), $response);
+        $this->assertEquals(file_get_contents($this->filesFolder . '/test.txt'), $response);
     }
 
     public function testPutFileContentForbidden(): void
@@ -381,9 +392,9 @@ class WOPITest extends AbstractApiTestCase
      */
     public function testPutFileContentUnlockedEmptyFile(): void
     {
-        file_put_contents(self::FILES_FOLDER . '/test.txt', '');
+        file_put_contents($this->filesFolder . '/test.txt', '');
 
-        $file = FilesFactory::createOne(['lockingId' => null, 'filepath' => 'files/tmp/test.txt']);
+        $file = FilesFactory::createOne(['lockingId' => null, 'filepath' => $this->filesFolderRelative . '/test.txt']);
         $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $client = static::createClient();
         $client->request('POST', "/api/v2/wopi/files/{$file->getFilesId()}/contents", [
@@ -410,9 +421,9 @@ class WOPITest extends AbstractApiTestCase
      */
     public function testPutFileContentUnlockedNonEmptyFile(): void
     {
-        file_put_contents(self::FILES_FOLDER . '/test.txt', 'some content');
+        file_put_contents($this->filesFolder . '/test.txt', 'some content');
 
-        $file = FilesFactory::createOne(['lockingId' => null, 'filepath' => 'files/tmp/test.txt']);
+        $file = FilesFactory::createOne(['lockingId' => null, 'filepath' => $this->filesFolderRelative . '/test.txt']);
         $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $client = static::createClient();
         $client->request('POST', "/api/v2/wopi/files/{$file->getFilesId()}/contents", [
@@ -466,9 +477,9 @@ class WOPITest extends AbstractApiTestCase
 
     public function testPutFileContentLockedFileInvalid(): void
     {
-        file_put_contents(self::FILES_FOLDER . '/test.txt', 'some content');
+        file_put_contents($this->filesFolder . '/test.txt', 'some content');
 
-        $file = FilesFactory::createOne(['lockingId' => 'lock', 'lockingDate' => new DateTimeImmutable(), 'filepath' => 'files/tmp/test.txt']);
+        $file = FilesFactory::createOne(['lockingId' => 'lock', 'lockingDate' => new DateTimeImmutable(), 'filepath' => $this->filesFolderRelative . '/test.txt']);
         $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $client = static::createClient();
         $client->request('POST', "/api/v2/wopi/files/{$file->getFilesId()}/contents", [
@@ -488,9 +499,9 @@ class WOPITest extends AbstractApiTestCase
 
     public function testPutFileContentLockedFile(): void
     {
-        file_put_contents(self::FILES_FOLDER . '/test.txt', 'some content');
+        file_put_contents($this->filesFolder . '/test.txt', 'some content');
 
-        $file = FilesFactory::createOne(['lockingId' => 'lock', 'lockingDate' => new DateTimeImmutable(), 'filepath' => 'files/tmp/test.txt']);
+        $file = FilesFactory::createOne(['lockingId' => 'lock', 'lockingDate' => new DateTimeImmutable(), 'filepath' => $this->filesFolderRelative . '/test.txt']);
         $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::EDIT);
         $client = static::createClient();
         $client->request('POST', "/api/v2/wopi/files/{$file->getFilesId()}/contents", [
