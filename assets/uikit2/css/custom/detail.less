@@ -38,3 +38,13 @@
 .cke {
     .uk-margin-bottom();
 }
+
+// Videos embedded through the CKEditor commsyvideo plugin, and CS8 content
+// migrated by LegacyMarkup, are plain <video> elements played by the browser.
+// They still carry the leftover video-js/vjs-default-skin classes; video.js
+// itself is no longer bundled, so supply the small bit of layout its
+// stylesheet used to provide.
+.ckeditor-commsy-video video {
+    display: block;
+    max-width: 100%;
+}
