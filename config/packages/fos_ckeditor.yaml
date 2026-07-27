@@ -86,6 +86,11 @@ fos_ck_editor:
             extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp,mathjax"
             language_list: ['de:German', 'en:English']
             removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
+            # CKEditor 4.22 added a banner telling end users their editor is
+            # insecure and advertising the commercial LTS release. 4.22.1 is the
+            # last version under an open source license, so there is nothing our
+            # users could act on - suppress it.
+            versionCheck: false
             autoGrow_onStartup: true
             mathJaxLib: "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML"
 
@@ -94,16 +99,36 @@ fos_ck_editor:
             extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools"
             language_list: ['de:German', 'en:English']
             removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
+            # CKEditor 4.22 added a banner telling end users their editor is
+            # insecure and advertising the commercial LTS release. 4.22.1 is the
+            # last version under an open source license, so there is nothing our
+            # users could act on - suppress it.
+            versionCheck: false
             autoGrow_onStartup: true
 
         html_reduced:
             toolbar: "reducedToolbar"
             removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
+            # CKEditor 4.22 added a banner telling end users their editor is
+            # insecure and advertising the commercial LTS release. 4.22.1 is the
+            # last version under an open source license, so there is nothing our
+            # users could act on - suppress it.
+            versionCheck: false
 
         cs_annotation_config:
             toolbar: "simpleToolbar"
             removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
+            # CKEditor 4.22 added a banner telling end users their editor is
+            # insecure and advertising the commercial LTS release. 4.22.1 is the
+            # last version under an open source license, so there is nothing our
+            # users could act on - suppress it.
+            versionCheck: false
 
         cs_mail_config:
             toolbar: "nonHtml"
             removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
+            # CKEditor 4.22 added a banner telling end users their editor is
+            # insecure and advertising the commercial LTS release. 4.22.1 is the
+            # last version under an open source license, so there is nothing our
+            # users could act on - suppress it.
+            versionCheck: false
