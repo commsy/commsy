@@ -28,9 +28,14 @@ Never run two test processes against the same database at once — the test
 database is shared and concurrent runs corrupt it.
 
 Test suites live under `tests/`: `Unit` (no container), `Integration`
-(kernel/services), `Application` (HTTP through the full stack), `Api`
-(API Platform), `Panther` (browser). `Factory` and `Story` hold Foundry
-fixtures rather than tests.
+(kernel/services), `Application` (HTTP through the full stack) and `Api`
+(API Platform). `Factory` and `Story` hold Foundry fixtures rather than tests.
+
+There is **no browser-based testing** — no `symfony/panther`, no Codeception,
+no JavaScript test runner. `tests/Panther/` holds a single fully commented-out
+leftover of an abandoned Codeception attempt and runs nothing. Anything that
+only breaks in a browser (editors, Stimulus controllers, UIKit behaviour) is
+currently unguarded by tests, so verify it by hand.
 
 ### Frontend assets
 
