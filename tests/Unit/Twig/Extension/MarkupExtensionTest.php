@@ -27,8 +27,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Records what commsyMarkup() produces today so the CKEditor 5 migration can
  * prove it did not change. This pins present behaviour including its defects -
- * it is not a specification of desired behaviour. Two known defects are
- * asserted deliberately and documented at the tests that cover them.
+ * it is not a specification of desired behaviour. One known defect is asserted
+ * deliberately and documented at the test that covers it.
  */
 class MarkupExtensionTest extends TestCase
 {
@@ -189,16 +189,32 @@ class MarkupExtensionTest extends TestCase
     }
 
     /**
-     * Defect, pinned on purpose: the iframe's width attribute is never closed,
-     * so stored (:lecture2go markup expands to malformed HTML. Fixing it is a
-     * separate change; this only records the present behaviour.
+     * Each dimension missing from (:lecture2go markup is supplied on its own.
+     * Both halves of this used to be broken: the fallback width attribute was
+     * left unclosed, and the two flags were crossed, so giving one dimension
+     * emitted a duplicate attribute for it.
      */
-    public function testLecture2GoMarkupIsMalformed(): void
+    #[DataProvider('lecture2GoDimensionCases')]
+    public function testLecture2GoSuppliesMissingDimensions(string $markup, string $expected): void
     {
-        $result = $this->markup('(:lecture2go 999:)');
+        $result = $this->markup($markup);
 
-        self::assertStringContainsString('width="100%>', $result);
-        self::assertStringNotContainsString('width="100%">', $result);
+        self::assertStringContainsString($expected, $result);
+        // An unclosed attribute value swallows markup up to the next quote.
+        self::assertStringNotContainsString('%>', $result);
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function lecture2GoDimensionCases(): array
+    {
+        return [
+            'no dimensions given' => ['(:lecture2go 999:)', ' height="500" width="100%">'],
+            'width given' => ['(:lecture2go 999 width=800:)', ' width="800" height="500">'],
+            'height given' => ['(:lecture2go 999 height=600:)', ' height="600" width="100%">'],
+            'both given' => ['(:lecture2go 999 width=800 height=600:)', ' width="800" height="600">'],
+        ];
     }
 
     /**

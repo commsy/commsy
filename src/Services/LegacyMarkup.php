@@ -569,17 +569,20 @@ class LegacyMarkup
 
         if (isset($args['width']) && is_numeric($args['width'])) {
             $lecture2GoHTML .= ' width="'.$args['width'].'"';
-            $heightSet = !$heightSet;
+            $widthSet = true;
         }
 
         if (isset($args['height']) && is_numeric($args['height'])) {
             $lecture2GoHTML .= ' height="'.$args['height'].'"';
-            $widthSet = !$widthSet;
+            $heightSet = true;
         }
 
-        if (!$heightSet or !$widthSet) {
+        if (!$heightSet) {
             $lecture2GoHTML .= ' height="500"';
-            $lecture2GoHTML .= ' width="100%';
+        }
+
+        if (!$widthSet) {
+            $lecture2GoHTML .= ' width="100%"';
         }
 
         $lecture2GoHTML .= '></iframe></div>';
