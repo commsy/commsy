@@ -15,6 +15,8 @@ namespace Tests\Application\Controller;
 
 use App\Entity\Account;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Factory\AccountFactory;
+use Tests\Factory\PortalFactory;
 use Tests\Story\AccountStory;
 use Tests\Story\PortalStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -121,6 +123,76 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
         $this->assertSame('Max', $account->getFirstname());
         $this->assertSame('Mustermann', $account->getLastname());
         $this->assertSame('max.mustermann@example.com', $account->getEmail());
+    }
+
+    /**
+     * The take-over action hands the impersonation to the switch_user firewall
+     * listener, which resolves the account through UserProvider by (username,
+     * portal, auth source). Both parts have to be read off the account — the
+     * legacy user row no longer carries an auth source of its own.
+     */
+    public function testAccountIndexDetailTakeOver(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getContextId();
+
+        $this->loginAsRoot();
+
+        // Navigate to the detail page and follow the "log in as" action.
+        $this->client->request('GET', "/portal/{$portalId}/settings/accountindex");
+        $crawler = $this->client->clickLink("{$account->getFirstname()} {$account->getLastname()}");
+        $this->assertResponseIsSuccessful();
+
+        $takeOverLink = $crawler->filter('ul.uk-dropdown-nav a[href$="/takeOver"]')->link();
+        $this->assertStringContainsString(
+            "/detail/{$account->getId()}/takeOver",
+            $takeOverLink->getUri(),
+            'the action is addressed by account id, not by legacy user item id'
+        );
+
+        $this->client->click($takeOverLink);
+
+        $this->assertResponseRedirects();
+        $location = (string) $this->client->getResponse()->headers->get('Location');
+        $this->assertStringStartsWith("/portal/{$portalId}/enter", $location);
+        $this->assertStringContainsString(
+            '_switch_user='.urlencode($account->getUsername()),
+            $location,
+            'the switch_user identifier must be the account username'
+        );
+
+        $session = $this->client->getRequest()->getSession();
+        $this->assertSame($portalId, $session->get('takeover_context'));
+        $this->assertSame($account->getAuthSource()->getId(), $session->get('takeover_authSourceId'));
+    }
+
+    /**
+     * PORTAL_MODERATOR is granted on the portal in the URL only, so an account
+     * from another portal must not be reachable by guessing its id.
+     */
+    public function testAccountIndexDetailTakeOverRejectsAnAccountFromAnotherPortal(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getContextId();
+
+        $foreignPortal = PortalFactory::createOne();
+        $foreignAccount = AccountFactory::createOne([
+            'portal' => $foreignPortal,
+            'authSource' => $foreignPortal->getAuthSources()->first(),
+            'activityState' => Account::ACTIVITY_ACTIVE,
+            'locked' => false,
+        ]);
+
+        $this->loginAsRoot();
+
+        $this->client->request(
+            'GET',
+            "/portal/{$portalId}/settings/accountIndex/detail/{$foreignAccount->getId()}/takeOver"
+        );
+
+        $this->assertResponseStatusCodeSame(404);
     }
 
     #[WithStory(PortalStory::class)]

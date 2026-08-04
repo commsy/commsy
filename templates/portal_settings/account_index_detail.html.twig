@@ -52,7 +52,7 @@
                             {{'Login...'|trans({}, 'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({}, 'portal') }}
                         </li>
                     {% else %}
-                        <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'userId': user.itemId}) }}">
+                        <li><a href="{{ path('app_portalsettings_accountindexdetailtakeover', {'portalId': portal.id, 'accountId': accountOfUser.id}) }}">
                             {{'Login...'|trans({}, 'portal') }} {{ user.firstname }} {{ user.lastname }} {{'...As'|trans({}, 'portal') }}
                         </a></li>
                     {% endif %}

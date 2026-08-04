@@ -141,7 +141,6 @@ class AccountMerger
         $roomUser = $this->getUserInContext($from, $room->getItemID());
         $roomUser->setAccountID($into->getId());
         $roomUser->setUserID($into->getUsername());
-        $roomUser->setAuthSource($into->getAuthSource()->getId());
         if (isset($nameSource)) {
             $roomUser->setFirstname($nameSource->getFirstname());
             $roomUser->setLastname($nameSource->getLastname());

@@ -2003,24 +2003,37 @@ class PortalSettingsController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/takeOver')]
+    #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{accountId}/takeOver')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
     public function accountIndexDetailTakeOver(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
-        UserService $userService,
-        Request $request,
-        $userId
+        #[MapEntity(id: 'accountId')]
+        Account $account,
+        Request $request
     ): RedirectResponse {
-        $portalUser = $userService->getUser($userId);
+        // PORTAL_MODERATOR only covers the portal in the URL, so bind the
+        // account to that portal explicitly.
+        if ($account->getPortal()?->getId() !== $portal->getId()) {
+            throw $this->createNotFoundException(
+                sprintf('Account %d is not an account of portal %d', $account->getId(), $portal->getId())
+            );
+        }
+
+        // UserProvider resolves the impersonated account by (username, portal,
+        // auth source), so both parts must come from the same account.
+        $authSource = $account->getAuthSource();
+        if (!$authSource instanceof AuthSource) {
+            throw $this->createNotFoundException(sprintf('Account %d has no auth source', $account->getId()));
+        }
 
         $session = $request->getSession();
         $session->set('takeover_context', $portal->getId());
-        $session->set('takeover_authSourceId', (int) $portalUser->getAuthSource());
+        $session->set('takeover_authSourceId', $authSource->getId());
 
         return $this->redirectToRoute('app_helper_portalenter', [
             'context' => $portal->getId(),
-            '_switch_user' => $portalUser->getUserID(),
+            '_switch_user' => $account->getUsername(),
         ]);
     }
 

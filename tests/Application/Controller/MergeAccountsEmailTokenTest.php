@@ -22,6 +22,8 @@ use Tests\Factory\AccountFactory;
 use Tests\Factory\AuthSourceLocalFactory;
 use Tests\Factory\AuthSourceShibbolethFactory;
 use Tests\Factory\PortalFactory;
+use Tests\Factory\RoomFactory;
+use Tests\Factory\RoomUserFactory;
 
 /**
  * End-to-end coverage of the e-mail-token account-merge flow: every merge —
@@ -127,6 +129,60 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
         );
         // Single-use: the token row is gone (FK ON DELETE CASCADE on the deleted account A).
         $this->assertSame(0, $this->mergeTokenCount(), 'merge token must be consumed');
+    }
+
+    /**
+     * A room only the old account A belongs to takes the merge through
+     * AccountMerger::rewriteRoomUser() — the branch that rewrites a single
+     * membership onto N instead of collapsing two of them. The other merge
+     * tests never reach it because their accounts share no rooms.
+     */
+    public function testConfirmedMergeRewritesARoomMembershipHeldOnlyByTheOldAccount(): void
+    {
+        ['portal' => $portal, 'new' => $newAccount, 'old' => $oldAccount, 'shib' => $shibSource] =
+            $this->createScenario();
+
+        $portalId = $portal->getId();
+
+        $room = RoomFactory::new()->project()->create([
+            'contextId' => $portalId,
+            'portal' => $portal,
+        ]);
+        $roomUser = RoomUserFactory::createOne([
+            'account' => $oldAccount,
+            'room' => $room,
+        ]);
+        $roomUserItemId = $roomUser->getItemId();
+
+        $this->loginAsUser($portalId, $newAccount->getUsername(), $newAccount->getPlainPassword());
+
+        $crawler = $this->client->request('GET', "/portal/{$portalId}/account/merge");
+        $form = $crawler->selectButton('profile_mergeaccounts[save]')->form();
+        $form['profile_mergeaccounts[combineUserId]'] = 'old.bkennung';
+        $form['profile_mergeaccounts[auth_source]'] = (string) $shibSource->getId();
+        $this->client->submit($form);
+
+        $rawToken = $this->extractTokenFromLastMail();
+        $confirmCrawler = $this->client->request(
+            'GET',
+            "/portal/{$portalId}/account/merge/confirm/{$rawToken}"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $this->client->submit($confirmCrawler->filter('form')->form());
+        $this->assertResponseRedirects("/portal/{$portalId}/enter");
+
+        // The membership row survives and now belongs to N, under N's username.
+        $row = static::getContainer()->get(EntityManagerInterface::class)
+            ->getConnection()
+            ->fetchAssociative(
+                'SELECT account_id, user_id FROM user WHERE item_id = ?',
+                [$roomUserItemId]
+            );
+
+        $this->assertNotFalse($row, 'the rewritten room membership must still exist');
+        $this->assertSame($newAccount->getId(), (int) $row['account_id']);
+        $this->assertSame($newAccount->getUsername(), $row['user_id']);
     }
 
     public function testLocalSourceAlsoSendsConfirmationMailAndDoesNotMergeDirectly(): void
