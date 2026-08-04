@@ -90,6 +90,26 @@ trait BootsVoter
         return AccountFactory::createOne($attrs);
     }
 
+    /**
+     * Item id of an account's portal-level cs_user_item — the row the portal
+     * settings account index lists and its actions address.
+     */
+    protected function portalUserItemId(Account $account): int
+    {
+        $userItem = $this->userService->getUserInContext(
+            $account,
+            $account->getPortal()?->getId() ?? 0
+        );
+        if (!$userItem instanceof cs_user_item) {
+            self::fail(sprintf(
+                'No portal-level cs_user_item for account "%s"',
+                $account->getUsername(),
+            ));
+        }
+
+        return $userItem->getItemID();
+    }
+
     // ----------------------------------------------------- login / token
 
     /**

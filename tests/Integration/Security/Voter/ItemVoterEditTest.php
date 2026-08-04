@@ -20,6 +20,7 @@ use App\Security\Authorization\Voter\ItemVoter;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Factory\MaterialFactory;
+use Tests\Factory\PortalFactory;
 use Tests\Factory\RoomFactory;
 use Tests\Integration\Security\Voter\Concerns\BootsVoter;
 use Tests\Story\AccountStory;
@@ -283,6 +284,85 @@ final class ItemVoterEditTest extends KernelTestCase
         self::assertTrue(
             $this->authChecker->isGranted(ItemVoter::EDIT, $member->getItemId()),
             'RO users can still edit their own user_item (Voter has explicit shortcut)',
+        );
+    }
+
+    // ---- EDIT on PORTAL-level user items. This is the path the portal
+    //      settings account index acts on: the actor is logged in at portal
+    //      level (no room), and the subject is another account's portal user
+    //      item. The rule comes from UserEditChecker::canEdit — same context
+    //      plus moderator, or self. "Same context" is the portal here, which
+    //      is what confines a portal moderator to their own portal.
+
+    public function testPortalModeratorCanEditAnotherPortalUser(): void
+    {
+        $targetAccount = $this->createPortalAccount();
+        $targetUserId = $this->portalUserItemId($targetAccount);
+
+        $modAccount = $this->createPortalAccount();
+        $this->promoteToPortalModerator($modAccount);
+        $this->loginAs($modAccount);
+
+        self::assertTrue(
+            $this->authChecker->isGranted(ItemVoter::EDIT, $targetUserId),
+            'A portal moderator can edit another user of the same portal',
+        );
+    }
+
+    public function testPortalModeratorCannotEditAUserOfAnotherPortal(): void
+    {
+        $foreignPortal = PortalFactory::createOne();
+        $foreignAccount = $this->createPortalAccount(portal: $foreignPortal);
+        $foreignUserId = $this->portalUserItemId($foreignAccount);
+
+        $modAccount = $this->createPortalAccount();
+        $this->promoteToPortalModerator($modAccount);
+        $this->loginAs($modAccount);
+
+        self::assertFalse(
+            $this->authChecker->isGranted(ItemVoter::EDIT, $foreignUserId),
+            'Portal moderation stops at the portal boundary — a user of another portal is off limits',
+        );
+    }
+
+    public function testRegularPortalUserCannotEditAnotherPortalUser(): void
+    {
+        $targetAccount = $this->createPortalAccount();
+        $targetUserId = $this->portalUserItemId($targetAccount);
+
+        $plainAccount = $this->createPortalAccount();
+        $this->loginAs($plainAccount);
+
+        self::assertFalse(
+            $this->authChecker->isGranted(ItemVoter::EDIT, $targetUserId),
+            'Without moderator status only your own portal user item is editable',
+        );
+    }
+
+    public function testRegularPortalUserCanEditOwnPortalUser(): void
+    {
+        $plainAccount = $this->createPortalAccount();
+        $ownUserId = $this->portalUserItemId($plainAccount);
+
+        $this->loginAs($plainAccount);
+
+        self::assertTrue(
+            $this->authChecker->isGranted(ItemVoter::EDIT, $ownUserId),
+            'A user can always edit their own portal user item',
+        );
+    }
+
+    public function testRootCanEditAUserOfAnyPortal(): void
+    {
+        $foreignPortal = PortalFactory::createOne();
+        $foreignAccount = $this->createPortalAccount(portal: $foreignPortal);
+        $foreignUserId = $this->portalUserItemId($foreignAccount);
+
+        $this->actAsRoot($this->createPortalAccount('root'));
+
+        self::assertTrue(
+            $this->authChecker->isGranted(ItemVoter::EDIT, $foreignUserId),
+            'root bypasses the portal boundary (ItemVoter short-circuits on username=root)',
         );
     }
 

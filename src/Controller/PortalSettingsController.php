@@ -86,6 +86,7 @@ use App\Repository\LicenseRepository;
 use App\Repository\UserRepository;
 use App\Room\RoomManager;
 use App\Room\RoomType;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Security\Authorization\Voter\RootVoter;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -1170,6 +1171,15 @@ class PortalSettingsController extends AbstractController
         if ($termId) {
             /** @noinspection PhpUndefinedMethodInspection */
             $term = $repository->findOneById($termId);
+
+            // A terms template is not a user, so there is no ITEM_EDIT rule to
+            // ask — but PORTAL_MODERATOR still says nothing about which portal
+            // this template belongs to.
+            if (!$term instanceof Terms || (int) $term->getContextId() !== $portal->getId()) {
+                throw $this->createNotFoundException(
+                    sprintf('Terms template %d is not a template of portal %d', $termId, $portal->getId())
+                );
+            }
         } else {
             $term = new Terms();
             $term->setContextId($portal->getId());
@@ -1209,6 +1219,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/{userId}/deleteUser')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    #[IsGranted(ItemVoter::EDIT, subject: 'userId')]
     public function accountIndexDeleteUser(
         $portalId,
         $userId,
@@ -1278,6 +1289,14 @@ class PortalSettingsController extends AbstractController
         AccountManager $accountManager,
         AccountDeleter $accountDeleter
     ): Response {
+        // A list route cannot express its subjects as an IsGranted attribute,
+        // so every id is checked here before anything reads it. Split on the
+        // bare comma: the ids are cast to int anyway, and a permissive split
+        // cannot let one slip past the guard.
+        foreach (explode(',', (string) $userIds) as $subjectId) {
+            $this->denyAccessUnlessGranted(ItemVoter::EDIT, (int) $subjectId);
+        }
+
         $users = [];
         $userNames = [];
 
@@ -1492,6 +1511,14 @@ class PortalSettingsController extends AbstractController
             if ($form->get('execute')->isClicked()) {
                 $userIdsForAction = array_keys(array_filter($accountIndex->getIds(), fn ($key) => $key));
 
+                // The selection is form data, i.e. client input just like a
+                // route parameter. Checked before the switch so the cases that
+                // write directly (4, 13, 15) and those that hand the ids on to
+                // another route are both covered.
+                foreach ($userIdsForAction as $subjectId) {
+                    $this->denyAccessUnlessGranted(ItemVoter::EDIT, (int) $subjectId);
+                }
+
                 switch ($accountIndex->getIndexViewAction()) {
                     case 1: // user-delete
                         return $this->redirectToRoute('app_portalsettings_accountindexperformuser', [
@@ -1620,6 +1647,11 @@ class PortalSettingsController extends AbstractController
         ContactFormHelper $contactFormHelper,
         AccountMail $accountMail
     ): Response {
+        // @see accountIndexPerformUser for why the check sits here.
+        foreach (explode(',', (string) $recipients) as $subjectId) {
+            $this->denyAccessUnlessGranted(ItemVoter::EDIT, (int) $subjectId);
+        }
+
         $currentUser = $userService->getCurrentUserItem();
 
         $recipientArray = [];
@@ -1679,6 +1711,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/detail/{userId}')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    #[IsGranted(ItemVoter::EDIT, subject: 'userId')]
     public function accountIndexDetail(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
@@ -1751,6 +1784,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountindex/detail/{userId}/edit')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    #[IsGranted(ItemVoter::EDIT, subject: 'userId')]
     public function accountIndexDetailEdit(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
@@ -1852,6 +1886,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/changeStatus')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    #[IsGranted(ItemVoter::EDIT, subject: 'userId')]
     public function accountIndexDetailChangeStatus(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
@@ -1943,6 +1978,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/hidemailallwrks')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    #[IsGranted(ItemVoter::EDIT, subject: 'userId')]
     public function accountIndexDetailHideMailAllWrks(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
@@ -1974,6 +2010,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/showmailallwroks')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    #[IsGranted(ItemVoter::EDIT, subject: 'userId')]
     public function accountIndexDetailShowMailAllWroks(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
@@ -2010,15 +2047,24 @@ class PortalSettingsController extends AbstractController
         Portal $portal,
         #[MapEntity(id: 'accountId')]
         Account $account,
+        UserService $userService,
         Request $request
     ): RedirectResponse {
-        // PORTAL_MODERATOR only covers the portal in the URL, so bind the
-        // account to that portal explicitly.
+        // Two different questions, both needed. First: does the account belong
+        // to the portal in the URL? That is a data question, not a permission
+        // one — the session below pairs this portal with the account's auth
+        // source, and root (who passes any authorization check) would otherwise
+        // build a pair UserProvider cannot resolve.
         if ($account->getPortal()?->getId() !== $portal->getId()) {
             throw $this->createNotFoundException(
                 sprintf('Account %d is not an account of portal %d', $account->getId(), $portal->getId())
             );
         }
+
+        // Second: may the acting moderator touch this account? An account has
+        // no item id, so that goes through its portal-level user item — the
+        // same ITEM_EDIT rule as everywhere else here.
+        $this->denyAccessUnlessGranted(ItemVoter::EDIT, $userService->getPortalUser($account)->getItemID());
 
         // UserProvider resolves the impersonated account by (username, portal,
         // auth source), so both parts must come from the same account.
@@ -2039,6 +2085,7 @@ class PortalSettingsController extends AbstractController
 
     #[Route(path: '/portal/{portalId}/settings/accountIndex/detail/{userId}/assignWorkspace')]
     #[IsGranted('PORTAL_MODERATOR', subject: 'portal')]
+    #[IsGranted(ItemVoter::EDIT, subject: 'userId')]
     public function accountIndexDetailAssignWorkspace(
         #[MapEntity(id: 'portalId')]
         Portal $portal,
@@ -2164,6 +2211,9 @@ class PortalSettingsController extends AbstractController
         ManagerRegistry $managerRegistry
     ): Response {
         $portalUser = $userService->getPortalUser($account);
+
+        // @see accountIndexDetailTakeOver — scoped via the portal user item.
+        $this->denyAccessUnlessGranted(ItemVoter::EDIT, $portalUser->getItemID());
 
         $formData = [
             'userName' => $account->getFirstname() . ' ' . $account->getLastname(),

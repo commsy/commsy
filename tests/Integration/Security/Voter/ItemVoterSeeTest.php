@@ -17,9 +17,11 @@ namespace Tests\Integration\Security\Voter;
 
 use App\Rubric\Material\MaterialDeleter;
 use App\Security\Authorization\Voter\ItemVoter;
+use Doctrine\ORM\EntityNotFoundException;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Factory\MaterialFactory;
+use Tests\Factory\PortalFactory;
 use Tests\Integration\Security\Voter\Concerns\BootsVoter;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -305,6 +307,54 @@ final class ItemVoterSeeTest extends KernelTestCase
             $this->authChecker->isGranted(ItemVoter::SEE, $material->getItemId()),
             'maySee() short-circuits to false when the context room is deleted',
         );
+    }
+
+    // ---- SEE on PORTAL-level user items is currently UNUSABLE.
+    //
+    //      This is a defect, pinned here rather than endorsed. ItemVoter::EDIT
+    //      handles the same subjects fine (see ItemVoterEditTest), so nothing
+    //      but SEE is affected — and no production caller asks SEE for a
+    //      portal-level user today, which is why it has gone unnoticed.
+    //
+    //      When the mapping is fixed, replace this with the real assertions:
+    //      moderator sees a user of their own portal, and — since the read
+    //      path never compares portals — a user of a foreign portal too.
+
+    public function testSeeOnAPortalLevelUserItemThrowsBecauseItsContextIsNotARoom(): void
+    {
+        $targetAccount = $this->createPortalAccount();
+        $targetUserId = $this->portalUserItemId($targetAccount);
+
+        $modAccount = $this->createPortalAccount();
+        $this->promoteToPortalModerator($modAccount);
+        $this->loginAs($modAccount);
+
+        // App\Entity\User::$room is mapped onto `context_id`. For a portal-level
+        // user that column holds a PORTAL id, so the association points at a
+        // Room row that does not exist. UserViewChecker hands the target to
+        // ItemViewSubjectFactory, whose isContextDeleted() resolves that id
+        // through RoomRepository; the uninitialised proxy throws on first
+        // access. The portal comparison is never reached.
+        $this->expectException(EntityNotFoundException::class);
+
+        $this->authChecker->isGranted(ItemVoter::SEE, $targetUserId);
+    }
+
+    public function testSeeOnAForeignPortalUserItemFailsTheSameWay(): void
+    {
+        $foreignPortal = PortalFactory::createOne();
+        $foreignAccount = $this->createPortalAccount(portal: $foreignPortal);
+        $foreignUserId = $this->portalUserItemId($foreignAccount);
+
+        $modAccount = $this->createPortalAccount();
+        $this->promoteToPortalModerator($modAccount);
+        $this->loginAs($modAccount);
+
+        // Same crash, different portal — proof the failure is about the
+        // context mapping, not about the portal boundary.
+        $this->expectException(EntityNotFoundException::class);
+
+        $this->authChecker->isGranted(ItemVoter::SEE, $foreignUserId);
     }
 
     // ---------------------------------------------------------------- setup
