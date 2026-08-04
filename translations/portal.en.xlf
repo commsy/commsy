@@ -732,9 +732,9 @@
             </trans-unit>
 
             <!-- account index change status -->
-            <trans-unit id="is_login_deactivated">
-                <source>Is login deactivated?</source>
-                <target>Login as ... deactivated</target>
+            <trans-unit id="portal_form_label_impersonation_blocked">
+                <source>portal.form.label.impersonation_blocked</source>
+                <target>Taking over accounts blocked</target>
             </trans-unit>
             <trans-unit id="new_state">
                 <source>New state</source>
@@ -748,9 +748,9 @@
                 <source>User ID</source>
                 <target>User ID</target>
             </trans-unit>
-            <trans-unit id="login_as_for_x_days_activated">
-                <source>Login as for x days activated</source>
-                <target>Login as... deactivated for x days</target>
+            <trans-unit id="portal_form_label_impersonation_allowed_until">
+                <source>portal.form.label.impersonation_allowed_until</source>
+                <target>Take-over allowed until</target>
             </trans-unit>
 
             <!-- account index change password -->

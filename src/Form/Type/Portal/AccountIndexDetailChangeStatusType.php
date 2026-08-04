@@ -76,7 +76,7 @@ class AccountIndexDetailChangeStatusType extends AbstractType
                 'required' => false,
             ])
             ->add('loginIsDeactivated', Types\ChoiceType::class, [
-                'label' => 'Is login deactivated?',
+                'label' => 'portal.form.label.impersonation_blocked',
                 'expanded' => true,
                 'placeholder' => false,
                 'choices' => [
@@ -88,7 +88,7 @@ class AccountIndexDetailChangeStatusType extends AbstractType
                 'disabled' => !$this->security->isGranted('ROLE_ROOT'),
             ])
             ->add('impersonateExpiryDate', Types\DateType::class, [
-                'label' => 'Login as for x days activated',
+                'label' => 'portal.form.label.impersonation_allowed_until',
                 'translation_domain' => 'portal',
                 'required' => false,
                 'widget' => 'single_text',

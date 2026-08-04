@@ -96,7 +96,6 @@ use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -1762,15 +1761,13 @@ class PortalSettingsController extends AbstractController
             }
         }
 
-        $canImpersonate = $security->isGranted('ROLE_ROOT');
-        if (!$canImpersonate) {
-            /** @var Account $account */
-            $account = $security->getUser();
-            $portalUser = $userService->getPortalUser($account);
-
-            $canImpersonate = $portalUser->getCanImpersonateAnotherUser() ||
-                ($portalUser->getImpersonateExpiryDate() !== null && $portalUser->getImpersonateExpiryDate() < new DateTimeImmutable());
-        }
+        // Ask the rule instead of recomputing it. The previous version granted
+        // when the deadline had PASSED — the inverse of what SwitchToUserVoter
+        // decides — so the menu offered a take-over link that the firewall then
+        // refused. SwitchToUserVoter keeps its own root shortcut, so the
+        // separate ROLE_ROOT branch is no longer needed either.
+        $canImpersonate = $accountOfUser !== null
+            && $security->isGranted('CAN_SWITCH_USER', $accountOfUser);
 
         return $this->render('portal_settings/account_index_detail.html.twig', [
             'accountOfUser' => $accountOfUser,

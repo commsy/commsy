@@ -664,9 +664,9 @@
             </trans-unit>
 
             <!-- account index change status -->
-            <trans-unit id="is_login_deactivated">
-                <source>Is login deactivated?</source>
-                <target>Einloggen als ... deaktiviert</target>
+            <trans-unit id="portal_form_label_impersonation_blocked">
+                <source>portal.form.label.impersonation_blocked</source>
+                <target>Übernahme fremder Kennungen gesperrt</target>
             </trans-unit>
             <trans-unit id="new_state">
                 <source>New state</source>
@@ -680,9 +680,9 @@
                 <source>User ID</source>
                 <target>Kennung</target>
             </trans-unit>
-            <trans-unit id="login_as_for_x_days_activated">
-                <source>Login as for x days activated</source>
-                <target>Einloggen als ... für x Tage aktivieren</target>
+            <trans-unit id="portal_form_label_impersonation_allowed_until">
+                <source>portal.form.label.impersonation_allowed_until</source>
+                <target>Übernahme erlaubt bis</target>
             </trans-unit>
 
             <!-- account index change password -->

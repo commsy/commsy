@@ -52,7 +52,15 @@ readonly class CronExpireTakeOver implements CronTaskInterface
         foreach ($expiredUsers as $expiredUser) {
             /** @var cs_user_item $expiredUser */
             if ($expiredUser->getImpersonateExpiryDate() <= $now) {
-                // unset login as timestamp
+                // Withdraw the right, then drop the deadline. Clearing the
+                // deadline alone would do the opposite of expiring it: the
+                // voter reads "allowed, no deadline" as permanently allowed,
+                // so an expired grant would come back unlimited. Until 2021
+                // the timestamp WAS the grant (cs_user_item::
+                // isTemporaryAllowedToLoginAs), and removing it ended the
+                // grant; 1d7de0c6c turned it into a deadline on a standing
+                // right without adapting this caller.
+                $expiredUser->setCanImpersonateAnotherUser(false);
                 $expiredUser->setImpersonateExpiryDate(null);
                 $expiredUser->save();
 
@@ -61,6 +69,17 @@ readonly class CronExpireTakeOver implements CronTaskInterface
                 $subject = $this->translator->trans('mail.subject.login_expiration', ['p1' => $portal->getTitle()], 'mail', $locale);
 
                 $contactModerators = $portal->getContactModeratorList();
+
+                // A portal need not have a designated contact person. The
+                // goodbye line below used to dereference the first one
+                // unconditionally, so such a portal killed the whole run —
+                // after the first grant had been withdrawn and before anyone
+                // was notified, leaving the remaining expired grants untouched.
+                // Same fallback as the AccountActivity* messages: no name.
+                /** @var cs_user_item|false $firstContact */
+                $firstContact = $contactModerators->getFirst();
+                $signature = $firstContact ? $firstContact->getFullName() : '';
+
                 $ccMails = [];
                 $ccMails[] = $this->legacyEnvironment->getRootUserItem()->getEmail();
                 foreach ($contactModerators as $contactModerator) {
@@ -82,7 +101,7 @@ readonly class CronExpireTakeOver implements CronTaskInterface
                 $body .= "\n\n";
                 $body .= $this->mailTextRenderer->render('mail.body.login_expiration', 'EMAIL_LOGIN_EXPIRATION_BODY', 'other', $locale, [], $overrides);
                 $body .= "\n\n";
-                $body .= $this->mailTextRenderer->render('mail.goodbye', 'MAIL_BODY_CIAO', 'other', $locale, [$contactModerators->getFirst()->getFullName(), $portal->getTitle()], $overrides);
+                $body .= $this->mailTextRenderer->render('mail.goodbye', 'MAIL_BODY_CIAO', 'other', $locale, [$signature, $portal->getTitle()], $overrides);
                 $body .= "\n\n";
                 $body .= $linkToPortal;
 
