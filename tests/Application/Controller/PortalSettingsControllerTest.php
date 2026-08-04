@@ -14,6 +14,7 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\AccountFactory;
 use Tests\Factory\PortalFactory;
@@ -168,8 +169,63 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
     }
 
     /**
-     * PORTAL_MODERATOR is granted on the portal in the URL only, so an account
-     * from another portal must not be reachable by guessing its id.
+     * Root must always be able to take an account over, and the flow has to
+     * arrive somewhere — not merely produce a redirect. The test above stops at
+     * the redirect, which is exactly where the two defects found so far hid:
+     * the undefined getAuthSource() call, and a session pair UserProvider
+     * cannot resolve. This one follows through and looks at who is actually
+     * authenticated afterwards.
+     *
+     * It also pins that root passes the ITEM_EDIT guard on the route — root
+     * short-circuits at the top of ItemVoter, and if that ever changes the
+     * whole take-over dies here rather than in production.
+     */
+    public function testRootTakeOverEndsUpImpersonatingTheAccount(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getContextId();
+
+        $this->loginAsRoot();
+
+        $this->client->request(
+            'GET',
+            "/portal/{$portalId}/settings/accountIndex/detail/{$account->getId()}/takeOver"
+        );
+        $this->assertResponseRedirects();
+
+        // Following the redirect is what triggers the switch_user listener.
+        $this->client->followRedirect();
+
+        $token = static::getContainer()->get('security.token_storage')->getToken();
+        $this->assertInstanceOf(
+            SwitchUserToken::class,
+            $token,
+            'after a take-over the firewall must hold a switch-user token'
+        );
+
+        $impersonated = $token->getUser();
+        $this->assertInstanceOf(Account::class, $impersonated);
+        $this->assertSame(
+            $account->getUsername(),
+            $impersonated->getUsername(),
+            'the authenticated identity must be the taken-over account'
+        );
+
+        $originalUser = $token->getOriginalToken()->getUser();
+        $this->assertInstanceOf(Account::class, $originalUser);
+        $this->assertSame(
+            'root',
+            $originalUser->getUsername(),
+            'root must stay recorded as the impersonator so the switch can be undone'
+        );
+    }
+
+    /**
+     * Root is not exempt from this one, and that is deliberate: it is not an
+     * authorization question but a consistency one. The session pairs the
+     * portal from the URL with the account's auth source, so a cross-portal
+     * combination could not be resolved by UserProvider anyway.
      */
     public function testAccountIndexDetailTakeOverRejectsAnAccountFromAnotherPortal(): void
     {
