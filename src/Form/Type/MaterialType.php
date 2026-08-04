@@ -18,6 +18,7 @@ use App\Form\Type\Custom\DateTimeSelectType;
 use App\Form\Type\Event\AddBibliographicFieldListener;
 use App\Form\Type\Event\AddEtherpadFormListener;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Security\Authorization\Voter\UserVoter;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -82,7 +83,7 @@ class MaterialType extends AbstractType
                 $formOptions = $form->getConfig()->getOptions();
 
                 if ($this->security->isGranted(ItemVoter::OWN, $formOptions['itemId']) ||
-                    $this->security->isGranted(ItemVoter::MODERATE))
+                    $this->security->isGranted(UserVoter::MODERATOR))
                 {
                     $form
                         ->add('permission', CheckboxType::class, [

@@ -16,6 +16,7 @@ namespace App\Form\Type;
 use App\Form\Trait\CategoryTagValidatorTrait;
 use App\Form\Type\Custom\DateTimeSelectType;
 use App\Security\Authorization\Voter\ItemVoter;
+use App\Security\Authorization\Voter\UserVoter;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -56,7 +57,7 @@ class AnnouncementType extends AbstractType
                 $form = $event->getForm();
                 $formOptions = $form->getConfig()->getOptions();
 
-                if ($this->security->isGranted(ItemVoter::OWN, $formOptions['itemId']) || $this->security->isGranted(ItemVoter::MODERATE)) {
+                if ($this->security->isGranted(ItemVoter::OWN, $formOptions['itemId']) || $this->security->isGranted(UserVoter::MODERATOR)) {
                     $form
                         ->add('permission', CheckboxType::class, ['label' => 'permission', 'required' => false])
                         ->add('hidden', CheckboxType::class, ['label' => 'hidden', 'required' => false])
