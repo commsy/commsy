@@ -63,6 +63,19 @@ final class UserVoterTest extends KernelTestCase
         self::assertFalse($this->authChecker->isGranted(UserVoter::MODERATOR));
     }
 
+    /**
+     * Status 4 (read-only) inherited from the now-removed ITEM_MODERATE
+     * attribute, which asked this very question through ItemVoter.
+     */
+    public function testReadOnlyMemberIsNotGrantedModerator(): void
+    {
+        $room = $this->createProjectRoom();
+        $this->createMember($this->portalAccount, $room, 4);
+        $this->loginAs($this->portalAccount, $room);
+
+        self::assertFalse($this->authChecker->isGranted(UserVoter::MODERATOR));
+    }
+
     // ---------- PORTAL_MODERATOR ----------
 
     public function testPortalModeratorIsGrantedPortalModerator(): void

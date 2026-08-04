@@ -48,7 +48,6 @@ class ItemVoter extends Voter
     final public const NEW = 'ITEM_NEW';
     final public const ANNOTATE = 'ITEM_ANNOTATE';
     final public const PARTICIPATE = 'ITEM_PARTICIPATE';
-    final public const MODERATE = 'ITEM_MODERATE';
     final public const OWN = 'ITEM_OWN';
     final public const ENTER = 'ITEM_ENTER';
     final public const USERROOM = 'ITEM_USERROOM';
@@ -83,7 +82,6 @@ class ItemVoter extends Voter
             self::NEW,
             self::ANNOTATE,
             self::PARTICIPATE,
-            self::MODERATE,
             self::OWN,
             self::ENTER,
             self::USERROOM,
@@ -168,9 +166,6 @@ class ItemVoter extends Voter
 
                 case self::PARTICIPATE:
                     return $this->canParticipate($item, $currentUser);
-
-                case self::MODERATE:
-                    return $this->canModerate($item, $currentUser);
 
                 case self::OWN:
                     return $this->isOwner($item, $currentUser);
@@ -281,15 +276,6 @@ class ItemVoter extends Voter
             $currentRoom = $this->currentContextResolver->getContextItem();
 
             return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
-        }
-
-        return false;
-    }
-
-    private function canModerate(cs_item $item, cs_user_item $currentUser)
-    {
-        if (3 == $currentUser->getStatus()) {
-            return true;
         }
 
         return false;

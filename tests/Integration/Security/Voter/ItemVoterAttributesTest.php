@@ -29,7 +29,6 @@ use Zenstruck\Foundry\Attribute\WithStory;
 /**
  * Characterization tests for the smaller status-based ItemVoter attributes:
  *   - ITEM_NEW       — can the user create new content in the current room?
- *   - ITEM_MODERATE  — does the user have moderator status in the room?
  *   - ITEM_PARTICIPATE — can the user be assigned tasks/participate (status >= 2 except guest/requested)?
  *   - ITEM_ANNOTATE  — can the user write annotations (status 2 or 3, not RO)?
  *   - ITEM_OWN       — is the user the creator of the given item?
@@ -82,41 +81,6 @@ final class ItemVoterAttributesTest extends KernelTestCase
         $this->loginAs($this->portalAccount, $room);
 
         self::assertFalse($this->authChecker->isGranted(ItemVoter::NEW));
-    }
-
-    // ---- ITEM_MODERATE: voter checks status === 3, nothing else.
-
-    public function testModeratorStatusGrantsModerate(): void
-    {
-        $room = $this->createProjectRoom();
-        $member = $this->createMember($this->portalAccount, $room, 3);
-        $this->loginAs($this->portalAccount, $room);
-
-        $material = $this->createMaterial($room, $member);
-
-        self::assertTrue($this->authChecker->isGranted(ItemVoter::MODERATE, $material->getItemId()));
-    }
-
-    public function testRegularUserDoesNotGetModerate(): void
-    {
-        $room = $this->createProjectRoom();
-        $member = $this->createMember($this->portalAccount, $room, 2);
-        $this->loginAs($this->portalAccount, $room);
-
-        $material = $this->createMaterial($room, $member);
-
-        self::assertFalse($this->authChecker->isGranted(ItemVoter::MODERATE, $material->getItemId()));
-    }
-
-    public function testReadOnlyUserDoesNotGetModerate(): void
-    {
-        $room = $this->createProjectRoom();
-        $member = $this->createMember($this->portalAccount, $room, 4);
-        $this->loginAs($this->portalAccount, $room);
-
-        $material = $this->createMaterial($room, $member);
-
-        self::assertFalse($this->authChecker->isGranted(ItemVoter::MODERATE, $material->getItemId()));
     }
 
     // ---- ITEM_PARTICIPATE: status in {2, 3, 4} (user, mod, RO) AND room
