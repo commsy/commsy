@@ -171,6 +171,124 @@ final class RubricFormPermissionFieldsTest extends AbstractApplicationTestCase
     }
 
     /**
+     * The consequence of the gate, and the reason it matters beyond a missing
+     * checkbox: the save path reads $data['permission'] WITHOUT checking that
+     * the field was part of the form (six of the seven rubric transformers do;
+     * TodoTransformer is the exception). A missing key is falsy, and falsy means
+     * "not locked" — so saving would silently unlock the entry.
+     *
+     * A moderator editing somebody else's LOCKED entry is exactly the
+     * combination that was reachable while the moderator branch of the gate was
+     * dead (see the class docblock): allowed to edit, but no field. This pins
+     * that the lock survives their save.
+     */
+    public function testModeratorSavingAForeignLockedEntryKeepsTheLock(): void
+    {
+        $author = $this->createRoomMember();
+
+        $this->logout();
+        $this->loginAsUser($this->portalId(), $author->getUsername(), self::MEMBER_PASSWORD);
+        $itemId = $this->createMaterial();
+        $this->lockMaterial($itemId);
+        self::assertTrue($this->materialIsLocked($itemId), 'precondition: the entry is locked');
+
+        $this->logout();
+        $this->loginAsModerator();
+
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/material/{$itemId}/edit");
+        $this->assertResponseIsSuccessful();
+        $form = $crawler->selectButton('material[save]')->form();
+        $form['material[title]'] = 'von der Moderation angefasst';
+        $this->client->submit($form);
+
+        // Without this the test would pass on a rejected submit, which is how a
+        // guard that never runs still looks green.
+        $this->assertResponseRedirects();
+
+        self::assertTrue(
+            $this->materialIsLocked($itemId),
+            'a moderator saving a foreign entry must not drop its edit lock'
+        );
+    }
+
+    /**
+     * The only combination in which somebody who cannot see the field still
+     * gets to save: neither creator nor moderator, and the entry is unlocked so
+     * the edit route lets them through.
+     *
+     * Note what this does NOT establish. The unguarded read in the transformers
+     * would treat a missing key as "not locked" — which for an unlocked entry is
+     * also the correct answer, so the outcome is identical whether the key
+     * survives or not. The test pins that the save works and leaves the lock
+     * state alone; it cannot distinguish the two. Distinguishing them needs a
+     * locked entry saved without the field, and that combination is not
+     * reachable through the gate: a locked entry only admits its creator and
+     * moderators, and both of those do get the field.
+     */
+    public function testMemberWithoutThePermissionFieldCanSaveAnUnlockedEntry(): void
+    {
+        $author = $this->createRoomMember();
+        $bystander = $this->createRoomMember();
+
+        $this->logout();
+        $this->loginAsUser($this->portalId(), $author->getUsername(), self::MEMBER_PASSWORD);
+        $itemId = $this->createMaterial();
+        self::assertFalse($this->materialIsLocked($itemId), 'precondition: the entry is not locked');
+
+        $this->logout();
+        $this->loginAsUser($this->portalId(), $bystander->getUsername(), self::MEMBER_PASSWORD);
+
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/material/{$itemId}/edit");
+        $this->assertResponseIsSuccessful();
+        self::assertSelectorNotExists(
+            'input[name="material[permission]"]',
+            'neither creator nor moderator — the field must be absent here'
+        );
+
+        $form = $crawler->selectButton('material[save]')->form();
+        $form['material[title]'] = 'von einem Mitglied angefasst';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        self::assertFalse(
+            $this->materialIsLocked($itemId),
+            'the lock state must survive a save by somebody who never saw the field'
+        );
+    }
+
+
+    /**
+     * Ticks the edit lock through the form, as the creator would.
+     */
+    private function lockMaterial(int $itemId): void
+    {
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/material/{$itemId}/edit");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('material[save]')->form();
+        // A fresh draft has no title yet, and NotBlank would reject the submit
+        // with 422 before the transformer ever runs.
+        $form['material[title]'] = 'gesperrter Eintrag';
+        $form['material[permission]']->tick();
+        $this->client->submit($form);
+        $this->assertResponseRedirects();
+    }
+
+    /**
+     * cs_item::setPrivateEditing() writes the `public` column despite its name,
+     * and isPrivateEditing() is `public != 1`. Read straight from the table so
+     * no legacy cache can answer instead.
+     */
+    private function materialIsLocked(int $itemId): bool
+    {
+        $public = static::getContainer()->get(EntityManagerInterface::class)
+            ->getConnection()
+            ->fetchOne('SELECT public FROM materials WHERE item_id = ?', [$itemId]);
+
+        return 1 !== (int) $public;
+    }
+
+    /**
      * Adds a second, regular (status 2) member to the room. Created while the
      * moderator is still logged in so the membership exists before the member
      * ever authenticates.
