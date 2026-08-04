@@ -147,19 +147,54 @@ final class PortalSettingsPortalScopeTest extends AbstractApplicationTestCase
             "/portal/{$this->portal->getId()}".sprintf($path, $this->memberUserId)
         );
 
+        $this->assertNotDenied('a subject of the moderator\'s own portal');
+    }
+
+    /**
+     * Root administering any portal's accounts is a case that breaks easily —
+     * it rides on a short-circuit at the top of ItemVoter that is invisible at
+     * the call site, so a guard added later can silently lock root out. Every
+     * route is walked as root for that reason.
+     *
+     * Note what is deliberately NOT asserted here: root is not confined by the
+     * portal binding, because that short-circuit fires before ITEM_EDIT
+     * compares any contexts. The only place root is held to the portal in the
+     * URL is the take-over action, and there for consistency rather than
+     * permission — see PortalSettingsControllerTest.
+     */
+    #[DataProvider('foreignSubjectRoutes')]
+    public function testRootReachesEveryRouteOfTheAccountAdministration(string $path): void
+    {
+        $this->loginAsRoot();
+
+        $this->client->request(
+            'GET',
+            "/portal/{$this->portal->getId()}".sprintf($path, $this->memberUserId)
+        );
+
+        $this->assertNotDenied('root must never lose access to the account administration');
+    }
+
+    // ----------------------------------------------------------------- helpers
+
+    /**
+     * A denial surfaces either as 403 or — because the firewall installs
+     * AccessDeniedHandler — as a redirect to the room list. Both are checked,
+     * so the assertion holds whichever way the app chooses to present it.
+     */
+    private function assertNotDenied(string $subject): void
+    {
         self::assertNotSame(
             403,
             $this->client->getResponse()->getStatusCode(),
-            'the guard must not deny a subject of the moderator\'s own portal'
+            "must not be denied: {$subject}"
         );
         self::assertStringNotContainsString(
             '/room/',
             (string) $this->client->getResponse()->headers->get('Location'),
-            'a redirect to the room list is what AccessDeniedHandler does on denial'
+            "must not be redirected away as denied: {$subject}"
         );
     }
-
-    // ----------------------------------------------------------------- helpers
 
     private function createAccount(Portal $portal, mixed $authSource, string $username): Account
     {
