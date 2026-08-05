@@ -1047,7 +1047,12 @@ class UserController extends BaseController
         ]);
     }
 
+    // Mirrors the guards on detail(): the print variant exposes the same data,
+    // and ITEM_SEE resolves against the item itself, so a room id in the path
+    // that does not belong to the entry is rejected as well.
     #[Route(path: '/room/{roomId}/user/{itemId}/print')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
+    #[IsGranted('RUBRIC_USER')]
     public function print(
         PrintService $printService,
         int $roomId,
