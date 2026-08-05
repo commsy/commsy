@@ -62,8 +62,8 @@ class NotificationRepository extends ServiceEntityRepository
 
     /**
      * Notifications for the activity panel, newest first, optionally scoped to
-     * one room. Every stored row is undismissed (dismiss deletes the row), so no
-     * extra state filter is needed.
+     * one room. Read and unread rows alike are listed; rows only ever leave the
+     * panel through the retention cron (or when their item is deleted).
      *
      * @return Notification[]
      */
@@ -74,63 +74,6 @@ class NotificationRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * Dismiss (delete) a single notification, scoped to its owner so a recipient
-     * can only ever drop their own.
-     *
-     * @return int number of rows deleted (0 or 1)
-     */
-    public function dismiss(Account $account, int $id): int
-    {
-        return (int) $this->getEntityManager()
-            ->createQuery('DELETE App\Entity\Notification n WHERE n.id = :id AND n.recipient = :account')
-            ->setParameter('id', $id)
-            ->setParameter('account', $account)
-            ->execute();
-    }
-
-    /**
-     * Dismiss (delete) every notification of an account.
-     *
-     * @return int number of rows deleted
-     */
-    public function dismissAllForAccount(Account $account): int
-    {
-        return (int) $this->getEntityManager()
-            ->createQuery('DELETE App\Entity\Notification n WHERE n.recipient = :account')
-            ->setParameter('account', $account)
-            ->execute();
-    }
-
-    /**
-     * Dismiss (delete) every notification an account holds for one source item.
-     * Backs "dismiss the whole grouped entry" in the activity panel.
-     *
-     * @return int number of rows deleted
-     */
-    public function dismissForAccountAndSourceItem(Account $account, int $sourceItemId): int
-    {
-        return (int) $this->getEntityManager()
-            ->createQuery('DELETE App\Entity\Notification n WHERE n.recipient = :account AND n.sourceItemId = :item')
-            ->setParameter('account', $account)
-            ->setParameter('item', $sourceItemId)
-            ->execute();
-    }
-
-    /**
-     * Dismiss (delete) every notification of an account within one room.
-     *
-     * @return int number of rows deleted
-     */
-    public function dismissAllForAccountAndContext(Account $account, int $contextId): int
-    {
-        return (int) $this->getEntityManager()
-            ->createQuery('DELETE App\Entity\Notification n WHERE n.recipient = :account AND n.contextId = :ctx')
-            ->setParameter('account', $account)
-            ->setParameter('ctx', $contextId)
-            ->execute();
     }
 
     /**
@@ -205,21 +148,30 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Mark every unread notification of an account read in one statement.
+     * Mark every unread notification of an account read in one statement,
+     * optionally limited to one room (the room panel's mark-all action).
      *
      * @return int number of rows updated
      */
-    public function markAllReadForAccount(Account $account, \DateTimeImmutable $now): int
+    public function markAllReadForAccount(Account $account, \DateTimeImmutable $now, ?int $contextId = null): int
     {
-        return (int) $this->getEntityManager()
-            ->createQuery(
-                'UPDATE App\Entity\Notification n
-                 SET n.readAt = :now
-                 WHERE n.recipient = :account AND n.readAt IS NULL'
-            )
+        $dql = 'UPDATE App\Entity\Notification n
+                SET n.readAt = :now
+                WHERE n.recipient = :account AND n.readAt IS NULL';
+
+        if ($contextId !== null) {
+            $dql .= ' AND n.contextId = :ctx';
+        }
+
+        $query = $this->getEntityManager()->createQuery($dql)
             ->setParameter('now', $now)
-            ->setParameter('account', $account)
-            ->execute();
+            ->setParameter('account', $account);
+
+        if ($contextId !== null) {
+            $query->setParameter('ctx', $contextId);
+        }
+
+        return (int) $query->execute();
     }
 
     /**

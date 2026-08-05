@@ -13,11 +13,13 @@
             {% if panel.groups is empty %}
                 <p class="uk-text-muted uk-margin-remove">{{ 'noNotifications'|trans({}, 'notification') }}</p>
             {% else %}
-                <div class="uk-text-right uk-margin-small-bottom">
-                    <a href="#" class="uk-text-muted uk-text-small" data-action="live#action" data-live-action-param="dismissAll">
-                        <i class="uk-icon-close uk-margin-small-right"></i>{{ 'dismissAll'|trans({}, 'notification') }}
-                    </a>
-                </div>
+                {% if panel.unreadCount > 0 %}
+                    <div class="uk-text-right uk-margin-small-bottom">
+                        <a href="#" class="uk-text-muted uk-text-small" data-action="live#action" data-live-action-param="markAllRead">
+                            <i class="uk-icon-eye uk-margin-small-right"></i>{{ 'markAllRead'|trans({}, 'notification') }}
+                        </a>
+                    </div>
+                {% endif %}
                 <ul class="uk-comment-list">
                     {% for group in panel.groups %}
                         {% set origin = group.origin %}
@@ -36,11 +38,13 @@
                                 {% elseif group.indicatorStatus == 'changed' %}
                                     <div class="cs-comment-change-info" data-uk-tooltip title="{{ 'changedEntry'|trans({}) }}"><i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i></div>
                                 {% endif %}
-                                <a href="#" class="uk-text-muted" style="position: absolute; top: 5px; right: 40px; padding: 2px;"
-                                   data-action="live#action" data-live-action-param="dismiss" data-live-id-param="{{ group.sourceItemId }}"
-                                   title="{{ 'dismiss'|trans({}, 'notification') }}">
-                                    <i class="uk-icon-close"></i>
-                                </a>
+                                {% if group.unread %}
+                                    <a href="#" class="uk-text-muted" style="position: absolute; top: 5px; right: 40px; padding: 2px;"
+                                       data-action="live#action" data-live-action-param="markRead" data-live-id-param="{{ group.sourceItemId }}"
+                                       title="{{ 'markRead'|trans({}, 'notification') }}">
+                                        <i class="uk-icon-eye"></i>
+                                    </a>
+                                {% endif %}
                                 <header class="uk-comment-header uk-margin-remove uk-flex">
                                     <div class="uk-margin-right uk-flex-item-none">
                                         {% if origin.payload.actorId %}

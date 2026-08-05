@@ -26,14 +26,14 @@ use Tests\Factory\AccountFactory;
 
 /**
  * Pins the {@see \App\Twig\Components\NotificationPanel} live component: it groups
- * an item's events into one row, dismisses a whole entry / all entries in place,
+ * an item's events into one row, marks a whole entry / all entries read in place,
  * and scopes to one room when a context id is given.
  */
 final class NotificationPanelTest extends KernelTestCase
 {
     use InteractsWithLiveComponents;
 
-    public function testRendersEntriesAndDismissesOneInPlace(): void
+    public function testRendersEntriesAndMarksOneReadInPlace(): void
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
@@ -46,15 +46,19 @@ final class NotificationPanelTest extends KernelTestCase
         self::assertStringContainsString('First entry', $html);
         self::assertStringContainsString('Second entry', $html);
 
-        // Dismiss is keyed by the source item id (the whole grouped entry).
-        $component->call('dismiss', ['id' => 100]);
+        self::assertSame(2, $this->repository()->count(['readAt' => null]));
 
-        $afterDismiss = (string) $component->render();
-        self::assertStringNotContainsString('First entry', $afterDismiss);
-        self::assertStringContainsString('Second entry', $afterDismiss);
+        // Mark-read is keyed by the source item id (the whole grouped entry).
+        $component->call('markRead', ['id' => 100]);
+
+        // The entry stays listed — only its unread state changes.
+        $afterMarkRead = (string) $component->render();
+        self::assertStringContainsString('First entry', $afterMarkRead);
+        self::assertStringContainsString('Second entry', $afterMarkRead);
+        self::assertSame(1, $this->repository()->count(['readAt' => null]), 'only the marked entry is read');
     }
 
-    public function testGroupsEventsOfTheSameItemIntoOneRowAndDismissClearsAll(): void
+    public function testGroupsEventsOfTheSameItemIntoOneRowAndMarkReadCoversAll(): void
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
@@ -68,14 +72,14 @@ final class NotificationPanelTest extends KernelTestCase
         self::assertCount(2, $groups, 'the two events for item 500 collapse into one row');
         self::assertCount(2, $groups[0]->events(), 'the active item (500) is first and holds both of its events');
 
-        // Dismissing the grouped entry clears all of its events.
-        $component->call('dismiss', ['id' => 500]);
+        // Marking the grouped entry read covers all of its events.
+        $component->call('markRead', ['id' => 500]);
 
-        self::assertSame(1, $this->repository()->count([]), 'both events of item 500 are gone, item 600 remains');
-        self::assertStringNotContainsString('My material', (string) $component->render());
+        self::assertSame(3, $this->repository()->count([]), 'nothing is deleted by hand any more');
+        self::assertSame(1, $this->repository()->count(['readAt' => null]), 'both events of item 500 are read, item 600 stays unread');
     }
 
-    public function testDismissAllClearsThePanel(): void
+    public function testMarkAllReadClearsTheUnreadState(): void
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
@@ -83,12 +87,10 @@ final class NotificationPanelTest extends KernelTestCase
         $this->persist($account, sourceItemId: 2, title: 'Two');
 
         $component = $this->createLiveComponent('NotificationPanel', ['account' => $account]);
-        $component->call('dismissAll');
+        $component->call('markAllRead');
 
-        self::assertSame(0, $this->repository()->count([]));
-        $html = (string) $component->render();
-        self::assertStringNotContainsString('One', $html);
-        self::assertStringNotContainsString('Two', $html);
+        self::assertSame(2, $this->repository()->count([]), 'the entries stay listed');
+        self::assertSame(0, $this->repository()->count(['readAt' => null]));
     }
 
     public function testScopesToOneRoomWhenContextGiven(): void

@@ -24,10 +24,13 @@ use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
+use function Symfony\Component\Clock\now;
+
 /**
  * The room/dashboard activity panel that replaces the legacy "newest entries"
- * feed: it lists the account's notifications newest-first, lets the user dismiss
- * a single entry or all of them, and polls so fresh activity appears. With
+ * feed: it lists the account's notifications newest-first, lets the user mark a
+ * single entry or all of them read, and polls so fresh activity appears. Rows are
+ * never removed by hand — only the retention cron drops aged-out notifications. With
  * {@see $contextId} set it scopes to one room (the room start page); without it
  * it spans all of the account's rooms (the dashboard). Every read and write
  * stays scoped to the logged-in account, so {@see $contextId} only narrows the
@@ -59,25 +62,19 @@ final class NotificationPanel
     }
 
     #[LiveAction]
-    public function dismiss(#[LiveArg] int $id): void
+    public function markRead(#[LiveArg] int $id): void
     {
-        // $id is the source item id: dismissing an entry clears all its events.
+        // $id is the source item id: marking an entry read covers all its events.
         if ($this->account !== null) {
-            $this->notificationRepository->dismissForAccountAndSourceItem($this->account, $id);
+            $this->notificationRepository->markReadForAccountAndSourceItem($this->account, $id, now());
         }
     }
 
     #[LiveAction]
-    public function dismissAll(): void
+    public function markAllRead(): void
     {
-        if ($this->account === null) {
-            return;
-        }
-
-        if ($this->contextId !== null) {
-            $this->notificationRepository->dismissAllForAccountAndContext($this->account, $this->contextId);
-        } else {
-            $this->notificationRepository->dismissAllForAccount($this->account);
+        if ($this->account !== null) {
+            $this->notificationRepository->markAllReadForAccount($this->account, now(), $this->contextId);
         }
     }
 

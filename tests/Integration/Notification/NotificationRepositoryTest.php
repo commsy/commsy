@@ -88,6 +88,21 @@ class NotificationRepositoryTest extends KernelTestCase
         self::assertSame(1, $this->repository()->countUnreadForAccount($other), 'other account stays untouched');
     }
 
+    public function testMarkAllReadCanBeScopedToOneRoom(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+
+        $this->persist($account, sourceItemId: 1, contextId: 10);
+        $this->persist($account, sourceItemId: 2, contextId: 20);
+
+        $updated = $this->repository()->markAllReadForAccount($account, new \DateTimeImmutable(), 10);
+
+        self::assertSame(1, $updated);
+        self::assertSame(0, $this->repository()->countUnreadForAccount($account, 10));
+        self::assertSame(1, $this->repository()->countUnreadForAccount($account, 20), 'the other room stays unread');
+    }
+
     public function testRemoveForSourceItemDropsAllRecipientsOfThatItem(): void
     {
         self::bootKernel();
@@ -149,66 +164,6 @@ class NotificationRepositoryTest extends KernelTestCase
         // Context filter.
         self::assertSame(2, $this->repository()->countForAccount($account, contextId: 10));
         self::assertSame(3, $this->repository()->countForAccount($account));
-    }
-
-    public function testDismissDeletesOnlyTheOwnedRow(): void
-    {
-        self::bootKernel();
-        $mine = AccountFactory::createOne();
-        $other = AccountFactory::createOne();
-
-        $a = $this->persist($mine, sourceItemId: 1);
-        $this->persist($mine, sourceItemId: 2);
-        $foreign = $this->persist($other, sourceItemId: 1);
-
-        self::assertSame(1, $this->repository()->dismiss($mine, (int) $a->getId()));
-        self::assertSame(0, $this->repository()->dismiss($mine, (int) $foreign->getId()), 'cannot dismiss another account\'s notification');
-
-        self::assertSame(1, $this->repository()->countForAccount($mine));
-        self::assertSame(1, $this->repository()->countForAccount($other));
-    }
-
-    public function testDismissForAccountAndSourceItemClearsAllEventsOfThatItem(): void
-    {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
-
-        $this->persist($account, sourceItemId: 42); // created
-        $this->persist($account, sourceItemId: 42); // edited (same item)
-        $this->persist($account, sourceItemId: 99); // a different item
-
-        self::assertSame(2, $this->repository()->dismissForAccountAndSourceItem($account, 42));
-        self::assertSame(1, $this->repository()->countForAccount($account), 'only item 99 remains');
-    }
-
-    public function testDismissAllForAccountClearsOnlyThatAccount(): void
-    {
-        self::bootKernel();
-        $mine = AccountFactory::createOne();
-        $other = AccountFactory::createOne();
-
-        $this->persist($mine, sourceItemId: 1);
-        $this->persist($mine, sourceItemId: 2);
-        $this->persist($other, sourceItemId: 1);
-
-        self::assertSame(2, $this->repository()->dismissAllForAccount($mine));
-        self::assertSame(0, $this->repository()->countForAccount($mine));
-        self::assertSame(1, $this->repository()->countForAccount($other));
-    }
-
-    public function testDismissAllForAccountAndContextScopesToRoom(): void
-    {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
-
-        $this->persist($account, sourceItemId: 1, contextId: 10);
-        $this->persist($account, sourceItemId: 2, contextId: 10);
-        $this->persist($account, sourceItemId: 3, contextId: 20);
-
-        self::assertSame(2, $this->repository()->dismissAllForAccountAndContext($account, 10));
-        self::assertSame(1, $this->repository()->countForAccount($account));
-        self::assertSame(0, $this->repository()->countForAccount($account, contextId: 10));
-        self::assertSame(1, $this->repository()->countForAccount($account, contextId: 20));
     }
 
     public function testFindForAccountNewestFirstWithContextFilter(): void
