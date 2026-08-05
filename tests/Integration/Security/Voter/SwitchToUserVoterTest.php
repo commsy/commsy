@@ -17,6 +17,7 @@ namespace Tests\Integration\Security\Voter;
 
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tests\Factory\PortalFactory;
 use Tests\Integration\Security\Voter\Concerns\BootsVoter;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -49,25 +50,57 @@ final class SwitchToUserVoterTest extends KernelTestCase
         self::assertTrue($this->authChecker->isGranted('CAN_SWITCH_USER', $target));
     }
 
-    public function testDefaultUserCanSwitchBecauseImpersonationIsEnabledByDefault(): void
+    /**
+     * The opt-out default alone is not enough any more. getCanImpersonate-
+     * AnotherUser() still returns true for a fresh account — the extra is
+     * absent — but taking an account over is a moderation act, so the voter
+     * additionally requires moderator status. A plain member is refused.
+     */
+    public function testPlainMemberCannotSwitchDespiteThePermissiveDefault(): void
     {
-        // Counter-intuitive characterization: a freshly-created Account
-        // has NO 'DEACTIVATE_LOGIN_AS' extra, so getCanImpersonateAnotherUser()
-        // returns true. With no expiry set, the voter grants CAN_SWITCH_USER.
-        // Phase 2 should consider whether this default is actually intended,
-        // but for now we pin it.
+        $this->loginAs($this->portalAccount);
+        $target = $this->createPortalAccount();
+
+        self::assertFalse(
+            $this->authChecker->isGranted('CAN_SWITCH_USER', $target),
+            'the opt-out default grants nothing without portal moderator status',
+        );
+    }
+
+    public function testPortalModeratorCanSwitchByDefault(): void
+    {
+        $this->promoteToPortalModerator($this->portalAccount);
         $this->loginAs($this->portalAccount);
         $target = $this->createPortalAccount();
 
         self::assertTrue(
             $this->authChecker->isGranted('CAN_SWITCH_USER', $target),
-            'cs_user_item::getCanImpersonateAnotherUser defaults to TRUE (extra absent → allowed)',
+            'a portal moderator holds the right unless it was withdrawn',
+        );
+    }
+
+    /**
+     * The target has to live in the moderator's own portal. UserProvider
+     * already resolves portal-scoped, but the voter states it itself so any
+     * future caller is covered.
+     */
+    public function testPortalModeratorCannotSwitchToAnAccountOfAnotherPortal(): void
+    {
+        $this->promoteToPortalModerator($this->portalAccount);
+        $this->loginAs($this->portalAccount);
+
+        $foreign = $this->createPortalAccount(portal: PortalFactory::createOne());
+
+        self::assertFalse(
+            $this->authChecker->isGranted('CAN_SWITCH_USER', $foreign),
+            'portal moderation stops at the portal boundary here too',
         );
     }
 
     public function testDeactivateLoginAsBlocksSwitch(): void
     {
         $this->setImpersonationGrant($this->portalAccount, allowed: false);
+        $this->promoteToPortalModerator($this->portalAccount);
         $this->loginAs($this->portalAccount);
 
         $target = $this->createPortalAccount();
@@ -85,6 +118,7 @@ final class SwitchToUserVoterTest extends KernelTestCase
             allowed: true,
             expiry: new \DateTimeImmutable('-1 day'),
         );
+        $this->promoteToPortalModerator($this->portalAccount);
         $this->loginAs($this->portalAccount);
 
         $target = $this->createPortalAccount();
@@ -102,6 +136,7 @@ final class SwitchToUserVoterTest extends KernelTestCase
             allowed: true,
             expiry: new \DateTimeImmutable('+1 day'),
         );
+        $this->promoteToPortalModerator($this->portalAccount);
         $this->loginAs($this->portalAccount);
 
         $target = $this->createPortalAccount();
