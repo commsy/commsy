@@ -27,6 +27,8 @@ use App\Utils\UserService;
 use App\WOPI\Discovery\DiscoveryService;
 use cs_environment;
 use cs_item;
+use cs_privateroom_item;
+use cs_room_item;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -108,6 +110,40 @@ class ItemVoter extends Voter
                     }
                 }
             }
+        }
+
+        // ITEM_ENTER WORKAROUND — NOT A FIX.
+        //
+        // The block above resolves a numeric subject through the legacy
+        // items path first (ItemService->getTypedItem) and only falls back
+        // to PortalRepository if that returns null. Portal ids and
+        // items.item_id share the same numeric AUTO_INCREMENT range, so
+        // a row in `items` (e.g. type='user' or type='server') can shadow
+        // a portal with the same id. For ITEM_ENTER, where the subject is
+        // always meant to be a room or portal, this leaks the wrong
+        // subject into canEnter and surfaces as "Call to undefined method
+        // isPrivateRoom()" or a 302 redirect to a fallback URL.
+        //
+        // The PROPER fix is to stop resolving portals through the legacy
+        // items table at all: portals already live in the `portal` table
+        // as Doctrine entities, and PortalRepository is the canonical
+        // source. To get there we need to (a) standardize on Portal
+        // entities (or a typed wrapper) for portal subjects across all
+        // voter callers, and (b) drop the items-based portal lookup in
+        // ItemService / cs_environment::getCurrentContextItem. That is a
+        // larger migration tracked separately.
+        //
+        // Until then, force a portal lookup for ENTER when the resolved
+        // item is not actually a room — this keeps ENTER deterministic
+        // without changing any callers.
+        if (
+            self::ENTER === $attribute
+            && $item !== null
+            && !$item instanceof cs_room_item
+            && !$item instanceof PortalProxy
+        ) {
+            $portal = $this->entityManager->getRepository(Portal::class)->find($subject);
+            $item = $portal ? new PortalProxy($portal, $this->legacyEnvironment) : null;
         }
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
@@ -271,7 +307,19 @@ class ItemVoter extends Voter
     private function canEnter(cs_item|PortalProxy $item, $currentUser, $user): bool
     {
         if ($item->isPrivateRoom()) {
-            return true;
+            // A private room is a single user's personal dashboard, so only
+            // its owner may enter it. Identity is keyed by account_id (see
+            // cs_user_item).
+            // (The root account is already short-circuited in voteOnAttribute.)
+            if (!$item instanceof cs_privateroom_item || !$user instanceof Account) {
+                return false;
+            }
+
+            $owner = $item->getOwnerUserItem();
+
+            return $owner !== null
+                && $owner->getAccountID() !== null
+                && $owner->getAccountID() === $user->getId();
         }
 
         if ($item->isPortal()) {
