@@ -24,6 +24,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+use function Symfony\Component\Clock\now;
+
 /**
  * The user-facing "Benachrichtigungen" area: a portal-scoped list of the
  * current account's notifications, plus per-item open and mark-all-read.
@@ -61,7 +63,7 @@ class NotificationController extends AbstractController
     {
         $notification = $this->ownedNotification($id);
 
-        $notification->markRead(new \DateTimeImmutable());
+        $notification->markRead(now());
         $this->notificationRepository->save($notification);
 
         return $this->redirect(
@@ -77,7 +79,7 @@ class NotificationController extends AbstractController
             throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
-        $this->notificationRepository->markAllReadForAccount($this->account(), new \DateTimeImmutable());
+        $this->notificationRepository->markAllReadForAccount($this->account(), now());
 
         return $this->redirectToRoute('app_notification_list', ['portalId' => $portalId]);
     }

@@ -19,6 +19,8 @@ use App\Repository\NotificationRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+use function Symfony\Component\Clock\now;
+
 /**
  * Marks an account's notifications for an item read the moment the legacy reader
  * records that item as "seen" — i.e. when the entry's detail page is opened,
@@ -57,7 +59,7 @@ final readonly class NotificationReadStatusSubscriber implements EventSubscriber
         $this->notificationRepository->markReadForAccountAndSourceItem(
             $account,
             $event->getItemId(),
-            new \DateTimeImmutable(),
+            now(),
         );
     }
 }

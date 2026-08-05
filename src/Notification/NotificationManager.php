@@ -24,6 +24,8 @@ use App\Security\Permission\Checker\ItemViewChecker;
 use App\Security\Permission\Subject\ItemViewSubject;
 use Doctrine\ORM\EntityManagerInterface;
 
+use function Symfony\Component\Clock\now;
+
 /**
  * Fans an activity signal out into per-recipient notification rows: one row for
  * every active room member who may actually see the entry — including the event's
@@ -52,7 +54,7 @@ class NotificationManager
 
     public function notifyNewEntry(NotifyNewEntryMessage $signal): void
     {
-        $occurredAt = $signal->occurredAt ?? new \DateTimeImmutable();
+        $occurredAt = $signal->occurredAt ?? now();
 
         // Per-event idempotency: a messenger retry of the same event must not
         // duplicate the fan-out, while a genuine edit (a new event time) is

@@ -16,6 +16,8 @@ namespace App\Cron\Tasks;
 use App\Repository\NotificationRepository;
 use DateTimeImmutable;
 
+use function Symfony\Component\Clock\now;
+
 /**
  * Nightly cron that actively dismisses aged-out notifications: anything older
  * than the retention window is deleted, read or not, mirroring the room/dashboard
@@ -34,7 +36,7 @@ class CronCleanNotifications implements CronTaskInterface
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        $this->notificationRepository->removeOlderThan(new DateTimeImmutable(self::RETENTION));
+        $this->notificationRepository->removeOlderThan(now()->modify(self::RETENTION));
     }
 
     public function getSummary(): string
