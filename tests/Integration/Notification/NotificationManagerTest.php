@@ -43,7 +43,7 @@ class NotificationManagerTest extends KernelTestCase
         $this->account = AccountStory::get('account');
     }
 
-    public function testFanOutCreatesOneUnreadRowPerMemberExceptCreator(): void
+    public function testFanOutReachesEveryMemberAndPreReadsTheActorsOwnRow(): void
     {
         $room = $this->createRoom();
         $creator = $this->member($room, $this->account);
@@ -55,15 +55,22 @@ class NotificationManagerTest extends KernelTestCase
         );
 
         $rows = $this->repository()->findAll();
-        self::assertCount(2, $rows);
+        self::assertCount(3, $rows, 'every member including the actor gets a row');
 
-        $recipientIds = array_map(static fn (Notification $n): int => $n->getRecipient()->getId(), $rows);
-        self::assertContains($bob->getAccount()->getId(), $recipientIds);
-        self::assertContains($carol->getAccount()->getId(), $recipientIds);
-        self::assertNotContains($creator->getAccount()->getId(), $recipientIds, 'author must not be notified');
+        $byRecipient = [];
+        foreach ($rows as $row) {
+            $byRecipient[$row->getRecipient()->getId()] = $row;
+        }
 
-        $row = $rows[0];
-        self::assertTrue($row->isUnread());
+        self::assertArrayHasKey($bob->getAccount()->getId(), $byRecipient);
+        self::assertArrayHasKey($carol->getAccount()->getId(), $byRecipient);
+        self::assertTrue($byRecipient[$bob->getAccount()->getId()]->isUnread(), 'other members see it as unread');
+
+        $own = $byRecipient[$creator->getAccount()->getId()] ?? null;
+        self::assertNotNull($own, 'the actor sees their own entry in the panel');
+        self::assertFalse($own->isUnread(), "the actor's own row is stored already read");
+
+        $row = $byRecipient[$bob->getAccount()->getId()];
         self::assertSame('New material', $row->getTitle());
         self::assertSame('material', $row->getSourceItemType());
         self::assertSame(555, $row->getSourceItemId());
@@ -86,14 +93,17 @@ class NotificationManagerTest extends KernelTestCase
         $this->manager()->notifyNewEntry($edited);
 
         $rows = $this->repository()->findAll();
-        self::assertCount(2, $rows, 'an edit at a new time is logged as a second event');
+
+        // Two events, each fanned out to the actor plus the other member.
+        $eventTimes = array_unique(array_map(static fn (Notification $n): string => $n->getCreatedAt()->format('c'), $rows));
+        self::assertCount(2, $eventTimes, 'an edit at a new time is logged as a second event');
 
         $actions = array_map(static fn (Notification $n): NotificationAction => $n->getAction(), $rows);
         self::assertContains(NotificationAction::Created, $actions);
         self::assertContains(NotificationAction::Edited, $actions);
     }
 
-    public function testEditByNonCreatorNotifiesTheCreatorAndExcludesTheEditor(): void
+    public function testEditByNonCreatorLeavesTheCreatorUnreadAndTheEditorRead(): void
     {
         $room = $this->createRoom();
         $creator = $this->member($room, $this->account);       // owns the entry
@@ -108,11 +118,18 @@ class NotificationManagerTest extends KernelTestCase
             actor: $editor,
         ));
 
-        $rows = $this->repository()->findAll();
-        $recipientIds = array_map(static fn (Notification $n): int => $n->getRecipient()->getId(), $rows);
+        $byRecipient = [];
+        foreach ($this->repository()->findAll() as $row) {
+            $byRecipient[$row->getRecipient()->getId()] = $row;
+        }
 
-        self::assertContains($creator->getAccount()->getId(), $recipientIds, 'the creator is notified about the edit');
-        self::assertNotContains($editor->getAccount()->getId(), $recipientIds, 'the editor who caused the event is not notified');
+        $creatorRow = $byRecipient[$creator->getAccount()->getId()] ?? null;
+        self::assertNotNull($creatorRow, 'the creator is notified about the edit');
+        self::assertTrue($creatorRow->isUnread(), "someone else's edit is unread for the creator");
+
+        $editorRow = $byRecipient[$editor->getAccount()->getId()] ?? null;
+        self::assertNotNull($editorRow, 'the editor still sees the entry in their own panel');
+        self::assertFalse($editorRow->isUnread(), 'the editor who caused the event is not alerted');
     }
 
     public function testRepublishDoesNotDuplicate(): void
@@ -125,7 +142,8 @@ class NotificationManagerTest extends KernelTestCase
         $this->manager()->notifyNewEntry($signal);
         $this->manager()->notifyNewEntry($signal);
 
-        self::assertSame(1, $this->repository()->count([]), 're-publish must be idempotent');
+        // One fan-out only: the other member plus the actor's own row, not twice over.
+        self::assertSame(2, $this->repository()->count([]), 're-publish must be idempotent');
     }
 
     public function testFanOutSnapshotsThePayload(): void
@@ -146,14 +164,15 @@ class NotificationManagerTest extends KernelTestCase
         self::assertTrue($row->getPayload()->hasAttachments);
     }
 
-    public function testRoomWithOnlyTheCreatorNotifiesNobody(): void
+    public function testRoomWithOnlyTheCreatorAlertsNobody(): void
     {
         $room = $this->createRoom();
         $creator = $this->member($room, $this->account);
 
         $this->manager()->notifyNewEntry($this->signal($room, $creator, sourceItemId: 1));
 
-        self::assertSame(0, $this->repository()->count([]));
+        self::assertSame(1, $this->repository()->count([]), 'the creator still sees their own entry');
+        self::assertSame(0, $this->repository()->countUnreadForAccount($creator->getAccount()), 'but nothing is unread');
     }
 
     public function testPendingAndRejectedMembersAreNotNotified(): void
@@ -166,9 +185,15 @@ class NotificationManagerTest extends KernelTestCase
 
         $this->manager()->notifyNewEntry($this->signal($room, $creator, sourceItemId: 2));
 
-        $rows = $this->repository()->findAll();
-        self::assertCount(1, $rows);
-        self::assertSame($confirmed->getAccount()->getId(), $rows[0]->getRecipient()->getId());
+        $recipientIds = array_map(
+            static fn (Notification $n): int => $n->getRecipient()->getId(),
+            $this->repository()->findAll()
+        );
+
+        // Only the confirmed member and the actor themselves; pending/rejected get nothing.
+        self::assertCount(2, $recipientIds);
+        self::assertContains($confirmed->getAccount()->getId(), $recipientIds);
+        self::assertContains($creator->getAccount()->getId(), $recipientIds);
     }
 
     public function testDeactivatedEntryNotifiesModeratorsButNotRegularMembers(): void
@@ -184,9 +209,14 @@ class NotificationManagerTest extends KernelTestCase
             $this->signal($room, $creator, sourceItemId: 4, isDeactivated: true)
         );
 
-        $rows = $this->repository()->findAll();
-        self::assertCount(1, $rows);
-        self::assertSame($moderator->getAccount()->getId(), $rows[0]->getRecipient()->getId());
+        $recipientIds = array_map(
+            static fn (Notification $n): int => $n->getRecipient()->getId(),
+            $this->repository()->findAll()
+        );
+
+        self::assertCount(2, $recipientIds);
+        self::assertContains($moderator->getAccount()->getId(), $recipientIds);
+        self::assertContains($creator->getAccount()->getId(), $recipientIds, 'the creator sees their own deactivated entry');
     }
 
     private function manager(): NotificationManager

@@ -58,6 +58,7 @@ class NotifyNewEntryMessageHandlerTest extends KernelTestCase
             actorName: 'Creator Name',
         ));
 
-        self::assertSame(1, self::getContainer()->get(NotificationRepository::class)->count([]));
+        // One row for the other member plus the actor's own (pre-read) row.
+        self::assertSame(2, self::getContainer()->get(NotificationRepository::class)->count([]));
     }
 }

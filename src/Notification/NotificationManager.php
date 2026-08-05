@@ -25,9 +25,10 @@ use App\Security\Permission\Subject\ItemViewSubject;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Fans a "new entry published" signal out into per-recipient notification rows:
- * one row for every active room member who may actually see the entry, except
- * the entry's creator.
+ * Fans an activity signal out into per-recipient notification rows: one row for
+ * every active room member who may actually see the entry — including the event's
+ * own actor, whose row is stored already read. That mirrors the feed it replaces,
+ * which listed your own entries too, while keeping them out of the unread count.
  *
  * Pure modern persistence — no legacy environment is touched, so it runs safely
  * from an async message handler. Recipient visibility is gated through the same
@@ -71,15 +72,15 @@ class NotificationManager
             hasOverwrittenContent: false,
         );
 
-        $recipients = $this->resolveRecipients($signal->contextId, $signal->actorUserItemId, $subject);
+        [$recipients, $actorAccountId] = $this->resolveRecipients($signal->contextId, $signal->actorUserItemId, $subject);
         if ($recipients === []) {
             return;
         }
 
         $roomTitle = $room?->getTitle() ?? '';
 
-        foreach ($recipients as $recipient) {
-            $this->entityManager->persist(new Notification(
+        foreach ($recipients as $accountId => $recipient) {
+            $notification = new Notification(
                 $recipient,
                 NotificationType::NewEntry,
                 $signal->contextId,
@@ -91,27 +92,34 @@ class NotificationManager
                 $signal->actorName,
                 $signal->action,
                 NotificationPayload::fromArray($signal->payload),
-            ));
+            );
+
+            // The actor sees their own activity in the panel, but never as unread.
+            if ($accountId === $actorAccountId) {
+                $notification->markRead($occurredAt);
+            }
+
+            $this->entityManager->persist($notification);
         }
 
         $this->entityManager->flush();
     }
 
     /**
-     * Active members of the room who may see the entry, minus the event's actor
-     * (its creator on a create, the editor on an edit, the annotator on an
-     * annotation), de-duplicated per account.
+     * Active members of the room who may see the entry, de-duplicated per account,
+     * together with the account id of the event's actor (its creator on a create,
+     * the editor on an edit, the annotator on an annotation) so the caller can
+     * store that row as already read. The actor id is null when the actor is not
+     * an active member of the room (e.g. root).
      *
-     * @return Account[]
+     * @return array{0: array<int, Account>, 1: int|null}
      */
     private function resolveRecipients(int $contextId, int $actorUserItemId, ItemViewSubject $subject): array
     {
         $recipients = [];
+        $actorAccountId = null;
 
         foreach ($this->userRepository->findActiveUsers($contextId) as $user) {
-            if ($user->getItemId() === $actorUserItemId) {
-                continue; // never notify whoever caused this event
-            }
             if (!$this->itemViewChecker->canSee($user, $subject)) {
                 continue; // respect ITEM_SEE: only notify members who may see it
             }
@@ -120,8 +128,12 @@ class NotificationManager
                 continue; // legacy user row without a portal account
             }
             $recipients[$account->getId()] = $account;
+
+            if ($user->getItemId() === $actorUserItemId) {
+                $actorAccountId = $account->getId();
+            }
         }
 
-        return $recipients;
+        return [$recipients, $actorAccountId];
     }
 }
