@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Tests\Application;
 
 use App\Entity\Account;
+use Doctrine\ORM\EntityManagerInterface;
 use Tests\Factory\AccountFactory;
 use Tests\Factory\AuthSourceLocalFactory;
 use Tests\Factory\PortalFactory;
@@ -40,6 +41,7 @@ final class SwitchUserTest extends AbstractApplicationTestCase
         ['portal' => $portal, 'actor' => $actor, 'target' => $target] = $this->createScenario();
         $portalId = $portal->getId();
 
+        $this->promoteToPortalModerator($actor);
         $this->loginAsUser($portalId, $actor->getUsername(), $actor->getPlainPassword());
 
         $this->client->request('GET', "/portal/{$portalId}/enter?_switch_user={$target->getUsername()}");
@@ -52,49 +54,45 @@ final class SwitchUserTest extends AbstractApplicationTestCase
     }
 
     /**
-     * Characterization of a permissive default, NOT an endorsement.
+     * The reason the parameter being firewall-wide is not a hole: taking an
+     * account over requires portal moderator status.
      *
      * `cs_user_item::getCanImpersonateAnotherUser()` is an opt-OUT
-     * (`!_issetExtra('DEACTIVATE_LOGIN_AS')`), and SwitchToUserVoter checks
-     * nothing else — no moderator status, no portal-moderation right. A plain
-     * portal member therefore passes CAN_SWITCH_USER, and because the listener
-     * runs on every url the settings route's PORTAL_MODERATOR guard does not
-     * contain it.
-     *
-     * If this default is tightened, this test is the one that must flip to
-     * asserting the actor stays themselves.
+     * (`!_issetExtra('DEACTIVATE_LOGIN_AS')`) and still returns true for a fresh
+     * account, so before the moderator requirement every authenticated member
+     * passed CAN_SWITCH_USER and could impersonate anyone in their portal from
+     * any url. The previous revision of this file asserted exactly that, as a
+     * characterization.
      */
-    public function testPlainMemberCanImpersonateAnotherMemberBecauseTheDefaultIsPermissive(): void
+    public function testPlainMemberCannotImpersonateAnotherMember(): void
     {
         ['portal' => $portal, 'actor' => $actor, 'target' => $target] = $this->createScenario();
         $portalId = $portal->getId();
 
-        // No moderator promotion, no impersonation grant — factory defaults only.
+        // No moderator promotion — factory defaults only.
         $this->loginAsUser($portalId, $actor->getUsername(), $actor->getPlainPassword());
 
         $this->client->request('GET', "/portal/{$portalId}/enter?_switch_user={$target->getUsername()}");
 
         self::assertSame(
-            $target->getUsername(),
+            $actor->getUsername(),
             $this->authenticatedUsername(),
-            'a plain member reaches another member via _switch_user — the impersonation default is opt-out',
+            'a plain member must not be able to assume another identity',
         );
     }
 
     /**
-     * Characterization of the escalation on top, NOT an endorsement.
+     * The escalation that came on top, and why the target's portal carries the
+     * rule rather than the actor's status alone.
      *
      * UserProvider::loadUserByIdentifier() special-cases the identifier 'root'
      * and returns the server-context root account BEFORE any portal scoping, so
-     * the boundary pinned in the test below — the one that stops every other
-     * foreign account — does not apply here. Whether ?_switch_user=root works
-     * therefore rests entirely on SwitchToUserVoter, which grants every
-     * authenticated member.
-     *
-     * If the voter is tightened, this test must flip to asserting the actor
-     * stays themselves.
+     * the boundary pinned further below — the one that stops every other foreign
+     * account — does not apply here. Whether ?_switch_user=root works therefore
+     * rests entirely on SwitchToUserVoter, which granted every authenticated
+     * member until the moderator requirement.
      */
-    public function testPlainMemberCanBecomeRoot(): void
+    public function testPlainMemberCannotBecomeRoot(): void
     {
         ['portal' => $portal, 'actor' => $actor] = $this->createScenario();
         $portalId = $portal->getId();
@@ -104,21 +102,47 @@ final class SwitchUserTest extends AbstractApplicationTestCase
         $this->client->request('GET', "/portal/{$portalId}/enter?_switch_user=root");
 
         self::assertSame(
-            'root',
+            $actor->getUsername(),
             $this->authenticatedUsername(),
-            'a plain member reaches the server-context root account via _switch_user',
+            'a plain member must not be able to become root',
         );
     }
 
     /**
-     * The one boundary that does hold: UserProvider resolves the target inside
-     * the portal from the session, so an account of another portal is not
-     * reachable and the actor keeps their own identity.
+     * Not even a portal moderator may become root: the root account has no
+     * portal, so there is no portal to be a moderator of.
+     */
+    public function testPortalModeratorCannotBecomeRoot(): void
+    {
+        ['portal' => $portal, 'actor' => $actor] = $this->createScenario();
+        $portalId = $portal->getId();
+
+        $this->promoteToPortalModerator($actor);
+        $this->loginAsUser($portalId, $actor->getUsername(), $actor->getPlainPassword());
+
+        $this->client->request('GET', "/portal/{$portalId}/enter?_switch_user=root");
+
+        self::assertSame(
+            $actor->getUsername(),
+            $this->authenticatedUsername(),
+            'portal moderation does not reach the server-context root account',
+        );
+    }
+
+    /**
+     * The portal boundary, now enforced by the voter as well. It held before
+     * this change too, but only further downstream: UserProvider resolves the
+     * target inside the portal from the session, so a foreign account was never
+     * reachable — a coincidence rather than a guard. The actor is a moderator
+     * here so the case still tests the boundary and not the new moderator
+     * requirement.
      */
     public function testSwitchUserCannotReachAnAccountOfAnotherPortal(): void
     {
         ['portal' => $portal, 'actor' => $actor] = $this->createScenario();
         $portalId = $portal->getId();
+
+        $this->promoteToPortalModerator($actor);
 
         $foreignLocal = AuthSourceLocalFactory::createOne(['enabled' => true, 'default' => true]);
         $foreignPortal = PortalFactory::createOne(['authSources' => [$foreignLocal]]);
@@ -166,6 +190,20 @@ final class SwitchUserTest extends AbstractApplicationTestCase
         ]);
 
         return ['portal' => $portal, 'actor' => $actor, 'target' => $target];
+    }
+
+    /**
+     * Raises the account's portal-level user row to moderator. Done before the
+     * account authenticates, so no stale cs_user_item is cached.
+     */
+    private function promoteToPortalModerator(Account $account): void
+    {
+        static::getContainer()->get(EntityManagerInterface::class)
+            ->getConnection()
+            ->executeStatement(
+                'UPDATE user SET status = 3 WHERE account_id = ? AND context_id = ?',
+                [$account->getId(), $account->getPortal()?->getId()]
+            );
     }
 
     private function authenticatedUsername(): ?string
