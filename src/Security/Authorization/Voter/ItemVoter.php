@@ -293,11 +293,9 @@ class ItemVoter extends Voter
     private function canEnter(cs_item|PortalProxy $item, $currentUser, $user): bool
     {
         if ($item->isPrivateRoom()) {
-            // A private room is a single user's personal dashboard. Only its
-            // owner may enter it. Without this check anyone who knows (or
-            // guesses) a private-room id could reach that user's dashboard
-            // and, via /room/{id}/all, the portal-wide room list — even as a
-            // guest. Identity is keyed by account_id (see cs_user_item).
+            // A private room is a single user's personal dashboard, so only
+            // its owner may enter it. Identity is keyed by account_id (see
+            // cs_user_item).
             // (The root account is already short-circuited in voteOnAttribute.)
             if (!$item instanceof cs_privateroom_item || !$user instanceof Account) {
                 return false;

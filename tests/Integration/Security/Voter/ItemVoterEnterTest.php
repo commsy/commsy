@@ -255,10 +255,9 @@ final class ItemVoterEnterTest extends KernelTestCase
     }
 
     // ---------- Private rooms: a private room is a single user's personal
-    //            dashboard. The voter used to return true for ANY private
-    //            room, which let anyone reach a foreign dashboard — and, via
-    //            /room/{id}/all, the portal-wide room list — merely by knowing
-    //            (or guessing) a private-room id. Entry is now owner-only.
+    //            dashboard, so entry is owner-only. RoomController guards its
+    //            whole class with ITEM_ENTER, which makes this one rule cover
+    //            every route of that controller.
 
     public function testNonOwnerCannotEnterForeignPrivateRoom(): void
     {
