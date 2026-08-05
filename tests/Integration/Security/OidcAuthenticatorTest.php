@@ -12,6 +12,7 @@ use App\Security\OidcAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Tests\Factory\AccountFactory;
 use Tests\Factory\AuthSourceOIDCFactory;
 use Tests\Factory\PortalFactory;
@@ -61,7 +62,7 @@ class OidcAuthenticatorTest extends KernelTestCase
         $oidcAuthenticator = $container->get(OidcAuthenticator::class);
 
         $request = new Request();
-        $request->setSession(new Session());
+        $request->setSession(new Session(new MockArraySessionStorage()));
         $request->attributes->add(['context' => $portal->getId()]);
         $oidcAuthenticator->authenticate($request);
 
@@ -121,7 +122,7 @@ class OidcAuthenticatorTest extends KernelTestCase
         $oidcAuthenticator = $container->get(OidcAuthenticator::class);
 
         $request = new Request();
-        $request->setSession(new Session());
+        $request->setSession(new Session(new MockArraySessionStorage()));
         $request->attributes->add(['context' => $portal->getId()]);
         $oidcAuthenticator->authenticate($request);
 
@@ -181,7 +182,7 @@ class OidcAuthenticatorTest extends KernelTestCase
         $oidcAuthenticator = $container->get(OidcAuthenticator::class);
 
         $request = new Request();
-        $request->setSession(new Session());
+        $request->setSession(new Session(new MockArraySessionStorage()));
         $request->attributes->add(['context' => $portal->getId()]);
         $oidcAuthenticator->authenticate($request);
 
