@@ -14,6 +14,8 @@
 namespace App\Notification;
 
 use App\Entity\Notification;
+use App\Rubric\Label\LabelType;
+use App\Rubric\RubricType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -26,13 +28,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class NotificationLinkResolver
 {
     private const DETAIL_ROUTES = [
-        'announcement' => 'app_announcement_detail',
-        'material' => 'app_material_detail',
-        'date' => 'app_date_detail',
-        'discussion' => 'app_discussion_detail',
-        'todo' => 'app_todo_detail',
-        'group' => 'app_group_detail',
-        'topic' => 'app_topic_detail',
+        RubricType::Announcement->value => 'app_announcement_detail',
+        RubricType::Material->value => 'app_material_detail',
+        RubricType::Date->value => 'app_date_detail',
+        RubricType::Discussion->value => 'app_discussion_detail',
+        RubricType::Todo->value => 'app_todo_detail',
+        LabelType::Group->value => 'app_group_detail',
+        LabelType::Topic->value => 'app_topic_detail',
     ];
 
     public function __construct(
