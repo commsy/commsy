@@ -94,6 +94,14 @@
                 <source>createdBy</source>
                 <target>Created by: %name%</target>
             </trans-unit>
+            <trans-unit id="title.room">
+                <source>title.room</source>
+                <target>Recent activity in this workspace</target>
+            </trans-unit>
+            <trans-unit id="title.dashboard">
+                <source>title.dashboard</source>
+                <target>Recent activity from my workspaces</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
