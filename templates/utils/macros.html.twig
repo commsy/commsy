@@ -273,8 +273,13 @@
     </a>
 {% endmacro %}
 
+{# user may be null: creator_id is nullable and unset on system-created
+   accounts. That is not the same as a deleted person, so it gets a dash
+   rather than the "deleted person" label. #}
 {% macro userFullname(user) %}
-    {% if not user.isDeleted %}
+    {% if user is null %}
+        -
+    {% elseif not user.isDeleted %}
         {{user.Fullname}}
     {% else %}
         {{ "deleted person"|trans({}, 'user')}}
