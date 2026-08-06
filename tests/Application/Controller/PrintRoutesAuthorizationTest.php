@@ -161,8 +161,8 @@ class PrintRoutesAuthorizationTest extends AbstractApplicationTestCase
      * does not by itself grant access to an entry living somewhere else.
      *
      * Browsed through a room created here rather than through the story room,
-     * whose type RoomFactory picks at random: the rule below only holds outside
-     * community rooms, and the very next test pins why.
+     * whose type RoomFactory picks at random — the room type has no bearing on
+     * the outcome, but a test should not depend on a dice roll to say so.
      */
     public function testRoomIdMustMatchTheRequestedItem(): void
     {
@@ -178,21 +178,14 @@ class PrintRoutesAuthorizationTest extends AbstractApplicationTestCase
     }
 
     /**
-     * Characterization, not an endorsement: in a community room a logged-in
-     * member sees every person of the portal, including one whose entry lives
-     * in a room they are no member of.
+     * A community room is bound by the same rule. It is worth a case of its own
+     * because it used to be the exception: membership in the room being browsed
+     * was enough, whatever context the requested entry belonged to.
      *
-     * UserViewChecker::canSeeInCommunityRoom() accepts the viewer as soon as
-     * their context matches the room being browsed, and then grants on
-     * `$actor->isUser() && $target->isVisibleForLoggedIn()` — the latter is
-     * hard-true, faithfully reproducing the legacy rule. The print route
-     * inherits that, exactly like the detail view it mirrors.
-     *
-     * Pinned so the ITEM_SEE guard added alongside cannot be mistaken for a
-     * tighter rule than it is, and so a later change to that visibility rule
-     * shows up here rather than silently.
+     * The wider rule lives in {@see \Tests\Application\CommunityRoomUserVisibilityTest};
+     * here it is pinned for the print route, which mirrors the detail view.
      */
-    public function testCommunityRoomLetsAMemberPrintAnyPersonOfThePortal(): void
+    public function testCommunityRoomIsBoundByTheSameRule(): void
     {
         $communityRoomId = $this->createRoomWithMember('community');
 
@@ -200,7 +193,9 @@ class PrintRoutesAuthorizationTest extends AbstractApplicationTestCase
 
         $this->client->request('GET', "/room/$communityRoomId/user/$this->foreignUserItemId/print");
 
-        $this->assertResponseIsSuccessful();
+        $this->assertAccessDenied(
+            'a community room grants no access to an entry of a room the caller is no member of'
+        );
     }
 
     /**

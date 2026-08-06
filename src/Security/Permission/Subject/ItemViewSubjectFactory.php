@@ -19,6 +19,7 @@ use App\Entity\Discussionarticles;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityNotFoundException;
 
 /**
  * Builds an {@see ItemViewSubject} from an Item-domain entity
@@ -127,7 +128,19 @@ final readonly class ItemViewSubjectFactory
         if ($preloadedContext !== null && $preloadedContext->getItemId() === $contextId) {
             return $preloadedContext->getDeletionDate() !== null;
         }
-        $room = $this->roomRepository->find($contextId);
-        return $room === null || $room->getDeletionDate() !== null;
+        try {
+            $room = $this->roomRepository->find($contextId);
+
+            return $room === null || $room->getDeletionDate() !== null;
+        } catch (EntityNotFoundException) {
+            // The context id belongs to no room at all — a portal-level row
+            // carries the portal's id in `context_id`, and `User.room` maps
+            // that column onto Room.item_id. Doctrine therefore hands out an
+            // uninitialized Room proxy that throws on first access instead of
+            // the null this method already handles above. Same verdict either
+            // way: without a resolvable room context there is nothing to grant
+            // access to.
+            return true;
+        }
     }
 }

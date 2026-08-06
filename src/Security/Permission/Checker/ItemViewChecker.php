@@ -35,8 +35,9 @@ use App\Security\Permission\Subject\ItemViewSubject;
  *   4. The actor's username is registered as external viewer for the
  *      item (per-item allow-list, used in private rooms) → true.
  *   5. Guest fallback: the *current browsing context* is a community
- *      room with `openForGuests = true`, the actor has guest or
- *      requested status, and the entry is activated → true.
+ *      room with `openForGuests = true`, the entry belongs to that very
+ *      room, the actor holds guest, rejected or requested status, and
+ *      the entry is activated → true. Read access only.
  *
  * Else: false.
  *
@@ -111,9 +112,27 @@ final readonly class ItemViewChecker
             return true;
         }
 
-        // 5. Guest fallback: community room w/ guest access + actor is
-        //    guest/requested + item is activated.
+        // 5. Guest fallback: the guest of a community room that is open for
+        //    guests sees the activated entries *of that room*.
+        //
+        //    Two conditions carry weight here beyond the legacy body.
+        //
+        //    The context comparison: without it the branch asks only where
+        //    the actor is browsing and never which context the entry belongs
+        //    to, so a guest-open room would hand out every activated item of
+        //    every room and every portal. Sub-entries stay reachable —
+        //    sections and discussion articles carry their room as context_id,
+        //    not their parent item.
+        //
+        //    isGuest() is status 0, which also covers someone whose join
+        //    request was rejected, and isRequested() covers a pending one.
+        //    Both are deliberate: the room is open to any passer-by, so
+        //    having asked to join — and having been turned down — cannot
+        //    leave you with less than someone who never asked. Reading is
+        //    all this grants; writing runs through attributes that require
+        //    membership.
         if ($currentContext !== null
+            && $subject->contextId === $currentContext->getItemId()
             && $this->reachableViaGuestAccess($currentContext)
             && ($actor->isGuest() || $actor->isRequested())
             && !$subject->isDeactivated

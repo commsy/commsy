@@ -38,82 +38,66 @@ final class UserViewCheckerTest extends TestCase
         $this->checker = new UserViewChecker($this->subjectFactory, $this->itemViewChecker);
     }
 
-    // ---- Community-room branch
+    // ---- Community rooms take the same path as every other room
 
-    public function testCommunityRoomGrantsRoot(): void
-    {
-        $room = $this->communityRoom(itemId: 7);
-        $actor = (new User())->setStatus(3)->setUserId('root');
-        $target = $this->user(contextId: 7, userId: 'bob', visible: 1);
-
-        self::assertTrue($this->checker->canSee($actor, $target, $room));
-    }
-
-    public function testCommunityRoomGuestSeesOnlyVisibleForAllTargets(): void
-    {
-        $room = $this->communityRoom(itemId: 7);
-        $guest = $this->user(contextId: 7, userId: 'guest', status: 0);
-
-        $visibleForAll = $this->user(contextId: 7, userId: 'bob', visible: 2);
-        $visibleForLoggedIn = $this->user(contextId: 7, userId: 'carol', visible: 1);
-
-        self::assertTrue($this->checker->canSee($guest, $visibleForAll, $room));
-        self::assertFalse($this->checker->canSee($guest, $visibleForLoggedIn, $room));
-    }
-
-    public function testCommunityRoomLoggedInUserSeesAnyTargetInSameContext(): void
+    public function testCommunityRoomDeniesWhenItemViewCheckerDenies(): void
     {
         $room = $this->communityRoom(itemId: 7);
         $actor = $this->user(contextId: 7, userId: 'alice', status: 2);
-        $target = $this->user(contextId: 7, userId: 'bob', visible: 1);
+        $target = $this->user(contextId: 42, userId: 'bob');
+
+        $this->subjectFactory->method('fromItem')->willReturn($this->subject());
+        $this->itemViewChecker->method('canSee')->willReturn(false);
+
+        self::assertFalse(
+            $this->checker->canSee($actor, $target, $room),
+            'a community room grants no access of its own — the generic check decides',
+        );
+    }
+
+    public function testCommunityRoomGrantsWhenItemViewCheckerGrants(): void
+    {
+        $room = $this->communityRoom(itemId: 7);
+        $actor = $this->user(contextId: 7, userId: 'alice', status: 2);
+        $target = $this->user(contextId: 7, userId: 'bob');
+
+        $this->subjectFactory->method('fromItem')->willReturn($this->subject());
+        $this->itemViewChecker->method('canSee')->willReturn(true);
 
         self::assertTrue($this->checker->canSee($actor, $target, $room));
     }
 
-    public function testCommunityRoomDeniesWhenActorContextDiffersFromTargetAndRoom(): void
+    /**
+     * The rubric gate reaches community rooms too. The removed branch used
+     * to skip it, so a community room with the user rubric switched off
+     * still showed its entries.
+     */
+    public function testCommunityRoomHidesOtherUsersWhenRubricIsOff(): void
     {
-        $room = $this->communityRoom(itemId: 7);
-        // Actor in unrelated context 99, target in 42, room is 7 — no match.
-        $actor = $this->user(contextId: 99, userId: 'alice', status: 2);
-        $target = $this->user(contextId: 42, userId: 'bob', visible: 1);
+        $room = $this->communityRoom(itemId: 7, homeConf: 'material_grid,date_list');
+        $actor = $this->user(contextId: 7, userId: 'alice', status: 2);
+        $target = $this->user(contextId: 7, userId: 'bob');
+
+        $this->subjectFactory->method('fromItem')->willReturn($this->subject());
+        $this->itemViewChecker->method('canSee')->willReturn(true);
 
         self::assertFalse($this->checker->canSee($actor, $target, $room));
     }
 
-    public function testCommunityRoomGrantsSelfWhenContextsAlign(): void
+    /**
+     * `visible = 2` carries no weight of its own any more — it was only ever
+     * read by the removed branch, and nothing in the product sets it.
+     */
+    public function testVisibleForAllDoesNotGrantOnItsOwn(): void
     {
         $room = $this->communityRoom(itemId: 7);
-        // Actor is a guest in the same room (status 0 + visible 1 target
-        // would otherwise deny via the guest-only-visible-for-all branch),
-        // but actor & target share the (userId, authSource) pair so the
-        // legacy self sub-condition grants — same context lets us in.
-        $actor = $this->user(contextId: 7, userId: 'alice', authSource: 5, status: 0);
-        $target = $this->user(contextId: 7, userId: 'alice', authSource: 5, visible: 1);
+        $guest = $this->user(contextId: 7, userId: 'guest', status: 0);
+        $visibleForAll = $this->user(contextId: 42, userId: 'bob', visible: 2);
 
-        self::assertTrue($this->checker->canSee($actor, $target, $room));
-    }
+        $this->subjectFactory->method('fromItem')->willReturn($this->subject());
+        $this->itemViewChecker->method('canSee')->willReturn(false);
 
-    public function testCommunityRoomDeniesSelfAcrossContextMismatch(): void
-    {
-        $room = $this->communityRoom(itemId: 7);
-        // Same identity but actor's context doesn't match the target's
-        // context OR the current room — legacy precondition fails first.
-        $actor = $this->user(contextId: 99, userId: 'alice', authSource: 5, status: 1);
-        $target = $this->user(contextId: 42, userId: 'alice', authSource: 5, visible: 1);
-
-        self::assertFalse(
-            $this->checker->canSee($actor, $target, $room),
-            'Self-recognition requires the context precondition to hold',
-        );
-    }
-
-    public function testCommunityRoomGrantsModerator(): void
-    {
-        $room = $this->communityRoom(itemId: 7);
-        $actor = $this->user(contextId: 7, userId: 'mod', status: 3);
-        $target = $this->user(contextId: 7, userId: 'bob', visible: 1);
-
-        self::assertTrue($this->checker->canSee($actor, $target, $room));
+        self::assertFalse($this->checker->canSee($guest, $visibleForAll, $room));
     }
 
     // ---- Default branch (non-community)
@@ -225,9 +209,12 @@ final class UserViewCheckerTest extends TestCase
         return $u;
     }
 
-    private function communityRoom(int $itemId): Room
+    private function communityRoom(int $itemId, string $homeConf = 'user_view,material_grid'): Room
     {
-        return (new Room())->setItemId($itemId)->setType('community');
+        return (new Room())
+            ->setItemId($itemId)
+            ->setType('community')
+            ->setExtras(['HOMECONF' => $homeConf]);
     }
 
     private function projectRoom(int $itemId, string $homeConf = 'user_view,material_grid'): Room

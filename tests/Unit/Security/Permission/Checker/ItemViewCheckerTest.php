@@ -201,6 +201,29 @@ final class ItemViewCheckerTest extends TestCase
 
         self::assertTrue($this->checker->canSee(
             $actor,
+            $this->subject(contextId: 10),
+            $currentRoom,
+        ));
+    }
+
+    /**
+     * The guest branch is bounded by the room that granted guest access: it
+     * carries no membership, so without this the room would hand out every
+     * activated entry of every other room and portal.
+     */
+    public function testGuestCannotSeeAnItemOfAnotherContext(): void
+    {
+        $actor = (new User())->setStatus(0)->setUserId('guest');
+        $this->externalViewerChecker->method('isViewerOf')->willReturn(false);
+
+        $currentRoom = (new Room())
+            ->setItemId(10)
+            ->setType('community')
+            ->setStatus('1')
+            ->setOpenForGuests(true);
+
+        self::assertFalse($this->checker->canSee(
+            $actor,
             $this->subject(contextId: 42),
             $currentRoom,
         ));
@@ -219,7 +242,7 @@ final class ItemViewCheckerTest extends TestCase
 
         self::assertFalse($this->checker->canSee(
             $actor,
-            $this->subject(contextId: 42, isDeactivated: true),
+            $this->subject(contextId: 10, isDeactivated: true),
             $currentRoom,
         ));
     }
@@ -258,7 +281,7 @@ final class ItemViewCheckerTest extends TestCase
 
         self::assertTrue($this->checker->canSee(
             $actor,
-            $this->subject(contextId: 42),
+            $this->subject(contextId: 10),
             $currentRoom,
         ));
     }

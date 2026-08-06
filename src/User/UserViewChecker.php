@@ -17,23 +17,26 @@ namespace App\User;
 
 use App\Entity\Room;
 use App\Entity\User;
-use App\Room\RoomType;
 use App\Security\Permission\Checker\ItemViewChecker;
 use App\Security\Permission\Subject\ItemViewSubjectFactory;
 
 /**
- * Doctrine-only port of `cs_user_item::maySee`.
+ * Doctrine-only replacement for `cs_user_item::maySee`.
  *
- * Users are special among items: the legacy implementation branches on
- * the *current browsing context* — community rooms have their own
- * visibility rules (driven by `user.visible` + actor guest/member
- * status), every other room type plus the portal context defer to the
- * generic item-visibility checker and then layer an extra "is the user
- * rubric switched on in this room?" gate on top.
+ * A user entry belongs to a context — a room, or the portal. Seeing one
+ * requires sharing that context, which is what the generic item checker
+ * establishes; on top of it sits the room's own "is the user rubric
+ * switched on?" gate.
  *
- * Mirrored 1:1 here; the only behavioural normalisation vs. the legacy
- * body is the dead-code branch removed (`if (!$room->withRubric(...))`
- * inside an else-of-the-same-condition was unreachable).
+ * The legacy body carried a second branch for community rooms that
+ * skipped the target entirely: it asked where the *actor* was and then
+ * granted on `isVisibleForLoggedIn()`, which is hard-coded true. A
+ * community room is a room like any other, not a portal directory, so
+ * that branch is gone and community rooms take the same path as every
+ * other room type. Guests keep their access through the generic
+ * checker's `openForGuests` branch, which reads a setting that is
+ * actually maintained — unlike the `user.visible` column the legacy
+ * branch consulted, which no code path ever sets to "visible for all".
  */
 final readonly class UserViewChecker
 {
@@ -51,54 +54,6 @@ final readonly class UserViewChecker
      *                               (portals aren't Rooms in Doctrine).
      */
     public function canSee(User $actor, User $target, ?Room $currentRoom = null): bool
-    {
-        if ($currentRoom !== null && $this->isCommunityRoom($currentRoom)) {
-            return $this->canSeeInCommunityRoom($actor, $target, $currentRoom);
-        }
-
-        return $this->canSeeOutsideCommunityRoom($actor, $target, $currentRoom);
-    }
-
-    /**
-     * Community-room branch — guest visibility is the discriminator.
-     */
-    private function canSeeInCommunityRoom(User $actor, User $target, Room $currentRoom): bool
-    {
-        if ($actor->isRoot()) {
-            return true;
-        }
-
-        // Guests only see users explicitly flagged `visible = 2`.
-        if ($actor->isGuest() && $target->isVisibleForAll()) {
-            return true;
-        }
-
-        // Context match: viewer is in the target's home context, or in
-        // the current community room context.
-        $actorContext = $actor->getContextId();
-        if ($actorContext !== $target->getContextId()
-            && $actorContext !== $currentRoom->getItemId()
-        ) {
-            return false;
-        }
-
-        // Logged-in viewer — legacy `isVisibleForLoggedIn()` is hard-true.
-        if ($actor->isUser() && $target->isVisibleForLoggedIn()) {
-            return true;
-        }
-
-        if ($this->isSameAccountIdentity($actor, $target)) {
-            return true;
-        }
-
-        return $actor->isModerator();
-    }
-
-    /**
-     * Default branch: defer to {@see ItemViewChecker}, then apply the
-     * room-rubric overlay (only if a Room is the browsing context).
-     */
-    private function canSeeOutsideCommunityRoom(User $actor, User $target, ?Room $currentRoom): bool
     {
         $subject = $this->subjectFactory->fromItem($target, $currentRoom);
         if (!$this->itemViewChecker->canSee($actor, $subject, $currentRoom)) {
@@ -123,11 +78,6 @@ final readonly class UserViewChecker
             return true;
         }
         return $actor->isModerator();
-    }
-
-    private function isCommunityRoom(Room $room): bool
-    {
-        return RoomType::tryFromLegacyString($room->getType()) === RoomType::Community;
     }
 
     /**

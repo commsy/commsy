@@ -17,7 +17,6 @@ namespace Tests\Integration\Security\Voter;
 
 use App\Rubric\Material\MaterialDeleter;
 use App\Security\Authorization\Voter\ItemVoter;
-use Doctrine\ORM\EntityNotFoundException;
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Factory\MaterialFactory;
@@ -309,18 +308,20 @@ final class ItemVoterSeeTest extends KernelTestCase
         );
     }
 
-    // ---- SEE on PORTAL-level user items is currently UNUSABLE.
+    // ---- SEE on PORTAL-level user items is refused, and that is deliberate.
     //
-    //      This is a defect, pinned here rather than endorsed. ItemVoter::EDIT
-    //      handles the same subjects fine (see ItemVoterEditTest), so nothing
-    //      but SEE is affected — and no production caller asks SEE for a
-    //      portal-level user today, which is why it has gone unnoticed.
+    //      App\Entity\User::$room is mapped onto `context_id`. For a portal-level
+    //      user that column holds a PORTAL id, so the association points at a Room
+    //      row that does not exist and Doctrine hands out a proxy that throws on
+    //      first access. ItemViewSubjectFactory catches that and treats a context
+    //      it cannot resolve to a room the same way it treats a deleted one.
     //
-    //      When the mapping is fixed, replace this with the real assertions:
-    //      moderator sees a user of their own portal, and — since the read
-    //      path never compares portals — a user of a foreign portal too.
+    //      Refusing is the right answer rather than a stopgap: a portal-level row
+    //      is the technical anchor of an account, not a profile anyone navigates
+    //      to, and nothing links there. ItemVoter::EDIT handles these subjects on
+    //      its own path (see ItemVoterEditTest) and is unaffected.
 
-    public function testSeeOnAPortalLevelUserItemThrowsBecauseItsContextIsNotARoom(): void
+    public function testSeeOnAPortalLevelUserItemIsRefused(): void
     {
         $targetAccount = $this->createPortalAccount();
         $targetUserId = $this->portalUserItemId($targetAccount);
@@ -329,18 +330,13 @@ final class ItemVoterSeeTest extends KernelTestCase
         $this->promoteToPortalModerator($modAccount);
         $this->loginAs($modAccount);
 
-        // App\Entity\User::$room is mapped onto `context_id`. For a portal-level
-        // user that column holds a PORTAL id, so the association points at a
-        // Room row that does not exist. UserViewChecker hands the target to
-        // ItemViewSubjectFactory, whose isContextDeleted() resolves that id
-        // through RoomRepository; the uninitialised proxy throws on first
-        // access. The portal comparison is never reached.
-        $this->expectException(EntityNotFoundException::class);
-
-        $this->authChecker->isGranted(ItemVoter::SEE, $targetUserId);
+        self::assertFalse(
+            $this->authChecker->isGranted(ItemVoter::SEE, $targetUserId),
+            'a portal-level user item has no room context to grant access through',
+        );
     }
 
-    public function testSeeOnAForeignPortalUserItemFailsTheSameWay(): void
+    public function testSeeOnAForeignPortalUserItemIsRefusedTheSameWay(): void
     {
         $foreignPortal = PortalFactory::createOne();
         $foreignAccount = $this->createPortalAccount(portal: $foreignPortal);
@@ -350,11 +346,9 @@ final class ItemVoterSeeTest extends KernelTestCase
         $this->promoteToPortalModerator($modAccount);
         $this->loginAs($modAccount);
 
-        // Same crash, different portal — proof the failure is about the
-        // context mapping, not about the portal boundary.
-        $this->expectException(EntityNotFoundException::class);
-
-        $this->authChecker->isGranted(ItemVoter::SEE, $foreignUserId);
+        // Same verdict, different portal — the refusal is about the missing room
+        // context, so it does not depend on the portal boundary either way.
+        self::assertFalse($this->authChecker->isGranted(ItemVoter::SEE, $foreignUserId));
     }
 
     // ---------------------------------------------------------------- setup
