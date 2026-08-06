@@ -626,7 +626,7 @@ class TodoController extends BaseController
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
-            'roomCategories' => 'roomCategories',
+            'roomCategories' => $infoArray['roomCategories'],
         ]);
 
         return $printService->buildPdfResponse($html);

@@ -47,37 +47,37 @@
 
                         {# links #}
                         <div>
-                            {{ macros.links(item,showHashtags,showCategories) }}
+                            {{ macros.links(item,showHashtags,showCategories,roomCategories) }}
                         </div>
 
 
                     </article>
 
-                {% if readerList is not empty %}
+                {% if stepList is not empty %}
                     <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
                         <div class="uk-grid">
                             <div class="uk-text-large">
-                                {{ 'Abschnitte'|trans({})|capitalize }}
+                                {{ 'steps'|trans({})|capitalize }}
                             </div>
                         </div>
                     </div>
-                    {# announcement sections #}
-                    {% for section in readerList %}
+                    {# a todo has steps, not sections #}
+                    {% for step in stepList %}
 
                             <article class="uk-article uk-position-relative page-break-inside">
                                 {# title #}
                                 <div>
-                                    {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
+                                    {{ macros.title(step, modifierList, userCount, readCount, readSinceModificationCount) }}
                                 </div>
 
                                 {# description #}
                                 <div>
-                                    {{ macros.itemDescription(section, section.description) }}
+                                    {{ macros.itemDescription(step, step.description) }}
                                 </div>
 
                                 {# files #}
                                 <div>
-                                    {{ macros.files(section) }}
+                                    {{ macros.files(step) }}
                                     <hr>
                                 </div>
                             </article>

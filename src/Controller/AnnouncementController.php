@@ -439,8 +439,9 @@ class AnnouncementController extends BaseController
             'showHashtags' => $infoArray['showHashtags'],
             'buzzExpanded' => $infoArray['buzzExpanded'],
             'catzExpanded' => $infoArray['catzExpanded'],
-            'itions' => $infoArray['showAssociations'],
+            'showAssociations' => $infoArray['showAssociations'],
             'showCategories' => $infoArray['showCategories'],
+            'roomCategories' => $infoArray['categories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
         ]);

@@ -476,6 +476,7 @@ class TopicController extends BaseController
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/print')]
     public function print(
+        CategoryService $categoryService,
         PrintService $printService,
         int $roomId,
         int $itemId
@@ -484,6 +485,16 @@ class TopicController extends BaseController
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
+
+        // Same shape as detail(): getDetailInfo() does not carry the category
+        // tree, so it is built here for the template's nested tag list.
+        $categories = [];
+        if ($this->currentContextResolver->getContextItem()->withTags()) {
+            $categories = $this->getTagDetailArray(
+                $categoryService->getTags($roomId),
+                $infoArray['topic']->getTagsArray()
+            );
+        }
 
         $html = $this->renderView('topic/detail_print.html.twig', [
             'roomId' => $roomId,
@@ -508,7 +519,7 @@ class TopicController extends BaseController
             'catzExpanded' => $infoArray['catzExpanded'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
-            'roomCategories' => 'roomCategories',
+            'roomCategories' => $categories,
         ]);
 
         return $printService->buildPdfResponse($html);
