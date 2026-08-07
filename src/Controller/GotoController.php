@@ -19,13 +19,26 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class GotoController extends AbstractController
 {
     /**
+     * Resolves an item id to its detail page.
+     *
+     * The redirect target names the item's type and its room, so resolving
+     * happens only once the caller is authenticated.
+     *
+     * Deep links keep working. An anonymous caller is sent to the login form
+     * with this URL remembered as the target path, so after signing in they
+     * are returned here and forwarded to the item as before — the link that
+     * survives the login is `/goto/{itemId}` rather than the resolved one.
+     *
      * @throws Exception
      */
     #[Route(path: '/goto/{itemId}')]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function goto(
         EntityManagerInterface $entityManager,
         int $itemId
@@ -53,11 +66,19 @@ class GotoController extends AbstractController
             return $this->redirectToRoute('app_room_home', [
                 'roomId' => $item['item_id'],
             ]);
-        } else {
-            // redirect to detail
+        }
+
+        try {
             return $this->redirectToRoute('app_'.$item['type'].'_detail', [
                 'roomId' => $item['context_id'],
                 'itemId' => $item['item_id'],
+            ]);
+        } catch (RouteNotFoundException) {
+            // Sub-entries such as sections and steps have no detail page of
+            // their own. Fall back to the containing room instead of failing
+            // with a 500.
+            return $this->redirectToRoute('app_room_home', [
+                'roomId' => $item['context_id'],
             ]);
         }
     }
