@@ -643,6 +643,9 @@ class ItemController extends AbstractController
         ItemService $itemService,
         LegacyEnvironment $legacyEnvironment,
         int $roomId,
+        // Named as the subject of the IsGranted attribute above, so it has to
+        // exist as an argument even though the body does not read it.
+        int $itemId,
         $feedAmount
     ): Response {
         $environment = $legacyEnvironment->getEnvironment();
