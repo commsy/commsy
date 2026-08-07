@@ -18,6 +18,7 @@ use App\Twig\Components\DTO\FileDto;
 use App\WOPI\Discovery\DiscoveryService;
 use App\WOPI\Permission\WOPIPermission;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -56,11 +57,12 @@ final class FileListItem
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     #[IsGranted('ITEM_FILE_LOCK', subject: 'itemId')]
     public function renameFile(
-        /** @noinspection PhpUnusedParameterInspection */
         #[LiveArg] int $itemId,
         EntityManagerInterface $entityManager
     ): void
     {
+        $this->denyUnlessSubjectOwnsThisFile($itemId);
+
         if ($this->renameMode) {
             $fileRepository = $entityManager->getRepository(Files::class);
 
@@ -84,11 +86,12 @@ final class FileListItem
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     #[IsGranted('ITEM_FILE_LOCK', subject: 'itemId')]
     public function removeFile(
-        /** @noinspection PhpUnusedParameterInspection */
         #[LiveArg] int $itemId,
         #[LiveArg] bool $confirmed = false
     ): void
     {
+        $this->denyUnlessSubjectOwnsThisFile($itemId);
+
         if ($confirmed) {
             $this->emitUp('FileListItem:fileRemoved', [
                 'fileId' => $this->fileDto->fileId,
@@ -96,6 +99,19 @@ final class FileListItem
         }
 
         $this->deleteMode = !$this->deleteMode;
+    }
+
+    /**
+     * The permission attributes above can only name a method argument as
+     * their subject, and arguments arrive from the client. The file these
+     * actions work on comes from the signed props, so the two have to be
+     * the same entry for the check to cover the effect.
+     */
+    private function denyUnlessSubjectOwnsThisFile(int $itemId): void
+    {
+        if ($itemId !== $this->itemId) {
+            throw new AccessDeniedException('The checked item is not the one this file belongs to.');
+        }
     }
 
     public function supportsOnlineOffice(FileDto $file): bool

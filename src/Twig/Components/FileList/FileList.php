@@ -33,6 +33,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -203,10 +204,11 @@ final class FileList extends AbstractController
         CurrentContextResolver $currentContextResolver,
         EntityManagerInterface $entityManager,
         #[LiveArg] string $type,
-        /** @noinspection PhpUnusedParameterInspection */
         #[LiveArg] int $itemId
     ): void
     {
+        $this->denyUnlessSubjectIsThisItem($itemId);
+
         $environment = $legacyEnvironment->getEnvironment();
 
         try {
@@ -249,6 +251,19 @@ final class FileList extends AbstractController
         sort($extensions);
 
         return $extensions;
+    }
+
+    /**
+     * The permission attribute can only name a method argument as its
+     * subject, and arguments arrive from the client. The entry this action
+     * works on is the one held in the signed props, so the two have to be
+     * the same value for the check to mean what it says.
+     */
+    private function denyUnlessSubjectIsThisItem(int $itemId): void
+    {
+        if ($itemId !== $this->itemId) {
+            throw new AccessDeniedException();
+        }
     }
 
     private function updateIndex(): void

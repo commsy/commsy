@@ -21,9 +21,12 @@ use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 
 /**
  * Pins {@see \App\Twig\Components\FileList\FileListItem}: per-file
- * inline editing component. Pure mount/render coverage — the rename
- * and remove LiveActions sit behind `#[IsGranted]` and are exercised
- * by the controller-level test suite where a real user is logged in.
+ * inline editing component. Pure mount/render coverage.
+ *
+ * The rename and remove LiveActions are covered by
+ * {@see FileListItemAuthorizationTest}, which drives them as a logged-in
+ * member. Their `#[IsGranted]` attributes alone were not enough: the
+ * subject they name comes from the client, not from the signed props.
  */
 final class FileListItemTest extends KernelTestCase
 {
