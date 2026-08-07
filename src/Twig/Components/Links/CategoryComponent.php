@@ -17,6 +17,7 @@ use App\Event\CommsyEditEvent;
 use App\Form\Model\Categories;
 use App\Form\Type\Item\ItemCategoryType;
 use App\Security\Authorization\Voter\CategoryVoter;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\LegacyEnvironment;
 use App\Utils\CategoryService;
 use App\Utils\ItemService;
@@ -30,7 +31,9 @@ use cs_environment;
 use cs_item;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -72,9 +75,24 @@ final class CategoryComponent extends AbstractController
         private readonly CategoryService $categoryService,
         private readonly RoomService $roomService,
         private readonly TreeBuilderInterface $treeBuilder,
+        private readonly Security $security,
         readonly LegacyEnvironment $environment
     ) {
         $this->legacyEnvironment = $environment->getEnvironment();
+    }
+
+    /**
+     * Editing an entry's categories requires the right to edit that entry.
+     *
+     * Checked against the signed `itemId` prop, not against an action
+     * argument: the client controls arguments, so a check on one of those
+     * would not be a check on the entry actually being changed.
+     */
+    private function denyUnlessItemEditable(): void
+    {
+        if (!$this->security->isGranted(ItemVoter::EDIT, $this->itemId)) {
+            throw new AccessDeniedException();
+        }
     }
 
     #[PostMount]
@@ -114,6 +132,8 @@ final class CategoryComponent extends AbstractController
     #[LiveAction]
     public function addCategory(CategoryService $categoryService): void
     {
+        $this->denyUnlessItemEditable();
+
         $this->submitForm(false);
 
         /** @var Categories $dto */
@@ -181,6 +201,8 @@ final class CategoryComponent extends AbstractController
         bool $fromButton = false
     ): void
     {
+        $this->denyUnlessItemEditable();
+
         $this->submitForm();
 
         /** @var Categories $categories */

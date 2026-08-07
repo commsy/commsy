@@ -24,6 +24,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
@@ -64,7 +65,12 @@ final class MailTextComponent extends AbstractController
         return $this->createForm(MailTextType::class, $this->mailText);
     }
 
+    // Editing portal mail texts is portal-moderator work, so the role is
+    // checked on every action rather than left to the page embedding this
+    // component. No subject: the voter then requires moderator rights on the
+    // actor's own portal, which cannot be steered from the client.
     #[LiveAction]
+    #[IsGranted('PORTAL_MODERATOR')]
     public function select(): void
     {
         $selected = $this->selectedMessageId();
@@ -77,6 +83,7 @@ final class MailTextComponent extends AbstractController
     }
 
     #[LiveAction]
+    #[IsGranted('PORTAL_MODERATOR')]
     public function resetContent(#[LiveArg] string $lang): void
     {
         if ('de' !== $lang && 'en' !== $lang) {
@@ -94,6 +101,7 @@ final class MailTextComponent extends AbstractController
     }
 
     #[LiveAction]
+    #[IsGranted('PORTAL_MODERATOR')]
     public function save(EntityManagerInterface $entityManager): void
     {
         $this->submitForm();

@@ -13,9 +13,12 @@
 
 namespace App\Twig\Components\Items;
 
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Utils\ItemService;
 use cs_context_item;
 use cs_item;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -41,12 +44,30 @@ final class DraftEdit extends AbstractController
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly ItemService $itemService,
+        private readonly Security $security,
     ) {
     }
+
+    /**
+     * Editing an entry's draft requires the right to edit that entry.
+     *
+     * Checked against the signed `itemId` prop, never against an action
+     * argument: arguments come from the client, so a check on one of those
+     * would not be a check on the entry actually being changed.
+     */
+    private function denyUnlessItemEditable(): void
+    {
+        if (!$this->security->isGranted(ItemVoter::EDIT, $this->itemId)) {
+            throw new AccessDeniedException();
+        }
+    }
+
 
     #[LiveAction]
     public function saveDraft(): void
     {
+        $this->denyUnlessItemEditable();
+
         $item = $this->itemService->getItem($this->itemId);
 
         /** @var cs_context_item $room */

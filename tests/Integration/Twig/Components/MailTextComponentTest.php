@@ -17,7 +17,9 @@ namespace Tests\Integration\Twig\Components;
 
 use App\Entity\Portal;
 use App\Form\Model\MailText;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 use Tests\Integration\Concerns\PrimesSession;
 use Tests\Story\AccountStory;
@@ -91,5 +93,34 @@ final class MailTextComponentTest extends KernelTestCase
         self::assertStringContainsString('data-controller="mailtexts-editor', $rendered);
         self::assertStringContainsString('data-action="mailtexts-editor#insert"', $rendered);
         self::assertStringContainsString('data-mailtexts-editor-token-param="{accountId}"', $rendered);
+    }
+
+    /**
+     * The actions write portal-wide mail texts, so the moderator role is
+     * established on every call rather than assumed from the page that
+     * embedded the component.
+     */
+    #[DataProvider('guardedActions')]
+    public function testActionsAreDeniedWithoutPortalModeratorRights(string $action, array $args = []): void
+    {
+        $component = $this->createLiveComponent(
+            name: 'mail_text',
+            data: [
+                'portal' => $this->portal,
+                'mailText' => new MailText(),
+            ],
+        );
+
+        $this->expectException(AccessDeniedException::class);
+        $component->call($action, $args);
+    }
+
+    public static function guardedActions(): iterable
+    {
+        yield 'select' => ['select'];
+        // Arguments are resolved before the security listener runs, so the
+        // LiveArg has to be supplied for the check to be what fails.
+        yield 'resetContent' => ['resetContent', ['lang' => 'de']];
+        yield 'save' => ['save'];
     }
 }

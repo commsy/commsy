@@ -18,7 +18,8 @@ namespace Tests\Integration\Twig\Components\Items;
 use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 use Tests\Factory\MaterialFactory;
 use Tests\Factory\RoomFactory;
@@ -38,7 +39,7 @@ use Zenstruck\Foundry\Attribute\WithStory;
  *    save event once all expected child events have arrived
  */
 #[WithStory(AccountStory::class)]
-final class DraftEditTest extends KernelTestCase
+final class DraftEditTest extends WebTestCase
 {
     use InteractsWithLiveComponents;
 
@@ -46,13 +47,22 @@ final class DraftEditTest extends KernelTestCase
     private Room $room;
     private User $roomUser;
 
+    private KernelBrowser $client;
+
     protected function setUp(): void
     {
-        self::bootKernel();
+        static::ensureKernelShutdown();
+        $this->client = static::createClient();
+        $this->client->disableReboot();
 
         $this->account = AccountStory::get('account');
+        $portalId = (int) $this->account->getPortal()?->getId();
+        $username = $this->account->getUsername();
+        // Transient — read it before any further factory clears the unit of work.
+        $password = (string) $this->account->getPlainPassword();
+
         $this->room = RoomFactory::new()->project()->create([
-            'contextId' => $this->account->getPortal()?->getId(),
+            'contextId' => $portalId,
             'portal' => $this->account->getPortal(),
         ]);
         $this->roomUser = RoomUserFactory::createOne([
@@ -60,6 +70,15 @@ final class DraftEditTest extends KernelTestCase
             'room' => $this->room,
             'status' => 2,
         ]);
+
+        // saveDraft triggers the tag/category saves, so it is guarded by
+        // ITEM_EDIT. That needs a real login plus a room visit: the component
+        // endpoint carries no roomId, so the legacy context has to come from
+        // the session — exactly as it does in a browser.
+        $this->client->request('GET', "/login/{$portalId}");
+        $this->client->submitForm('login_local', ['email' => $username, 'password' => $password]);
+        $this->client->followRedirect();
+        $this->client->request('GET', "/room/{$this->room->getItemId()}");
     }
 
     public function testMountsWithItemIdProp(): void
@@ -69,6 +88,7 @@ final class DraftEditTest extends KernelTestCase
         $component = $this->createLiveComponent(
             name: 'Items:DraftEdit',
             data: ['itemId' => $itemId],
+            client: $this->client,
         );
 
         $rendered = $component->render();
@@ -84,6 +104,7 @@ final class DraftEditTest extends KernelTestCase
         $component = $this->createLiveComponent(
             name: 'Items:DraftEdit',
             data: ['itemId' => $itemId],
+            client: $this->client,
         );
 
         $component->call('cancelDraft');
@@ -106,6 +127,7 @@ final class DraftEditTest extends KernelTestCase
         $component = $this->createLiveComponent(
             name: 'Items:DraftEdit',
             data: ['itemId' => $itemId],
+            client: $this->client,
         );
 
         $component->call('saveDraft');

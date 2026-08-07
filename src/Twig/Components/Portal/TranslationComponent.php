@@ -23,6 +23,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\Attribute\PostHydrate;
@@ -72,7 +73,11 @@ final class TranslationComponent extends AbstractController
         }
     }
 
+    // Editing portal-wide translations is moderator work. The hydration check
+    // below establishes that actor and translation belong to the same portal;
+    // this establishes the role. The two are complementary, not redundant.
     #[LiveAction]
+    #[IsGranted('PORTAL_MODERATOR')]
     public function select(): void
     {
         $translationId = $this->formValues['translation'];
@@ -84,6 +89,7 @@ final class TranslationComponent extends AbstractController
     }
 
     #[LiveAction]
+    #[IsGranted('PORTAL_MODERATOR')]
     public function save(EntityManagerInterface $entityManager): void
     {
         $this->submitForm();

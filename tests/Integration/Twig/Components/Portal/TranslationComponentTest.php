@@ -15,7 +15,9 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Twig\Components\Portal;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 use Tests\Integration\Concerns\PrimesSession;
 use Tests\Story\AccountStory;
@@ -56,5 +58,30 @@ final class TranslationComponentTest extends KernelTestCase
             $component->component()->currentTranslation,
             'initial mount keeps currentTranslation null — checkAccess stays bypassed',
         );
+    }
+
+    /**
+     * The actions edit portal-wide translations, so they require moderator
+     * rights on every call. The PostHydrate check covers the portal match,
+     * this covers the role.
+     */
+    #[DataProvider('guardedActions')]
+    public function testActionsAreDeniedWithoutPortalModeratorRights(string $action): void
+    {
+        $portalId = (int) AccountStory::get('account')->getPortal()?->getId();
+
+        $component = $this->createLiveComponent(
+            name: 'Portal:TranslationComponent',
+            data: ['portalId' => $portalId],
+        );
+
+        $this->expectException(AccessDeniedException::class);
+        $component->call($action);
+    }
+
+    public static function guardedActions(): iterable
+    {
+        yield 'select' => ['select'];
+        yield 'save' => ['save'];
     }
 }

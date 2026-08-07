@@ -19,9 +19,12 @@ use App\Form\Type\Item\ItemTagsType;
 use App\Utils\ItemService;
 use App\Utils\LabelService;
 use App\Utils\ReaderService;
+use App\Security\Authorization\Voter\ItemVoter;
 use App\Utils\RoomService;
 use cs_label_item;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -60,8 +63,24 @@ final class TagComponent extends AbstractController
     public function __construct(
         private readonly ItemService $itemService,
         private readonly RoomService $roomService,
+        private readonly Security $security,
     ) {
     }
+
+    /**
+     * Editing an entry's tags requires the right to edit that entry.
+     *
+     * Checked against the signed `itemId` prop, never against an action
+     * argument: arguments come from the client, so a check on one of those
+     * would not be a check on the entry actually being changed.
+     */
+    private function denyUnlessItemEditable(): void
+    {
+        if (!$this->security->isGranted(ItemVoter::EDIT, $this->itemId)) {
+            throw new AccessDeniedException();
+        }
+    }
+
 
     #[PostMount]
     public function loadTags(): void
@@ -117,6 +136,8 @@ final class TagComponent extends AbstractController
         bool $fromButton = false
     ): void
     {
+        $this->denyUnlessItemEditable();
+
         $this->submitForm();
 
         /** @var Tags $tags */
