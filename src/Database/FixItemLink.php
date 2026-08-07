@@ -25,8 +25,8 @@ class FixItemLink extends GeneralCheck
 {
     public function resolve(SymfonyStyle $io): bool
     {
-        $tablesWithItemLinks = ['annotations', 'announcement', 'dates', 'discussionarticles', 'discussions', 'labels',
-            'link_items', 'materials', 'room', 'section', 'server', 'step', 'tag', 'tasks',
+        $tablesWithItemLinks = ['annotations', 'announcement', 'assessments', 'dates', 'discussionarticles',
+            'discussions', 'labels', 'link_items', 'materials', 'room', 'section', 'server', 'step', 'tag', 'tasks',
             'todos', 'user', ];
 
         foreach ($tablesWithItemLinks as $tablesWithItemLink) {
