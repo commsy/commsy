@@ -23,8 +23,13 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
+// Steps are sub-entries of todos, which have no rubric attribute of their
+// own, so the front gate matches TodoController: entering the room is the
+// bar. Deletion itself stays authorised per item in DeleteAction.
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
 class StepController extends BaseController
 {
     private TodoService $todoService;

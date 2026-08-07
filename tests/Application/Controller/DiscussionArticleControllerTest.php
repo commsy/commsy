@@ -19,7 +19,7 @@ use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 #[WithStory(AccountStory::class)]
-class StepControllerTest extends AbstractApplicationTestCase
+class DiscussionArticleControllerTest extends AbstractApplicationTestCase
 {
     private Account $account;
     private int $roomId;
@@ -39,9 +39,12 @@ class StepControllerTest extends AbstractApplicationTestCase
 
     public function testXhrDeleteAcceptsXmlHttpRequest(): void
     {
+        // With selectAll=true and no matching items the delete action iterates
+        // over an empty set and returns a JSON response — this exercises the
+        // full guarded controller path for a room member.
         $this->client->request(
             'POST',
-            "/room/{$this->roomId}/step/xhr/delete",
+            "/room/{$this->roomId}/discussion_article/xhr/delete",
             [
                 'action' => 'delete',
                 'selectAll' => 'true',
@@ -53,30 +56,18 @@ class StepControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testXhrDeleteRejectsNonXhrRequest(): void
+    public function testDeleteRejectsNonXhrRequest(): void
     {
         $this->client->request(
             'POST',
-            "/room/{$this->roomId}/step/xhr/delete",
+            "/room/{$this->roomId}/discussion_article/xhr/delete",
             [
                 'action' => 'delete',
                 'selectAll' => 'true',
             ]
         );
 
-        $this->assertResponseStatusCodeSame(404);
-    }
-
-    public function testXhrChangeStatusRejectsNonXhrRequest(): void
-    {
-        $this->client->request(
-            'POST',
-            "/room/{$this->roomId}/step/xhr/changestatus/1",
-            [
-                'payload' => ['status' => 'done'],
-            ]
-        );
-
+        // The XHR `condition` on the route means a plain POST cannot match it.
         $this->assertResponseStatusCodeSame(404);
     }
 
@@ -86,7 +77,7 @@ class StepControllerTest extends AbstractApplicationTestCase
 
         $this->client->request(
             'POST',
-            "/room/{$this->roomId}/step/xhr/delete",
+            "/room/{$this->roomId}/discussion_article/xhr/delete",
             [
                 'action' => 'delete',
                 'selectAll' => 'true',

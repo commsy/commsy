@@ -22,7 +22,13 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// Sections are sub-entries of materials and have no rubric of their own,
+// so the front gate mirrors MaterialController: enter the room, material
+// rubric active. Deletion itself stays authorised per item in DeleteAction.
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_MATERIAL')]
 class SectionController extends BaseController
 {
     /**

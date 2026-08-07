@@ -15,6 +15,7 @@ namespace Tests\Application\Controller;
 
 use App\Entity\Account;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Factory\AccountFactory;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
@@ -69,5 +70,59 @@ class SectionControllerTest extends AbstractApplicationTestCase
 
         // The XHR `condition` on the route means a plain POST cannot match it.
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testXhrDeleteRedirectsAnonymousToLogin(): void
+    {
+        $this->logout();
+
+        $this->client->request(
+            'POST',
+            "/room/{$this->roomId}/section/xhr/delete",
+            [
+                'action' => 'delete',
+                'selectAll' => 'true',
+            ],
+            [],
+            ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']
+        );
+
+        // The class-level ITEM_ENTER gate turns anonymous callers away at the
+        // door instead of letting the request reach the delete action.
+        $this->assertResponseRedirects("/login/{$this->account->getContextId()}");
+    }
+
+    public function testXhrDeleteForbidsNonMember(): void
+    {
+        $outsiderPassword = 'outsider-secret';
+        $outsider = AccountFactory::createOne([
+            'portal' => $this->account->getPortal(),
+            'authSource' => $this->account->getAuthSource(),
+            'plainPassword' => $outsiderPassword,
+            'activityState' => Account::ACTIVITY_ACTIVE,
+            'locked' => false,
+        ]);
+
+        $this->logout();
+        $this->loginAsUser(
+            $outsider->getContextId(),
+            $outsider->getUsername(),
+            $outsiderPassword
+        );
+
+        $this->client->request(
+            'POST',
+            "/room/{$this->roomId}/section/xhr/delete",
+            [
+                'action' => 'delete',
+                'selectAll' => 'true',
+            ],
+            [],
+            ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']
+        );
+
+        // A logged-in user who is not a member of the room cannot enter it,
+        // so the gate denies the request before the delete action runs.
+        $this->assertResponseStatusCodeSame(403);
     }
 }

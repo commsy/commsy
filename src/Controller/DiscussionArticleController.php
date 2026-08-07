@@ -21,8 +21,14 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
 
+// Articles are sub-entries of discussions and have no rubric of their own,
+// so the front gate mirrors DiscussionController: enter the room, discussion
+// rubric active. Deletion itself stays authorised per item in DeleteAction.
+#[IsGranted('ITEM_ENTER', subject: 'roomId')]
+#[IsGranted('RUBRIC_DISCUSSION')]
 class DiscussionArticleController extends BaseController
 {
     protected DiscussionService $discussionService;
