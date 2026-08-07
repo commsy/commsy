@@ -19,7 +19,7 @@ use App\Entity\Discussionarticles;
 use App\Entity\Section;
 use App\Entity\Step;
 use App\Entity\User;
-use App\Repository\ItemRepository;
+use App\Item\TypedEntityResolver;
 use App\Rubric\RubricPermissionOverride;
 use App\Rubric\RubricType;
 use App\Security\Permission\Checker\ItemEditChecker;
@@ -54,7 +54,7 @@ final readonly class ItemEditDispatcher
     /** @param iterable<RubricPermissionOverride> $overrides */
     public function __construct(
         private ItemEditChecker $defaultChecker,
-        private ItemRepository $itemRepository,
+        private TypedEntityResolver $typedEntityResolver,
         #[AutowireIterator('app.rubric.permission_override')]
         iterable $overrides = [],
     ) {
@@ -135,6 +135,8 @@ final readonly class ItemEditDispatcher
         if ($parentId === null || $parentId <= 0) {
             return null;
         }
-        return $this->itemRepository->find($parentId);
+        // Must be the rubric entity, not an `items` row: canEdit() recurses on
+        // the result and detectType() dispatches on the concrete class.
+        return $this->typedEntityResolver->find($parentId);
     }
 }

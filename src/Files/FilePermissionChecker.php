@@ -19,7 +19,7 @@ use App\Entity\Files;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Repository\ItemLinkFileRepository;
-use App\Repository\ItemRepository;
+use App\Item\TypedEntityResolver;
 use App\Repository\UserRepository;
 use App\Security\Permission\Checker\ExternalViewerChecker;
 use App\Security\Permission\Checker\ItemEditChecker;
@@ -51,7 +51,7 @@ final readonly class FilePermissionChecker
 {
     public function __construct(
         private ItemLinkFileRepository $linkFileRepository,
-        private ItemRepository $itemRepository,
+        private TypedEntityResolver $typedEntityResolver,
         private ItemViewChecker $itemViewChecker,
         private ItemEditChecker $itemEditChecker,
         private ItemEditDispatcher $itemEditDispatcher,
@@ -141,15 +141,14 @@ final readonly class FilePermissionChecker
     }
 
     /**
-     * @return iterable<object> active linked items, lazily loaded via
-     *                          ItemRepository::find() (note: the rubric
-     *                          subclasses don't actually `extends Items`
-     *                          in PHP — duck-typing applies)
+     * @return iterable<object> active linked items as their rubric entity.
+     *                          The rubric classes share no common parent, so
+     *                          callers duck-type on the accessors they need.
      */
     private function loadActiveLinkedItems(Files $file): iterable
     {
         foreach ($this->linkFileRepository->findLinkedItemIds($file->getFilesId()) as $itemId) {
-            $item = $this->itemRepository->find($itemId);
+            $item = $this->typedEntityResolver->find($itemId);
             if ($item !== null) {
                 yield $item;
             }

@@ -19,31 +19,25 @@ use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * A row of the cross-rubric `items` index.
+ *
+ * This is deliberately NOT the root of a Doctrine inheritance hierarchy.
+ * It used to carry an InheritanceType('JOINED') plus a DiscriminatorMap
+ * listing the rubric entities, but none of them ever extended this class,
+ * so Doctrine registered no subclasses and instead instantiated the mapped
+ * class while filling only the `items` columns — leaving everything the
+ * rubric table owns uninitialised. That is what made a typed property such
+ * as Materials::$versionId unreadable and what forced version_id out of the
+ * Materials identifier in the first place (see #5009).
+ *
+ * The table is an index over heterogeneous content, not a supertype: it
+ * answers "which entries exist in this room, pinned/draft/deleted?" across
+ * rubrics. To go from a row here to the rubric entity, ask
+ * {@see \App\Item\TypedEntityResolver} — the mapping from `type` to entity
+ * class is explicit there rather than implied by Doctrine.
+ */
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
-#[ORM\InheritanceType('JOINED')]
-#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
-#[ORM\DiscriminatorMap([
-    'annotation' => 'Annotations',
-    'announcement' => 'Announcement',
-    'assessments' => 'Assessments',
-    'community' => 'Room',
-    'date' => 'Dates',
-    'discarticle' => 'Discussionarticles',
-    'discussion' => 'Discussions',
-    'grouproom' => 'Room',
-    'label' => 'Labels',
-    'link_item' => 'LinkItems',
-    'material' => 'Materials',
-    'privateroom' => 'Room',
-    'project' => 'Room',
-    'section' => 'Section',
-    'server' => 'Server',
-    'step' => 'Step',
-    'tag' => 'Tag',
-    'task' => 'Tasks',
-    'todo' => 'Todos',
-    'user' => 'User'
-])]
 #[ORM\Table(name: 'items')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['type'], name: 'type')]
@@ -56,6 +50,14 @@ class Items
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
+
+    /**
+     * The rubric this row belongs to, e.g. 'material' or 'announcement'.
+     * Formerly Doctrine's discriminator column; now an ordinary field so the
+     * value stays readable without implying an inheritance hierarchy.
+     */
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 15)]
+    private string $type = '';
 
     #[ORM\Column(name: 'deleter_id', type: Types::INTEGER, nullable: true)]
     private ?int $deleterId = null;
@@ -81,6 +83,18 @@ class Items
     public function getItemId(): int
     {
         return $this->itemId;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
     }
 
     /**

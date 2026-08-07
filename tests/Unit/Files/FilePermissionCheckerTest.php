@@ -21,7 +21,7 @@ use App\Entity\Materials;
 use App\Entity\User;
 use App\Files\FilePermissionChecker;
 use App\Repository\ItemLinkFileRepository;
-use App\Repository\ItemRepository;
+use App\Item\TypedEntityResolver;
 use App\Repository\UserRepository;
 use App\Security\Permission\Checker\ExternalViewerChecker;
 use App\Security\Permission\Checker\ItemEditChecker;
@@ -36,7 +36,7 @@ use ReflectionProperty;
 final class FilePermissionCheckerTest extends TestCase
 {
     private ItemLinkFileRepository&MockObject $linkFileRepository;
-    private ItemRepository&MockObject $itemRepository;
+    private TypedEntityResolver&MockObject $typedEntityResolver;
     private ItemViewChecker&MockObject $itemViewChecker;
     private ItemEditChecker&MockObject $itemEditChecker;
     private ItemEditDispatcher&MockObject $itemEditDispatcher;
@@ -48,7 +48,7 @@ final class FilePermissionCheckerTest extends TestCase
     protected function setUp(): void
     {
         $this->linkFileRepository = $this->createMock(ItemLinkFileRepository::class);
-        $this->itemRepository = $this->createMock(ItemRepository::class);
+        $this->typedEntityResolver = $this->createMock(TypedEntityResolver::class);
         $this->itemViewChecker = $this->createMock(ItemViewChecker::class);
         $this->itemEditChecker = $this->createMock(ItemEditChecker::class);
         $this->itemEditDispatcher = $this->createMock(ItemEditDispatcher::class);
@@ -58,7 +58,7 @@ final class FilePermissionCheckerTest extends TestCase
 
         $this->checker = new FilePermissionChecker(
             $this->linkFileRepository,
-            $this->itemRepository,
+            $this->typedEntityResolver,
             $this->itemViewChecker,
             $this->itemEditChecker,
             $this->itemEditDispatcher,
@@ -85,7 +85,7 @@ final class FilePermissionCheckerTest extends TestCase
 
         $linked1 = new Materials();
         $linked2 = new Materials();
-        $this->itemRepository->method('find')->willReturnMap([[10, $linked1], [20, $linked2]]);
+        $this->typedEntityResolver->method('find')->willReturnMap([[10, $linked1], [20, $linked2]]);
 
         $subject = $this->subject();
         $this->subjectFactory->method('fromItem')->willReturn($subject);
@@ -105,7 +105,7 @@ final class FilePermissionCheckerTest extends TestCase
     {
         $file = $this->file(filesId: 1);
         $this->linkFileRepository->method('findLinkedItemIds')->willReturn([10]);
-        $this->itemRepository->method('find')->willReturn(new Materials());
+        $this->typedEntityResolver->method('find')->willReturn(new Materials());
 
         // Factory + checker are mocked, so we only verify that BOTH are
         // consulted in the loop, regardless of any per-item state. The
@@ -165,7 +165,7 @@ final class FilePermissionCheckerTest extends TestCase
         $this->linkFileRepository->method('findLinkedItemIds')->willReturn([10, 20]);
         $linked1 = new Materials();
         $linked2 = new Materials();
-        $this->itemRepository->method('find')->willReturnMap([[10, $linked1], [20, $linked2]]);
+        $this->typedEntityResolver->method('find')->willReturnMap([[10, $linked1], [20, $linked2]]);
 
         $this->itemEditDispatcher
             ->method('canEdit')

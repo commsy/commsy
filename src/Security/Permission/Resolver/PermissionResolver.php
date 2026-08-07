@@ -15,24 +15,14 @@ declare(strict_types=1);
 
 namespace App\Security\Permission\Resolver;
 
-use App\Entity\Annotations;
-use App\Entity\Announcement;
-use App\Entity\Assessments;
-use App\Entity\Dates;
-use App\Entity\Discussionarticles;
 use App\Entity\Discussions;
 use App\Entity\Files;
-use App\Entity\Labels;
-use App\Entity\LinkItems;
 use App\Entity\Materials;
 use App\Entity\Room;
 use App\Entity\Section;
-use App\Entity\Step;
-use App\Entity\Tag;
-use App\Entity\Tasks;
-use App\Entity\Todos;
 use App\Entity\User;
 use App\Files\FilePermissionChecker;
+use App\Item\TypedEntityResolver;
 use App\Repository\FilesRepository;
 use App\Room\RoomEditChecker;
 use App\Room\RoomViewChecker;
@@ -70,6 +60,7 @@ final readonly class PermissionResolver
         private LegacyPermissionBridge $legacyBridge,
         private EntityManagerInterface $entityManager,
         private FilesRepository $filesRepository,
+        private TypedEntityResolver $typedEntityResolver,
         private ItemViewSubjectFactory $subjectFactory,
         private ItemViewChecker $itemViewChecker,
         private ItemEditDispatcher $itemEditDispatcher,
@@ -101,23 +92,6 @@ final readonly class PermissionResolver
      * Looking up via the concrete repository works correctly. So the
      * resolver routes through this map before calling `$em->find($fqcn, $id)`.
      */
-    private const TYPE_TO_CLASS = [
-        'material'     => Materials::class,
-        'discussion'   => Discussions::class,
-        'discarticle'  => Discussionarticles::class,
-        'date'         => Dates::class,
-        'announcement' => Announcement::class,
-        'todo'         => Todos::class,
-        'annotation'   => Annotations::class,
-        'label'        => Labels::class,
-        'task'         => Tasks::class,
-        'section'      => Section::class,
-        'step'         => Step::class,
-        'link_item'    => LinkItems::class,
-        'assessments'  => Assessments::class,
-        'tag'          => Tag::class,
-    ];
-
     /**
      * @param cs_item             $item        the legacy item being inspected
      * @param cs_user_item        $actorLegacy the viewer (legacy currentUserItem)
@@ -186,11 +160,10 @@ final readonly class PermissionResolver
      */
     private function loadEntityFor(cs_item $item): ?object
     {
-        $fqcn = self::TYPE_TO_CLASS[$item->getType()] ?? null;
-        if ($fqcn === null) {
-            return null;
-        }
-        return $this->entityManager->find($fqcn, $item->getItemID());
+        // The rubric entity, resolved by `items.type`. Not entityManager->find()
+        // on a guessed class: Materials and Section are keyed by
+        // (item_id, version_id), so an id alone cannot address a row.
+        return $this->typedEntityResolver->find($item->getItemID());
     }
 
     private function loadFile(int $filesId): ?Files

@@ -19,7 +19,7 @@ use App\Entity\Announcement;
 use App\Entity\Discussionarticles;
 use App\Entity\Materials;
 use App\Entity\User;
-use App\Repository\ItemRepository;
+use App\Item\TypedEntityResolver;
 use App\Rubric\RubricPermissionOverride;
 use App\Rubric\RubricType;
 use App\Security\Permission\Checker\ItemEditChecker;
@@ -30,12 +30,12 @@ use PHPUnit\Framework\TestCase;
 final class ItemEditDispatcherTest extends TestCase
 {
     private ItemEditChecker&MockObject $defaultChecker;
-    private ItemRepository&MockObject $itemRepository;
+    private TypedEntityResolver&MockObject $typedEntityResolver;
 
     protected function setUp(): void
     {
         $this->defaultChecker = $this->createMock(ItemEditChecker::class);
-        $this->itemRepository = $this->createMock(ItemRepository::class);
+        $this->typedEntityResolver = $this->createMock(TypedEntityResolver::class);
     }
 
     // ---- Discussionarticles tombstone gate
@@ -117,7 +117,7 @@ final class ItemEditDispatcherTest extends TestCase
     {
         return new ItemEditDispatcher(
             $this->defaultChecker,
-            $this->itemRepository,
+            $this->typedEntityResolver,
             $overrides,
         );
     }
