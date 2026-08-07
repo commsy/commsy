@@ -114,6 +114,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/contactForm/{originPath}/{moderatorIds}')]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function sendMailViaContactForm(
         Request $request,
         ContactFormHelper $contactFormHelper,
@@ -302,8 +303,11 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/sendmail')]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('RUBRIC_USER')]
     public function sendMail(
-        Request $request
+        Request $request,
+        int $roomId
     ): Response {
         $userItems = [];
         $userIds = $request->query->all('userIds');
@@ -847,6 +851,8 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/send/success')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
+    #[IsGranted('RUBRIC_USER')]
     public function sendSuccess(
         int $roomId,
         int $itemId
@@ -867,6 +873,7 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/send/success/contact/{originPath}')]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function sendSuccessContact(
         TranslatorInterface $translator,
         $roomId,
@@ -1181,6 +1188,8 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/insertUserroom')]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('MODERATOR')]
     public function insertUserroom(
         $roomId,
         InsertUserroomAction $action,
@@ -1196,6 +1205,8 @@ class UserController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/sendMultiple')]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('RUBRIC_USER')]
     public function sendMultiple(
         Request $request,
         ContactFormHelper $contactFormHelper,
@@ -1315,6 +1326,8 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/sendMultiple/success')]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
+    #[IsGranted('RUBRIC_USER')]
     public function sendMultipleSuccess(
         int $roomId
     ): Response {
@@ -1332,6 +1345,7 @@ class UserController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/xhr/markread', condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     public function xhrMarkRead(
         Request $request,
         MarkReadAction $markReadAction,
@@ -1347,6 +1361,7 @@ class UserController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/xhr/pin', condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     public function xhrPinAction(
         Request $request,
         PinAction $action,
@@ -1362,6 +1377,7 @@ class UserController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/user/xhr/unpin', condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     public function xhrUnpinAction(
         Request $request,
         UnpinAction $action,
