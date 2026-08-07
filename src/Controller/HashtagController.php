@@ -62,7 +62,11 @@ class HashtagController extends AbstractController
         ]);
     }
 
+    // A room's hashtags are room content, so reading them requires being able
+    // to enter the room. The `withBuzzwords()` check below is about the rubric
+    // being switched on, which is a separate question.
     #[Route(path: '/room/{roomId}/hashtag/all')]
+    #[IsGranted('ITEM_ENTER', subject: 'roomId')]
     public function all(
         LabelRepository $labelRepository,
         LegacyEnvironment $legacyEnvironment,

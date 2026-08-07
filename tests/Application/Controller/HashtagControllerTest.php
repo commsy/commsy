@@ -14,6 +14,7 @@ use App\Entity\Account;
 use App\Services\LegacyEnvironment;
 use App\Utils\LabelService;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Factory\AccountFactory;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
@@ -65,6 +66,58 @@ class HashtagControllerTest extends AbstractApplicationTestCase
         $this->assertTrue(
             $status === 302 || $status === 403,
             "expected redirect or forbidden, got {$status}"
+        );
+    }
+
+    /**
+     * A project room is closed, so its hashtags are room content: reading
+     * them requires being able to enter the room.
+     */
+    public function testAllRequiresAuthenticationForAnonymousCallers(): void
+    {
+        $this->enableBuzzwords();
+        $this->createHashtag('geheimes-schlagwort');
+
+        $this->logout();
+
+        $this->client->request('GET', "/room/{$this->roomId}/hashtag/all");
+
+        $this->assertResponseRedirects("/login/{$this->portalId}");
+        $this->assertStringNotContainsString(
+            'geheimes-schlagwort',
+            (string) $this->client->getResponse()->getContent()
+        );
+    }
+
+    public function testAllRequiresMembershipOfTheRoom(): void
+    {
+        $this->enableBuzzwords();
+        $this->createHashtag('geheimes-schlagwort');
+
+        $outsiderPassword = 'outsider-secret';
+        $outsider = AccountFactory::createOne([
+            'portal' => $this->account->getPortal(),
+            'authSource' => $this->account->getAuthSource(),
+            'plainPassword' => $outsiderPassword,
+            'activityState' => Account::ACTIVITY_ACTIVE,
+            'locked' => false,
+        ]);
+
+        $this->logout();
+        $this->loginAsUser($this->portalId, $outsider->getUsername(), $outsiderPassword);
+
+        $this->client->request('GET', "/room/{$this->roomId}/hashtag/all");
+
+        // For a normal (non-XHR) GET the access-denied handler turns the
+        // refusal into a redirect; what matters is that no content comes back.
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertTrue(
+            $status === 302 || $status === 403,
+            "expected redirect or forbidden, got {$status}"
+        );
+        $this->assertStringNotContainsString(
+            'geheimes-schlagwort',
+            (string) $this->client->getResponse()->getContent()
         );
     }
 
