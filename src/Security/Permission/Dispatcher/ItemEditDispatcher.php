@@ -19,6 +19,8 @@ use App\Entity\Discussionarticles;
 use App\Entity\Section;
 use App\Entity\Step;
 use App\Entity\User;
+use App\Item\ItemType;
+use App\Item\ItemTypeMap;
 use App\Item\TypedEntityResolver;
 use App\Rubric\RubricPermissionOverride;
 use App\Rubric\RubricType;
@@ -55,6 +57,7 @@ final readonly class ItemEditDispatcher
     public function __construct(
         private ItemEditChecker $defaultChecker,
         private TypedEntityResolver $typedEntityResolver,
+        private ItemTypeMap $itemTypeMap,
         #[AutowireIterator('app.rubric.permission_override')]
         iterable $overrides = [],
     ) {
@@ -101,24 +104,10 @@ final readonly class ItemEditDispatcher
 
     private function detectType(object $item): string
     {
-        // Doctrine's discriminator column is `type` on the items table.
-        // Subclasses don't expose it — derive from the concrete class.
-        return match (true) {
-            $item instanceof \App\Entity\Materials       => 'material',
-            $item instanceof \App\Entity\Discussions     => 'discussion',
-            $item instanceof \App\Entity\Discussionarticles => 'discarticle',
-            $item instanceof \App\Entity\Dates           => 'date',
-            $item instanceof \App\Entity\Announcement    => 'announcement',
-            $item instanceof \App\Entity\Todos           => 'todo',
-            $item instanceof \App\Entity\Annotations     => 'annotation',
-            $item instanceof \App\Entity\Labels          => 'label',
-            $item instanceof \App\Entity\Tasks           => 'task',
-            $item instanceof Section                     => 'section',
-            $item instanceof Step                        => 'step',
-            $item instanceof \App\Entity\LinkItems       => 'link_item',
-            $item instanceof \App\Entity\User            => 'user',
-            default                                      => 'item',
-        };
+        // The rubric entities don't carry `items.type`, so it has to come
+        // from the class. Only the override lookup in canEdit() reads this,
+        // and that ignores every non-rubric value alike.
+        return $this->itemTypeMap->typeOf($item) ?? ItemType::Item->value;
     }
 
     private function resolveParentForSubEntry(object $subEntry): ?object

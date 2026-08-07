@@ -13,23 +13,18 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\Announcement;
-use App\Entity\Dates;
-use App\Entity\Discussions;
-use App\Entity\Materials;
-use App\Entity\Todos;
-use App\Entity\User;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
 use App\Item\ItemType;
-use App\Repository\MaterialsRepository;
+use App\Item\TypedEntityResolver;
+use App\Room\RoomType;
+use App\Rubric\RubricType;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
 use cs_file_item;
 use cs_list;
 use cs_project_item;
-use Doctrine\ORM\EntityManagerInterface;
 use Elastica\Exception\NotFoundException;
 use Elastica\Exception\ResponseException;
 use Elastica\Pipeline;
@@ -62,7 +57,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
         private readonly ItemService $itemService,
         private readonly IndexManager $indexManager,
         private readonly ParameterBagInterface $parameterBag,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly TypedEntityResolver $typedEntityResolver,
         #[Autowire(service: 'fos_elastica.persister_registry')]
         private readonly PersisterRegistry $persisterRegistry,
     ) {
@@ -84,9 +79,9 @@ class ElasticaSubscriber implements EventSubscriberInterface
      *
      * Replaces the legacy `cs_item::updateElastic()` / `replaceElasticItem()` bridge
      * with a direct Symfony-side implementation: resolves the Doctrine entity via
-     * `EntityManager`, gets the FOS-Elastica `ObjectPersister` via `PersisterRegistry`,
-     * and performs `deleteOne` + `insertOne` (mirroring the legacy behaviour — a
-     * straight `replaceOne` would bypass the ingest pipeline).
+     * {@see TypedEntityResolver}, gets the FOS-Elastica `ObjectPersister` via
+     * `PersisterRegistry`, and performs `deleteOne` + `insertOne` (mirroring the
+     * legacy behaviour — a straight `replaceOne` would bypass the ingest pipeline).
      *
      * Silently skipped when Elasticsearch is not configured, the item type is not
      * indexed, the entity is not found, or the item is a non-indexable draft.
@@ -98,22 +93,18 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
 
         $item = $event->getItem();
-        $cfg = self::REINDEXABLE[$item->getItemType()] ?? null;
-        if ($cfg === null) {
+        $indexName = self::REINDEX_INDEX_BY_TYPE[$item->getItemType()] ?? null;
+        if ($indexName === null) {
             return;
         }
 
-        $repository = $this->entityManager->getRepository($cfg['entity']);
-        $object = ($repository instanceof MaterialsRepository)
-            ? $repository->findLatestVersionByItemId($item->getItemID())
-            : $repository->findOneBy(['itemId' => $item->getItemID()]);
-
+        $object = $this->typedEntityResolver->find($item->getItemID());
         if ($object === null || !$object->isIndexable() || $item->isDraft()) {
             return;
         }
 
         try {
-            $persister = $this->persisterRegistry->getPersister($cfg['index']);
+            $persister = $this->persisterRegistry->getPersister($indexName);
         } catch (\InvalidArgumentException) {
             return;
         }
@@ -123,17 +114,22 @@ class ElasticaSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Maps item-type → (FOS-Elastica index name, Doctrine entity class) for reindex.
-     * Tasks and labels are intentionally absent — they were never reindexed via
-     * the legacy `updateElastic()` path either.
+     * Item type → FOS-Elastica index name for reindex. Tasks and labels are
+     * intentionally absent — they were never reindexed via the legacy
+     * `updateElastic()` path either.
+     *
+     * The entity class each type resolves to is not repeated here;
+     * {@see \App\Item\ItemTypeMap} owns that table.
+     *
+     * @var array<string, string>
      */
-    private const REINDEXABLE = [
-        'announcement' => ['index' => 'commsy_announcement', 'entity' => Announcement::class],
-        'date'         => ['index' => 'commsy_date',         'entity' => Dates::class],
-        'discussion'   => ['index' => 'commsy_discussion',   'entity' => Discussions::class],
-        'material'     => ['index' => 'commsy_material',     'entity' => Materials::class],
-        'todo'         => ['index' => 'commsy_todo',         'entity' => Todos::class],
-        'user'         => ['index' => 'commsy_user',         'entity' => User::class],
+    private const REINDEX_INDEX_BY_TYPE = [
+        RubricType::Announcement->value => 'commsy_announcement',
+        RubricType::Date->value => 'commsy_date',
+        RubricType::Discussion->value => 'commsy_discussion',
+        RubricType::Material->value => 'commsy_material',
+        RubricType::Todo->value => 'commsy_todo',
+        ItemType::User->value => 'commsy_user',
     ];
 
     /**
@@ -186,16 +182,16 @@ class ElasticaSubscriber implements EventSubscriberInterface
         // were never indexed at all; private rooms were indexed on save
         // but never cleaned up on delete, and we preserve that parity).
         $indexed = [
-            'announcement' => 'commsy_announcement',
-            'community'    => 'commsy_room',
-            'date'         => 'commsy_date',
-            'discussion'   => 'commsy_discussion',
-            'grouproom'    => 'commsy_room',
-            'label'        => 'commsy_label',
-            'material'     => 'commsy_material',
-            'project'      => 'commsy_room',
-            'todo'         => 'commsy_todo',
-            'user'         => 'commsy_user',
+            RubricType::Announcement->value => 'commsy_announcement',
+            RoomType::Community->value => 'commsy_room',
+            RubricType::Date->value => 'commsy_date',
+            RubricType::Discussion->value => 'commsy_discussion',
+            RoomType::GroupRoom->value => 'commsy_room',
+            RubricType::Label->value => 'commsy_label',
+            RubricType::Material->value => 'commsy_material',
+            RoomType::Project->value => 'commsy_room',
+            RubricType::Todo->value => 'commsy_todo',
+            ItemType::User->value => 'commsy_user',
         ];
 
         return $indexed[$itemType] ?? null;

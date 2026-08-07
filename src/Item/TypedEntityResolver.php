@@ -15,24 +15,9 @@ declare(strict_types=1);
 
 namespace App\Item;
 
-use App\Entity\Annotations;
-use App\Entity\Announcement;
-use App\Entity\Assessments;
-use App\Entity\Dates;
-use App\Entity\Discussionarticles;
-use App\Entity\Discussions;
 use App\Entity\Items;
-use App\Entity\Labels;
-use App\Entity\LinkItems;
 use App\Entity\Materials;
-use App\Entity\Room;
 use App\Entity\Section;
-use App\Entity\Server;
-use App\Entity\Step;
-use App\Entity\Tag;
-use App\Entity\Tasks;
-use App\Entity\Todos;
-use App\Entity\User;
 use App\Repository\MaterialsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -40,49 +25,21 @@ use Doctrine\ORM\EntityManagerInterface;
  * Resolves an item id to its rubric entity.
  *
  * This used to be Doctrine's job: `Items` declared an InheritanceType('JOINED')
- * with a DiscriminatorMap naming the classes below. But none of them extends
+ * with a DiscriminatorMap naming the rubric classes. But none of them extends
  * `Items`, so Doctrine registered no subclasses and hydrated only the `items`
  * columns onto the mapped class — every field owned by the rubric table stayed
  * uninitialised. With typed properties that is not a partial object, it is a
  * crash waiting for the first read (see #5009 and Materials::$versionId).
  *
- * The mapping is therefore explicit here, and loading goes through the rubric's
- * own repository, which knows how that rubric is keyed.
+ * The type → class table lives in {@see ItemTypeMap}; loading goes through the
+ * rubric's own repository, which knows how that rubric is keyed.
  */
 final readonly class TypedEntityResolver
 {
-    /**
-     * `items.type` → entity class. Mirrors the former DiscriminatorMap; the
-     * three room flavours share one entity, as they did there.
-     *
-     * @var array<string, class-string>
-     */
-    private const CLASS_BY_TYPE = [
-        'annotation' => Annotations::class,
-        'announcement' => Announcement::class,
-        'assessments' => Assessments::class,
-        'community' => Room::class,
-        'date' => Dates::class,
-        'discarticle' => Discussionarticles::class,
-        'discussion' => Discussions::class,
-        'grouproom' => Room::class,
-        'label' => Labels::class,
-        'link_item' => LinkItems::class,
-        'material' => Materials::class,
-        'privateroom' => Room::class,
-        'project' => Room::class,
-        'section' => Section::class,
-        'server' => Server::class,
-        'step' => Step::class,
-        'tag' => Tag::class,
-        'task' => Tasks::class,
-        'todo' => Todos::class,
-        'user' => User::class,
-    ];
-
     public function __construct(
         private EntityManagerInterface $entityManager,
         private MaterialsRepository $materialsRepository,
+        private ItemTypeMap $itemTypeMap,
     ) {
     }
 
@@ -99,7 +56,7 @@ final readonly class TypedEntityResolver
             return null;
         }
 
-        $class = self::CLASS_BY_TYPE[$type] ?? null;
+        $class = $this->itemTypeMap->classFor($type);
         if ($class === null) {
             return null;
         }

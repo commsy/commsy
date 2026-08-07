@@ -19,6 +19,7 @@ use App\Entity\Announcement;
 use App\Entity\Discussionarticles;
 use App\Entity\Materials;
 use App\Entity\User;
+use App\Item\ItemTypeMap;
 use App\Item\TypedEntityResolver;
 use App\Rubric\RubricPermissionOverride;
 use App\Rubric\RubricType;
@@ -118,6 +119,9 @@ final class ItemEditDispatcherTest extends TestCase
         return new ItemEditDispatcher(
             $this->defaultChecker,
             $this->typedEntityResolver,
+            // Real map, not a mock: which type a class is, is a fact of the
+            // mapping, and stubbing it would test the stub.
+            new ItemTypeMap(),
             $overrides,
         );
     }

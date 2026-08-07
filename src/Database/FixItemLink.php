@@ -13,6 +13,9 @@
 
 namespace App\Database;
 
+use App\Item\ItemType;
+use App\Room\RoomType;
+use App\Rubric\RubricType;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -43,30 +46,31 @@ class FixItemLink extends GeneralCheck
         $stmt = $this->executeSQL($sql, $io);
         $types = array_column($stmt->fetchAllAssociative(), 'type');
 
-        // key => type
-        // value => table name
+        // items.type => the table holding that type's own row. Keys come from
+        // the enums that own the discriminator values; the table names are
+        // only known here.
         $mapping = [
-            'annotation' => 'annotations',
-            'announcement' => 'announcement',
-            'assessments' => 'assessments',
-            'community' => 'room',
-            'date' => 'dates',
-            'discarticle' => 'discussionarticles',
-            'discussion' => 'discussions',
-            'grouproom' => 'room',
-            'label' => 'labels',
-            'link_item' => 'link_items',
-            'material' => 'materials',
-            'privateroom' => 'room',
-            'project' => 'room',
-            'section' => 'section',
-            'server' => 'server',
-            'step' => 'step',
-            'tag' => 'tag',
-            'task' => 'tasks',
-            'todo' => 'todos',
-            'user' => 'user',
-            'userroom' => 'room',
+            RubricType::Annotation->value => 'annotations',
+            RubricType::Announcement->value => 'announcement',
+            ItemType::Assessment->value => 'assessments',
+            RoomType::Community->value => 'room',
+            RubricType::Date->value => 'dates',
+            ItemType::DiscussionArticle->value => 'discussionarticles',
+            RubricType::Discussion->value => 'discussions',
+            RoomType::GroupRoom->value => 'room',
+            RubricType::Label->value => 'labels',
+            ItemType::LinkItem->value => 'link_items',
+            RubricType::Material->value => 'materials',
+            RoomType::PrivateRoom->value => 'room',
+            RoomType::Project->value => 'room',
+            ItemType::Section->value => 'section',
+            ItemType::Server->value => 'server',
+            ItemType::Step->value => 'step',
+            ItemType::Tag->value => 'tag',
+            ItemType::Task->value => 'tasks',
+            RubricType::Todo->value => 'todos',
+            ItemType::User->value => 'user',
+            RoomType::UserRoom->value => 'room',
         ];
         foreach ($types as $type) {
             if (!isset($mapping[$type])) {
