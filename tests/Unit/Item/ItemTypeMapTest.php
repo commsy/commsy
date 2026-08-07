@@ -93,7 +93,23 @@ final class ItemTypeMapTest extends TestCase
     }
 
     /**
-     * Pins the mapped set so a type cannot quietly go missing.
+     * Every room flavour is a `room` row, so every one of them has to resolve
+     * to `Room`. The DiscriminatorMap this table replaced forgot `userroom`,
+     * which left user rooms resolving to nothing at all.
+     */
+    public function testResolvesEveryRoomFlavourToTheRoomEntity(): void
+    {
+        foreach (RoomType::cases() as $roomType) {
+            self::assertSame(
+                Room::class,
+                $this->map->classFor($roomType->value),
+                sprintf('Room type "%s" does not resolve to the Room entity.', $roomType->value)
+            );
+        }
+    }
+
+    /**
+     * Pins the mapped set so a type cannot quietly go missing again.
      */
     public function testCoversTheKnownItemTypes(): void
     {
@@ -101,7 +117,7 @@ final class ItemTypeMapTest extends TestCase
             'annotation', 'announcement', 'assessments', 'community', 'date',
             'discarticle', 'discussion', 'grouproom', 'label', 'link_item',
             'material', 'privateroom', 'project', 'section', 'server', 'step',
-            'tag', 'task', 'todo', 'user',
+            'tag', 'task', 'todo', 'user', 'userroom',
         ], $this->map->knownTypes());
     }
 }

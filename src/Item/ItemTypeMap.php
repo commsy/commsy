@@ -46,8 +46,8 @@ use App\Rubric\RubricType;
 final class ItemTypeMap
 {
     /**
-     * `items.type` → entity class. Mirrors the DiscriminatorMap that used to
-     * sit on `Items`; the room flavours share one entity, as they did there.
+     * `items.type` → entity class. All five room flavours share one entity:
+     * a room is a `room` row whose `type` column carries the flavour.
      *
      * Keys come from the enums that own these discriminator values, so the
      * strings are declared once: {@see RubricType}, {@see ItemType} and
@@ -76,6 +76,7 @@ final class ItemTypeMap
         ItemType::Task->value => Tasks::class,
         RubricType::Todo->value => Todos::class,
         ItemType::User->value => User::class,
+        RoomType::UserRoom->value => Room::class,
     ];
 
     /**
