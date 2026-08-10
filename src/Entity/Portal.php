@@ -130,6 +130,15 @@ class Portal
     #[Groups(['api'])]
     private ?string $descriptionEnglish = null;
 
+    /**
+     * Front door this portal advertises in outgoing mail, e.g. a vanity host of its own.
+     * Null means "use the routed portal entry URL"; see PortalUrlResolver.
+     */
+    #[Assert\Url(requireTld: false)]
+    #[Assert\Length(max: 255)]
+    #[ORM\Column(name: 'base_url', type: Types::STRING, length: 255, nullable: true)]
+    private ?string $baseUrl = null;
+
     #[ORM\Column(name: 'terms_de', type: Types::TEXT)]
     private ?string $termsGerman = null;
 
@@ -302,6 +311,18 @@ class Portal
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    public function setBaseUrl(?string $baseUrl): Portal
+    {
+        $baseUrl = null !== $baseUrl ? trim($baseUrl) : null;
+        $this->baseUrl = '' !== $baseUrl ? $baseUrl : null;
+        return $this;
+    }
+
+    public function getBaseUrl(): ?string
+    {
+        return $this->baseUrl;
     }
 
     /**

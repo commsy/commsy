@@ -17,16 +17,19 @@ use App\Entity\Portal;
 use App\Mail\MessageInterface;
 use App\Mail\Messages\InvitationMessage;
 use App\Services\CurrentUserResolver;
+use App\Services\PortalUrlResolver;
 use cs_room_item;
 
 class InvitationMessageFactory
 {
-    public function __construct(private readonly CurrentUserResolver $currentUserResolver)
-    {
+    public function __construct(
+        private readonly CurrentUserResolver $currentUserResolver,
+        private readonly PortalUrlResolver $portalUrlResolver
+    ) {
     }
 
     public function createInvitationMessage(Portal $portal, cs_room_item $room, string $token): MessageInterface
     {
-        return new InvitationMessage($this->currentUserResolver, $portal, $room, $token);
+        return new InvitationMessage($this->currentUserResolver, $this->portalUrlResolver, $portal, $room, $token);
     }
 }

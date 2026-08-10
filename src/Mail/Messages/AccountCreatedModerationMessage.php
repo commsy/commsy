@@ -5,10 +5,12 @@ namespace App\Mail\Messages;
 use App\Entity\Account;
 use App\Entity\Portal;
 use App\Mail\Message;
+use App\Services\PortalUrlResolver;
 
 class AccountCreatedModerationMessage extends Message
 {
     public function __construct(
+        private readonly PortalUrlResolver $portalUrlResolver,
         private readonly Account $account,
         private readonly Portal $portal,
     ) {}
@@ -27,6 +29,7 @@ class AccountCreatedModerationMessage extends Message
     {
         return [
             'account' => $this->account,
+            'portalUrl' => $this->portalUrlResolver->resolve($this->portal),
         ];
     }
 

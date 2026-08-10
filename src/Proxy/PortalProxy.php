@@ -42,6 +42,11 @@ class PortalProxy
         return $this->portal->getTitle();
     }
 
+    public function getBaseUrl(): ?string
+    {
+        return $this->portal->getBaseUrl();
+    }
+
     public function showTime(): bool
     {
         return (isset($this->portal->getExtras()['TIME_SHOW']) && '1' == $this->portal->getExtras()['TIME_SHOW']) ? true : false;

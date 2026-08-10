@@ -24,6 +24,7 @@ use App\Mail\Messages\AccountActivityLockedMessage;
 use App\Mail\Messages\AccountActivityLockWarningMessage;
 use App\Mail\Messages\AccountMergeConfirmMessage;
 use App\Services\LegacyEnvironment;
+use App\Services\PortalUrlResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccountMessageFactory
@@ -31,6 +32,7 @@ class AccountMessageFactory
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly LegacyEnvironment $legacyEnvironment,
+        private readonly PortalUrlResolver $portalUrlResolver,
         private readonly AccountManager $accountManager,
         private readonly MailTextRenderer $mailTextRenderer
     ) {
@@ -40,7 +42,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityLockWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
+            return new AccountActivityLockWarningMessage($this->portalUrlResolver, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
         }
 
         return null;
@@ -50,7 +52,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityLockedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
+            return new AccountActivityLockedMessage($this->portalUrlResolver, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
         }
 
         return null;
@@ -60,7 +62,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityDeleteWarningMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
+            return new AccountActivityDeleteWarningMessage($this->portalUrlResolver, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
         }
 
         return null;
@@ -70,7 +72,7 @@ class AccountMessageFactory
     {
         $portal = $this->accountManager->getPortal($account);
         if ($portal) {
-            return new AccountActivityDeletedMessage($this->urlGenerator, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
+            return new AccountActivityDeletedMessage($this->portalUrlResolver, $this->legacyEnvironment, $portal, $account, $this->mailTextRenderer);
         }
 
         return null;

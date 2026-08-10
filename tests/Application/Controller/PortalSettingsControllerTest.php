@@ -14,6 +14,8 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use App\Entity\Portal;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\AccountFactory;
@@ -311,6 +313,58 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
         $this->client->request('GET', "/portal/{$portal->getId()}/settings/general");
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
+    }
+
+    /**
+     * Admins type the bare host they know ("www.example.org"); the form has to
+     * complete it, otherwise the mail would carry a relative link.
+     */
+    #[WithStory(PortalStory::class)]
+    public function testGeneralPageStoresBaseUrlAndCompletesMissingScheme(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $crawler = $this->client->request('GET', "/portal/{$portal->getId()}/settings/general");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('portal_general[save]')->form();
+        $form['portal_general[baseUrl]'] = 'www.unicommsy.example';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->clear();
+        $stored = $entityManager->getRepository(Portal::class)->find($portal->getId());
+
+        self::assertSame('https://www.unicommsy.example', $stored->getBaseUrl());
+    }
+
+    /**
+     * The URL constraint lives on the entity, not on the form type; this pins that
+     * the form still enforces it, so moving it cannot silently disable validation.
+     *
+     * It asserts the rejection only. The form maps onto the managed entity before
+     * validating, and LoggingSubscriber flushes on every request, so a rejected value
+     * still reaches the database. That leak predates this field and affects every
+     * property on this form.
+     */
+    #[WithStory(PortalStory::class)]
+    public function testGeneralPageRejectsAnInvalidBaseUrl(): void
+    {
+        $portal = PortalStory::get('portal');
+        $this->loginAsRoot();
+
+        $crawler = $this->client->request('GET', "/portal/{$portal->getId()}/settings/general");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('portal_general[save]')->form();
+        $form['portal_general[baseUrl]'] = 'kein gueltiger wert';
+        $this->client->submit($form);
+
+        // invalid input re-renders the form instead of redirecting to the saved page
+        $this->assertResponseStatusCodeSame(422);
     }
 
     #[WithStory(PortalStory::class)]

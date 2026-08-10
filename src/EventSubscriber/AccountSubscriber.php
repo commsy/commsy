@@ -25,6 +25,7 @@ use App\Mail\Mailer;
 use App\Mail\Messages\AccountCreatedModerationMessage;
 use App\Mail\RecipientFactory;
 use App\Services\LegacyEnvironment;
+use App\Services\PortalUrlResolver;
 use cs_environment;
 use cs_user_item;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,6 +40,7 @@ readonly class AccountSubscriber implements EventSubscriberInterface
         private Mailer $mailer,
         private AccountManager $accountManager,
         private AccountSettingsManager $settingsManager,
+        private PortalUrlResolver $portalUrlResolver,
         LegacyEnvironment $legacyEnvironment
     )
     {
@@ -88,7 +90,7 @@ readonly class AccountSubscriber implements EventSubscriberInterface
 
         $recipients = iterator_to_array(RecipientFactory::createRecipients(...$filteredModerators));
 
-        $message = new AccountCreatedModerationMessage($account, $portal);
+        $message = new AccountCreatedModerationMessage($this->portalUrlResolver, $account, $portal);
         $this->mailer->sendMultiple($message, $recipients);
     }
 }

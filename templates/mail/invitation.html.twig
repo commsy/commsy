@@ -4,6 +4,10 @@
 <a href="{{ url('app_account_signup', { 'id': portal.id, 'token': token }) }}">{{ url('app_account_signup', { 'id': portal.id, 'token': token }) }}</a><br/>
 {{ 'mail.invitation_link_post'|trans({}, 'mail') }}<br/>
 <br/>
+{# the portal link sits inside the sentence, so it is built here (escaped) and passed in as a parameter #}
+{% set portalLink %}<a href="{{ portalUrl }}">{{ portalUrl }}</a>{% endset %}
+{{ 'mail.invitation_portal_link'|trans({ 'link': portalLink }, 'mail')|raw }}<br/>
+<br/>
 {{ 'mail.invitation_room_link_pre'|trans({}, 'mail') }}<br/>
 <a href="{{ url('app_room_home', { 'roomId': room.itemId }) }}">{{ url('app_room_home', { 'roomId': room.itemId }) }}</a><br/>
 {{ 'mail.invitation_room_link_post'|trans({}, 'mail') }}<br/>

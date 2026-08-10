@@ -17,12 +17,11 @@ use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Mail\Text\MailTextRenderer;
 use App\Services\LegacyEnvironment;
+use App\Services\PortalUrlResolver;
 use cs_environment;
 use cs_user_item;
 use DateTimeImmutable;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class CronExpireTakeOver implements CronTaskInterface
@@ -31,7 +30,7 @@ readonly class CronExpireTakeOver implements CronTaskInterface
 
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
-        private RouterInterface $router,
+        private PortalUrlResolver $portalUrlResolver,
         private Mailer $mailer,
         private TranslatorInterface $translator,
         private MailTextRenderer $mailTextRenderer
@@ -90,9 +89,7 @@ readonly class CronExpireTakeOver implements CronTaskInterface
                     }
                 }
 
-                $linkToPortal = $this->router->generate('app_helper_portalenter', [
-                    'context' => $portal->getItemID(),
-                ], UrlGeneratorInterface::ABSOLUTE_URL);
+                $linkToPortal = $this->portalUrlResolver->resolve($portal);
 
                 $overrides = $portal->getEmailTextArray();
                 $body = $this->translator->trans('mail.auto_sent', ['p1' => $autoDate, 'p2' => $autoTime], 'mail', $locale);

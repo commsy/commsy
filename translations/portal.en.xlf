@@ -1200,6 +1200,14 @@
                 <source>portal.form_title</source>
                 <target>Title</target>
             </trans-unit>
+            <trans-unit id="portal_form_base_url">
+                <source>portal.form_base_url</source>
+                <target>Portal address</target>
+            </trans-unit>
+            <trans-unit id="portal_form_base_url_help">
+                <source>portal.form_base_url_help</source>
+                <target>The address this portal is reached at, for example a subdomain of its own. Leave empty to use the installation's address.</target>
+            </trans-unit>
             <trans-unit id="portal_form_desc_de">
                 <source>portal.form_desc_de</source>
                 <target>Description German</target>

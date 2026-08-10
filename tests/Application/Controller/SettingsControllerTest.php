@@ -14,6 +14,9 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use App\Entity\Portal;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Story\AccountStory;
@@ -22,6 +25,8 @@ use Zenstruck\Foundry\Attribute\WithStory;
 #[WithStory(AccountStory::class)]
 class SettingsControllerTest extends AbstractApplicationTestCase
 {
+    use MailerAssertionsTrait;
+
     private Account $account;
     private int $portalId;
     private int $roomId;
@@ -170,5 +175,54 @@ class SettingsControllerTest extends AbstractApplicationTestCase
         $this->client->submit($form);
 
         $this->assertResponseRedirects("/room/{$this->roomId}/settings/invitations");
+    }
+
+    /**
+     * Without a configured portal address the invitation mail falls back to the
+     * routed portal entry URL, so every portal gets a usable login bookmark.
+     */
+    public function testInvitationMailLinksToRoutedPortalEntryByDefault(): void
+    {
+        $this->sendInvitationTo('invitee-default@example.test');
+
+        $body = $this->getMailerMessage(0)->getHtmlBody();
+        self::assertStringContainsString("/portal/{$this->portalId}/enter", $body);
+        self::assertStringContainsString("/room/{$this->roomId}", $body);
+    }
+
+    /**
+     * A portal fronted by a vanity host advertises that host instead — the whole
+     * point of base_url, since routing can only ever name the installation's host.
+     */
+    public function testInvitationMailPrefersTheConfiguredPortalAddress(): void
+    {
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $portal = $entityManager->getRepository(Portal::class)->find($this->portalId);
+        $portal->setBaseUrl('https://www.unicommsy.example');
+        $entityManager->flush();
+
+        $this->sendInvitationTo('invitee-vanity@example.test');
+
+        $body = $this->getMailerMessage(0)->getHtmlBody();
+        self::assertStringContainsString('https://www.unicommsy.example', $body);
+        self::assertStringNotContainsString("/portal/{$this->portalId}/enter", $body);
+
+        // The address sits inside a sentence, so it is passed into the translation as
+        // a parameter: the anchor must survive as markup and the token must be gone.
+        self::assertStringContainsString('<a href="https://www.unicommsy.example">', $body);
+        self::assertStringNotContainsString('{link}', $body);
+    }
+
+    private function sendInvitationTo(string $email): void
+    {
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/settings/invitations");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('invitations_settings[send]')->form();
+        $form['invitations_settings[email]'] = $email;
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects("/room/{$this->roomId}/settings/invitations");
+        $this->assertEmailCount(1);
     }
 }

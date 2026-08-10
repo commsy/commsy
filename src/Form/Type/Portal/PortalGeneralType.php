@@ -28,6 +28,14 @@ class PortalGeneralType extends AbstractType
             ->add('title', Types\TextType::class, [
                 'label' => 'portal.form_title',
             ])
+            ->add('baseUrl', Types\UrlType::class, [
+                'label' => 'portal.form_base_url',
+                'help' => 'portal.form_base_url_help',
+                'required' => false,
+                // admins type the bare host ("www.example.org"); without a scheme
+                // the mail would render it as a relative link
+                'default_protocol' => 'https',
+            ])
             ->add('descriptionGerman', CKEditorType::class, [
                 'label' => 'portal.form_desc_de',
                 'required' => false,

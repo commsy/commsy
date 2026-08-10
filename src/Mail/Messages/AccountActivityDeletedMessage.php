@@ -18,16 +18,16 @@ use App\Entity\Portal;
 use App\Mail\Text\MailTextRenderer;
 use App\Mail\Message;
 use App\Services\LegacyEnvironment;
+use App\Services\PortalUrlResolver;
 use cs_environment;
 use cs_user_item;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccountActivityDeletedMessage extends Message
 {
     private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly PortalUrlResolver $portalUrlResolver,
         LegacyEnvironment $legacyEnvironment,
         private readonly Portal $portal,
         private readonly Account $account,
@@ -73,9 +73,7 @@ class AccountActivityDeletedMessage extends Message
                 [
                     $this->account->getDisplayName(),
                     $this->account->getAuthSource()->getTitle(),
-                    $this->urlGenerator->generate('app_helper_portalenter', [
-                        'context' => $this->portal->getId(),
-                    ], UrlGeneratorInterface::ABSOLUTE_URL),
+                    $this->portalUrlResolver->resolve($this->portal),
                     $this->portal->getTitle(),
                 ],
                 $overrides

@@ -16,12 +16,14 @@ namespace App\Mail\Messages;
 use App\Entity\Portal;
 use App\Mail\Message;
 use App\Services\CurrentUserResolver;
+use App\Services\PortalUrlResolver;
 use cs_room_item;
 
 class InvitationMessage extends Message
 {
     public function __construct(
         private readonly CurrentUserResolver $currentUserResolver,
+        private readonly PortalUrlResolver $portalUrlResolver,
         private readonly Portal $portal,
         private readonly cs_room_item $room,
         private readonly string $token
@@ -44,6 +46,7 @@ class InvitationMessage extends Message
             'room' => $this->room,
             'portal' => $this->portal,
             'token' => $this->token,
+            'portalUrl' => $this->portalUrlResolver->resolve($this->portal),
             'senderName' => $this->currentUserResolver->getUser()?->getFullname() ?? '',
         ];
     }

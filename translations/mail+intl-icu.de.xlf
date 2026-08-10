@@ -220,7 +220,11 @@
             </trans-unit>
             <trans-unit id="mail_invitation_link_post">
                 <source>mail.invitation_link_post</source>
-                <target>Dieser Link ist nur 14 Tage lang gültig.</target>
+                <target>Dieser Link ist 14 Tage lang gültig.</target>
+            </trans-unit>
+            <trans-unit id="mail_invitation_portal_link">
+                <source>mail.invitation_portal_link</source>
+                <target>Fortan können Sie sich mit dieser Kennung auf {link} einloggen. Speichern Sie sich gerne diesen Link für künftige Logins.</target>
             </trans-unit>
             <trans-unit id="mail_invitation_room_link_pre">
                 <source>mail.invitation_room_link_pre</source>
@@ -228,7 +232,7 @@
             </trans-unit>
             <trans-unit id="mail_invitation_room_link_post">
                 <source>mail.invitation_room_link_post</source>
-                <target>Dort befinden sich Auswahlmöglichkeiten für die Teilnahme. Diese erfolgt je nach Raumeinstellung per Antrag oder per Code. Sollte im letzteren Fall der Code Ihnen nicht vorliegen, erfragen Sie diesen bitte bei der/dem Einladenden.</target>
+                <target>Dort befinden sich Auswahlmöglichkeiten für die Teilnahme. Diese erfolgt je nach Raumeinstellung per Antrag oder per Code. Sollte Ihnen im letzteren Fall der Code nicht vorliegen, erfragen Sie diesen bitte bei der einladenden Person.</target>
             </trans-unit>
             <trans-unit id="mail_user_joined_grouproom">
                 <source>mail.user_joined_grouproom</source>

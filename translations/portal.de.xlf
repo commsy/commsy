@@ -1197,6 +1197,14 @@
                 <source>portal.form_title</source>
                 <target>Titel</target>
             </trans-unit>
+            <trans-unit id="portal_form_base_url">
+                <source>portal.form_base_url</source>
+                <target>Adresse des Portals</target>
+            </trans-unit>
+            <trans-unit id="portal_form_base_url_help">
+                <source>portal.form_base_url_help</source>
+                <target>Adresse, unter der dieses Portal erreichbar ist, zum Beispiel eine eigene Subdomain. Bleibt das Feld leer, wird die Adresse der Installation verwendet.</target>
+            </trans-unit>
             <trans-unit id="portal_form_desc_de">
                 <source>portal.form_desc_de</source>
                 <target>Beschreibung Deutsch</target>
