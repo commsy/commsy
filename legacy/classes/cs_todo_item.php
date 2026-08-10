@@ -340,15 +340,6 @@ class cs_todo_item extends cs_item
         $this->updateElastic();
     }
 
-     public function updateElastic()
-     {
-         global $symfonyContainer;
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_todo');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Todos::class);
-
-         $this->replaceElasticItem($objectPersister, $repository);
-     }
 
     /** Checks and sets the data of the todo_item.
      *

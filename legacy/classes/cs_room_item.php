@@ -940,14 +940,7 @@ class cs_room_item extends cs_context_item
         $this->setArchived(true);
 
         // remove room from elastic index
-        $container = $this->_environment->getSymfonyContainer();
-        $objectPersister = $container->get('app.elastica.object_persister.commsy_room');
-
-        /** @var EntityManagerInterface $em */
-        $em = $container->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-
-        $this->deleteElasticItem($objectPersister, $repository);
+        $this->deleteElasticItem();
     }
 
     /**
@@ -1014,28 +1007,21 @@ class cs_room_item extends cs_context_item
         return $retour;
     }
 
+    /**
+     * Archived rooms stay out of the index, so there is nothing to queue for them.
+     */
     public function updateElastic(): void
     {
         if ($this->getArchived()) {
             return;
         }
 
-        $container = $this->_environment->getSymfonyContainer();
-        $objectPersister = $container->get('app.elastica.object_persister.commsy_room');
-        $em = $container->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-
-        $this->replaceElasticItem($objectPersister, $repository);
+        $this->replaceElasticItem();
     }
 
     protected function deleteFromElastic(): void
     {
-        $container = $this->_environment->getSymfonyContainer();
-        $objectPersister = $container->get('app.elastica.object_persister.commsy_room');
-        $em = $container->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(Room::class);
-
-        $this->deleteElasticItem($objectPersister, $repository);
+        $this->deleteElasticItem();
     }
 
     public function saveLastlogin()

@@ -835,15 +835,6 @@ class cs_material_item extends cs_item
         $this->updateElastic();
     }
 
-     public function updateElastic()
-     {
-         global $symfonyContainer;
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_material');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Materials::class);
-
-         $this->replaceElasticItem($objectPersister, $repository);
-     }
 
     public function _saveBuzzwords()
     {

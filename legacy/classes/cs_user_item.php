@@ -1185,15 +1185,6 @@ class cs_user_item extends cs_item
         $this->updateElastic();
     }
 
-    public function updateElastic()
-    {
-        global $symfonyContainer;
-        $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_user');
-        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository(User::class);
-
-        $this->replaceElasticItem($objectPersister, $repository);
-    }
 
     /**
      * This method only updates the LastLogin Of the User.

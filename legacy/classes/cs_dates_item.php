@@ -553,15 +553,6 @@ class cs_dates_item extends cs_item
         $this->updateElastic();
     }
 
-     public function updateElastic()
-     {
-         global $symfonyContainer;
-         $objectPersister = $symfonyContainer->get('app.elastica.object_persister.commsy_date');
-         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-         $repository = $em->getRepository(Dates::class);
-
-         $this->replaceElasticItem($objectPersister, $repository);
-     }
 
     /** asks if item is editable by everybody or just creator.
      *

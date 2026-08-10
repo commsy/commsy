@@ -2254,37 +2254,32 @@ class cs_item
         return false;
     }
 
-     protected function replaceElasticItem(ObjectPersisterInterface $objectPersister, $repository)
+     /**
+      * Queues a reindex of this item. Rubrics that need a condition of their own
+      * override updateElastic(); everything else inherits it from here.
+      */
+     public function updateElastic()
      {
-         $elasticHost = $_ENV['ELASTICSEARCH_URL'];
-
-         if ($elasticHost) {
-             if ($repository instanceof MaterialsRepository) {
-                 $object = $repository->findLatestVersionByItemId($this->getItemID());
-             } else {
-                 $object = $repository->findOneByItemId($this->getItemID());
-             }
-
-             if ($object && $object->isIndexable() && !$this->isDraft()) {
-                 // Replacing delete + insert with replace will not call the ingest pipeline and
-                 // will not process any file attachments
-                 $objectPersister->deleteOne($object);
-                 $objectPersister->insertOne($object);
-             }
-         }
+         $this->replaceElasticItem();
      }
 
-     protected function deleteElasticItem($objectPersister, $repository)
+     protected function replaceElasticItem()
      {
-         $elasticHost = $_ENV['ELASTICSEARCH_URL'];
+         global $symfonyContainer;
 
-         if ($elasticHost) {
-             $object = $repository->findOneByItemId($this->getItemID());
+         $symfonyContainer?->get(\App\Legacy\LegacyIndexDispatcher::class)
+             ?->reindex((int) $this->getItemID(), $this->getItemType());
+     }
 
-             if ($object) {
-                 $objectPersister->deleteOne($object);
-             }
-         }
+     /**
+      * Queues removal of this item's document.
+      */
+     protected function deleteElasticItem()
+     {
+         global $symfonyContainer;
+
+         $symfonyContainer?->get(\App\Legacy\LegacyIndexDispatcher::class)
+             ?->remove((int) $this->getItemID(), $this->getItemType());
      }
 
      public function getPath()
