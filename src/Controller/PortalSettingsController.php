@@ -1664,7 +1664,8 @@ class PortalSettingsController extends AbstractController
         $sendMail->setRecipients($recipientArray);
 
         $chosenAction = $action ?? 'user-account_send_mail';
-        $body = '';
+        $multipleRecipients = count($recipientArray) > 1;
+        $body = $accountMail->generateBody($recipientArray[0], $chosenAction, $multipleRecipients);
         $subject = $accountMail->generateSubject($chosenAction);
         $sendMail->setSubject($subject);
         $sendMail->setMessage($body);

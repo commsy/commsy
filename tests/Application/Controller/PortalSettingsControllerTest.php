@@ -367,6 +367,85 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
         $this->assertResponseStatusCodeSame(422);
     }
 
+    /**
+     * The mail form for an account action must open with the portal's configured mail
+     * text already filled in — that is the whole point of the "E-Mail-Texte" settings.
+     * It was empty between 10.4.2 and 10.5.0 because the body generation had been
+     * removed to work around an exception (RT #1632739).
+     *
+     * The link assertion guards the second half: the body is built for a room context,
+     * and in the portal area the context id is a portal id, so a naive room link points
+     * at whatever room happens to carry that number.
+     */
+    public function testAccountActionMailFormIsPrefilledWithThePortalMailText(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getPortal()->getId();
+
+        // materialise the legacy portal user, which is what the action addresses
+        $this->loginAsUser($portalId, $account->getUsername(), $account->getPlainPassword());
+        $this->logout();
+
+        $connection = static::getContainer()->get(EntityManagerInterface::class)->getConnection();
+        $userItemId = $connection->fetchOne(
+            'SELECT item_id FROM user WHERE context_id = ? AND user_id = ? ORDER BY item_id DESC LIMIT 1',
+            [$portalId, $account->getUsername()]
+        );
+        self::assertNotFalse($userItemId);
+
+        $this->loginAsRoot();
+
+        foreach (['user-block', 'user-status-moderator', 'user-contact'] as $action) {
+            $crawler = $this->client->request(
+                'GET',
+                "/portal/{$portalId}/settings/accountindex/sendmail/{$userItemId}/{$action}"
+            );
+            $this->assertResponseIsSuccessful();
+
+            $message = $crawler->filter('#account_index_send_mail_message');
+            self::assertCount(1, $message, "no message field for action {$action}");
+            self::assertNotSame('', trim($message->text()), "message field is empty for action {$action}");
+
+            self::assertStringNotContainsString(
+                "/room/{$portalId}",
+                $message->text(),
+                "action {$action} links to a room carrying the portal id"
+            );
+        }
+    }
+
+    /**
+     * The plain "send mail" action carries no status text, so its form opens empty —
+     * but it must open. It used to raise an UnhandledMatchError, which is the error
+     * #5360 reported and worked around by dropping the prefill for every action.
+     */
+    public function testGenericSendMailActionOpensWithoutAStatusText(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getPortal()->getId();
+
+        $this->loginAsUser($portalId, $account->getUsername(), $account->getPlainPassword());
+        $this->logout();
+
+        $connection = static::getContainer()->get(EntityManagerInterface::class)->getConnection();
+        $userItemId = $connection->fetchOne(
+            'SELECT item_id FROM user WHERE context_id = ? AND user_id = ? ORDER BY item_id DESC LIMIT 1',
+            [$portalId, $account->getUsername()]
+        );
+
+        $this->loginAsRoot();
+
+        $crawler = $this->client->request(
+            'GET',
+            "/portal/{$portalId}/settings/accountindex/sendmail/{$userItemId}/user-account_send_mail"
+        );
+
+        $this->assertResponseIsSuccessful();
+        self::assertSame('', trim($crawler->filter('#account_index_send_mail_message')->text()));
+    }
+
     #[WithStory(PortalStory::class)]
     public function testAppearancePageRenders(): void
     {

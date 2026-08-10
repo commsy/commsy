@@ -16,6 +16,7 @@ namespace App\Utils;
 use App\Mail\Text\MailTextRenderer;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
+use App\Services\PortalUrlResolver;
 use cs_environment;
 use cs_user_item;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -30,8 +31,14 @@ class AccountMail
 {
     private readonly cs_environment $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, private readonly RouterInterface $router, private readonly CurrentContextResolver $currentContextResolver, private readonly TranslatorInterface $translator, private readonly MailTextRenderer $mailTextRenderer)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        private readonly RouterInterface $router,
+        private readonly CurrentContextResolver $currentContextResolver,
+        private readonly PortalUrlResolver $portalUrlResolver,
+        private readonly TranslatorInterface $translator,
+        private readonly MailTextRenderer $mailTextRenderer
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -69,9 +76,36 @@ class AccountMail
         $locale = $this->legacyEnvironment->getSelectedLanguage();
         $moderator = $this->legacyEnvironment->getCurrentUserItem();
 
-        $absoluteRoomUrl = $this->router->generate('app_room_home', [
-            'roomId' => $this->currentContextResolver->getContextId() ?? 0,
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
+        // user-delete renders the body in the recipient's own language (legacy getUserLanguage)
+        $bodyDefinition = match ($action) {
+            'user-delete' => ['mail.body.account_delete', 'MAIL_BODY_USER_ACCOUNT_DELETE', $this->legacyEnvironment->getUserLanguage()],
+            'user-block' => ['mail.body.account_lock', 'MAIL_BODY_USER_ACCOUNT_LOCK', $locale],
+            'user-status-user', 'user-confirm' => ['mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER', $locale],
+            'user-status-moderator' => ['mail.body.status_moderator', 'MAIL_BODY_USER_STATUS_MODERATOR', $locale],
+            'user-status-reading-user' => ['mail.body.status_read_only', 'MAIL_BODY_USER_STATUS_USER_READ_ONLY', $locale],
+            'user-contact' => ['mail.body.make_contact_person', 'MAIL_BODY_USER_MAKE_CONTACT_PERSON', $locale],
+            'user-contact-remove' => ['mail.body.unmake_contact_person', 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $locale],
+            // A plain mail, a merge or a password change carries no status text of its
+            // own — the moderator composes those freely, so there is nothing to offer.
+            // Anything unknown is treated the same rather than failing: an empty
+            // suggestion beats a 500 on a moderator action, which is what the missing
+            // default arm used to produce.
+            default => null,
+        };
+
+        if (null === $bodyDefinition) {
+            return '';
+        }
+
+        // Account actions are performed from a room as well as from the portal's account
+        // index. Portal ids and room ids come from the same sequence, so linking to
+        // app_room_home with the portal's context id would point at whatever room happens
+        // to carry that number.
+        $absoluteContextUrl = $room->isPortal()
+            ? $this->portalUrlResolver->resolve($portal)
+            : $this->router->generate('app_room_home', [
+                'roomId' => $this->currentContextResolver->getContextId() ?? 0,
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $body = $this->mailTextRenderer->render(
             'mail.salutation',
@@ -83,16 +117,7 @@ class AccountMail
         );
         $body .= '<br/><br/>';
 
-        // user-delete renders the body in the recipient's own language (legacy getUserLanguage)
-        [$bodyKey, $bodyLegacyId, $bodyLocale] = match ($action) {
-            'user-delete' => ['mail.body.account_delete', 'MAIL_BODY_USER_ACCOUNT_DELETE', $this->legacyEnvironment->getUserLanguage()],
-            'user-block' => ['mail.body.account_lock', 'MAIL_BODY_USER_ACCOUNT_LOCK', $locale],
-            'user-status-user', 'user-confirm' => ['mail.body.status_user', 'MAIL_BODY_USER_STATUS_USER', $locale],
-            'user-status-moderator' => ['mail.body.status_moderator', 'MAIL_BODY_USER_STATUS_MODERATOR', $locale],
-            'user-status-reading-user' => ['mail.body.status_read_only', 'MAIL_BODY_USER_STATUS_USER_READ_ONLY', $locale],
-            'user-contact' => ['mail.body.make_contact_person', 'MAIL_BODY_USER_MAKE_CONTACT_PERSON', $locale],
-            'user-contact-remove' => ['mail.body.unmake_contact_person', 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $locale],
-        };
+        [$bodyKey, $bodyLegacyId, $bodyLocale] = $bodyDefinition;
         $bodyUserId = ('user-delete' === $action || !$multipleRecipients) ? $user->getUserID() : ' ';
         $body .= $this->mailTextRenderer->render(
             $bodyKey,
@@ -105,7 +130,7 @@ class AccountMail
 
         if (!in_array($action, ['user-delete', 'user-block'])) {
             $body .= '<br/><br/>';
-            $body .= "<a href=\"$absoluteRoomUrl\">$absoluteRoomUrl</a>";
+            $body .= "<a href=\"$absoluteContextUrl\">$absoluteContextUrl</a>";
         }
 
         $body .= '<br/><br/>';
