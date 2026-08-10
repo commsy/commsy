@@ -83,4 +83,22 @@ class PortalRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Bumps the activity counter as a statement rather than through the unit of work.
+     *
+     * Two reasons it is not a read-modify-write on the entity: it keeps the counter
+     * out of the request's unit of work, and concurrent requests reading the same
+     * value would lose increments. Doing it in the database avoids both.
+     */
+    public function incrementActivity(int $portalId): void
+    {
+        $this->createQueryBuilder('p')
+            ->update()
+            ->set('p.activity', 'p.activity + 1')
+            ->where('p.id = :portalId')
+            ->setParameter('portalId', $portalId)
+            ->getQuery()
+            ->execute();
+    }
 }

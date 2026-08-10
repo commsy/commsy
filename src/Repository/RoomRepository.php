@@ -166,6 +166,24 @@ class RoomRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    /**
+     * Marks a single room active again, as a statement rather than through the unit
+     * of work, so that callers on kernel.terminate need not flush.
+     */
+    public function markActive(int $roomId): void
+    {
+        $this->createQueryBuilder('r')
+            ->update()
+            ->set('r.activityState', ':state')
+            ->set('r.activityStateUpdated', ':updated')
+            ->where('r.itemId = :roomId')
+            ->setParameter('state', Room::ACTIVITY_ACTIVE)
+            ->setParameter('updated', null)
+            ->setParameter('roomId', $roomId)
+            ->getQuery()
+            ->execute();
+    }
+
     public function countByPortalAndType()
     {
         return $this->createQueryBuilder('r')

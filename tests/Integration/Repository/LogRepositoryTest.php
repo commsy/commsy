@@ -20,19 +20,20 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tests\Factory\PortalFactory;
 
 final class LogRepositoryTest extends KernelTestCase
 {
     private LogRepository $repository;
     private Connection $connection;
+    private EntityManagerInterface $entityManager;
 
     protected function setUp(): void
     {
         self::bootKernel();
         $this->repository = self::getContainer()->get(LogRepository::class);
-        $this->connection = self::getContainer()
-            ->get(EntityManagerInterface::class)
-            ->getConnection();
+        $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $this->connection = $this->entityManager->getConnection();
     }
 
     public function testAddLogPersistsLogRow(): void
@@ -57,6 +58,37 @@ final class LogRepositoryTest extends KernelTestCase
         self::assertNotEmpty($row);
         self::assertSame('127.0.0.1', $row['ip']);
         self::assertSame('GET', $row['method']);
+        self::assertSame('tester', $row['ulogin']);
+        self::assertFalse((bool) $row['ajax']);
+
+        // filled by the entity's PrePersist hook, which still runs on the isolated
+        // unit of work because the event manager is the shared one
+        self::assertNotNull($row['timestamp']);
+    }
+
+    /**
+     * Logging runs on kernel.terminate. Were it to go through the unit of work, its
+     * flush would also write whatever else the finished request left dirty.
+     */
+    public function testAddLogDoesNotFlushOtherPendingChanges(): void
+    {
+        $portal = PortalFactory::createOne();
+        $originalTitle = $portal->getTitle();
+        $portal->setTitle('darf nicht gespeichert werden');
+
+        $this->repository->addLog(
+            ip: '127.0.0.1',
+            userAgent: 'phpunit',
+            requestUri: '/room/123/material',
+            postContent: '',
+            method: 'GET',
+            isAjax: false,
+            username: 'tester',
+            contextId: 100_002,
+        );
+
+        $stored = $this->connection->fetchOne('SELECT title FROM portal WHERE id = ?', [$portal->getId()]);
+        self::assertSame($originalTitle, $stored);
     }
 
     public function testGetCountForContextCountsNonAjaxAndNonAssetRequests(): void

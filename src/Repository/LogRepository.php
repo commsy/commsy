@@ -17,6 +17,7 @@ use App\Entity\Log;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query\Parameter;
@@ -59,9 +60,35 @@ class LogRepository extends ServiceEntityRepository
             ->setCid($contextId)
         ;
 
-        $em = $this->getEntityManager();
-        $em->persist($log);
-        $em->flush();
+        // Persisted through a unit of work of its own rather than the shared one.
+        //
+        // Logging runs from kernel.terminate, and flush() commits an entire unit of
+        // work, not just the row being added. On the shared manager it would also
+        // write whatever else the finished request left dirty — a form that failed
+        // validation has already been mapped onto its entity by that point, so the
+        // rejected values would reach the database.
+        //
+        // Connection, configuration and event manager are the shared ones, so mapping,
+        // metadata cache and lifecycle callbacks (including the PrePersist that sets
+        // the timestamp) behave exactly as on the default manager. Only the set of
+        // tracked entities differs, and it holds nothing but this row.
+        //
+        // Deliberately built here instead of declaring a second entity manager in
+        // doctrine.yaml: that would require the entity in a namespace of its own and
+        // would split the schema commands, which then silently check one manager only.
+        // Not worth it for an interim measure — the intended destination is to take
+        // access logging out of Doctrine (Monolog, with the room statistics reading an
+        // aggregated counter), or to dispatch it once the messenger transport no
+        // longer lives in this database.
+        $shared = $this->getEntityManager();
+        $isolated = new EntityManager(
+            $shared->getConnection(),
+            $shared->getConfiguration(),
+            $shared->getEventManager()
+        );
+
+        $isolated->persist($log);
+        $isolated->flush();
     }
 
     /**

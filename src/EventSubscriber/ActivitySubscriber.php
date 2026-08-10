@@ -13,28 +13,27 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\Portal;
-use App\Room\RoomManager;
+use App\Repository\PortalRepository;
+use App\Repository\RoomRepository;
 use App\Services\CurrentContextResolver;
-use App\Services\LegacyEnvironment;
 use App\Utils\RequestLogging;
-use cs_environment;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Records portal and room activity once the response is out.
+ *
+ * Everything here writes as a statement rather than through the unit of work, so the
+ * bookkeeping does not drag along whatever the finished request left dirty.
+ */
 class ActivitySubscriber implements EventSubscriberInterface
 {
-    private readonly cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $legacyEnvironment,
         private readonly CurrentContextResolver $currentContextResolver,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly RoomManager $roomManager
+        private readonly PortalRepository $portalRepository,
+        private readonly RoomRepository $roomRepository
     ) {
-        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public static function getSubscribedEvents(): array
@@ -71,10 +70,7 @@ class ActivitySubscriber implements EventSubscriberInterface
                         $currentContextItem->saveLastLogin();
                         $currentContextItem->saveActivityPoints(1);
 
-                        $room = $this->roomManager->getRoom($currentContextItem->getItemId());
-                        if ($room) {
-                            $this->roomManager->resetInactivity($room, false, true, true);
-                        }
+                        $this->roomRepository->markActive($currentContextItem->getItemId());
 
                         $portalId = $currentContextItem->getContextID();
                         $this->updatePortalActivity($portalId);
@@ -86,12 +82,6 @@ class ActivitySubscriber implements EventSubscriberInterface
 
     private function updatePortalActivity(int $portalId): void
     {
-        $portalRespository = $this->entityManager->getRepository(Portal::class);
-        $portal = $portalRespository->find($portalId);
-        if ($portal) {
-            $portal->setActivity($portal->getActivity() + 1);
-            $this->entityManager->persist($portal);
-            $this->entityManager->flush();
-        }
+        $this->portalRepository->incrementActivity($portalId);
     }
 }
