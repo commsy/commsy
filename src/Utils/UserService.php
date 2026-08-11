@@ -15,6 +15,7 @@ namespace App\Utils;
 
 use App\Entity\Account;
 use App\Entity\User;
+use App\Event\UserStatusChangedEvent;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
 use App\Repository\UserRepository;
@@ -40,6 +41,7 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use LogicException;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Mime\Address;
 
@@ -61,6 +63,7 @@ class UserService
         private readonly Security $security,
         private readonly LegacyPermissionBridge $legacyBridge,
         private readonly CurrentContextResolver $currentContextResolver,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
@@ -406,6 +409,11 @@ class UserService
             while ($requested_user) {
                 $requested_user->makeUser();
                 $requested_user->save();
+
+                // Same announcement the moderator-driven approval makes, so the status
+                // reaches the applicant's user room. Without it they would be approved
+                // in the project room but locked out of their own user room.
+                $this->eventDispatcher->dispatch(new UserStatusChangedEvent($requested_user));
                 $task_manager = $this->legacyEnvironment->getTaskManager();
                 $task_list = $task_manager->getTaskListForItem($requested_user);
                 if (!empty($task_list)) {

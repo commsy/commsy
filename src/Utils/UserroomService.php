@@ -123,9 +123,12 @@ class UserroomService
             }
         }
 
-        // add room owner (i.e. a regular user for the project room user who's associated with this user room)
+        // Add the room owner, carrying over their status in the project room rather
+        // than defaulting to "regular user": a user room is created as soon as someone
+        // applies for membership, and granting full access there would let an applicant
+        // create entries while the application is still pending.
         if (!$moderatorIsRoomOwner) {
-            $userroomOwner = $this->userService->cloneUser($user, $userContext);
+            $userroomOwner = $this->userService->cloneUser($user, $userContext, $user->getStatus());
             $userroomOwner->setLinkedProjectUserItemID($user->getItemID());
             $userroomOwner->save();
         }
