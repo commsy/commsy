@@ -37,12 +37,14 @@ use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -119,6 +121,29 @@ class SecurityController extends AbstractController
     {
         // controller can be blank: it will never be executed!
         throw new Exception('Don\'t forget to activate logout in security.yaml');
+    }
+
+    /**
+     * Landing route for ending an account take-over.
+     *
+     * The firewall processes `_switch_user=_exit` before this controller runs and
+     * redirects back here without the parameter, so this action always executes as
+     * the restored original account. Pointing the exit link at a plain route rather
+     * than at logout above is what keeps that original login alive.
+     */
+    #[Route(path: '/takeover/end', name: 'app_takeover_end', methods: ['GET'])]
+    #[IsGranted('IS_AUTHENTICATED')]
+    public function endTakeover(Request $request): RedirectResponse
+    {
+        $session = $request->getSession();
+
+        // Drop the fallbacks UserProvider consults while a take-over is active.
+        $session->remove('takeover_context');
+        $session->remove('takeover_authSourceId');
+
+        return $this->redirectToRoute('app_helper_portalenter', [
+            'context' => $session->get('context', 'server'),
+        ]);
     }
 
     #[Route(path: '/login/{portalId}/request_accounts')]

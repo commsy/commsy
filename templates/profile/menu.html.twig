@@ -28,7 +28,7 @@
 
                 {% if is_granted('IS_IMPERSONATOR') %}
                     <li>
-                        <a href="{{ path('app_logout', {'_switch_user': '_exit'}) }}"
+                        <a href="{{ path('app_takeover_end', {'_switch_user': '_exit'}) }}"
                            title="{{ 'profile.exit_impersonation'|trans([], 'profile') }}">
                             <i class="uk-icon-sign-out"></i> {{ 'profile.exit_impersonation'|trans([], 'profile') }}
                         </a>
@@ -53,7 +53,7 @@
 
                 {% if is_granted('IS_IMPERSONATOR') %}
                     <li>
-                        <a href="{{ path('app_logout', {'_switch_user': '_exit'}) }}"
+                        <a href="{{ path('app_takeover_end', {'_switch_user': '_exit'}) }}"
                            title="{{ 'profile.exit_impersonation'|trans([], 'profile') }}">
                             <i class="uk-icon-sign-out"></i> {{ 'profile.exit_impersonation'|trans([], 'profile') }}
                         </a>

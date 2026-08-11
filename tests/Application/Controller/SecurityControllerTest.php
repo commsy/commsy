@@ -131,4 +131,26 @@ class SecurityControllerTest extends AbstractApplicationTestCase
         // /login/server target.
         $this->assertResponseRedirects('/login');
     }
+
+    public function testTakeoverEndRedirectsToLoginWhenAnonymous(): void
+    {
+        $this->client->request('GET', '/takeover/end');
+        $this->assertResponseRedirects('/login');
+    }
+
+    /**
+     * The route only clears session values and redirects, so calling it without
+     * an active take-over has to stay harmless — in particular it must not sign
+     * the caller out the way the old exit link did.
+     */
+    public function testTakeoverEndWithoutAnActiveTakeoverKeepsTheCallerSignedIn(): void
+    {
+        $this->loginAsRoot();
+
+        $this->client->request('GET', '/takeover/end');
+        $this->assertResponseRedirects();
+
+        $this->client->request('GET', '/portal/show');
+        $this->assertResponseIsSuccessful();
+    }
 }
