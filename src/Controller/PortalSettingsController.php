@@ -14,6 +14,8 @@
 namespace App\Controller;
 
 use App\Account\AccountManager;
+use App\Audit\AuditEvent;
+use App\Audit\AuditLogger;
 use App\Entity\Account;
 use App\Entity\AccountIndex;
 use App\Entity\AccountIndexSendMail;
@@ -96,6 +98,7 @@ use App\Utils\RoomService;
 use App\Utils\TimePulsesService;
 use App\Utils\UserService;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -1892,6 +1895,7 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         TranslatorInterface $translator,
         AccountManager $accountManager,
+        AuditLogger $auditLogger,
         int $userId
     ): Response {
         $user = $userService->getUser($userId);
@@ -1917,6 +1921,12 @@ class PortalSettingsController extends AbstractController
         $userChangeStatus->setContact($user->isContact());
         $userChangeStatus->setLoginIsDeactivated(!$user->getCanImpersonateAnotherUser());
         $userChangeStatus->setImpersonateExpiryDate($user->getImpersonateExpiryDate());
+
+        // Kept aside before the form runs: it writes the submitted values onto
+        // the same object, so afterwards there is no earlier state left to
+        // compare against.
+        $takeOverWasAllowed = $user->getCanImpersonateAnotherUser();
+        $takeOverExpiredOn = $user->getImpersonateExpiryDate();
 
         $form = $this->createForm(AccountIndexDetailChangeStatusType::class, $userChangeStatus);
         $form->handleRequest($request);
@@ -1946,12 +1956,49 @@ class PortalSettingsController extends AbstractController
                 $user->makeNoContactPerson();
             }
 
+            $takeOverIsAllowed = $takeOverWasAllowed;
+            $takeOverExpiresOn = $takeOverExpiredOn;
             if ($this->isGranted(RootVoter::ROOT)) {
-                $user->setCanImpersonateAnotherUser(!$data->getLoginIsDeactivated());
-                $user->setImpersonateExpiryDate($data->getImpersonateExpiryDate());
+                $takeOverIsAllowed = !$data->getLoginIsDeactivated();
+                $takeOverExpiresOn = $data->getImpersonateExpiryDate();
+
+                $user->setCanImpersonateAnotherUser($takeOverIsAllowed);
+                $user->setImpersonateExpiryDate($takeOverExpiresOn);
             }
 
             $user->save();
+
+            // Only a real change is worth recording; the form is also submitted
+            // to set the contact flag alone. $currentStatus was read before the
+            // form ran, so it still holds what the account was.
+            $previousStatus = strtolower($currentStatus);
+            if ($account instanceof Account && $newStatus !== $previousStatus) {
+                $auditLogger->recordAccountEvent(
+                    AuditEvent::AccountStatusChanged,
+                    $portal,
+                    $account,
+                    ['from' => $previousStatus, 'to' => $newStatus]
+                );
+            }
+
+            // Withdrawing or time-limiting the right to take an account over is
+            // itself an act over who may impersonate whom, so it belongs in the
+            // same log. Only root can perform it, and the deadline is compared
+            // by day because that is the granularity the form offers.
+            $expiryChanged = $takeOverExpiredOn?->format('Y-m-d') !== $takeOverExpiresOn?->format('Y-m-d');
+            if ($account instanceof Account && ($takeOverIsAllowed !== $takeOverWasAllowed || $expiryChanged)) {
+                $details = ['allowed' => $takeOverIsAllowed];
+                if ($takeOverIsAllowed && $takeOverExpiresOn instanceof DateTimeImmutable) {
+                    $details['until'] = $takeOverExpiresOn->format('Y-m-d');
+                }
+
+                $auditLogger->recordAccountEvent(
+                    AuditEvent::AccountTakeOverGrantChanged,
+                    $portal,
+                    $account,
+                    $details
+                );
+            }
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindex', [
                 'portalId' => $portal->getId(),
@@ -2211,7 +2258,8 @@ class PortalSettingsController extends AbstractController
         Request $request,
         UserService $userService,
         UserPasswordHasherInterface $passwordHasher,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
+        AuditLogger $auditLogger
     ): Response {
         $portalUser = $userService->getPortalUser($account);
 
@@ -2234,6 +2282,10 @@ class PortalSettingsController extends AbstractController
             $em = $managerRegistry->getManager();
             $em->persist($account);
             $em->flush();
+
+            // The password itself is never part of the record — that someone
+            // else set it is the fact worth keeping.
+            $auditLogger->recordAccountEvent(AuditEvent::AccountPasswordReset, $portal, $account);
         }
 
         return $this->render('portal_settings/account_index_detail_change_password.html.twig', [
