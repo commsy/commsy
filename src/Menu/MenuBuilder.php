@@ -378,6 +378,15 @@ final readonly class MenuBuilder
             ])
             ->setExtra('translation_domain', 'portal');
 
+            // audit log
+            $menu->addChild('AuditLog', [
+                'label' => 'portal.audit.title',
+                'route' => 'app_portalsettings_auditlog',
+                'routeParameters' => ['portalId' => $portalId],
+                'extras' => ['icon' => 'history'],
+            ])
+            ->setExtra('translation_domain', 'portal');
+
             // appearance
             $menu->addChild('Appearance', [
                 'label' => 'appearance',

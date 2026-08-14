@@ -1,0 +1,78 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme filterForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+
+{% block sidebar_left %}
+    {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
+{% endblock %}
+
+{% block main %}
+    {% embed 'components/card.html.twig' %}
+        {% block title %}{{ 'portal.audit.title'|trans({}, "portal") }}{% endblock %}
+        {% block body %}
+            <p class="uk-text-meta">{{ 'portal.audit.retention_note'|trans({}, 'portal') }}</p>
+
+            {{ form(filterForm) }}
+
+            {% if not pagination is empty %}
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-striped uk-table-hover uk-table-small">
+                        <thead>
+                            <tr>
+                                <th class="uk-table-shrink uk-text-nowrap">
+                                    {{ knp_pagination_sortable(pagination, 'portal.audit.column.occurred_at'|trans({}, "portal"), 'e.occurredAt') }}
+                                </th>
+                                <th>{{ 'portal.audit.column.event'|trans({}, 'portal') }}</th>
+                                <th>{{ 'portal.audit.column.actor'|trans({}, 'portal') }}</th>
+                                <th>{{ 'portal.audit.column.subject'|trans({}, 'portal') }}</th>
+                                <th>{{ 'portal.audit.column.details'|trans({}, 'portal') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in pagination %}
+                                <tr>
+                                    <td class="uk-text-nowrap">{{ entry.occurredAt|format_datetime }}</td>
+                                    <td>{{ entry.event.labelKey|trans({}, 'portal') }}</td>
+                                    <td>
+                                        {% if entry.actorUsername %}
+                                            {{ entry.actorName }} ({{ entry.actorUsername }})
+                                        {% else %}
+                                            <span class="uk-text-meta">{{ 'portal.audit.actor_system'|trans({}, 'portal') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ entry.subjectName }} ({{ entry.subjectLabel }})</td>
+                                    <td>
+                                        {% if entry.details.from is defined and entry.details.to is defined %}
+                                            {{ entry.details.from|capitalize|trans({}, 'portal') }}
+                                            &rarr;
+                                            {{ entry.details.to|capitalize|trans({}, 'portal') }}
+                                        {% endif %}
+                                        {% if entry.details.allowed is defined %}
+                                            {% if not entry.details.allowed %}
+                                                {{ 'portal.audit.grant.withdrawn'|trans({}, 'portal') }}
+                                            {% elseif entry.details.until is defined %}
+                                                {{ 'portal.audit.grant.allowed_until'|trans({'%date%': entry.details.until|format_date}, 'portal') }}
+                                            {% else %}
+                                                {{ 'portal.audit.grant.allowed_unlimited'|trans({}, 'portal') }}
+                                            {% endif %}
+                                        {% endif %}
+                                        {% if entry.details.acting_as is defined %}
+                                            <span class="uk-text-meta">
+                                                {{ 'portal.audit.acting_as'|trans({'%username%': entry.details.acting_as}, 'portal') }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    {{ 'portal.audit.found_entries'|trans({}, "portal") }}: {{ pagination.getTotalItemCount }}<br />
+                    {{ knp_pagination_render(pagination) }}
+                </div>
+            {% else %}
+                {{ 'No results found'|trans({}, 'search') }}
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

@@ -1681,6 +1681,99 @@
                 <source>mail_text.sample.link</source>
                 <target>https://commsy.example/portal/1</target>
             </trans-unit>
+            <!-- audit log -->
+            <trans-unit id="portal_audit_title">
+                <source>portal.audit.title</source>
+                <target>Protokolle</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_retention_note">
+                <source>portal.audit.retention_note</source>
+                <target>Einträge werden nach zwölf Monaten automatisch gelöscht.</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_event_account_take_over">
+                <source>portal.audit.event.account_take_over</source>
+                <target>Kennungsübernahme</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_event_account_status_changed">
+                <source>portal.audit.event.account_status_changed</source>
+                <target>Statusänderung</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_event_account_password_reset">
+                <source>portal.audit.event.account_password_reset</source>
+                <target>Passwort gesetzt</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_column_occurred_at">
+                <source>portal.audit.column.occurred_at</source>
+                <target>Zeitpunkt</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_column_event">
+                <source>portal.audit.column.event</source>
+                <target>Vorgang</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_column_actor">
+                <source>portal.audit.column.actor</source>
+                <target>Ausgeführt von</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_column_subject">
+                <source>portal.audit.column.subject</source>
+                <target>Betroffene Kennung</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_column_details">
+                <source>portal.audit.column.details</source>
+                <target>Einzelheiten</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_actor_system">
+                <source>portal.audit.actor_system</source>
+                <target>System</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_acting_as">
+                <source>portal.audit.acting_as</source>
+                <target>handelnd als %username%</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_found_entries">
+                <source>portal.audit.found_entries</source>
+                <target>Gefundene Einträge</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_filter_event">
+                <source>portal.audit.filter.event</source>
+                <target>Vorgang</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_filter_period">
+                <source>portal.audit.filter.period</source>
+                <target>Zeitraum</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_filter_period_from">
+                <source>portal.audit.filter.period_from</source>
+                <target>von</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_filter_period_until">
+                <source>portal.audit.filter.period_until</source>
+                <target>bis</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_filter_search">
+                <source>portal.audit.filter.search</source>
+                <target>Suche</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_filter_search_help">
+                <source>portal.audit.filter.search_help</source>
+                <target>Sucht in den Namen und Kennungen beider Seiten.</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_event_account_take_over_grant_changed">
+                <source>portal.audit.event.account_take_over_grant_changed</source>
+                <target>Übernahmerecht geändert</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_grant_withdrawn">
+                <source>portal.audit.grant.withdrawn</source>
+                <target>Übernahmerecht entzogen</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_grant_allowed_unlimited">
+                <source>portal.audit.grant.allowed_unlimited</source>
+                <target>Übernahmerecht erteilt, unbefristet</target>
+            </trans-unit>
+            <trans-unit id="portal_audit_grant_allowed_until">
+                <source>portal.audit.grant.allowed_until</source>
+                <target>Übernahmerecht erteilt, befristet bis %date%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
