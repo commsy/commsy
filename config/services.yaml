@@ -19,6 +19,9 @@ parameters:
     commsy.autosave.mode: 0         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
     commsy.autosave.limit: 6        # limit in minutes
 
+    # Audit log: how long a record of an administrative act is kept
+    commsy.audit.retention_days: 365
+
     # Cookie management
     commsy.cookie.domain: ~
     commsy.cookie.path: ~
