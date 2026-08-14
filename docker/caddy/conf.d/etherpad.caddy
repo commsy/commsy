@@ -1,0 +1,14 @@
+# Etherpad on its own host name, under the same registrable domain as CommSy.
+#
+# The pad runs in an iframe. If it is served from a different site, the browser
+# treats its cookies as third-party: Etherpad then marks them SameSite=None,
+# which browsers only accept together with Secure — over plain HTTP they are
+# dropped and the pad loses its session.
+#
+# A sibling host solves both halves at once: same registrable domain makes the
+# cookies same-site, and TLS terminates here so Secure applies. Etherpad also
+# needs to sit at the root of a host; it does not support a sub-path.
+{$ETHERPAD_SERVER_NAME:etherpad.localhost} {
+    log
+    reverse_proxy etherpad:9001
+}

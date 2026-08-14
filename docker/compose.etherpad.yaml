@@ -1,9 +1,40 @@
 services:
   etherpad:
-    image: etherpad/etherpad
+    image: etherpad/etherpad:3
+    environment:
+      # From version 2 on the default is SSO, where Etherpad runs its own
+      # OIDC provider and every user signs in there separately. We talk to
+      # Etherpad server to server and map the user ourselves, so the API key
+      # is the method that fits — but it has to be asked for explicitly.
+      AUTHENTICATION_METHOD: apikey
+      # Caddy terminates TLS in front of Etherpad, so it has to take the
+      # forwarded protocol seriously — otherwise it marks its cookies as
+      # insecure and the browser drops them.
+      TRUST_PROXY: "true"
+    # Etherpad writes its generated API key next to the application, where a
+    # recreate loses it — and a rotated key silently invalidates the one in
+    # .env. The path is a startup argument, so it can live in the volume with
+    # the pads. Mirrors the image's own command; revisit when moving off :3.
+    command: ["sh", "-c", "cd src && exec node --require tsx/cjs node/server.ts --apikey /opt/etherpad-lite/var/APIKEY.txt"]
+    volumes:
+      - etherpad-data:/opt/etherpad-lite/var
     ports:
       - "82:9001"
+
+  caddy:
+    environment:
+      # Etherpad gets a sibling host so the pad iframe is same-site with
+      # CommSy and its cookies survive.
+      SERVER_NAME: ${SERVER_NAME:-localhost, caddy:80}
+      ETHERPAD_SERVER_NAME: ${ETHERPAD_SERVER_NAME:-etherpad.localhost}
+    volumes:
+      - ./docker/caddy/conf.d:/etc/caddy/conf.d:ro
+    depends_on:
+      - etherpad
 
   php:
     depends_on:
       - etherpad
+
+volumes:
+  etherpad-data:

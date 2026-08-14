@@ -3,6 +3,9 @@
     {$CADDY_DEBUG}
 }
 
+# Optional extras, mounted by the compose overlays that need them.
+import /etc/caddy/conf.d/*.caddy
+
 {$SERVER_NAME}
 
 log
