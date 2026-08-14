@@ -20,7 +20,6 @@ use App\Utils\EntityUsersTrait;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'user')]
@@ -37,7 +36,6 @@ class User
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[Groups(['api_read'])]
     public int $itemId;
 
     #[ORM\ManyToOne(targetEntity: Room::class)]
@@ -64,22 +62,18 @@ class User
     private ?Account $account = null;
 
     #[ORM\Column(name: 'user_id', type: Types::STRING, length: 100, nullable: false)]
-    #[Groups(['api_read'])]
     public string $userId;
 
     #[ORM\Column(name: 'status', type: Types::SMALLINT, nullable: false)]
-    #[Groups(['api_read'])]
     private int $status = 0;
 
     #[ORM\Column(name: 'is_contact', type: Types::BOOLEAN, nullable: false, options: ['default' => false])]
     private bool $isContact = false;
 
     #[ORM\Column(name: 'firstname', type: Types::STRING, length: 50, nullable: false)]
-    #[Groups(['api_read'])]
     private string $firstname;
 
     #[ORM\Column(name: 'lastname', type: Types::STRING, length: 100, nullable: false)]
-    #[Groups(['api_read'])]
     private string $lastname;
 
     #[ORM\Column(name: 'email', type: Types::STRING, length: 100, nullable: false)]

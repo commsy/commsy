@@ -114,51 +114,6 @@ class cs_material_item extends cs_item
         $this->_addExtra('BIBLIOGRAPHIC', (string) $value);
     }
 
-    public function setBibAvailibility($value)
-    {
-        $this->_addExtra('BIBLAVAILABILITY', (string) $value);
-    }
-
-    public function getBibAvailibility()
-    {
-        return (string) $this->_getExtra('BIBLAVAILABILITY');
-    }
-
-    public function issetBibAvailibility()
-    {
-        return $this->_issetExtra('BIBLAVAILABILITY');
-    }
-
-    public function setBibTOC($value)
-    {
-        $this->_addExtra('BIBTOC', (string) $value);
-    }
-
-    public function getBibTOC()
-    {
-        return (string) $this->_getExtra('BIBTOC');
-    }
-
-    public function issetBibTOC()
-    {
-        return $this->_issetExtra('BIBTOC');
-    }
-
-    public function setBibURL($value)
-    {
-        $this->_addExtra('BIBURL', (string) $value);
-    }
-
-    public function getBibURL()
-    {
-        return (string) $this->_getExtra('BIBURL');
-    }
-
-    public function issetBibURL()
-    {
-        return $this->_issetExtra('BIBURL');
-    }
-
     /** The following methods are for detailed bib values **/
     public function setBibKind($value)
     {

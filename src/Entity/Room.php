@@ -65,7 +65,7 @@ class Room
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    #[Groups(['api'])]
+    #[Groups(['api', 'export'])]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
@@ -77,7 +77,7 @@ class Room
 
     #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
-    #[Groups(['api'])]
+    #[Groups(['api', 'export'])]
     private string $title;
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
@@ -87,6 +87,7 @@ class Room
     private string $status;
 
     #[ORM\Column(name: 'archived', type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
+    #[Groups(['export'])]
     private bool $archived;
 
     #[ORM\Column(name: 'activity', type: Types::INTEGER, options: ['default' => 0])]
@@ -94,7 +95,7 @@ class Room
 
     #[ApiProperty(description: 'Either project or community')]
     #[ORM\Column(name: 'type', type: Types::STRING, length: 20)]
-    #[Groups(['api'])]
+    #[Groups(['api', 'export'])]
     private string $type = 'project';
 
     #[ORM\Column(name: 'is_open_for_guests', type: Types::BOOLEAN, options: ['default' => 0])]
@@ -111,7 +112,7 @@ class Room
 
     #[ApiProperty(openapiContext: ['type' => 'string', 'nullable' => true])]
     #[ORM\Column(name: 'room_description', type: Types::STRING, length: 10000, nullable: true)]
-    #[Groups(['api'])]
+    #[Groups(['api', 'export'])]
     private ?string $roomDescription = null;
 
     #[ORM\Column(name: 'lastlogin', type: Types::DATETIME_MUTABLE, nullable: true)]

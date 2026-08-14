@@ -21,11 +21,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 trait EntityDatesTrait
 {
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
-    #[Groups(['api'])]
+    #[Groups(['api', 'export'])]
     private DateTime $creationDate;
 
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE)]
-    #[Groups(['api'])]
+    #[Groups(['api', 'export'])]
     private DateTime $modificationDate;
 
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
