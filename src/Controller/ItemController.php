@@ -14,6 +14,8 @@
 namespace App\Controller;
 
 use App\Enum\EditableSection;
+use App\Etherpad\EtherpadException;
+use App\Etherpad\MaterialPad;
 use App\Event\CommsyEditEvent;
 use App\Form\DataTransformer\ItemTransformer;
 use App\Form\DataTransformer\TransformerManager;
@@ -48,6 +50,7 @@ use cs_material_item;
 use cs_section_item;
 use cs_step_item;
 use LogicException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -77,6 +80,7 @@ class ItemController extends AbstractController
         ParameterBagInterface $parameterBag,
         MaterialService $materialService,
         EtherpadService $etherpadService,
+        LoggerInterface $logger,
         Request $request,
         int $roomId,
         int $itemId,
@@ -156,15 +160,27 @@ class ItemController extends AbstractController
 
                 if ($item->getItemType() == RubricType::Material->value) {
                     /** @var $item cs_material_item */
-                    if ($item->getEtherpadEditor() && $item->getEtherpadEditorID()) {
-                        // get description text from etherpad
-                        $client = $etherpadService->getClient();
+                    if ($item->getEtherpadEditor()) {
+                        try {
+                            // Derived from the material rather than read from
+                            // a stored id: a stored one can go stale and
+                            // silently switch this write-back off.
+                            $client = $etherpadService->getClient();
+                            $pad = MaterialPad::locate($client, (int) $item->getItemID());
 
-                        // get pad and get text from pad
-                        $html = $client->getHTML($item->getEtherpadEditorID())->getData('html');
+                            // save etherpad text to material description
+                            $item->setDescription(nl2br($client->getHtml($pad->padId)));
+                        } catch (EtherpadException $e) {
+                            // Leaving without saving is the point: the text
+                            // lives in the pad, and writing what we could not
+                            // read would replace the description with nothing.
+                            $logger->error('Etherpad is unavailable, description left untouched', [
+                                'itemId' => $itemId,
+                                'exception' => $e,
+                            ]);
 
-                        // save etherpad text to material description
-                        $item->setDescription(nl2br($html));
+                            return $this->render('etherpad/unavailable.html.twig');
+                        }
                     }
                 }
 

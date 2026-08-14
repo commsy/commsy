@@ -13,33 +13,44 @@
 
 namespace App\Services;
 
-use EtherpadLite\Client;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use UnitEnum;
+use App\Etherpad\EtherpadClient;
+use App\Etherpad\EtherpadException;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class EtherpadService
 {
-    private bool|string|int|float|UnitEnum|array|null $baseUrl = null;
+    private ?EtherpadClient $client = null;
 
-    private ?Client $client = null;
-
-    public function __construct(ParameterBagInterface $params)
-    {
-        $this->baseUrl = $params->get('commsy.etherpad.base_url');
-
-        // get configuration params
-        $apiKey = $params->get('commsy.etherpad.api_key');
-        $apiUrl = $params->get('commsy.etherpad.api_url');
-
-        // init etherpad client
-        if ('' !== $apiKey && '' !== $apiUrl) {
-            $this->client = new Client($apiKey, $apiUrl);
-        }
+    public function __construct(
+        private readonly HttpClientInterface $httpClient,
+        #[Autowire('%commsy.etherpad.base_url%')]
+        private readonly string $baseUrl,
+        #[Autowire('%commsy.etherpad.api_url%')]
+        private readonly string $apiUrl,
+        #[Autowire('%commsy.etherpad.api_key%')]
+        private readonly string $apiKey,
+    ) {
     }
 
-    public function getClient(): Client
+    public function isConfigured(): bool
     {
-        return $this->client;
+        return '' !== $this->apiKey && '' !== $this->apiUrl;
+    }
+
+    /**
+     * @throws EtherpadException when key or url are missing — the previous
+     *                           version declared a client return type and
+     *                           handed back null instead, which surfaced far
+     *                           away from the cause
+     */
+    public function getClient(): EtherpadClient
+    {
+        if (!$this->isConfigured()) {
+            throw EtherpadException::notConfigured('getClient');
+        }
+
+        return $this->client ??= new EtherpadClient($this->httpClient, $this->apiUrl, $this->apiKey);
     }
 
     public function getBaseUrl(): string

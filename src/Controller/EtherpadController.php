@@ -13,8 +13,11 @@
 
 namespace App\Controller;
 
+use App\Etherpad\EtherpadException;
+use App\Etherpad\MaterialPad;
 use App\Services\EtherpadService;
 use App\Services\LegacyEnvironment;
+use Psr\Log\LoggerInterface;
 use App\Utils\MaterialService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -23,6 +26,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EtherpadController extends AbstractController
 {
+    public function __construct(private readonly LoggerInterface $logger)
+    {
+    }
+
     public function index(
         int $materialId,
         int $roomId,
@@ -34,36 +41,53 @@ class EtherpadController extends AbstractController
         $currentUser = $legacyEnvironment->getEnvironment()->getCurrentUserItem();
 
         $material = $materialService->getMaterial($materialId);
-
-        // Init etherpad
-        $client = $etherpadService->getClient();
-        $authorId = $client->createAuthorIfNotExistsFor($currentUser->getItemId(), $currentUser->getFullname())
-            ->getData('authorID');
-
-        $groupId = $client->createGroupIfNotExistsFor($roomId)->getData('groupID');
-
-        // id lookup
-        $padIds = $client->listPads($groupId)->getData('padIDs');
-
-        // If a pad for the current material does not exist, create one
-        if (null !== $material) {
-            if (!$material->getEtherpadEditorID() || !in_array($material->getEtherpadEditorID(), $padIds)) {
-                // plain material id vs. material id + random string?
-                $padId = $client->createGroupPad($groupId, $materialId, '')->getData('padID');
-
-                $material->setEtherpadEditorID($padId);
-                $material->save();
-
-                // Set content
-                if (!empty($material->getDescription())) {
-                    $client->setHTML($material->getEtherpadEditorID(), $material->getDescription());
-                }
-            }
+        if (null === $material) {
+            throw $this->createNotFoundException('no material found for id '.$materialId);
         }
 
-        // create etherpad session with author and group
-        $timestamp = time() + (60 * 60 * 24);
-        $sessionId = $client->createSession($groupId, $authorId, $timestamp)->getData('sessionID');
+        // A pad service that is down or refuses a call must not take the page
+        // with it: the section says so and the rest stays usable.
+        try {
+            $client = $etherpadService->getClient();
+            $authorId = $client->createAuthorIfNotExistsFor(
+                (string) $currentUser->getItemId(),
+                $currentUser->getFullname()
+            );
+
+            // Group and pad are derived from the material, never remembered,
+            // so they cannot drift from the item they belong to.
+            $pad = MaterialPad::locate($client, $materialId);
+
+            if (!in_array($pad->padId, $client->listPads($pad->groupId), true)) {
+                try {
+                    $client->createGroupPad($pad->groupId, MaterialPad::padName());
+                } catch (EtherpadException $e) {
+                    // Someone else created it between the listing and now.
+                    if (!$e->meansPadAlreadyExists()) {
+                        throw $e;
+                    }
+                }
+
+                // Seed the fresh pad from what the material currently holds.
+                if (!empty($material->getDescription())) {
+                    $client->setHtml($pad->padId, $material->getDescription());
+                }
+            }
+
+            // The session covers a whole group, which is why the group holds
+            // this one material only — the right to be here was checked for
+            // it alone.
+            $timestamp = time() + (60 * 60 * 24);
+            $sessionId = $client->createSession($pad->groupId, $authorId, $timestamp);
+        } catch (EtherpadException $e) {
+            $this->logger->error('Etherpad is unavailable, showing the pad section as failed', [
+                'materialId' => $materialId,
+                'exception' => $e,
+            ]);
+
+            return $this->render('etherpad/unavailable.html.twig');
+        }
+
         setcookie('sessionID', (string) $sessionId, [
             'expires' => $timestamp,
             'path' => '/', 'domain' => '.' . $request->getHost(),
@@ -78,7 +102,7 @@ class EtherpadController extends AbstractController
 
         return $this->render('etherpad/index.html.twig', [
             'materialId' => $materialId,
-            'etherpadId' => $material->getEtherpadEditorID(),
+            'etherpadId' => $pad->padId,
             'baseUrl' => $baseUrl,
         ]);
     }

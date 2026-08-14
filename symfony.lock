@@ -148,12 +148,6 @@
             "config/packages/fos_elastica.yaml"
         ]
     },
-    "guzzlehttp/guzzle": {
-        "version": "7.0.1"
-    },
-    "guzzlehttp/promises": {
-        "version": "v1.3.1"
-    },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },

@@ -13,7 +13,6 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-zip": "*",
-        "0x46616c6b/etherpad-lite-client": "^0.7.0",
         "api-platform/doctrine-orm": "^4.1",
         "api-platform/symfony": "^4.1",
         "doctrine/dbal": "^3.8",

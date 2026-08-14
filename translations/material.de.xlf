@@ -206,6 +206,10 @@
                 <source>%count% version</source>
                 <target>%count%. Version</target>
             </trans-unit>
+            <trans-unit id="etherpad-unavailable">
+                <source>etherpad unavailable</source>
+                <target>Der Pad-Dienst ist zurzeit nicht erreichbar. Ihre Eingaben wurden nicht gespeichert; der vorhandene Text bleibt erhalten. Bitte versuchen Sie es später erneut.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

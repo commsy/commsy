@@ -13,16 +13,19 @@
 
 namespace App\EventSubscriber;
 
+use App\Etherpad\EtherpadException;
+use App\Etherpad\MaterialPad;
 use App\Event\ItemDeletedEvent;
 use App\Services\EtherpadService;
 use cs_material_item;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class EtherpadEditSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly ParameterBagInterface $params,
+        #[Autowire('%commsy.etherpad.enabled%')]
+        private readonly bool $enabled,
         private readonly EtherpadService $etherpadService
     ) {
     }
@@ -36,9 +39,7 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
 
     public function onItemDeleted(ItemDeletedEvent $event): void
     {
-        $enabled = $this->params->get('commsy.etherpad.enabled');
-
-        if (!$enabled) {
+        if (!$this->enabled) {
             return;
         }
 
@@ -46,13 +47,15 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
         if ($item instanceof cs_material_item) {
             $material = $item;
 
-            if ($material->getEtherpadEditor() && $material->getEtherpadEditorID()) {
-                $client = $this->etherpadService->getClient();
-
-                $client->deletePad($material->getEtherpadEditorID());
-
-                $material->unsetEtherpadEditorID();
-                $material->save();
+            if ($material->getEtherpadEditor()) {
+                try {
+                    $client = $this->etherpadService->getClient();
+                    $client->deletePad(MaterialPad::locate($client, (int) $material->getItemID())->padId);
+                } catch (EtherpadException) {
+                    // The pad may never have been opened, or is already gone.
+                    // The item is being deleted either way, so this must not
+                    // stop the deletion.
+                }
             }
         }
     }
