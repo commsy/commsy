@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Repository\LinksRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Links.
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: LinksRepository::class)]
 #[ORM\Table(name: 'links')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['link_type'], name: 'link_type')]
