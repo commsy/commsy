@@ -16,7 +16,9 @@ namespace App\Controller;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
+use App\Entity\RoomExport;
 use App\Event\RoomSettingsChangedEvent;
+use App\Export\RoomExportStorage;
 use App\Form\DataTransformer\AdditionalSettingsTransformer;
 use App\Form\DataTransformer\AppearanceSettingsTransformer;
 use App\Form\DataTransformer\ExtensionSettingsTransformer;
@@ -34,7 +36,10 @@ use App\Form\Type\Room\UserRoomDeleteType;
 use App\Mail\Factories\InvitationMessageFactory;
 use App\Mail\Mailer;
 use App\Mail\RecipientFactory;
+use App\Message\RoomExportRequested;
 use App\Repository\PortalRepository;
+use App\Repository\RoomExportRepository;
+use App\Repository\RoomRepository;
 use App\Repository\TermsRepository;
 use App\Room\RoomDeleterRegistry;
 use App\Room\RoomDeletionOptions;
@@ -52,8 +57,11 @@ use cs_room_item;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -540,6 +548,105 @@ class SettingsController extends AbstractController
             'relatedGroupRooms' => $relatedGroupRooms,
             'lock_form' => $lockForm,
         ]);
+    }
+
+    #[Route(path: '/room/{roomId}/settings/export')]
+    #[IsGranted('MODERATOR')]
+    public function export(
+        RoomExportRepository $roomExports,
+        RoomExportStorage $roomExportStorage,
+        RoomRepository $roomRepository,
+        int $roomId
+    ): Response {
+        $room = $roomRepository->find($roomId);
+        if (!$room) {
+            throw $this->createNotFoundException('No room found for id '.$roomId);
+        }
+
+        $exports = $roomExports->findForRoom($room);
+
+        // Whether an archive can still be fetched follows from the file being
+        // there, not from the row: the cleanup that removes it by age knows
+        // nothing about these rows.
+        $available = [];
+        foreach ($exports as $export) {
+            $available[$export->getId()] = $roomExportStorage->exists($export);
+        }
+
+        return $this->render('settings/export.html.twig', [
+            'roomId' => $roomId,
+            'exports' => $exports,
+            'blockingExport' => $roomExports->findBlockingFor($room),
+            'available' => $available,
+        ]);
+    }
+
+    #[Route(path: '/room/{roomId}/settings/export/start', methods: ['POST'])]
+    #[IsGranted('MODERATOR')]
+    public function exportStart(
+        Request $request,
+        RoomExportRepository $roomExports,
+        RoomRepository $roomRepository,
+        CurrentUserResolver $currentUserResolver,
+        MessageBusInterface $messageBus,
+        TranslatorInterface $translator,
+        int $roomId
+    ): Response {
+        if (!$this->isCsrfTokenValid('room_export_start'.$roomId, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token');
+        }
+
+        $room = $roomRepository->find($roomId);
+        if (!$room) {
+            throw $this->createNotFoundException('No room found for id '.$roomId);
+        }
+
+        if ($roomExports->findBlockingFor($room)) {
+            $this->addFlash('notice', $translator->trans('export already running', [], 'settings'));
+
+            return $this->redirectToRoute('app_settings_export', ['roomId' => $roomId]);
+        }
+
+        $user = $currentUserResolver->getUser();
+
+        $export = new RoomExport($room, $user?->getItemId(), $user?->getFullname());
+        $roomExports->save($export);
+
+        $messageBus->dispatch(new RoomExportRequested((int) $export->getId()));
+
+        return $this->redirectToRoute('app_settings_export', ['roomId' => $roomId]);
+    }
+
+    #[Route(path: '/room/{roomId}/settings/export/{exportId}/download', requirements: ['exportId' => '\d+'])]
+    #[IsGranted('MODERATOR')]
+    public function exportDownload(
+        RoomExportRepository $roomExports,
+        RoomExportStorage $roomExportStorage,
+        TranslatorInterface $translator,
+        int $roomId,
+        int $exportId
+    ): Response {
+        $export = $roomExports->find($exportId);
+
+        // The route says which room, so an export belonging to another one is
+        // not ours to serve even to a moderator of this room.
+        if (!$export || $export->getRoom()->getItemId() !== $roomId) {
+            throw $this->createNotFoundException('No export found for id '.$exportId);
+        }
+
+        if (!$roomExportStorage->exists($export)) {
+            $this->addFlash('notice', $translator->trans('export expired', [], 'settings'));
+
+            return $this->redirectToRoute('app_settings_export', ['roomId' => $roomId]);
+        }
+
+        $response = new BinaryFileResponse($roomExportStorage->pathFor($export));
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            (string) $export->getFilename()
+        );
+
+        return $response;
     }
 
     #[Route(path: '/room/{roomId}/settings/invitations')]

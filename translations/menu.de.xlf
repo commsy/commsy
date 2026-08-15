@@ -83,6 +83,10 @@
                 <source>extensions</source>
                 <target>Erweiterungen</target>
             </trans-unit>
+            <trans-unit id="menu_export">
+                <source>export</source>
+                <target>Export</target>
+            </trans-unit>
             <trans-unit id="delete_settings">
                 <source>delete</source>
                 <target>Löschen</target>

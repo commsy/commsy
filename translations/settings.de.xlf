@@ -881,6 +881,64 @@
                 <source>settings.notifications.moderation_workspace_change</source>
                 <target>Benachrichtigung bei Raumänderungen</target>
             </trans-unit>
+
+            <!-- Room export -->
+            <trans-unit id="export_room_content">
+                <source>Export room content</source>
+                <target>Rauminhalte exportieren</target>
+            </trans-unit>
+            <trans-unit id="export_explanation">
+                <source>Export explanation</source>
+                <target>Der Export erzeugt ein Archiv mit den Inhalten dieses Raums. Er läuft im Hintergrund; die Dauer richtet sich nach der Größe des Raums. Fertige Archive stehen 24 Stunden zum Herunterladen bereit und werden danach automatisch gelöscht.</target>
+            </trans-unit>
+            <trans-unit id="start_export">
+                <source>Start export</source>
+                <target>Export starten</target>
+            </trans-unit>
+            <trans-unit id="export_in_progress">
+                <source>Export in progress</source>
+                <target>Für diesen Raum läuft bereits ein Export. Bitte warten Sie, bis er abgeschlossen ist.</target>
+            </trans-unit>
+            <trans-unit id="export_already_running">
+                <source>export already running</source>
+                <target>Für diesen Raum läuft bereits ein Export.</target>
+            </trans-unit>
+            <trans-unit id="export_expired">
+                <source>export expired</source>
+                <target>Das Archiv steht nicht mehr zur Verfügung. Bitte starten Sie einen neuen Export.</target>
+            </trans-unit>
+            <trans-unit id="export_status_pending">
+                <source>export status pending</source>
+                <target>Wartet</target>
+            </trans-unit>
+            <trans-unit id="export_status_running">
+                <source>export status running</source>
+                <target>Läuft</target>
+            </trans-unit>
+            <trans-unit id="export_status_finished">
+                <source>export status finished</source>
+                <target>Fertig</target>
+            </trans-unit>
+            <trans-unit id="export_status_failed">
+                <source>export status failed</source>
+                <target>Fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="export_requested_at">
+                <source>Requested at</source>
+                <target>Angefordert am</target>
+            </trans-unit>
+            <trans-unit id="export_requested_by">
+                <source>Requested by</source>
+                <target>Angefordert von</target>
+            </trans-unit>
+            <trans-unit id="export_size">
+                <source>Size</source>
+                <target>Größe</target>
+            </trans-unit>
+            <trans-unit id="export_download">
+                <source>Download</source>
+                <target>Herunterladen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

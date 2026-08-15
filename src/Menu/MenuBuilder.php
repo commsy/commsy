@@ -293,6 +293,10 @@ final readonly class MenuBuilder
             $menu->addChild('Extensions', ['label' => 'extensions', 'route' => 'app_settings_extensions', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-gears uk-icon-small uk-icon-justify']])
             ->setExtra('translation_domain', 'menu');
 
+            // export
+            $menu->addChild('Export', ['label' => 'export', 'route' => 'app_settings_export', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-download uk-icon-small uk-icon-justify']])
+            ->setExtra('translation_domain', 'menu');
+
             // invitations
             if ($this->invitationsService->invitationsEnabled($portal)) {
                 $menu->addChild('Invitations', ['label' => 'invitations', 'route' => 'app_settings_invitations', 'routeParameters' => ['roomId' => $roomId], 'extras' => ['icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify']])
