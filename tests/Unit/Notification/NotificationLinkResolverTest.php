@@ -71,7 +71,7 @@ class NotificationLinkResolverTest extends TestCase
     {
         return new Notification(
             $this->createMock(Account::class),
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             $contextId,
             'Title',
             'Room',

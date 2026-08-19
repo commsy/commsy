@@ -79,7 +79,7 @@ class NotificationGroupTest extends TestCase
     {
         $notification = new Notification(
             $this->createMock(Account::class),
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             5,
             'Title',
             'Room',

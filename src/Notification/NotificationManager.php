@@ -84,7 +84,7 @@ class NotificationManager
         foreach ($recipients as $accountId => $recipient) {
             $notification = new Notification(
                 $recipient,
-                NotificationType::NewEntry,
+                NotificationType::Entry,
                 $signal->contextId,
                 $signal->title,
                 $roomTitle,

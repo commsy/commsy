@@ -158,7 +158,7 @@ class NotificationControllerTest extends AbstractApplicationTestCase
     {
         return new Notification(
             $recipient,
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             10,
             $title,
             'Project room',

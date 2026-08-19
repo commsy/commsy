@@ -14,15 +14,60 @@
 namespace App\Enum;
 
 /**
- * The kind of event a {@see \App\Entity\Notification} reports.
+ * What a {@see \App\Entity\Notification} is about.
  *
- * v1 ships a single type; the column exists so additional types (mention,
- * workspace release, …) can be added without a schema change.
+ * This is the subject axis, orthogonal to {@see NotificationAction} (which says
+ * what happened to it). It also decides where a notification surfaces: content
+ * activity fills the room/dashboard panels, everything else is personal or
+ * administrative and belongs in the navbar bell.
  */
 enum NotificationType: string
 {
     /**
-     * A new entry was published in a room the recipient has joined.
+     * An entry in a room was created, edited or annotated.
      */
-    case NewEntry = 'new_entry';
+    case Entry = 'entry';
+
+    /**
+     * Someone asked to join a room — a task for its moderators, who can decide
+     * it straight from the bell.
+     */
+    case RoomJoinRequest = 'room_join_request';
+
+    /**
+     * A join request was decided; addressed to whoever asked to join.
+     */
+    case RoomJoinDecision = 'room_join_decision';
+
+    /**
+     * Content activity belongs in the room/dashboard panels, not the bell.
+     */
+    public function isContentActivity(): bool
+    {
+        return self::Entry === $this;
+    }
+
+    /**
+     * Whether deciding it is still pending, so it must not age out silently.
+     */
+    public function isTask(): bool
+    {
+        return self::RoomJoinRequest === $this;
+    }
+
+    /**
+     * @return self[] the types the room/dashboard panels show
+     */
+    public static function contentTypes(): array
+    {
+        return array_values(array_filter(self::cases(), static fn (self $type): bool => $type->isContentActivity()));
+    }
+
+    /**
+     * @return self[] the types the navbar bell shows
+     */
+    public static function bellTypes(): array
+    {
+        return array_values(array_filter(self::cases(), static fn (self $type): bool => !$type->isContentActivity()));
+    }
 }

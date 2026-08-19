@@ -15,6 +15,7 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Enum\NotificationType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -44,20 +45,17 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Unread count for the activity indicator, optionally scoped to one room.
+     * Unread count for an indicator, optionally scoped to one room and to
+     * certain types (the bell counts everything except content activity).
+     *
+     * @param NotificationType[] $types empty means every type
      */
-    public function countUnreadForAccount(Account $account, ?int $contextId = null): int
+    public function countUnreadForAccount(Account $account, ?int $contextId = null, array $types = []): int
     {
-        $qb = $this->createQueryBuilder('n')
+        return (int) $this->accountQuery($account, true, $contextId, $types)
             ->select('COUNT(n.id)')
-            ->andWhere('n.recipient = :account')->setParameter('account', $account)
-            ->andWhere('n.readAt IS NULL');
-
-        if ($contextId !== null) {
-            $qb->andWhere('n.contextId = :ctx')->setParameter('ctx', $contextId);
-        }
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
@@ -67,9 +65,12 @@ class NotificationRepository extends ServiceEntityRepository
      *
      * @return Notification[]
      */
-    public function findForAccount(Account $account, ?int $contextId = null, int $limit = 50): array
+    /**
+     * @param NotificationType[] $types empty means every type
+     */
+    public function findForAccount(Account $account, ?int $contextId = null, int $limit = 50, array $types = []): array
     {
-        return $this->accountQuery($account, false, $contextId)
+        return $this->accountQuery($account, false, $contextId, $types)
             ->orderBy('n.createdAt', 'DESC')->addOrderBy('n.id', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
@@ -238,7 +239,10 @@ class NotificationRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    private function accountQuery(Account $account, bool $unreadOnly, ?int $contextId): QueryBuilder
+    /**
+     * @param NotificationType[] $types empty means every type
+     */
+    private function accountQuery(Account $account, bool $unreadOnly, ?int $contextId, array $types = []): QueryBuilder
     {
         $qb = $this->createQueryBuilder('n')
             ->andWhere('n.recipient = :account')->setParameter('account', $account);
@@ -249,6 +253,10 @@ class NotificationRepository extends ServiceEntityRepository
 
         if ($contextId !== null) {
             $qb->andWhere('n.contextId = :ctx')->setParameter('ctx', $contextId);
+        }
+
+        if ($types !== []) {
+            $qb->andWhere('n.type IN (:types)')->setParameter('types', $types);
         }
 
         return $qb;

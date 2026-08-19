@@ -243,7 +243,7 @@ class NotificationRepositoryTest extends KernelTestCase
     ): Notification {
         $notification = new Notification(
             $recipient,
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             $contextId,
             $title,
             'Room',

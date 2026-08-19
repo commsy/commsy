@@ -79,7 +79,7 @@ class NotificationCleanupTest extends KernelTestCase
     {
         return new Notification(
             $account,
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             10,
             'Title',
             'Room',

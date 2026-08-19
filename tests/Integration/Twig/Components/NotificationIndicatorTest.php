@@ -37,7 +37,7 @@ final class NotificationIndicatorTest extends KernelTestCase
         $account = AccountFactory::createOne();
         $this->repository()->save(new Notification(
             $account,
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             105,
             'Fresh entry',
             'Project room',

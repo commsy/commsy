@@ -29,7 +29,7 @@ class NotificationTest extends TestCase
 
         $notification = new Notification(
             $recipient,
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             42,
             'New material title',
             'Project room',
@@ -40,7 +40,7 @@ class NotificationTest extends TestCase
         );
 
         self::assertSame($recipient, $notification->getRecipient());
-        self::assertSame(NotificationType::NewEntry, $notification->getType());
+        self::assertSame(NotificationType::Entry, $notification->getType());
         self::assertSame(42, $notification->getContextId());
         self::assertSame('New material title', $notification->getTitle());
         self::assertSame('Project room', $notification->getRoomTitle());
@@ -62,7 +62,7 @@ class NotificationTest extends TestCase
     {
         $notification = new Notification(
             $this->createMock(Account::class),
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             1,
             'Title',
             'Room',
@@ -114,7 +114,7 @@ class NotificationTest extends TestCase
     {
         return new Notification(
             $this->createMock(Account::class),
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             1,
             'Title',
             'Room',

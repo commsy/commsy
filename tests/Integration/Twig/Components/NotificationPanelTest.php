@@ -122,7 +122,7 @@ final class NotificationPanelTest extends KernelTestCase
     ): Notification {
         $notification = new Notification(
             $account,
-            NotificationType::NewEntry,
+            NotificationType::Entry,
             $contextId,
             $title,
             'Room',

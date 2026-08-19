@@ -15,6 +15,7 @@ namespace App\Twig\Components;
 
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Enum\NotificationType;
 use App\Notification\NotificationGroup;
 use App\Notification\NotificationLinkResolver;
 use App\Repository\NotificationRepository;
@@ -90,7 +91,13 @@ final class NotificationPanel
             return [];
         }
 
-        $notifications = $this->notificationRepository->findForAccount($this->account, $this->contextId, self::FETCH_LIMIT);
+        // Content activity only — personal/administrative notifications live in the bell.
+        $notifications = $this->notificationRepository->findForAccount(
+            $this->account,
+            $this->contextId,
+            self::FETCH_LIMIT,
+            NotificationType::contentTypes(),
+        );
 
         /** @var array<int|string, Notification[]> $byItem */
         $byItem = [];
@@ -113,7 +120,7 @@ final class NotificationPanel
     public function getUnreadCount(): int
     {
         return $this->account !== null
-            ? $this->notificationRepository->countUnreadForAccount($this->account, $this->contextId)
+            ? $this->notificationRepository->countUnreadForAccount($this->account, $this->contextId, NotificationType::contentTypes())
             : 0;
     }
 
