@@ -256,16 +256,28 @@ class NotificationRepository extends ServiceEntityRepository
 
     /**
      * Active dismissal: drop notifications created before a cutoff, regardless of
-     * read state. Backs the 30-day auto-dismiss cron.
+     * read state. Backs the 30-day auto-dismiss cron, which passes the types that
+     * may age out — an undecided task must never disappear on its own.
+     *
+     * @param NotificationType[] $types empty means every type
      *
      * @return int number of rows deleted
      */
-    public function removeOlderThan(\DateTimeImmutable $cutoff): int
+    public function removeOlderThan(\DateTimeImmutable $cutoff, array $types = []): int
     {
-        return (int) $this->getEntityManager()
-            ->createQuery('DELETE App\Entity\Notification n WHERE n.createdAt < :cutoff')
-            ->setParameter('cutoff', $cutoff)
-            ->execute();
+        $dql = 'DELETE App\Entity\Notification n WHERE n.createdAt < :cutoff';
+
+        if ($types !== []) {
+            $dql .= ' AND n.type IN (:types)';
+        }
+
+        $query = $this->getEntityManager()->createQuery($dql)->setParameter('cutoff', $cutoff);
+
+        if ($types !== []) {
+            $query->setParameter('types', $types);
+        }
+
+        return (int) $query->execute();
     }
 
     /**

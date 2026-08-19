@@ -46,6 +46,23 @@ class NotificationCleanupTest extends KernelTestCase
         self::assertSame(2, $this->repository()->count([]), 'everything older than the retention window is pruned, read or not');
     }
 
+    public function testCronNeverPrunesAnUndecidedTask(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+
+        // An old join request must survive: only a decision may clear it.
+        $this->persistTyped($account, 7, new \DateTimeImmutable('-100 days'), NotificationType::RoomJoinRequest);
+        $this->persistTyped($account, 8, new \DateTimeImmutable('-100 days'), NotificationType::RoomJoinDecision);
+        $this->persistTyped($account, 9, new \DateTimeImmutable('-100 days'), NotificationType::Entry);
+
+        self::getContainer()->get(CronCleanNotifications::class)->run(null);
+
+        $remaining = $this->repository()->findAll();
+        self::assertCount(1, $remaining, 'the task stays, the aged-out decision and entry go');
+        self::assertSame(NotificationType::RoomJoinRequest, $remaining[0]->getType());
+    }
+
     #[WithStory(RoomWithMemberStory::class)]
     public function testDeletingAccountRemovesItsNotifications(): void
     {
@@ -64,6 +81,21 @@ class NotificationCleanupTest extends KernelTestCase
     private function repository(): NotificationRepository
     {
         return self::getContainer()->get(NotificationRepository::class);
+    }
+
+    private function persistTyped(Account $account, int $sourceItemId, \DateTimeImmutable $createdAt, NotificationType $type): void
+    {
+        $this->repository()->save(new Notification(
+            $account,
+            $type,
+            10,
+            'Title',
+            'Room',
+            $createdAt,
+            $sourceItemId,
+            'material',
+            null,
+        ));
     }
 
     private function persist(Account $account, int $sourceItemId, \DateTimeImmutable $createdAt, ?\DateTimeImmutable $readAt = null): void

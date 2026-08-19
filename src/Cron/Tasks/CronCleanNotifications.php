@@ -13,6 +13,7 @@
 
 namespace App\Cron\Tasks;
 
+use App\Enum\NotificationType;
 use App\Repository\NotificationRepository;
 use DateTimeImmutable;
 
@@ -21,7 +22,8 @@ use function Symfony\Component\Clock\now;
 /**
  * Nightly cron that actively dismisses aged-out notifications: anything older
  * than the retention window is deleted, read or not, mirroring the room/dashboard
- * feed which only ever showed recent activity. Deleting an account already
+ * feed which only ever showed recent activity. Tasks are exempt — a join request
+ * awaiting a decision is cleared by that decision, never by the clock. Deleting an account already
  * removes its notifications via the recipient FK's ON DELETE CASCADE.
  */
 class CronCleanNotifications implements CronTaskInterface
@@ -36,7 +38,13 @@ class CronCleanNotifications implements CronTaskInterface
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        $this->notificationRepository->removeOlderThan(now()->modify(self::RETENTION));
+        // Tasks are excluded: an undecided join request must not age out silently.
+        $expiring = array_values(array_filter(
+            NotificationType::cases(),
+            static fn (NotificationType $type): bool => !$type->isTask(),
+        ));
+
+        $this->notificationRepository->removeOlderThan(now()->modify(self::RETENTION), $expiring);
     }
 
     public function getSummary(): string
