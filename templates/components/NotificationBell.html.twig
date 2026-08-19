@@ -8,7 +8,7 @@
 
     {% if this.alreadyDecided %}
         <li>
-            <div class="uk-text-muted uk-text-small" style="{{ rowPadding }}">
+            <div class="uk-text-small" style="color: #666; {{ rowPadding }}">
                 {{ 'bell.alreadyDecided'|trans({}, 'notification') }}
             </div>
         </li>
@@ -22,7 +22,7 @@
                 <div style="line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
                     {{ 'bell.joinRequest'|trans({'%name%': notification.title}, 'notification') }}
                 </div>
-                <div class="uk-text-muted uk-text-small" style="margin-top: 3px;">
+                <div class="uk-text-small" style="color: #666; margin-top: 3px;">
                     {{ notification.roomTitle }} &middot; {{ notification.createdAt|format_date }}
                 </div>
                 <div style="margin-top: 8px;">
@@ -61,7 +61,7 @@
                         {{ 'bell.decisionAccepted'|trans({'%room%': notification.roomTitle}, 'notification') }}
                     {%- endif -%}
                 </span>
-                <span class="uk-text-muted uk-text-small" style="display: block; margin-top: 3px;">
+                <span class="uk-text-small" style="color: #666; display: block; margin-top: 3px;">
                     {{ notification.createdAt|format_date }}
                 </span>
             </a>
@@ -78,7 +78,7 @@
             <a href="{{ path('app_room_home', {'roomId': room.contextId}) }}"
                style="display: block; {{ rowPadding }}{% if not loop.first or messages is not empty %} {{ rowBorder }}{% endif %}">
                 <span style="display: block; line-height: 1.4; font-weight: 600;">{{ room.roomTitle }}</span>
-                <span class="uk-text-muted uk-text-small" style="display: block; margin-top: 3px;">
+                <span class="uk-text-small" style="color: #666; display: block; margin-top: 3px;">
                     {{ parts|join(', ') }} &middot; {{ room.newestAt|format_date }}
                 </span>
             </a>
@@ -87,7 +87,7 @@
 
     {% if tasks is empty and messages is empty and activity is empty and not this.alreadyDecided %}
         <li>
-            <div class="uk-text-muted" style="{{ rowPadding }}">{{ 'noNotifications'|trans({}, 'notification') }}</div>
+            <div style="color: #666; {{ rowPadding }}">{{ 'noNotifications'|trans({}, 'notification') }}</div>
         </li>
     {% endif %}
 

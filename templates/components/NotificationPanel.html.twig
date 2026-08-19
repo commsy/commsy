@@ -28,7 +28,7 @@
             {% set actionIcons = { created: 'uk-icon-plus-circle', edited: 'uk-icon-pencil', annotated: 'uk-icon-comment' } %}
 
             {% if panel.groups is empty %}
-                <p class="uk-text-muted uk-margin-remove">{{ 'noNotifications'|trans({}, 'notification') }}</p>
+                <p style="color: #666;" class="uk-margin-remove">{{ 'noNotifications'|trans({}, 'notification') }}</p>
             {% else %}
                 <ul class="uk-comment-list">
                     {% for group in panel.groups %}
