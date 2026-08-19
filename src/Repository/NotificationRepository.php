@@ -210,6 +210,35 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Is there still an open notification of this type for the source item?
+     * Backs "was this join request already decided?".
+     */
+    public function existsOfTypeForSourceItem(NotificationType $type, int $sourceItemId): bool
+    {
+        return (int) $this->createQueryBuilder('n')
+            ->select('COUNT(n.id)')
+            ->andWhere('n.type = :type')->setParameter('type', $type)
+            ->andWhere('n.sourceItemId = :item')->setParameter('item', $sourceItemId)
+            ->getQuery()
+            ->getSingleScalarResult() > 0;
+    }
+
+    /**
+     * Resolve a task: drop every recipient's notification of this type for the
+     * source item, so a decision made by one moderator clears it for all.
+     *
+     * @return int number of rows deleted
+     */
+    public function removeOfTypeForSourceItem(NotificationType $type, int $sourceItemId): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQuery('DELETE App\Entity\Notification n WHERE n.type = :type AND n.sourceItemId = :item')
+            ->setParameter('type', $type)
+            ->setParameter('item', $sourceItemId)
+            ->execute();
+    }
+
+    /**
      * Retention sweep: drop already-read notifications older than a cutoff.
      *
      * @return int number of rows deleted
