@@ -32,9 +32,4 @@ final readonly class RoomActivitySummary
         public \DateTimeImmutable $newestAt,
     ) {
     }
-
-    public function total(): int
-    {
-        return $this->created + $this->edited + $this->annotated;
-    }
 }
