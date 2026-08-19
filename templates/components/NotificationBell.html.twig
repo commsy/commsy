@@ -1,55 +1,71 @@
 {% set rows %}
+    {# uk-nav only pads its anchors, so every row carries its own padding to line up. #}
+    {% set rowPadding = 'padding: 10px 15px;' %}
+    {% set rowBorder = 'border-top: 1px solid rgba(0,0,0,.08);' %}
+
     {% if this.alreadyDecided %}
-        <li class="uk-nav-header uk-text-muted">{{ 'bell.alreadyDecided'|trans({}, 'notification') }}</li>
+        <li>
+            <div class="uk-text-muted uk-text-small" style="{{ rowPadding }}">
+                {{ 'bell.alreadyDecided'|trans({}, 'notification') }}
+            </div>
+        </li>
     {% endif %}
+
     {% for notification in this.notifications %}
         {% set p = notification.payload %}
-        <li{% if notification.unread %} class="cs-notification-unread"{% endif %}>
+        {% set needsBorder = not loop.first or this.alreadyDecided %}
+        <li>
             {% if notification.type.value == 'room_join_request' %}
-                <div style="padding: 4px 0;">
-                    <span style="display: block;{% if notification.unread %} font-weight: 600;{% endif %}">
+                <div style="{{ rowPadding }}{% if needsBorder %} {{ rowBorder }}{% endif %}">
+                    <div style="line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
                         {{ 'bell.joinRequest'|trans({'%name%': notification.title}, 'notification') }}
-                    </span>
-                    <span class="uk-text-muted uk-text-small" style="display: block;">
+                    </div>
+                    <div class="uk-text-muted uk-text-small" style="margin-top: 3px;">
                         {{ notification.roomTitle }} &middot; {{ notification.createdAt|format_date }}
-                    </span>
-                    <span style="display: block; margin-top: 4px;">
+                    </div>
+                    <div style="margin-top: 8px;">
                         <a href="#" class="uk-button uk-button-mini uk-button-primary"
                            data-action="live#action" data-live-action-param="accept" data-live-id-param="{{ notification.sourceItemId }}">
                             {{ 'bell.accept'|trans({}, 'notification') }}
                         </a>
-                        <a href="#" class="uk-button uk-button-mini"
+                        <a href="#" class="uk-button uk-button-mini" style="margin-left: 4px;"
                            data-action="live#action" data-live-action-param="reject" data-live-id-param="{{ notification.sourceItemId }}">
                             {{ 'bell.reject'|trans({}, 'notification') }}
                         </a>
                         {% if p.actorId %}
                             <a href="{{ path('app_user_detail', {'roomId': notification.contextId, 'itemId': p.actorId}) }}"
-                               class="uk-text-muted uk-text-small uk-margin-small-left">{{ 'bell.viewProfile'|trans({}, 'notification') }}</a>
+                               class="uk-text-small" style="margin-left: 10px;">{{ 'bell.viewProfile'|trans({}, 'notification') }}</a>
                         {% endif %}
-                    </span>
+                    </div>
                 </div>
             {% else %}
-                <a href="{{ path('app_room_home', {'roomId': notification.contextId}) }}">
-                    <span style="display: block;{% if notification.unread %} font-weight: 600;{% endif %}">
+                <a href="{{ path('app_room_home', {'roomId': notification.contextId}) }}"
+                   style="display: block; {{ rowPadding }}{% if needsBorder %} {{ rowBorder }}{% endif %}">
+                    <span style="display: block; line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
                         {%- if p.decision == 'rejected' -%}
                             {{ 'bell.decisionRejected'|trans({'%room%': notification.roomTitle}, 'notification') }}
                         {%- else -%}
                             {{ 'bell.decisionAccepted'|trans({'%room%': notification.roomTitle}, 'notification') }}
                         {%- endif -%}
                     </span>
-                    <span class="uk-text-muted uk-text-small" style="display: block;">{{ notification.createdAt|format_date }}</span>
+                    <span class="uk-text-muted uk-text-small" style="display: block; margin-top: 3px;">
+                        {{ notification.createdAt|format_date }}
+                    </span>
                 </a>
             {% endif %}
         </li>
     {% else %}
         {% if not this.alreadyDecided %}
-            <li class="uk-nav-header">{{ 'noNotifications'|trans({}, 'notification') }}</li>
+            <li>
+                <div class="uk-text-muted" style="{{ rowPadding }}">{{ 'noNotifications'|trans({}, 'notification') }}</div>
+            </li>
         {% endif %}
     {% endfor %}
+
     {% if this.unreadCount > 0 %}
-        <li class="uk-nav-divider"></li>
         <li>
-            <a href="#" data-action="live#action" data-live-action-param="markAllRead">
+            <a href="#" style="display: block; {{ rowPadding }} {{ rowBorder }}"
+               data-action="live#action" data-live-action-param="markAllRead">
                 <i class="uk-icon-check uk-margin-small-right"></i>{{ 'markAllRead'|trans({}, 'notification') }}
             </a>
         </li>
