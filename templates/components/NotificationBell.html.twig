@@ -2,6 +2,9 @@
     {# uk-nav only pads its anchors, so every row carries its own padding to line up. #}
     {% set rowPadding = 'padding: 10px 15px;' %}
     {% set rowBorder = 'border-top: 1px solid rgba(0,0,0,.08);' %}
+    {% set tasks = this.tasks %}
+    {% set messages = this.messages %}
+    {% set activity = this.roomActivity %}
 
     {% if this.alreadyDecided %}
         <li>
@@ -11,56 +14,82 @@
         </li>
     {% endif %}
 
-    {% for notification in this.notifications %}
+    {# Upper section: waiting for a decision. #}
+    {% for notification in tasks %}
         {% set p = notification.payload %}
-        {% set needsBorder = not loop.first or this.alreadyDecided %}
         <li>
-            {% if notification.type.value == 'room_join_request' %}
-                <div style="{{ rowPadding }}{% if needsBorder %} {{ rowBorder }}{% endif %}">
-                    <div style="line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
-                        {{ 'bell.joinRequest'|trans({'%name%': notification.title}, 'notification') }}
-                    </div>
-                    <div class="uk-text-muted uk-text-small" style="margin-top: 3px;">
-                        {{ notification.roomTitle }} &middot; {{ notification.createdAt|format_date }}
-                    </div>
-                    <div style="margin-top: 8px;">
-                        <a href="#" class="uk-button uk-button-mini uk-button-primary"
-                           data-action="live#action" data-live-action-param="accept" data-live-id-param="{{ notification.sourceItemId }}">
-                            {{ 'bell.accept'|trans({}, 'notification') }}
-                        </a>
-                        <a href="#" class="uk-button uk-button-mini" style="margin-left: 4px;"
-                           data-action="live#action" data-live-action-param="reject" data-live-id-param="{{ notification.sourceItemId }}">
-                            {{ 'bell.reject'|trans({}, 'notification') }}
-                        </a>
-                        {% if p.actorId %}
-                            <a href="{{ path('app_user_detail', {'roomId': notification.contextId, 'itemId': p.actorId}) }}"
-                               class="uk-text-small" style="margin-left: 10px;">{{ 'bell.viewProfile'|trans({}, 'notification') }}</a>
-                        {% endif %}
-                    </div>
+            <div style="{{ rowPadding }}{% if not loop.first or this.alreadyDecided %} {{ rowBorder }}{% endif %}">
+                <div style="line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
+                    {{ 'bell.joinRequest'|trans({'%name%': notification.title}, 'notification') }}
                 </div>
-            {% else %}
-                <a href="{{ path('app_room_home', {'roomId': notification.contextId}) }}"
-                   style="display: block; {{ rowPadding }}{% if needsBorder %} {{ rowBorder }}{% endif %}">
-                    <span style="display: block; line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
-                        {%- if p.decision == 'rejected' -%}
-                            {{ 'bell.decisionRejected'|trans({'%room%': notification.roomTitle}, 'notification') }}
-                        {%- else -%}
-                            {{ 'bell.decisionAccepted'|trans({'%room%': notification.roomTitle}, 'notification') }}
-                        {%- endif -%}
-                    </span>
-                    <span class="uk-text-muted uk-text-small" style="display: block; margin-top: 3px;">
-                        {{ notification.createdAt|format_date }}
-                    </span>
-                </a>
-            {% endif %}
+                <div class="uk-text-muted uk-text-small" style="margin-top: 3px;">
+                    {{ notification.roomTitle }} &middot; {{ notification.createdAt|format_date }}
+                </div>
+                <div style="margin-top: 8px;">
+                    <a href="#" class="uk-button uk-button-mini uk-button-primary"
+                       data-action="live#action" data-live-action-param="accept" data-live-id-param="{{ notification.sourceItemId }}">
+                        {{ 'bell.accept'|trans({}, 'notification') }}
+                    </a>
+                    <a href="#" class="uk-button uk-button-mini" style="margin-left: 4px;"
+                       data-action="live#action" data-live-action-param="reject" data-live-id-param="{{ notification.sourceItemId }}">
+                        {{ 'bell.reject'|trans({}, 'notification') }}
+                    </a>
+                    {% if p.actorId %}
+                        <a href="{{ path('app_user_detail', {'roomId': notification.contextId, 'itemId': p.actorId}) }}"
+                           class="uk-text-small" style="margin-left: 10px;">{{ 'bell.viewProfile'|trans({}, 'notification') }}</a>
+                    {% endif %}
+                </div>
+            </div>
         </li>
-    {% else %}
-        {% if not this.alreadyDecided %}
-            <li>
-                <div class="uk-text-muted" style="{{ rowPadding }}">{{ 'noNotifications'|trans({}, 'notification') }}</div>
-            </li>
-        {% endif %}
     {% endfor %}
+
+    {# A plain divider separates what needs doing from what merely informs. #}
+    {% if tasks is not empty and (messages is not empty or activity is not empty) %}
+        <li style="border-top: 2px solid rgba(0,0,0,.15);"></li>
+    {% endif %}
+
+    {# Lower section: purely informational. #}
+    {% for notification in messages %}
+        {% set p = notification.payload %}
+        <li>
+            <a href="{{ path('app_room_home', {'roomId': notification.contextId}) }}"
+               style="display: block; {{ rowPadding }}{% if not loop.first %} {{ rowBorder }}{% endif %}">
+                <span style="display: block; line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
+                    {%- if p.decision == 'rejected' -%}
+                        {{ 'bell.decisionRejected'|trans({'%room%': notification.roomTitle}, 'notification') }}
+                    {%- else -%}
+                        {{ 'bell.decisionAccepted'|trans({'%room%': notification.roomTitle}, 'notification') }}
+                    {%- endif -%}
+                </span>
+                <span class="uk-text-muted uk-text-small" style="display: block; margin-top: 3px;">
+                    {{ notification.createdAt|format_date }}
+                </span>
+            </a>
+        </li>
+    {% endfor %}
+
+    {# One condensed line per room; the panels carry the detail. #}
+    {% for room in activity %}
+        {% set parts = [] %}
+        {% if room.created > 0 %}{% set parts = parts|merge(['bell.activityCreated'|trans({'%count%': room.created}, 'notification')]) %}{% endif %}
+        {% if room.edited > 0 %}{% set parts = parts|merge(['bell.activityEdited'|trans({'%count%': room.edited}, 'notification')]) %}{% endif %}
+        {% if room.annotated > 0 %}{% set parts = parts|merge(['bell.activityAnnotated'|trans({'%count%': room.annotated}, 'notification')]) %}{% endif %}
+        <li>
+            <a href="{{ path('app_room_home', {'roomId': room.contextId}) }}"
+               style="display: block; {{ rowPadding }}{% if not loop.first or messages is not empty %} {{ rowBorder }}{% endif %}">
+                <span style="display: block; line-height: 1.4; font-weight: 600;">{{ room.roomTitle }}</span>
+                <span class="uk-text-muted uk-text-small" style="display: block; margin-top: 3px;">
+                    {{ parts|join(', ') }} &middot; {{ room.newestAt|format_date }}
+                </span>
+            </a>
+        </li>
+    {% endfor %}
+
+    {% if tasks is empty and messages is empty and activity is empty and not this.alreadyDecided %}
+        <li>
+            <div class="uk-text-muted" style="{{ rowPadding }}">{{ 'noNotifications'|trans({}, 'notification') }}</div>
+        </li>
+    {% endif %}
 
     {% if this.unreadCount > 0 %}
         <li>

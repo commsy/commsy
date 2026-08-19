@@ -17,6 +17,7 @@ namespace Tests\Integration\Twig\Components;
 
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Enum\NotificationAction;
 use App\Enum\NotificationType;
 use App\Notification\NotificationPayload;
 use App\Repository\NotificationRepository;
@@ -33,19 +34,47 @@ final class NotificationBellTest extends KernelTestCase
 {
     use InteractsWithLiveComponents;
 
-    public function testShowsJoinRequestsAndHidesContentActivity(): void
+    public function testSeparatesTasksFromInformationAndCondensesRoomActivity(): void
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
         $this->persist($account, NotificationType::RoomJoinRequest, 'Ada Lovelace', sourceItemId: 42);
-        $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99);
+        $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99, action: NotificationAction::Created);
+        $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99, action: NotificationAction::Edited);
+        $this->persist($account, NotificationType::Entry, 'Another material', sourceItemId: 100, action: NotificationAction::Edited);
 
         $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
+        $bell = $component->component();
+
+        self::assertCount(1, $bell->getTasks(), 'the join request is the only task');
+        self::assertCount(0, $bell->getMessages(), 'entry activity is not listed one by one');
+
+        $activity = $bell->getRoomActivity();
+        self::assertCount(1, $activity, 'one line per room');
+        self::assertSame(1, $activity[0]->created);
+        self::assertSame(2, $activity[0]->edited, 'two distinct entries were edited');
 
         $html = (string) $component->render();
         self::assertStringContainsString('Ada Lovelace', $html);
-        self::assertStringNotContainsString('Some material', $html, 'entry activity belongs in the panels');
-        self::assertSame(1, $component->component()->getUnreadCount(), 'only bell types are counted');
+        self::assertStringNotContainsString('Some material', $html, 'single entries stay in the panels');
+
+        // The badge counts the task plus one room line, not the four events.
+        self::assertSame(2, $bell->getUnreadCount());
+    }
+
+    public function testRoomLineDisappearsOnceTheActivityIsRead(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+        $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99);
+
+        $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
+        self::assertCount(1, $component->component()->getRoomActivity());
+
+        $component->call('markAllRead');
+
+        self::assertCount(0, $component->component()->getRoomActivity());
+        self::assertSame(0, $this->repository()->count(['readAt' => null]), 'entry activity is marked read from the bell too');
     }
 
     public function testDecisionNotificationIsShown(): void
@@ -104,6 +133,7 @@ final class NotificationBellTest extends KernelTestCase
         string $title,
         int $sourceItemId,
         ?NotificationPayload $payload = null,
+        \App\Enum\NotificationAction $action = \App\Enum\NotificationAction::Created,
     ): void {
         $this->repository()->save(new Notification(
             $account,
@@ -115,7 +145,7 @@ final class NotificationBellTest extends KernelTestCase
             $sourceItemId,
             'user',
             $title,
-            \App\Enum\NotificationAction::Created,
+            $action,
             $payload ?? new NotificationPayload(actorId: $sourceItemId),
         ));
     }

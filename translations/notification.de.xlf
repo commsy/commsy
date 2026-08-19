@@ -122,6 +122,18 @@
                 <source>bell.alreadyDecided</source>
                 <target>Diese Anfrage wurde bereits bearbeitet.</target>
             </trans-unit>
+            <trans-unit id="bell.activityCreated">
+                <source>bell.activityCreated</source>
+                <target>%count% neu angelegt</target>
+            </trans-unit>
+            <trans-unit id="bell.activityEdited">
+                <source>bell.activityEdited</source>
+                <target>%count% bearbeitet</target>
+            </trans-unit>
+            <trans-unit id="bell.activityAnnotated">
+                <source>bell.activityAnnotated</source>
+                <target>%count% annotiert</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

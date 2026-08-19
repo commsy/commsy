@@ -15,7 +15,9 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Enum\NotificationAction;
 use App\Enum\NotificationType;
+use App\Notification\RoomActivitySummary;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -63,10 +65,9 @@ class NotificationRepository extends ServiceEntityRepository
      * one room. Read and unread rows alike are listed; rows only ever leave the
      * panel through the retention cron (or when their item is deleted).
      *
-     * @return Notification[]
-     */
-    /**
      * @param NotificationType[] $types empty means every type
+     *
+     * @return Notification[]
      */
     public function findForAccount(Account $account, ?int $contextId = null, int $limit = 50, array $types = []): array
     {
@@ -219,6 +220,56 @@ class NotificationRepository extends ServiceEntityRepository
             ->createQuery('DELETE App\Entity\Notification n WHERE n.sourceItemId = :id')
             ->setParameter('id', $sourceItemId)
             ->execute();
+    }
+
+    /**
+     * Unread entry activity per room, condensed for the bell: one summary per
+     * room, counting distinct entries per action so repeated edits of the same
+     * entry stay a single number.
+     *
+     * @return RoomActivitySummary[] newest activity first
+     */
+    public function summariseUnreadEntryActivity(Account $account, int $roomLimit = 20): array
+    {
+        $rows = $this->createQueryBuilder('n')
+            ->select('n.contextId AS contextId', 'n.roomTitle AS roomTitle', 'n.action AS action')
+            ->addSelect('COUNT(DISTINCT n.sourceItemId) AS entries', 'MAX(n.createdAt) AS newestAt')
+            ->andWhere('n.recipient = :account')->setParameter('account', $account)
+            ->andWhere('n.type = :type')->setParameter('type', NotificationType::Entry)
+            ->andWhere('n.readAt IS NULL')
+            ->groupBy('n.contextId')->addGroupBy('n.roomTitle')->addGroupBy('n.action')
+            ->getQuery()
+            ->getResult();
+
+        /** @var array<int, array{title: string, counts: array<string, int>, newest: string}> $byRoom */
+        $byRoom = [];
+        foreach ($rows as $row) {
+            $contextId = (int) $row['contextId'];
+            $action = $row['action'] instanceof NotificationAction ? $row['action']->value : (string) $row['action'];
+
+            $byRoom[$contextId]['title'] = (string) $row['roomTitle'];
+            $byRoom[$contextId]['counts'][$action] = (int) $row['entries'];
+            $newest = (string) $row['newestAt'];
+            if (!isset($byRoom[$contextId]['newest']) || $newest > $byRoom[$contextId]['newest']) {
+                $byRoom[$contextId]['newest'] = $newest;
+            }
+        }
+
+        $summaries = [];
+        foreach ($byRoom as $contextId => $room) {
+            $summaries[] = new RoomActivitySummary(
+                $contextId,
+                $room['title'],
+                $room['counts'][NotificationAction::Created->value] ?? 0,
+                $room['counts'][NotificationAction::Edited->value] ?? 0,
+                $room['counts'][NotificationAction::Annotated->value] ?? 0,
+                new \DateTimeImmutable($room['newest']),
+            );
+        }
+
+        usort($summaries, static fn (RoomActivitySummary $a, RoomActivitySummary $b): int => $b->newestAt <=> $a->newestAt);
+
+        return array_slice($summaries, 0, $roomLimit);
     }
 
     /**

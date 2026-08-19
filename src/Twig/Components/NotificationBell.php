@@ -16,6 +16,7 @@ namespace App\Twig\Components;
 use App\Entity\Account;
 use App\Entity\Notification;
 use App\Enum\NotificationType;
+use App\Notification\RoomActivitySummary;
 use App\Repository\NotificationRepository;
 use App\Room\RoomMembershipDecider;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
@@ -28,10 +29,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use function Symfony\Component\Clock\now;
 
 /**
- * The navbar bell: everything addressed to the person rather than to a room's
- * content — join-request tasks a moderator can decide right here, and word back
- * about a request of one's own. Entry activity is deliberately absent; it lives
- * in the room and dashboard panels.
+ * The navbar bell, in two sections: what waits for a decision stays on top,
+ * everything that merely informs sits below a divider. The lower section also
+ * carries entry activity, but condensed to one line per room ("3 neu angelegt,
+ * 5 bearbeitet") rather than entry by entry — the panels remain the place for
+ * the detail.
  *
  * There is no page behind the bell, so the dropdown is the whole surface: the
  * newest few notifications, the decision buttons, and mark-all-read for the
@@ -81,9 +83,10 @@ final class NotificationBell
             return;
         }
 
-        // Only the informational ones: an open task must stay countable.
+        // Everything except open tasks — including the entry activity behind the
+        // room lines, which is the same set of rows the panels show.
         $readable = array_values(array_filter(
-            NotificationType::bellTypes(),
+            NotificationType::cases(),
             static fn (NotificationType $type): bool => !$type->isTask(),
         ));
 
@@ -91,20 +94,76 @@ final class NotificationBell
     }
 
     /**
+     * The upper section: notifications waiting for a decision.
+     *
      * @return Notification[]
      */
-    public function getNotifications(): array
+    public function getTasks(): array
+    {
+        return $this->ofTypes(static fn (NotificationType $type): bool => $type->isTask());
+    }
+
+    /**
+     * The lower section: notifications that only inform. Room activity is
+     * summarised separately, so it is excluded here.
+     *
+     * @return Notification[]
+     */
+    public function getMessages(): array
+    {
+        return $this->ofTypes(
+            static fn (NotificationType $type): bool => !$type->isTask() && !$type->isContentActivity()
+        );
+    }
+
+    /**
+     * The lower section's room activity: one condensed line per room.
+     *
+     * @return RoomActivitySummary[]
+     */
+    public function getRoomActivity(): array
     {
         return $this->account !== null
-            ? $this->notificationRepository->findForAccount($this->account, null, self::LIMIT, NotificationType::bellTypes())
+            ? $this->notificationRepository->summariseUnreadEntryActivity($this->account)
             : [];
     }
 
+    /**
+     * What the badge shows: the number of unread things visible in the dropdown.
+     * A room counts once, however much happened inside it — the sum of changed
+     * entries would be a confusing number to put on a bell.
+     */
     public function getUnreadCount(): int
     {
-        return $this->account !== null
-            ? $this->notificationRepository->countUnreadForAccount($this->account, null, NotificationType::bellTypes())
-            : 0;
+        if ($this->account === null) {
+            return 0;
+        }
+
+        $withoutActivity = array_values(array_filter(
+            NotificationType::cases(),
+            static fn (NotificationType $type): bool => !$type->isContentActivity(),
+        ));
+
+        return $this->notificationRepository->countUnreadForAccount($this->account, null, $withoutActivity)
+            + count($this->getRoomActivity());
+    }
+
+    /**
+     * @param callable(NotificationType): bool $matches
+     *
+     * @return Notification[]
+     */
+    private function ofTypes(callable $matches): array
+    {
+        if ($this->account === null) {
+            return [];
+        }
+
+        $types = array_values(array_filter(NotificationType::cases(), $matches));
+
+        return $types === []
+            ? []
+            : $this->notificationRepository->findForAccount($this->account, null, self::LIMIT, $types);
     }
 
     /**

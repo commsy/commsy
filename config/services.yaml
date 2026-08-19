@@ -121,6 +121,7 @@ services:
             - '../src/Model/'
             - '../src/Notification/NotificationGroup.php'
             - '../src/Notification/NotificationPayload.php'
+            - '../src/Notification/RoomActivitySummary.php'
             - '../src/Proxy/'
             - '../src/Tests/'
             - '../src/WOPI/REST/Request'
