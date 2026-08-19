@@ -150,11 +150,15 @@ class NotificationRepository extends ServiceEntityRepository
 
     /**
      * Mark every unread notification of an account read in one statement,
-     * optionally limited to one room (the room panel's mark-all action).
+     * optionally limited to one room (the room panel's mark-all action) and to
+     * certain types — open tasks must stay unread, or the bell would stop
+     * counting work that is still waiting.
+     *
+     * @param NotificationType[] $types empty means every type
      *
      * @return int number of rows updated
      */
-    public function markAllReadForAccount(Account $account, \DateTimeImmutable $now, ?int $contextId = null): int
+    public function markAllReadForAccount(Account $account, \DateTimeImmutable $now, ?int $contextId = null, array $types = []): int
     {
         $dql = 'UPDATE App\Entity\Notification n
                 SET n.readAt = :now
@@ -164,12 +168,20 @@ class NotificationRepository extends ServiceEntityRepository
             $dql .= ' AND n.contextId = :ctx';
         }
 
+        if ($types !== []) {
+            $dql .= ' AND n.type IN (:types)';
+        }
+
         $query = $this->getEntityManager()->createQuery($dql)
             ->setParameter('now', $now)
             ->setParameter('account', $account);
 
         if ($contextId !== null) {
             $query->setParameter('ctx', $contextId);
+        }
+
+        if ($types !== []) {
+            $query->setParameter('types', $types);
         }
 
         return (int) $query->execute();

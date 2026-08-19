@@ -98,6 +98,34 @@
                 <source>title.dashboard</source>
                 <target>Letzte Aktivitäten aus meinen Räumen</target>
             </trans-unit>
+            <trans-unit id="bell.joinRequest">
+                <source>bell.joinRequest</source>
+                <target>%name% möchte diesem Raum beitreten</target>
+            </trans-unit>
+            <trans-unit id="bell.accept">
+                <source>bell.accept</source>
+                <target>Annehmen</target>
+            </trans-unit>
+            <trans-unit id="bell.reject">
+                <source>bell.reject</source>
+                <target>Ablehnen</target>
+            </trans-unit>
+            <trans-unit id="bell.viewProfile">
+                <source>bell.viewProfile</source>
+                <target>Profil ansehen</target>
+            </trans-unit>
+            <trans-unit id="bell.decisionAccepted">
+                <source>bell.decisionAccepted</source>
+                <target>Deine Anfrage für „%room%“ wurde angenommen</target>
+            </trans-unit>
+            <trans-unit id="bell.decisionRejected">
+                <source>bell.decisionRejected</source>
+                <target>Deine Anfrage für „%room%“ wurde abgelehnt</target>
+            </trans-unit>
+            <trans-unit id="bell.alreadyDecided">
+                <source>bell.alreadyDecided</source>
+                <target>Diese Anfrage wurde bereits bearbeitet.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

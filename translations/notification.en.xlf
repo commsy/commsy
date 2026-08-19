@@ -98,6 +98,34 @@
                 <source>title.dashboard</source>
                 <target>Recent activity from my workspaces</target>
             </trans-unit>
+            <trans-unit id="bell.joinRequest">
+                <source>bell.joinRequest</source>
+                <target>%name% would like to join this workspace</target>
+            </trans-unit>
+            <trans-unit id="bell.accept">
+                <source>bell.accept</source>
+                <target>Accept</target>
+            </trans-unit>
+            <trans-unit id="bell.reject">
+                <source>bell.reject</source>
+                <target>Reject</target>
+            </trans-unit>
+            <trans-unit id="bell.viewProfile">
+                <source>bell.viewProfile</source>
+                <target>View profile</target>
+            </trans-unit>
+            <trans-unit id="bell.decisionAccepted">
+                <source>bell.decisionAccepted</source>
+                <target>Your request for "%room%" was accepted</target>
+            </trans-unit>
+            <trans-unit id="bell.decisionRejected">
+                <source>bell.decisionRejected</source>
+                <target>Your request for "%room%" was rejected</target>
+            </trans-unit>
+            <trans-unit id="bell.alreadyDecided">
+                <source>bell.alreadyDecided</source>
+                <target>This request has already been handled.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

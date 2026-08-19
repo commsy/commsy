@@ -54,9 +54,11 @@ class NotificationControllerTest extends AbstractApplicationTestCase
         self::assertStringContainsString('A new material for me', $content);
         self::assertStringNotContainsString('Not for me', $content, 'must not leak another account\'s notifications');
 
+        // The bell counts personal/administrative notifications only, so entry
+        // activity leaves its badge empty — that content lives in the panels.
         $indicator = $crawler->filter('#cs-nav-notification-indicator');
         self::assertGreaterThan(0, $indicator->count(), 'bell badge must be present');
-        self::assertStringContainsString('1', $indicator->text(), 'bell badge shows the single unread');
+        self::assertSame('', trim($indicator->text()), 'entry activity does not raise the bell badge');
     }
 
     public function testOpenMarksReadAndRedirectsToEntry(): void
