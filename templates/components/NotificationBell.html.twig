@@ -13,7 +13,10 @@
     {# cs-theme paints uk-text-muted #ddd for dark bars — unreadable on the dropdown's light ground. #}
     {% set metaColor = 'color: #666;' %}
     {# One leading icon per row type; the room line carries the "!" indicator instead, since it aggregates several rubrics. #}
-    {% set rowIcon = 'uk-icon-justify uk-margin-small-right' %}
+    {# uk-icon-justify centres the glyph in its box, which pushes narrow icons like the "!" out of line with the text below.
+       A fixed-width column with the glyph flush left keeps the titles aligned and the icons on the text's left edge. #}
+    {% set rowIcon = 'uk-margin-small-right' %}
+    {% set rowIconStyle = 'display: inline-block; width: 1.3em; text-align: left;' %}
     {% set tasks = this.tasks %}
     {% set messages = this.messages %}
     {% set activity = this.roomActivity %}
@@ -32,7 +35,7 @@
         <li>
             <div style="{{ rowPadding }}{% if not loop.first or this.alreadyDecided %} {{ rowBorder }}{% endif %}">
                 <div style="line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
-                    <i class="uk-icon-user-plus {{ rowIcon }}" style="{{ metaColor }}"></i>{{ 'bell.joinRequest'|trans({'%name%': notification.title}, 'notification') }}
+                    <i class="uk-icon-user-plus {{ rowIcon }}" style="{{ rowIconStyle }} {{ metaColor }}"></i>{{ 'bell.joinRequest'|trans({'%name%': notification.title}, 'notification') }}
                 </div>
                 <div class="uk-text-small" style="color: #666; margin-top: 3px;">
                     {{ notification.roomTitle }} &middot; {{ _self.shortDate(notification.createdAt) }}
@@ -67,7 +70,7 @@
             <a href="{{ path('app_room_home', {'roomId': notification.contextId}) }}"
                style="display: block; {{ rowPadding }}{% if not loop.first %} {{ rowBorder }}{% endif %}">
                 <span style="display: block; line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
-                    <i class="uk-icon-bullhorn {{ rowIcon }}" style="{{ metaColor }}"></i>
+                    <i class="uk-icon-bullhorn {{ rowIcon }}" style="{{ rowIconStyle }} {{ metaColor }}"></i>
                     {%- if p.decision == 'rejected' -%}
                         {{ 'bell.decisionRejected'|trans({'%room%': notification.roomTitle}, 'notification') }}
                     {%- else -%}
@@ -93,7 +96,7 @@
                 {% set indicator = room.indicatorStatus %}
                 <span style="display: block; line-height: 1.4; font-weight: 600;">
                     <i class="uk-icon-exclamation {{ rowIcon }} {{ indicator == 'new' ? 'uk-text-danger' : 'uk-text-warning' }}"
-                       data-uk-tooltip title="{{ (indicator == 'new' ? 'bell.indicatorNew' : 'bell.indicatorChanged')|trans({}, 'notification') }}"></i>{{ room.roomTitle }}
+                       style="{{ rowIconStyle }}" data-uk-tooltip title="{{ (indicator == 'new' ? 'bell.indicatorNew' : 'bell.indicatorChanged')|trans({}, 'notification') }}"></i>{{ room.roomTitle }}
                 </span>
                 {# No date on this line: it would have to stand for several events at once, so it tells the reader nothing. #}
                 <span class="uk-text-small" style="color: #666; display: block; margin-top: 3px;">
@@ -113,7 +116,7 @@
         <li>
             <a href="#" style="display: block; {{ rowPadding }} {{ rowBorder }}"
                data-action="live#action" data-live-action-param="markAllRead">
-                <i class="uk-icon-check uk-margin-small-right"></i>{{ 'markAllRead'|trans({}, 'notification') }}
+                <i class="uk-icon-check {{ rowIcon }}" style="{{ rowIconStyle }}"></i>{{ 'markAllRead'|trans({}, 'notification') }}
             </a>
         </li>
     {% endif %}
