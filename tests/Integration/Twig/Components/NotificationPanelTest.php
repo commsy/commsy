@@ -26,14 +26,14 @@ use Tests\Factory\AccountFactory;
 
 /**
  * Pins the {@see \App\Twig\Components\NotificationPanel} live component: it groups
- * an item's events into one row, marks a whole entry / all entries read in place,
- * and scopes to one room when a context id is given.
+ * an item's events into one row, marks the whole list read in place, and scopes to
+ * one room when a context id is given.
  */
 final class NotificationPanelTest extends KernelTestCase
 {
     use InteractsWithLiveComponents;
 
-    public function testRendersEntriesAndMarksOneReadInPlace(): void
+    public function testRendersEntriesWithoutAPerRowReadControl(): void
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
@@ -45,20 +45,14 @@ final class NotificationPanelTest extends KernelTestCase
         $html = (string) $component->render();
         self::assertStringContainsString('First entry', $html);
         self::assertStringContainsString('Second entry', $html);
-
         self::assertSame(2, $this->repository()->count(['readAt' => null]));
 
-        // Mark-read is keyed by the source item id (the whole grouped entry).
-        $component->call('markRead', ['id' => 100]);
-
-        // The entry stays listed — only its unread state changes.
-        $afterMarkRead = (string) $component->render();
-        self::assertStringContainsString('First entry', $afterMarkRead);
-        self::assertStringContainsString('Second entry', $afterMarkRead);
-        self::assertSame(1, $this->repository()->count(['readAt' => null]), 'only the marked entry is read');
+        // A single entry is marked read by opening it, not from the panel.
+        self::assertStringNotContainsString('markRead', $html);
+        self::assertStringContainsString('markAllRead', $html, 'the list-wide action stays');
     }
 
-    public function testGroupsEventsOfTheSameItemIntoOneRowAndMarkReadCoversAll(): void
+    public function testGroupsEventsOfTheSameItemIntoOneRow(): void
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
@@ -72,11 +66,7 @@ final class NotificationPanelTest extends KernelTestCase
         self::assertCount(2, $groups, 'the two events for item 500 collapse into one row');
         self::assertCount(2, $groups[0]->events(), 'the active item (500) is first and holds both of its events');
 
-        // Marking the grouped entry read covers all of its events.
-        $component->call('markRead', ['id' => 500]);
-
-        self::assertSame(3, $this->repository()->count([]), 'nothing is deleted by hand any more');
-        self::assertSame(1, $this->repository()->count(['readAt' => null]), 'both events of item 500 are read, item 600 stays unread');
+        self::assertSame(3, $this->repository()->count([]), 'nothing is deleted by hand');
     }
 
     public function testMarkAllReadClearsTheUnreadState(): void

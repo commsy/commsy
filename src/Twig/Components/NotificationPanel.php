@@ -21,7 +21,6 @@ use App\Notification\NotificationLinkResolver;
 use App\Repository\NotificationRepository;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
-use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
@@ -29,9 +28,10 @@ use function Symfony\Component\Clock\now;
 
 /**
  * The room/dashboard activity panel that replaces the legacy "newest entries"
- * feed: it lists the account's notifications newest-first, lets the user mark a
- * single entry or all of them read, and polls so fresh activity appears. Rows are
- * never removed by hand — only the retention cron drops aged-out notifications. With
+ * feed: it lists the account's notifications newest-first, lets the user mark the
+ * whole list read, and polls so fresh activity appears. Single entries are marked
+ * read by opening them, not by a per-row control; rows are never removed by hand —
+ * only the retention cron drops aged-out notifications. With
  * {@see $contextId} set it scopes to one room (the room start page); without it
  * it spans all of the account's rooms (the dashboard). Every read and write
  * stays scoped to the logged-in account, so {@see $contextId} only narrows the
@@ -60,15 +60,6 @@ final class NotificationPanel
         private readonly NotificationRepository $notificationRepository,
         private readonly NotificationLinkResolver $linkResolver,
     ) {
-    }
-
-    #[LiveAction]
-    public function markRead(#[LiveArg] int $id): void
-    {
-        // $id is the source item id: marking an entry read covers all its events.
-        if ($this->account !== null) {
-            $this->notificationRepository->markReadForAccountAndSourceItem($this->account, $id, now());
-        }
     }
 
     #[LiveAction]

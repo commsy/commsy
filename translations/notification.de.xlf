@@ -10,10 +10,6 @@
                 <source>showAllNotifications</source>
                 <target>Alle anzeigen</target>
             </trans-unit>
-            <trans-unit id="markRead">
-                <source>markRead</source>
-                <target>Als gelesen markieren</target>
-            </trans-unit>
             <trans-unit id="markAllRead">
                 <source>markAllRead</source>
                 <target>Alle als gelesen markieren</target>
