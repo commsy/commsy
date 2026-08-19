@@ -32,4 +32,14 @@ final readonly class RoomActivitySummary
         public \DateTimeImmutable $newestAt,
     ) {
     }
+
+    /**
+     * Which "!" the bell shows for this room, in the red/amber convention the
+     * rubric lists and the activity panels already use: red as soon as one entry
+     * is new, amber when existing entries were only changed or annotated.
+     */
+    public function indicatorStatus(): string
+    {
+        return $this->created > 0 ? 'new' : 'changed';
+    }
 }

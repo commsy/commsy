@@ -134,6 +134,14 @@
                 <source>bell.activityAnnotated</source>
                 <target>%count% annotiert</target>
             </trans-unit>
+            <trans-unit id="bell.indicatorNew">
+                <source>bell.indicatorNew</source>
+                <target>Neue Einträge</target>
+            </trans-unit>
+            <trans-unit id="bell.indicatorChanged">
+                <source>bell.indicatorChanged</source>
+                <target>Geänderte Einträge</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

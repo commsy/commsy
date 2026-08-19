@@ -12,7 +12,7 @@
     {% set rowBorder = 'border-top: 1px solid rgba(0,0,0,.08);' %}
     {# cs-theme paints uk-text-muted #ddd for dark bars — unreadable on the dropdown's light ground. #}
     {% set metaColor = 'color: #666;' %}
-    {# One leading icon per row type — a rubric icon is impossible on the room line, which aggregates several. #}
+    {# One leading icon per row type; the room line carries the "!" indicator instead, since it aggregates several rubrics. #}
     {% set rowIcon = 'uk-icon-justify uk-margin-small-right' %}
     {% set tasks = this.tasks %}
     {% set messages = this.messages %}
@@ -67,7 +67,7 @@
             <a href="{{ path('app_room_home', {'roomId': notification.contextId}) }}"
                style="display: block; {{ rowPadding }}{% if not loop.first %} {{ rowBorder }}{% endif %}">
                 <span style="display: block; line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
-                    <i class="uk-icon-info-circle {{ rowIcon }}" style="{{ metaColor }}"></i>
+                    <i class="uk-icon-bullhorn {{ rowIcon }}" style="{{ metaColor }}"></i>
                     {%- if p.decision == 'rejected' -%}
                         {{ 'bell.decisionRejected'|trans({'%room%': notification.roomTitle}, 'notification') }}
                     {%- else -%}
@@ -90,11 +90,14 @@
         <li>
             <a href="{{ path('app_room_home', {'roomId': room.contextId}) }}"
                style="display: block; {{ rowPadding }}{% if not loop.first or messages is not empty %} {{ rowBorder }}{% endif %}">
+                {% set indicator = room.indicatorStatus %}
                 <span style="display: block; line-height: 1.4; font-weight: 600;">
-                    <i class="uk-icon-bolt {{ rowIcon }}" style="{{ metaColor }}"></i>{{ room.roomTitle }}
+                    <i class="uk-icon-exclamation {{ rowIcon }} {{ indicator == 'new' ? 'uk-text-danger' : 'uk-text-warning' }}"
+                       data-uk-tooltip title="{{ (indicator == 'new' ? 'bell.indicatorNew' : 'bell.indicatorChanged')|trans({}, 'notification') }}"></i>{{ room.roomTitle }}
                 </span>
+                {# No date on this line: it would have to stand for several events at once, so it tells the reader nothing. #}
                 <span class="uk-text-small" style="color: #666; display: block; margin-top: 3px;">
-                    {{ parts|join(', ') }} &middot; {{ _self.shortDate(room.newestAt) }}
+                    {{ parts|join(', ') }}
                 </span>
             </a>
         </li>
