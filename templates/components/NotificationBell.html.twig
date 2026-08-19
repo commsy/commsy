@@ -58,7 +58,7 @@
 
 {% if uikit3 %}
     <li{{ attributes.defaults({'data-poll': 'delay(60000)|$render'}) }}>
-        <a href="#" title="{{ 'notifications'|trans({}, 'menu') }}">
+        <a href="#" title="{{ 'notifications'|trans({}, 'menu') }}" style="cursor: pointer;">
             <span uk-icon="bell"></span>
             <small id="cs-nav-notification-indicator">{% if this.unreadCount > 0 %}{{ this.unreadCount }}{% endif %}</small>
         </a>
@@ -68,7 +68,8 @@
     </li>
 {% else %}
     <li{{ attributes.defaults({class: 'uk-parent', 'data-uk-dropdown': "{mode:'click'}", 'data-poll': 'delay(60000)|$render'}) }}>
-        <a href="#" title="{{ 'notifications'|trans({}, 'menu') }}">
+        {# UIKit 2 sets cursor:text on navbar links with href="#"; the bell is a toggle, so restore the pointer. #}
+        <a href="#" title="{{ 'notifications'|trans({}, 'menu') }}" style="cursor: pointer;">
             <i class="uk-icon-bell-o"></i>
             <small id="cs-nav-notification-indicator">{% if this.unreadCount > 0 %}{{ this.unreadCount }}{% endif %}</small>
         </a>
