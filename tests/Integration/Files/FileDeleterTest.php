@@ -18,6 +18,7 @@ namespace Tests\Integration\Files;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Files\FileDeleter;
+use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -27,8 +28,9 @@ use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
  * Pins {@see FileDeleter::softDeleteFile()} — the replacement for the legacy
- * `cs_file_item::delete()` cascade used by the FileList live component.
- * Physical removal lands later with the FileHardDeleter (separate ticket).
+ * `cs_file_item::delete()` cascade used by the FileList live component —
+ * and {@see FileDeleter::softDeleteUnlinkedFiles()}, the nightly sweep for
+ * uploads that never reached an entry.
  */
 final class FileDeleterTest extends KernelTestCase
 {
@@ -88,6 +90,90 @@ final class FileDeleterTest extends KernelTestCase
         self::assertNull($row['deleter_id']);
     }
 
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testSweepStampsAnUploadThatNeverGotLinked(): void
+    {
+        $orphan = $this->createFile(new DateTime('-2 days'));
+
+        $this->fileDeleter->softDeleteUnlinkedFiles();
+
+        $row = $this->fileRow($orphan);
+        self::assertNotNull($row['deletion_date']);
+        self::assertNull($row['deleter_id'], 'The sweep has no person behind it');
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testSweepSparesAnUploadStillInFlight(): void
+    {
+        $fresh = $this->createFile(new DateTime());
+
+        $this->fileDeleter->softDeleteUnlinkedFiles();
+
+        self::assertNull(
+            $this->fileRow($fresh)['deletion_date'],
+            'A file younger than the guard may still be waiting for its link',
+        );
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testSweepSparesAFileThatIsStillAttached(): void
+    {
+        $attached = $this->createFile(new DateTime('-2 days'));
+        $this->createItemLinkFile($attached, itemId: 1001, versionId: 1);
+
+        $this->fileDeleter->softDeleteUnlinkedFiles();
+
+        self::assertNull($this->fileRow($attached)['deletion_date']);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testSweepSparesAFileWhoseLinksAreStamped(): void
+    {
+        $detached = $this->createFile(new DateTime('-2 days'));
+        $this->createItemLinkFile($detached, itemId: 1001, versionId: 1);
+        $this->connection->executeStatement(
+            'UPDATE item_link_file SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE file_id = :fileId',
+            ['deleterId' => $this->deleterId, 'fileId' => $detached]
+        );
+
+        $this->fileDeleter->softDeleteUnlinkedFiles();
+
+        // linkFileByID() revives a stamped link when the same file is
+        // attached again — the entry paths end such files, not this sweep.
+        self::assertNull($this->fileRow($detached)['deletion_date']);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testSweepDoesNotRestartTheRetentionOfAnAlreadyDeletedFile(): void
+    {
+        $gone = $this->createFile(new DateTime('-2 days'));
+        $this->connection->executeStatement(
+            'UPDATE files SET deletion_date = :date WHERE files_id = :id',
+            ['date' => '2020-01-01 00:00:00', 'id' => $gone]
+        );
+
+        $this->fileDeleter->softDeleteUnlinkedFiles();
+
+        self::assertSame(
+            '2020-01-01 00:00:00',
+            $this->fileRow($gone)['deletion_date'],
+            'Re-stamping would push the hard delete out by another retention period',
+        );
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testSweepReportsHowManyFilesItStamped(): void
+    {
+        // Clear whatever the fixtures left behind, so the count is ours.
+        $this->fileDeleter->softDeleteUnlinkedFiles();
+
+        $this->createFile(new DateTime('-2 days'));
+        $this->createFile(new DateTime('-2 days'));
+
+        self::assertSame(2, $this->fileDeleter->softDeleteUnlinkedFiles());
+    }
+
     // ------------------------------------------------------------------
 
     protected function setUp(): void
@@ -104,13 +190,28 @@ final class FileDeleterTest extends KernelTestCase
         $this->deleterId = $this->roomUser->getItemId();
     }
 
-    private function createFile(): int
+    private function createFile(?DateTime $creationDate = null): int
     {
-        $file = FilesFactory::createOne([
+        $file = FilesFactory::createOne(array_filter([
             'contextId' => $this->room->getItemId(),
-        ]);
+            'creationDate' => $creationDate,
+        ]));
 
         return $file->getFilesId();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function fileRow(int $fileId): array
+    {
+        $row = $this->connection->fetchAssociative(
+            'SELECT deletion_date, deleter_id FROM files WHERE files_id = :id',
+            ['id' => $fileId]
+        );
+        self::assertIsArray($row);
+
+        return $row;
     }
 
     /**

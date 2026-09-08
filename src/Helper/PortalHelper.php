@@ -133,46 +133,4 @@ class PortalHelper
 
         return $roomList;
     }
-
-    public function getActiveRoomsInPortal(Portal $portal): cs_list
-    {
-        $rooms = new cs_list();
-
-        $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-        $privateRoomManager->reset();
-        $privateRoomManager->setContextLimit($portal->getId());
-        $privateRoomManager->setActiveLimit();
-        $privateRoomManager->select();
-        $rooms->addList($privateRoomManager->get());
-
-        $communityManager = $this->legacyEnvironment->getCommunityManager();
-        $communityManager->reset();
-        $communityManager->setContextLimit($portal->getId());
-        $communityManager->setActiveLimit();
-        $communityManager->select();
-        $rooms->addList($communityManager->get());
-
-        $projectManager = $this->legacyEnvironment->getProjectManager();
-        $projectManager->reset();
-        $projectManager->setContextLimit($portal->getId());
-        $projectManager->setActiveLimit();
-        $projectManager->select();
-        $rooms->addList($projectManager->get());
-
-        $groupRoomManager = $this->legacyEnvironment->getGroupRoomManager();
-        $groupRoomManager->reset();
-        $groupRoomManager->setContextLimit($portal->getId());
-        $groupRoomManager->setActiveLimit();
-        $groupRoomManager->select();
-        $rooms->addList($groupRoomManager->get());
-
-        $userRoomManager = $this->legacyEnvironment->getUserRoomManager();
-        $userRoomManager->reset();
-        $userRoomManager->setContextLimit($portal->getId());
-        $userRoomManager->setActiveLimit();
-        $userRoomManager->select();
-        $rooms->addList($userRoomManager->get());
-
-        return $rooms;
-    }
 }

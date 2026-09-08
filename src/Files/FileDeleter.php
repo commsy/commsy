@@ -164,10 +164,10 @@ class FileDeleter
      *
      * This is what ends a file's life. Stamping the link alone hides the
      * file but strands it: {@see hardDeleteExpiredFiles()} keys on
-     * `files.deletion_date`, and `cs_file_manager::deleteUnneededFiles()`
-     * counts a stamped link as a link, so neither sweep would ever reach
-     * it again. With the stamp here the file follows the same course as
-     * every other soft-deleted row — swept after the configured retention.
+     * `files.deletion_date`, and {@see softDeleteUnlinkedFiles()} only
+     * looks at files that never had a link. With the stamp here the file
+     * follows the same course as every other soft-deleted row — swept
+     * after the configured retention.
      *
      * @param int[] $fileIds
      */
@@ -189,6 +189,36 @@ class FileDeleter
                   )',
             ['deleterId' => $deleterId, 'fileIds' => $ids],
             ['fileIds' => ArrayParameterType::INTEGER]
+        );
+    }
+
+    /**
+     * Soft-deletes uploads that never reached an entry: `files` rows with
+     * no `item_link_file` row at all. Both upload paths link the file to
+     * its item in the same request, so a row without any link means that
+     * write never happened — the age guard keeps a request still in
+     * flight out of the sweep.
+     *
+     * Files whose links exist but are stamped are deliberately left
+     * alone: `cs_links_manager::linkFileByID()` revives such a row when
+     * the same file is attached again, so a stamp here could outlive a
+     * link that comes back.
+     *
+     * `deleter_id` stays null — no person is behind this deletion.
+     *
+     * @return int Number of files stamped
+     */
+    public function softDeleteUnlinkedFiles(int $minAgeHours = 24): int
+    {
+        return (int) $this->entityManager->getConnection()->executeStatement(
+            'UPDATE files f
+                SET f.deletion_date = NOW()
+                WHERE f.deletion_date IS NULL
+                  AND f.creation_date < DATE_SUB(NOW(), INTERVAL :hours HOUR)
+                  AND NOT EXISTS (
+                      SELECT 1 FROM item_link_file i WHERE i.file_id = f.files_id
+                  )',
+            ['hours' => $minAgeHours]
         );
     }
 
