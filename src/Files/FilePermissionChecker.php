@@ -63,10 +63,9 @@ final readonly class FilePermissionChecker
 
     /**
      * Whether the actor may see the file. True iff at least one linked
-     * item is visible to the actor. The tombstone filter on
-     * `hasOverwrittenContent` is enforced inside {@see ItemViewChecker}
-     * via the `ItemViewSubject::$hasOverwrittenContent` flag (built by
-     * the factory), so this loop stays type-agnostic.
+     * item is visible to the actor. A redacted entry drops out on its
+     * own: its file links are stamped, so {@see loadActiveLinkedItems()}
+     * no longer yields it.
      *
      * Mirrors `cs_file_item::maySee` → `maySeeLinkedItem`.
      */

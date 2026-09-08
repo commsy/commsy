@@ -58,13 +58,7 @@ class cs_todo_item extends cs_item
      */
     public function getTitle(): string
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
-        } else {
-            return $this->_getValue('title');
-        }
+        return $this->_getValue('title');
     }
 
     /** set title of a todo
@@ -92,13 +86,7 @@ class cs_todo_item extends cs_item
      */
     public function getDescription()
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
-        } else {
-            return $this->_getValue('description');
-        }
+        return $this->_getValue('description');
     }
 
     /** set description of a todo
@@ -207,30 +195,26 @@ class cs_todo_item extends cs_item
     {
         $file_list = new cs_list();
 
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
+        $files = $this->getFileList();
 
-            return $file_list;
-        } else {
-            $files = $this->getFileList();
-            // steps
-            $step_list = clone $this->getStepItemList();
-            if ($step_list->isNotEmpty()) {
-                $step_item = $step_list->getFirst();
-                while ($step_item) {
-                    $step_file_list = $step_item->getFileList();
-                    if ($step_file_list->isNotEmpty()) {
-                        $file_list->addList($step_file_list);
-                    }
-                    unset($step_item);
-                    $step_item = $step_list->getNext();
+        // steps
+        $step_list = clone $this->getStepItemList();
+        if ($step_list->isNotEmpty()) {
+            $step_item = $step_list->getFirst();
+            while ($step_item) {
+                $step_file_list = $step_item->getFileList();
+                if ($step_file_list->isNotEmpty()) {
+                    $file_list->addList($step_file_list);
                 }
+                unset($step_item);
+                $step_item = $step_list->getNext();
             }
-            unset($step_item);
-            unset($step_list);
-            $files->addList($file_list);
-            $files->sortby('filename');
         }
+        unset($step_item);
+        unset($step_list);
+
+        $files->addList($file_list);
+        $files->sortby('filename');
 
         return $files;
     }

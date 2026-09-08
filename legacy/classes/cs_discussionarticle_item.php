@@ -39,18 +39,6 @@ class cs_discussionarticle_item extends cs_item
         $this->_data = $data_array;
     }
 
-     /**
-      * Returns whether this item's content should get overwritten with some placeholder text.
-      *
-      * @return bool Whether this item's content should get overwritten (true), or not (false)
-      */
-     public function getHasOverwrittenContent(): bool
-     {
-         // NOTE: `public = -2` gets used for articles with answers which were "deleted" but should
-         // instead have their content overwritten to keep the discussion hierarchy intact
-         return '-2' == $this->getPublic();
-     }
-
     public function getPosition()
     {
         return $this->_getValue('position');
@@ -68,14 +56,6 @@ class cs_discussionarticle_item extends cs_item
      */
     public function getDescription(): ?string
     {
-        $public = $this->getPublic();
-        if ('-1' == $public || '-2' == $public) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-            $message = ('-1' == $public) ? 'COMMON_AUTOMATIC_DELETE_DESCRIPTION' : 'COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC';
-
-            return $translator->translate($message);
-        }
-
         return $this->_getValue('description');
     }
 

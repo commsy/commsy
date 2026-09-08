@@ -469,27 +469,4 @@ class cs_discussionarticles_manager extends cs_manager
         }
     }
 
-    /**
-     * Flags the discussion article with the given ID as having its content overwritten.
-     * When an individual discussion article which has child article(s) (aka "answers") is to be deleted, we instead use
-     * this method to indicate that its content should get overwritten instead. I.e., the article is kept in the discussion
-     * hierarchy (which thus will not be altered by the deletion) but its content will be replaced with some placeholder text.
-     *
-     * @param int $itemId The ID of the discussion article whose content shall be overwritten
-     */
-    public function overwriteContent(int $itemId): void
-    {
-        $currentDatetime = \App\Utils\MysqlDateTime::now();
-
-        $updateQuery = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET';
-        $updateQuery .= ' public = "-2",';
-        $updateQuery .= ' modification_date = "'.$currentDatetime.'"';
-        $updateQuery .= ' WHERE item_id="'.\App\Legacy\SqlStringEscaper::escape($itemId).'"';
-
-        $result = $this->_db_connector->performQuery($updateQuery);
-        if (!$result) {
-            trigger_error('Problems flagging discarticle for content overwrite.', E_USER_WARNING);
-        }
-    }
-
 }

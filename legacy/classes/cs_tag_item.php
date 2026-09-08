@@ -162,13 +162,7 @@ class cs_tag_item extends cs_item
      */
     public function getTitle(): string
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
-        } else {
-            return (string) $this->_getValue('title');
-        }
+        return (string) $this->_getValue('title');
     }
 
     /** set title

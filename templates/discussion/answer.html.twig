@@ -26,8 +26,6 @@
         {# right actions #}
         <div class="content-actions uk-flex cs-edit">
             {# section actions #}
-            {# NOTE: `getHasOverwrittenContent()` returns true for articles with answers which were "deleted" but should instead have their content overwritten to keep the discussion hierarchy intact. #}
-            {% if not article.hasOverwrittenContent -%}
                 {% if is_granted('ITEM_NEW') %}
                     {# answer #}
                     <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('app_discussion_createanswer', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
@@ -84,7 +82,6 @@
                         {% endblock %}
                     {% endcomponent %}
                 {% endif %}
-            {% endif %}
         </div>
     </header>
     <div class="uk-comment-body">
@@ -96,13 +93,12 @@
             {{ article.description|decodeHtmlEntity|raw }}
         </div>
 
-        {# files #}
-        {% if not article.hasOverwrittenContent -%}
-            <div id="files{{ article.itemId }}" class="uk-margin-top uk-hidden">
-                {{ component('FileList:FileList', {
-                    itemId: article.itemId,
-                }) }}
-            </div>
-        {%- endif %}
+        {# files — a redacted article has its file links stamped, so this
+           renders empty on its own #}
+        <div id="files{{ article.itemId }}" class="uk-margin-top uk-hidden">
+            {{ component('FileList:FileList', {
+                itemId: article.itemId,
+            }) }}
+        </div>
     </div>
 </article>

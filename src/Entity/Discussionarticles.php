@@ -66,17 +66,11 @@ class Discussionarticles
      * Known values:
      *   1  → public-readable article (legacy "world view" flag)
      *   0  → private to room (default)
-     *  -2  → tombstone for an article with answers: body is replaced
-     *        with placeholder text, row stays alive to preserve the
-     *        thread hierarchy. Written by
-     *        {@see \App\Rubric\Discussion\DiscussionDeleter::deleteArticle()}.
-     *  -1  → defensively read by `cs_*_item::getDescription()` via the
-     *        `COMMON_AUTOMATIC_DELETE_DESCRIPTION` translation key, but
-     *        no writer for this value exists in the current codebase
-     *        (no `setPublic(-1)`, no raw SQL). Likely a relic of an
-     *        older deletion path; the reader code may be dead too.
-     * Overloading `public` as a tombstone marker is misuse — replacing
-     * it with a dedicated column is tracked as a follow-up.
+     *
+     * The values -1 and -2 used to be smuggled in here as redaction
+     * markers. They are gone: a redacted entry now carries the
+     * placeholder text in its own columns, so nothing has to be
+     * inferred from the edit permission.
      */
     #[ORM\Column(name: 'public', type: Types::INTEGER)]
     private int $public = 0;
@@ -209,17 +203,5 @@ class Discussionarticles
     public function getPublic(): int
     {
         return $this->public;
-    }
-
-    /**
-     * Convenience predicate for the tombstone state set by
-     * {@see \App\Rubric\Discussion\DiscussionDeleter::deleteArticle}
-     * on articles whose content was overwritten because they had
-     * answers (`public = -2`). Mirrors
-     * `cs_discussionarticle_item::getHasOverwrittenContent()`.
-     */
-    public function hasOverwrittenContent(): bool
-    {
-        return $this->public === -2;
     }
 }

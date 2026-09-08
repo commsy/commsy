@@ -34,10 +34,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
  *  1. Subtype-specific {@see RubricPermissionOverride} (tagged
  *     `app.rubric.permission_override`) — if registered AND its
  *     `canEdit()` returns a non-null verdict, that wins.
- *  2. Sub-entry / type-specific gates that DON'T need their own class
- *     (one-line guards):
- *       - Discussionarticles with overwritten content (`public = -2`)
- *         → false. Mirrors `cs_discussionarticle_item::mayEdit`.
+ *  2. Sub-entry gates that DON'T need their own class:
  *       - Section / Step → delegate to the linked parent item
  *         (recursion through the dispatcher; the legacy switch did
  *         the same).
@@ -81,15 +78,7 @@ final readonly class ItemEditDispatcher
             }
         }
 
-        // 2a. Discussionarticles with overwritten content (`public = -2`)
-        //     can never be edited — keeps the discussion hierarchy intact
-        //     while the body is a placeholder. Mirrors
-        //     `cs_discussionarticle_item::mayEdit`.
-        if ($item instanceof Discussionarticles && $item->hasOverwrittenContent()) {
-            return false;
-        }
-
-        // 2b. Section / Step → linked parent item.
+        // 2. Section / Step → linked parent item.
         if ($item instanceof Section || $item instanceof Step) {
             $parent = $this->resolveParentForSubEntry($item);
             if ($parent === null) {

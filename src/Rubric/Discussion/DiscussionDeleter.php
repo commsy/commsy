@@ -15,6 +15,7 @@ namespace App\Rubric\Discussion;
 
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
+use App\Rubric\RedactionText;
 use App\Rubric\RubricDeletionHelper;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
@@ -27,8 +28,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  * Deletes Discussion items. Replaces the legacy `cs_discussion_item::delete()`
  * / `cs_discussionarticle_item::delete()` cascade. Exposes
  * {@see deleteArticle()} for the UI delete-single-article flow; articles
- * with child answers have their content purged while the row stays alive
- * (legacy `public = -2` tombstone pattern, DSGVO-hardened).
+ * with child answers have their content replaced while the row stays
+ * alive, so the thread keeps its shape.
  */
 class DiscussionDeleter implements RubricDeleter
 {
@@ -36,6 +37,7 @@ class DiscussionDeleter implements RubricDeleter
         private readonly Connection $connection,
         private readonly ItemService $itemService,
         private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly RedactionText $redactionText,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -125,17 +127,23 @@ class DiscussionDeleter implements RubricDeleter
      *
      * - No children: regular soft-delete.
      * - With children: row stays alive (thread hierarchy preserved) but
-     *   description/subject are emptied, creator/modifier nullified, and
-     *   `public = -2` is set so the UI renders the "deleted article with
-     *   answers" placeholder. Attached links / link_items / file_links are
-     *   still cleaned up.
+     *   the description is replaced with the placeholder wording and
+     *   creator/modifier are nullified. Attached links / link_items /
+     *   file_links are still cleaned up.
+     *
+     * The text is written into the column, not rendered from a marker, so
+     * the database holds what the reader sees. No marker is set: the
+     * placeholder text is the signal, and the row stays an ordinary entry
+     * that a moderation can delete — which the old `public = -2` tombstone
+     * actively prevented, because it denied ITEM_EDIT and deletion is
+     * gated on it.
      *
      * The parent discussion is re-indexed in both cases.
      */
     public function deleteArticle(int $articleId, int $deleterId): void
     {
         $row = $this->connection->fetchAssociative(
-            'SELECT discussion_id, position FROM discussionarticles
+            'SELECT discussion_id, position, context_id FROM discussionarticles
                 WHERE item_id = :id AND deleter_id IS NULL AND deletion_date IS NULL',
             ['id' => $articleId]
         );
@@ -159,18 +167,19 @@ class DiscussionDeleter implements RubricDeleter
         ) > 0;
 
         if ($hasChildren) {
-            // Purge content + anonymise author. `public = -2` keeps the
-            // translator-driven placeholder in the UI working; not
-            // soft-deleting the row preserves the thread tree.
+            // Purge content + anonymise author; not soft-deleting the row
+            // preserves the thread tree.
             $this->connection->executeStatement(
-                "UPDATE discussionarticles
-                    SET description = '',
+                'UPDATE discussionarticles
+                    SET description = :description,
                         creator_id = NULL,
                         modifier_id = NULL,
-                        public = -2,
                         modification_date = NOW()
-                    WHERE item_id = :id",
-                ['id' => $articleId]
+                    WHERE item_id = :id',
+                [
+                    'description' => $this->redactionText->description((int) $row['context_id']),
+                    'id' => $articleId,
+                ]
             );
 
             // Links / link_items / file_links don't participate in the

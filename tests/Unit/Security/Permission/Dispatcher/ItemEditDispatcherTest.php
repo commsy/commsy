@@ -39,24 +39,19 @@ final class ItemEditDispatcherTest extends TestCase
         $this->typedEntityResolver = $this->createMock(TypedEntityResolver::class);
     }
 
-    // ---- Discussionarticles tombstone gate
+    // ---- Discussionarticles
 
-    public function testDeniesEditOnOverwrittenDiscussionarticleBeforeAskingDefault(): void
+    /**
+     * Articles carry no special edit gate. A redacted one is in the same
+     * state as any other: content replaced by the placeholder, author
+     * gone — nothing the permission layer has to know about. The old
+     * `public = -2` tombstone denied editing right here, and because
+     * deletion is gated on ITEM_EDIT it left a row a moderation could
+     * never remove.
+     */
+    public function testDefersToDefaultForDiscussionarticle(): void
     {
         $article = new Discussionarticles();
-        $article->setPublic(-2);
-
-        $this->defaultChecker->expects(self::never())->method('canEdit');
-
-        $dispatcher = $this->dispatcher();
-
-        self::assertFalse($dispatcher->canEdit(new User(), $article));
-    }
-
-    public function testDefersToDefaultForLiveDiscussionarticle(): void
-    {
-        $article = new Discussionarticles();
-        $article->setPublic(0);  // normal state
 
         $this->defaultChecker
             ->expects(self::once())

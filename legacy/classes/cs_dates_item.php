@@ -52,13 +52,7 @@ class cs_dates_item extends cs_item
      */
     public function getTitle(): string
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
-        } else {
-            return $this->_getValue('title');
-        }
+        return $this->_getValue('title');
     }
 
     /** set title of a dates
@@ -156,13 +150,7 @@ class cs_dates_item extends cs_item
      */
     public function getDescription()
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
-        } else {
-            return $this->_getValue('description');
-        }
+        return $this->_getValue('description');
     }
 
     /** set description of a dates
@@ -327,11 +315,7 @@ class cs_dates_item extends cs_item
      */
     public function getPlace()
     {
-        if ('-1' == $this->getPublic()) {
-            return '';
-        } else {
-            return $this->_getValue('place');
-        }
+        return $this->_getValue('place');
     }
 
     /** set date_mode status of a dates

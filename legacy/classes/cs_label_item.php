@@ -276,13 +276,7 @@ class cs_label_item extends cs_item
      */
     public function getTitle(): string
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
-        } else {
-            return $this->_getValue('name');
-        }
+        return $this->_getValue('name');
     }
 
     /** get description
@@ -292,13 +286,7 @@ class cs_label_item extends cs_item
      */
     public function getDescription()
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
-        } else {
-            return $this->_getValue('description');
-        }
+        return $this->_getValue('description');
     }
 
     /** set description

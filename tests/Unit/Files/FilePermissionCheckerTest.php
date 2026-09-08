@@ -95,13 +95,12 @@ final class FilePermissionCheckerTest extends TestCase
     }
 
     /**
-     * Tombstone filtering now lives in ItemViewChecker via the
-     * `hasOverwrittenContent` flag on ItemViewSubject — FilePermissionChecker
-     * no longer carries type-specific knowledge. This test pins that
-     * the checker still does NOT short-circuit on its own: it always
-     * builds a subject and delegates the verdict to the view checker.
+     * FilePermissionChecker carries no type-specific knowledge: it always
+     * builds a subject and leaves the verdict to the view checker. Pinned
+     * because a short-circuit here would silently bypass whatever the
+     * view rules become.
      */
-    public function testCanSeeAlwaysDefersOverwrittenContentDecisionToViewChecker(): void
+    public function testCanSeeAlwaysDefersTheDecisionToTheViewChecker(): void
     {
         $file = $this->file(filesId: 1);
         $this->linkFileRepository->method('findLinkedItemIds')->willReturn([10]);

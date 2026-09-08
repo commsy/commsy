@@ -31,7 +31,6 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
  * the base can't express:
  *
  *   - Discussion        : "edit ignore close" — overrides isClosed gating
- *   - Discussionarticle : `public = -2` (overwritten content) → no edit
  *   - Annotation        : public + external-viewer interaction
  *   - Label             : system-labels (ALL / GROUP_ALL_DESC) are read-only
  *   - Group             : moderator/creator restriction

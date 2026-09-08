@@ -573,13 +573,7 @@ class cs_material_item extends cs_item
      */
     public function getTitle(): string
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_TITLE');
-        } else {
-            return (string) $this->_getValue('title');
-        }
+        return (string) $this->_getValue('title');
     }
 
     /** get author of a material
@@ -591,11 +585,7 @@ class cs_material_item extends cs_item
      */
     public function getAuthor()
     {
-        if ('-1' == $this->getPublic()) {
-            return '';
-        } else {
-            return (string) $this->_getValue('author');
-        }
+        return (string) $this->_getValue('author');
     }
 
     /** get publishing_date of a material
@@ -605,11 +595,7 @@ class cs_material_item extends cs_item
      */
     public function getPublishingDate()
     {
-        if ('-1' == $this->getPublic()) {
-            return '';
-        } else {
-            return (int) $this->_getValue('publishing_date');
-        }
+        return (int) $this->_getValue('publishing_date');
     }
 
     /** get bibliographic values of a material
@@ -621,11 +607,7 @@ class cs_material_item extends cs_item
      */
     public function getBibliographicValues()
     {
-        if ('-1' == $this->getPublic()) {
-            return '';
-        } else {
-            return (string) $this->_getExtra('BIBLIOGRAPHIC');
-        }
+        return (string) $this->_getExtra('BIBLIOGRAPHIC');
     }
 
     /** get description of a material
@@ -637,13 +619,7 @@ class cs_material_item extends cs_item
      */
     public function getDescription()
     {
-        if ('-1' == $this->getPublic()) {
-            $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
-
-            return $translator->translate('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
-        } else {
-            return (string) $this->_getValue('description');
-        }
+        return (string) $this->_getValue('description');
     }
 
     /** get projects of a material
@@ -1413,10 +1389,6 @@ public function _copySectionList($copy_id)
      */
     public function getFileListWithFilesFromSections()
     {
-        if ($this->getPublic() == '-1') {
-            return new cs_list();
-        }
-
         $file_list = new cs_list();
 
         $container = $this->_environment->getSymfonyContainer();

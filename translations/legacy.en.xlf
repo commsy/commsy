@@ -6,14 +6,6 @@
         <source>ALL_MEMBERS</source>
         <target>All members</target>
       </trans-unit>
-      <trans-unit id="COMMON_AUTOMATIC_DELETE_DESCRIPTION">
-        <source>COMMON_AUTOMATIC_DELETE_DESCRIPTION</source>
-        <target>This text replaces an item that has been removed by the CommSy system at the author's request. He or she asked us to remove all of his or her contributions to this workspace.&lt;/br&gt;This replacement text can be deleted at any time if necessary.</target>
-      </trans-unit>
-      <trans-unit id="COMMON_AUTOMATIC_DELETE_TITLE">
-        <source>COMMON_AUTOMATIC_DELETE_TITLE</source>
-        <target>Deleted item (for privacy reasons)</target>
-      </trans-unit>
       <trans-unit id="COMMON_DATE_APRIL_LONG">
         <source>COMMON_DATE_APRIL_LONG</source>
         <target>April</target>
@@ -137,10 +129,6 @@
       <trans-unit id="COMMON_DATE_WEDNESDAY">
         <source>COMMON_DATE_WEDNESDAY</source>
         <target>Wednesday</target>
-      </trans-unit>
-      <trans-unit id="COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC">
-        <source>COMMON_DELETED_DISCARTICLE_WITH_ANSWERS_DESC</source>
-        <target>&lt;p&gt;This article was deleted and replaced with a placeholder (to maintain article hierarchy).&lt;/p&gt;</target>
       </trans-unit>
       <trans-unit id="COMMON_PRIVATEROOM">
         <source>COMMON_PRIVATEROOM</source>

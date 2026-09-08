@@ -21,6 +21,7 @@ use App\Entity\Room;
 use App\Entity\User;
 use App\Event\ItemDeletedEvent;
 use App\Rubric\Discussion\DiscussionDeleter;
+use App\Rubric\RedactionText;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -163,16 +164,21 @@ final class DiscussionDeleterTest extends KernelTestCase
     }
 
     /**
-     * GDPR path: articles with answers stay alive (thread hierarchy) but
-     * content + author references are physically purged; public = -2 is the
-     * UI placeholder marker.
+     * An article with answers stays alive so the thread keeps its shape,
+     * but its content is really replaced in the column — not left in place
+     * behind a display-time substitution — and its author references go.
      */
     #[WithStory(RoomWithMemberStory::class)]
-    public function testDeleteArticleWithChildrenPurgesContent(): void
+    public function testDeleteArticleWithChildrenReplacesContent(): void
     {
         $discussion = $this->createDiscussion();
         $parent = $this->createArticle($discussion, ['position' => '1']);
         $child = $this->createArticle($discussion, ['position' => '1.1']);
+
+        $originalDescription = (string) $this->connection->fetchOne(
+            'SELECT description FROM discussionarticles WHERE item_id = :id',
+            ['id' => $parent->getItemId()]
+        );
 
         $this->deleter->deleteArticle($parent->getItemId(), $this->deleterId);
 
@@ -184,10 +190,18 @@ final class DiscussionDeleterTest extends KernelTestCase
         self::assertIsArray($row);
         self::assertNull($row['deletion_date'], 'article with children must stay alive');
         self::assertNull($row['deleter_id']);
-        self::assertSame('', (string) $row['description'], 'description must be physically erased');
+
+        $expected = self::getContainer()->get(RedactionText::class)
+            ->description($this->room->getItemId());
+        self::assertSame($expected, (string) $row['description']);
+        self::assertNotSame($originalDescription, (string) $row['description'], 'the original wording must be gone');
+
         self::assertNull($row['creator_id'], 'creator_id must be NULLed for anonymisation');
         self::assertNull($row['modifier_id'], 'modifier_id must be NULLed for anonymisation');
-        self::assertSame(-2, (int) $row['public'], 'public = -2 keeps the legacy UI placeholder working');
+
+        // No marker: `public` keeps meaning the edit permission and nothing
+        // else, so the row stays deletable by a moderation.
+        self::assertSame(0, (int) $row['public']);
 
         $this->assertNotSoftDeleted('discussionarticles', $child->getItemId());
     }

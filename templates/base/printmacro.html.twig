@@ -279,7 +279,7 @@
             {# content #}
             {% if not content is empty %}
                 <div>
-                    <span class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">{{ content|commsyMarkup(item)|raw }}</span>
+                    <span>{{ content|commsyMarkup(item)|raw }}</span>
                 </div>
             {% endif %}
         </div>
@@ -295,13 +295,13 @@
     {% endif %}
 
     <div>
-        <div class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">
+        <div>
             <div >
                 <div  >
                     <div>
                     {% if item.itemType is not same as('section') %}
                         <div>
-                            <h1 class="uk-article-title{% if item.hasOverwrittenContent %} uk-text-muted{% endif %}">{{ item.title|decodeHtmlEntity }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                             {% if item.itemType is same as('material') or item.itemType is same as('todo') %}
                                 <div>
                                     {% if showRating and ratingArray is not null %}
@@ -338,7 +338,7 @@
         <div >
             <div >
                 <div >
-                    <div class="{% if item.hasOverwrittenContent %}uk-text-muted{% endif %}">
+                    <div>
 
                             <div >
 

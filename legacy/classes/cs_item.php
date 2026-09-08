@@ -1407,16 +1407,6 @@ class cs_item
         $link_manager->undeleteLinks($this);
     }
 
-     /**
-      * Returns whether this item's content should get overwritten with some placeholder text.
-      *
-      * @return bool Whether this item's content should get overwritten (true), or not (false)
-      */
-     public function getHasOverwrittenContent(): bool
-     {
-         return false;
-     }
-
      public function isPublic(): bool
      {
          return false;
@@ -1714,10 +1704,6 @@ class cs_item
      */
     public function getFileList(): cs_list
     {
-        if ('-1' == $this->getPublic() || $this->getHasOverwrittenContent()) {
-            return new cs_list();
-        }
-
         $container = $this->_environment->getSymfonyContainer();
 
         /** @var ItemLinkFileRepository $itemLinkFileRepository */
