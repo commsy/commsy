@@ -23,6 +23,8 @@ use App\Entity\Announcement;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Facade\MembershipManager;
+use App\Rubric\DeletionStrategy;
+use App\Rubric\UserContentDeleter;
 use App\User\UserMembershipDeleter;
 use App\Utils\RoomService;
 use Doctrine\DBAL\Connection;
@@ -132,6 +134,40 @@ final class DeletionStrategyCascadeTest extends KernelTestCase
             $this->column($announcement, 'creator_id'),
             'a merge must leave authorship for mergeAccounts() to rewrite'
         );
+    }
+
+    /**
+     * The erase applies the strategy it is handed, without consulting an
+     * account. That is what lets a caller keep everything for a reason of
+     * its own — the portal context, say — instead of the exception being
+     * carved out inside the erase.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testTheStrategyHandedInIsTheOneApplied(): void
+    {
+        // The account says cascade; the caller says keep, and wins.
+        $this->setStrategy(cascade: true);
+        $kept = $this->createAnnouncement();
+
+        self::getContainer()->get(UserContentDeleter::class)->eraseUserFootprint(
+            $this->roomUser->getItemId(),
+            $this->room->getItemId(),
+            DeletionStrategy::KEEP_ITEMS
+        );
+
+        $this->assertEntryAlive($kept);
+
+        // And the other way round: the account says keep, the caller cascades.
+        $this->setStrategy(cascade: false);
+        $deleted = $this->createAnnouncement();
+
+        self::getContainer()->get(UserContentDeleter::class)->eraseUserFootprint(
+            $this->roomUser->getItemId(),
+            $this->room->getItemId(),
+            DeletionStrategy::CASCADE_ITEMS
+        );
+
+        $this->assertEntryDeleted($deleted);
     }
 
     // ---------------------------------------------------------------

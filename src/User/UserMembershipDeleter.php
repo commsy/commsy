@@ -19,6 +19,7 @@ use App\Message\RefreshRoomContactPersonsMessage;
 use App\Repository\AccountsRepository;
 use App\Room\RoomDeletionOptions;
 use App\Room\UserRoomDeleter;
+use App\Rubric\DeletionStrategy;
 use App\Rubric\RubricDeletionHelper;
 use App\Rubric\UserContentDeleter;
 use App\Utils\ItemService;
@@ -123,8 +124,8 @@ class UserMembershipDeleter
      * authored in this room — main entries deleted (CASCADE) or left in
      * place (KEEP), sub-entries redacted, references nullified.
      *
-     * Portal-scoped rows are skipped: their `context_id` is the portal id,
-     * where a cascade would reach portal-wide entries (time pulses,
+     * A portal-scoped row keeps everything: its `context_id` is the portal
+     * id, where a cascade would reach portal-wide entries (time pulses,
      * portal-level material) that are shared vocabulary rather than the
      * person's own room content.
      *
@@ -139,15 +140,20 @@ class UserMembershipDeleter
         int|string|null $rowAccountId,
         ?Account $account,
     ): void {
-        if ($contextId === $portalId) {
-            return;
-        }
+        $strategy = $contextId === $portalId
+            ? DeletionStrategy::KEEP_ITEMS
+            : $this->userContentDeleter->resolveStrategy(
+                $account ?? $this->accountFromRow($rowAccountId)
+            );
 
-        if ($account === null && $rowAccountId !== null) {
-            $account = $this->accountsRepository->find((int) $rowAccountId);
-        }
+        $this->userContentDeleter->eraseUserFootprint($userItemId, $contextId, $strategy);
+    }
 
-        $this->userContentDeleter->eraseUserFootprint($userItemId, $contextId, $account);
+    private function accountFromRow(int|string|null $rowAccountId): ?Account
+    {
+        return $rowAccountId !== null
+            ? $this->accountsRepository->find((int) $rowAccountId)
+            : null;
     }
 
     /**

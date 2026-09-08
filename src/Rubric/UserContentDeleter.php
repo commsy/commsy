@@ -31,11 +31,14 @@ class UserContentDeleter
      * - CASCADE_ITEMS: main entries deleted, sub-entries in surviving parent
      *   items redacted, references nullified.
      * - KEEP_ITEMS: nothing deleted, only references nullified.
+     *
+     * The strategy is handed in rather than derived here: a caller may have
+     * a reason of its own to keep everything — a context whose entries are
+     * not the person's to take, say — and that reads better as a value than
+     * as an exception carved out further down.
      */
-    public function eraseUserFootprint(int $userId, int $contextId, ?Account $account): void
+    public function eraseUserFootprint(int $userId, int $contextId, DeletionStrategy $strategy): void
     {
-        $strategy = $this->resolveStrategy($account);
-
         // 1. Main entries via RubricDeleters.
         foreach ($this->deleters as $deleter) {
             if ($strategy === DeletionStrategy::CASCADE_ITEMS) {

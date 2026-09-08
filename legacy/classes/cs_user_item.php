@@ -14,7 +14,6 @@
 use App\Account\AccountManager;
 use App\Entity\Account;
 use App\Entity\User;
-use App\Rubric\UserContentDeleter;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class cs_user_item extends cs_item
@@ -1397,19 +1396,6 @@ class cs_user_item extends cs_item
     {
         $user_manager = $this->_environment->getUserManager();
         $user_manager->setCreatorID2ItemID($this);
-    }
-
-    public function deleteAllEntriesOfUser(): void
-    {
-        global $symfonyContainer;
-
-        /** @var UserContentDeleter $userContentDeleter */
-        $userContentDeleter = $symfonyContainer->get(UserContentDeleter::class);
-        $userContentDeleter->eraseUserFootprint(
-            $this->getItemID(),
-            $this->getContextID(),
-            $this->getAccount(),
-        );
     }
 
     public function setAGBAcceptanceDate(?DateTimeImmutable $agbAcceptanceDate): cs_user_item
