@@ -343,6 +343,23 @@ services:
     commsy.search.indexable_checker:
         alias: App\Search\IndexableChecker
 
+    # The bundle builds one pager provider per index from its own prototype.
+    # Material is keyed by (item_id, version_id), which the prototype's
+    # fetch-join pagination cannot page — see the class docblock. Overriding
+    # the generated service id replaces it for this index only.
+    #
+    # Drop this block once Materials has a single identifier again; the
+    # prototype then works unchanged.
+    fos_elastica.pager_provider.commsy_material:
+        class: App\Search\Provider\CompositeIdentifierPagerProvider
+        arguments:
+            - '@doctrine'
+            - '@fos_elastica.doctrine.register_listeners'
+            - 'App\Entity\Materials'
+            - { query_builder_method: createSearchQueryBuilder }
+        tags:
+            - { name: fos_elastica.pager_provider, index: commsy_material }
+
     # Mail
     App\Mail\MessageBuilder:
         arguments:
