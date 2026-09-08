@@ -97,6 +97,68 @@ class FileDeleter
     }
 
     /**
+     * Detaches every file on the item and ends the life of the ones that
+     * lost their last carrying entry.
+     *
+     * One method rather than two calls, so a caller cannot stamp the link
+     * and forget the file — which is the state that stranded 75k files:
+     * neither sweep can reach a file whose links are stamped but whose own
+     * row is untouched.
+     *
+     * @param int|null $versionId The single version to detach; null means
+     *                            the unversioned rubrics' only version.
+     */
+    public function detachFromItem(int $itemId, int $deleterId, ?int $versionId = null): void
+    {
+        $fileIds = $this->findLinkedFileIds([$itemId]);
+
+        $this->softDeleteFileLink($itemId, $versionId ?? 0, $deleterId);
+
+        $this->softDeleteFilesWithoutLiveLinks($fileIds, $deleterId);
+    }
+
+    /**
+     * The versioned variant: detaches the file from every version of the
+     * item. Materials and sections carry one link row per version.
+     */
+    public function detachFromItemAllVersions(int $itemId, int $deleterId): void
+    {
+        $fileIds = $this->findLinkedFileIds([$itemId]);
+
+        $this->entityManager->getConnection()->executeStatement(
+            'UPDATE item_link_file
+                SET deletion_date = NOW(), deleter_id = :deleterId
+                WHERE item_iid = :itemId',
+            ['deleterId' => $deleterId, 'itemId' => $itemId]
+        );
+
+        $this->softDeleteFilesWithoutLiveLinks($fileIds, $deleterId);
+    }
+
+    /**
+     * Every file id linked to any of the given items, regardless of the
+     * link's own deletion state or version. Read BEFORE the links are
+     * stamped, so the orphan sweep still knows which files to look at.
+     *
+     * @param int[] $itemIds
+     *
+     * @return int[]
+     */
+    public function findLinkedFileIds(array $itemIds): array
+    {
+        $ids = array_values(array_unique(array_map('intval', $itemIds)));
+        if ($ids === []) {
+            return [];
+        }
+
+        return array_map('intval', $this->entityManager->getConnection()->fetchFirstColumn(
+            'SELECT DISTINCT file_id FROM item_link_file WHERE item_iid IN (:ids)',
+            ['ids' => $ids],
+            ['ids' => ArrayParameterType::INTEGER]
+        ));
+    }
+
+    /**
      * Soft-deletes every one of the given files that has no live
      * `item_link_file` row left, i.e. whose last carrying entry is gone.
      *

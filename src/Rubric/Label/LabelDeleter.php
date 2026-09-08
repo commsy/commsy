@@ -13,6 +13,7 @@
 
 namespace App\Rubric\Label;
 
+use App\Files\FileDeleter;
 use App\Event\ItemDeletedEvent;
 use App\Rubric\RubricDeletionHelper;
 use App\Rubric\RubricDeleter;
@@ -35,6 +36,7 @@ class LabelDeleter implements RubricDeleter
         private readonly Connection $connection,
         private readonly ItemService $itemService,
         private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly FileDeleter $fileDeleter,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -87,7 +89,7 @@ class LabelDeleter implements RubricDeleter
 
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteFileLinks($itemId, $deleterId);
+        $this->fileDeleter->detachFromItem($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 

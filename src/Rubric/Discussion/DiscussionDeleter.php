@@ -13,6 +13,7 @@
 
 namespace App\Rubric\Discussion;
 
+use App\Files\FileDeleter;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
 use App\Rubric\RedactionText;
@@ -37,6 +38,7 @@ class DiscussionDeleter implements RubricDeleter
         private readonly Connection $connection,
         private readonly ItemService $itemService,
         private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly FileDeleter $fileDeleter,
         private readonly RedactionText $redactionText,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
@@ -118,7 +120,7 @@ class DiscussionDeleter implements RubricDeleter
 
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteFileLinks($itemId, $deleterId);
+        $this->fileDeleter->detachFromItem($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
@@ -186,7 +188,7 @@ class DiscussionDeleter implements RubricDeleter
             // thread hierarchy, so they can go even though the row stays.
             $this->rubricDeletionHelper->softDeleteLinks($articleId, $deleterId);
             $this->rubricDeletionHelper->softDeleteLinkItems($articleId, $deleterId);
-            $this->rubricDeletionHelper->softDeleteFileLinks($articleId, $deleterId);
+            $this->fileDeleter->detachFromItem($articleId, $deleterId);
         } else {
             $this->connection->executeStatement(
                 'UPDATE discussionarticles
@@ -197,7 +199,7 @@ class DiscussionDeleter implements RubricDeleter
 
             $this->rubricDeletionHelper->softDeleteLinks($articleId, $deleterId);
             $this->rubricDeletionHelper->softDeleteLinkItems($articleId, $deleterId);
-            $this->rubricDeletionHelper->softDeleteFileLinks($articleId, $deleterId);
+            $this->fileDeleter->detachFromItem($articleId, $deleterId);
             $this->rubricDeletionHelper->softDeleteItemsRow($articleId, $deleterId);
         }
 

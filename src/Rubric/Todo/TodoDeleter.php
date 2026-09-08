@@ -13,6 +13,7 @@
 
 namespace App\Rubric\Todo;
 
+use App\Files\FileDeleter;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
 use App\Rubric\RubricDeletionHelper;
@@ -34,6 +35,7 @@ class TodoDeleter implements RubricDeleter
         private readonly Connection $connection,
         private readonly ItemService $itemService,
         private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly FileDeleter $fileDeleter,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -113,7 +115,7 @@ class TodoDeleter implements RubricDeleter
         // Todos don't carry annotations (same as discussions).
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteFileLinks($itemId, $deleterId);
+        $this->fileDeleter->detachFromItem($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
@@ -144,7 +146,7 @@ class TodoDeleter implements RubricDeleter
 
         $this->rubricDeletionHelper->softDeleteLinks($stepId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($stepId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteFileLinks($stepId, $deleterId);
+        $this->fileDeleter->detachFromItem($stepId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($stepId, $deleterId);
 
         // Re-index parent todo so the removed step disappears from its

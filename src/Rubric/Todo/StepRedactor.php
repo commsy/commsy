@@ -2,9 +2,9 @@
 
 namespace App\Rubric\Todo;
 
+use App\Files\FileDeleter;
 use App\Event\ItemReindexEvent;
 use App\Rubric\RedactionText;
-use App\Rubric\RubricDeletionHelper;
 use App\Rubric\SubEntryRedactor;
 use App\Utils\ItemService;
 use Doctrine\DBAL\ArrayParameterType;
@@ -16,7 +16,7 @@ class StepRedactor implements SubEntryRedactor
     public function __construct(
         private readonly Connection $connection,
         private readonly RedactionText $redactionText,
-        private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly FileDeleter $fileDeleter,
         private readonly ItemService $itemService,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
@@ -58,7 +58,7 @@ class StepRedactor implements SubEntryRedactor
         );
 
         foreach ($stepIds as $stepId) {
-            $this->rubricDeletionHelper->softDeleteFileLinks($stepId, $userId);
+            $this->fileDeleter->detachFromItem($stepId, $userId);
         }
 
         // The todo's search document embeds its steps' text.

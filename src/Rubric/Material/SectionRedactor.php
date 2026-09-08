@@ -2,9 +2,9 @@
 
 namespace App\Rubric\Material;
 
+use App\Files\FileDeleter;
 use App\Event\ItemReindexEvent;
 use App\Rubric\RedactionText;
-use App\Rubric\RubricDeletionHelper;
 use App\Rubric\SubEntryRedactor;
 use App\Utils\ItemService;
 use Doctrine\DBAL\ArrayParameterType;
@@ -16,7 +16,7 @@ class SectionRedactor implements SubEntryRedactor
     public function __construct(
         private readonly Connection $connection,
         private readonly RedactionText $redactionText,
-        private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly FileDeleter $fileDeleter,
         private readonly ItemService $itemService,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
@@ -60,7 +60,7 @@ class SectionRedactor implements SubEntryRedactor
         // The attachments go with the content — a surviving link would keep
         // the file downloadable through the section that no longer shows it.
         foreach ($sectionIds as $sectionId) {
-            $this->rubricDeletionHelper->softDeleteAllFileLinkVersions($sectionId, $userId);
+            $this->fileDeleter->detachFromItemAllVersions($sectionId, $userId);
         }
 
         // The material's search document embeds its sections' text, so the

@@ -13,6 +13,7 @@
 
 namespace App\Rubric\Material;
 
+use App\Files\FileDeleter;
 use App\Event\ItemDeletedEvent;
 use App\Event\ItemReindexEvent;
 use App\Rubric\RubricDeletionHelper;
@@ -37,6 +38,7 @@ class MaterialDeleter implements RubricDeleter
         private readonly Connection $connection,
         private readonly ItemService $itemService,
         private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly FileDeleter $fileDeleter,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
 
@@ -123,7 +125,7 @@ class MaterialDeleter implements RubricDeleter
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteAllFileLinkVersions($itemId, $deleterId);
+        $this->fileDeleter->detachFromItemAllVersions($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
@@ -221,7 +223,7 @@ class MaterialDeleter implements RubricDeleter
 
             $this->rubricDeletionHelper->softDeleteLinks($sectionId, $deleterId);
             $this->rubricDeletionHelper->softDeleteLinkItems($sectionId, $deleterId);
-            $this->rubricDeletionHelper->softDeleteAllFileLinkVersions($sectionId, $deleterId);
+            $this->fileDeleter->detachFromItemAllVersions($sectionId, $deleterId);
             $this->rubricDeletionHelper->softDeleteItemsRow($sectionId, $deleterId);
         }
 

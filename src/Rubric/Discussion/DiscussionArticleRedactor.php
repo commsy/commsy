@@ -2,9 +2,9 @@
 
 namespace App\Rubric\Discussion;
 
+use App\Files\FileDeleter;
 use App\Event\ItemReindexEvent;
 use App\Rubric\RedactionText;
-use App\Rubric\RubricDeletionHelper;
 use App\Rubric\SubEntryRedactor;
 use App\Utils\ItemService;
 use Doctrine\DBAL\ArrayParameterType;
@@ -16,7 +16,7 @@ class DiscussionArticleRedactor implements SubEntryRedactor
     public function __construct(
         private readonly Connection $connection,
         private readonly RedactionText $redactionText,
-        private readonly RubricDeletionHelper $rubricDeletionHelper,
+        private readonly FileDeleter $fileDeleter,
         private readonly ItemService $itemService,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {}
@@ -57,7 +57,7 @@ class DiscussionArticleRedactor implements SubEntryRedactor
         );
 
         foreach ($articleIds as $articleId) {
-            $this->rubricDeletionHelper->softDeleteFileLinks($articleId, $userId);
+            $this->fileDeleter->detachFromItem($articleId, $userId);
         }
 
         // Articles have no index of their own — their text lives in the
