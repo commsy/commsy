@@ -51,7 +51,7 @@ class ItemVoter extends Voter
     final public const OWN = 'ITEM_OWN';
     final public const ENTER = 'ITEM_ENTER';
     final public const USERROOM = 'ITEM_USERROOM';
-    final public const DELETE = 'ITEM_DELETE';
+    final public const ROOM_DELETE = 'ROOM_DELETE';
     final public const EDIT_LOCK = 'ITEM_EDIT_LOCK';
     final public const FILE_LOCK = 'ITEM_FILE_LOCK';
 
@@ -85,7 +85,7 @@ class ItemVoter extends Voter
             self::OWN,
             self::ENTER,
             self::USERROOM,
-            self::DELETE,
+            self::ROOM_DELETE,
             self::EDIT_LOCK,
             self::FILE_LOCK
         ]);
@@ -176,8 +176,8 @@ class ItemVoter extends Voter
                 case self::USERROOM:
                     return $this->hasUserroomItemPrivileges($item, $currentUser);
 
-                case self::DELETE:
-                    return $this->canDelete($item, $currentUser);
+                case self::ROOM_DELETE:
+                    return $this->canDeleteRoom($item, $currentUser);
 
                 case self::EDIT_LOCK:
                     return $this->canEditLock($item, $currentUser);
@@ -344,7 +344,11 @@ class ItemVoter extends Voter
         return $this->legacyBridge->userCanEnter($item, $currentUser);
     }
 
-    private function canDelete(cs_item|PortalProxy $item, $currentUser)
+    /**
+     * Only rooms can be deleted through this attribute. Rubric entries
+     * follow ITEM_EDIT, see {@see \App\Action\Delete\DeleteAction}.
+     */
+    private function canDeleteRoom(cs_item|PortalProxy $item, cs_user_item $currentUser): bool
     {
         $roomItem = $this->roomService->getRoomItem($item->getItemID());
         if (!$roomItem) {

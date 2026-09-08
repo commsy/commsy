@@ -23,11 +23,10 @@ use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Characterization tests for ItemVoter::DELETE. The DELETE attribute is
- * only sensible for rooms — DeleteAction.php uses ITEM_EDIT for rubric
- * items. The voter:
+ * Characterization tests for ItemVoter::ROOM_DELETE, which governs rooms
+ * only — rubric entries are deleted under ITEM_EDIT. The voter:
  *   - returns false for userrooms (those go through a separate
- *     "remove member" flow, not DELETE)
+ *     "remove member" flow, not ROOM_DELETE)
  *   - returns false for already-deleted rooms (idempotency guard)
  *   - returns true for parent moderators (portal moderator OR community
  *     moderator owning a project, OR project moderator owning a grouproom)
@@ -35,7 +34,7 @@ use Zenstruck\Foundry\Attribute\WithStory;
  */
 #[Group('permission-refactor')]
 #[WithStory(AccountStory::class)]
-final class ItemVoterDeleteTest extends KernelTestCase
+final class ItemVoterRoomDeleteTest extends KernelTestCase
 {
     use BootsVoter;
 
@@ -47,7 +46,7 @@ final class ItemVoterDeleteTest extends KernelTestCase
         $this->loginAs($this->portalAccount, $room);
 
         self::assertTrue(
-            $this->authChecker->isGranted(ItemVoter::DELETE, $room->getItemId()),
+            $this->authChecker->isGranted(ItemVoter::ROOM_DELETE, $room->getItemId()),
             'Room moderators can delete their own project room',
         );
     }
@@ -60,7 +59,7 @@ final class ItemVoterDeleteTest extends KernelTestCase
         $this->loginAs($this->portalAccount, $room);
 
         self::assertFalse(
-            $this->authChecker->isGranted(ItemVoter::DELETE, $room->getItemId()),
+            $this->authChecker->isGranted(ItemVoter::ROOM_DELETE, $room->getItemId()),
             'Regular members cannot delete the room they are in',
         );
     }
@@ -75,7 +74,7 @@ final class ItemVoterDeleteTest extends KernelTestCase
         $this->loginAs($this->portalAccount);
 
         self::assertTrue(
-            $this->authChecker->isGranted(ItemVoter::DELETE, $room->getItemId()),
+            $this->authChecker->isGranted(ItemVoter::ROOM_DELETE, $room->getItemId()),
             'Portal moderators are "parent moderators" of every project room and can delete them',
         );
     }
@@ -88,8 +87,8 @@ final class ItemVoterDeleteTest extends KernelTestCase
         $this->loginAs($this->portalAccount, $userRoom);
 
         self::assertFalse(
-            $this->authChecker->isGranted(ItemVoter::DELETE, $userRoom->getItemId()),
-            'Userrooms have a separate lifecycle and cannot be deleted via ITEM_DELETE',
+            $this->authChecker->isGranted(ItemVoter::ROOM_DELETE, $userRoom->getItemId()),
+            'Userrooms have a separate lifecycle and cannot be deleted via ROOM_DELETE',
         );
     }
 
@@ -102,10 +101,10 @@ final class ItemVoterDeleteTest extends KernelTestCase
 
         // The userroom guard normally blocks DELETE; the Account.username='root'
         // short-circuit at voter top-level overrides it (returns true before
-        // canDelete is even called).
+        // canDeleteRoom is even called).
         self::assertTrue(
-            $this->authChecker->isGranted(ItemVoter::DELETE, $userRoom->getItemId()),
-            'Account.username="root" short-circuits ITEM_DELETE to true even for userrooms',
+            $this->authChecker->isGranted(ItemVoter::ROOM_DELETE, $userRoom->getItemId()),
+            'Account.username="root" short-circuits ROOM_DELETE to true even for userrooms',
         );
     }
 
@@ -125,7 +124,7 @@ final class ItemVoterDeleteTest extends KernelTestCase
         $this->evictLegacyCache($room->getItemId());
 
         self::assertFalse(
-            $this->authChecker->isGranted(ItemVoter::DELETE, $room->getItemId()),
+            $this->authChecker->isGranted(ItemVoter::ROOM_DELETE, $room->getItemId()),
             'A room that is already soft-deleted cannot be deleted again',
         );
     }

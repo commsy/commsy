@@ -34,7 +34,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class CancellableLockAndDeleteController.
  */
-#[IsGranted('ITEM_DELETE', subject: 'itemId')]
+#[IsGranted('ROOM_DELETE', subject: 'itemId')]
 class CancellableLockAndDeleteController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/settings/cancellabledelete/{itemId}')]
