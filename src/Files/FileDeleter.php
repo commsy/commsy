@@ -18,6 +18,7 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Parameter;
@@ -33,9 +34,19 @@ class FileDeleter
         $this->legacyEnvironment = $environment->getEnvironment();
     }
 
-    public function softDeleteFileLink(int $itemId, int $versionId, ?int $fileId = null): void
-    {
-        $currentUser = $this->legacyEnvironment->getCurrentUser();
+    /**
+     * @param int      $deleterId Audit stamp, supplied by the caller. A
+     *                            deletion running in a background worker
+     *                            has no current user to fall back on.
+     * @param int|null $fileId    Restricts the stamp to one attachment;
+     *                            null covers every file on the item.
+     */
+    public function softDeleteFileLink(
+        int $itemId,
+        int $versionId,
+        int $deleterId,
+        ?int $fileId = null,
+    ): void {
 
         $repository = $this->entityManager->getRepository(ItemLinkFile::class);
         $qb = $repository->createQueryBuilder('ilf')
@@ -46,7 +57,7 @@ class FileDeleter
             ->andWhere('ilf.versionId = :versionId')
             ->setParameters(new ArrayCollection([
                 new Parameter('deletionDate', new DateTime(), Types::DATETIME_MUTABLE),
-                new Parameter('deleterId', $currentUser->getItemID()),
+                new Parameter('deleterId', $deleterId),
                 new Parameter('itemId', $itemId),
                 new Parameter('versionId', $versionId),
             ]));
@@ -86,6 +97,40 @@ class FileDeleter
     }
 
     /**
+     * Soft-deletes every one of the given files that has no live
+     * `item_link_file` row left, i.e. whose last carrying entry is gone.
+     *
+     * This is what ends a file's life. Stamping the link alone hides the
+     * file but strands it: {@see hardDeleteExpiredFiles()} keys on
+     * `files.deletion_date`, and `cs_file_manager::deleteUnneededFiles()`
+     * counts a stamped link as a link, so neither sweep would ever reach
+     * it again. With the stamp here the file follows the same course as
+     * every other soft-deleted row — swept after the configured retention.
+     *
+     * @param int[] $fileIds
+     */
+    public function softDeleteFilesWithoutLiveLinks(array $fileIds, int $deleterId): void
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $fileIds))));
+        if ($ids === []) {
+            return;
+        }
+
+        $this->entityManager->getConnection()->executeStatement(
+            'UPDATE files f
+                SET f.deletion_date = NOW(), f.deleter_id = :deleterId
+                WHERE f.files_id IN (:fileIds)
+                  AND f.deletion_date IS NULL
+                  AND NOT EXISTS (
+                      SELECT 1 FROM item_link_file i
+                          WHERE i.file_id = f.files_id AND i.deletion_date IS NULL
+                  )',
+            ['deleterId' => $deleterId, 'fileIds' => $ids],
+            ['fileIds' => ArrayParameterType::INTEGER]
+        );
+    }
+
+    /**
      * Physically removes every `files` row whose `deletion_date` is older
      * than `$days`, plus matching `item_link_file` rows and the actual
      * file on disk (via legacy `cs_disc_manager`).
@@ -113,13 +158,13 @@ class FileDeleter
         $connection->executeStatement(
             'DELETE FROM item_link_file WHERE file_id IN (:fileIds)',
             ['fileIds' => $fileIds],
-            ['fileIds' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+            ['fileIds' => ArrayParameterType::INTEGER]
         );
 
         $connection->executeStatement(
             'DELETE FROM files WHERE files_id IN (:fileIds)',
             ['fileIds' => $fileIds],
-            ['fileIds' => \Doctrine\DBAL\ArrayParameterType::INTEGER]
+            ['fileIds' => ArrayParameterType::INTEGER]
         );
 
         // Filesystem cleanup: disc_manager computes the on-disk filename

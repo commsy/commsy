@@ -102,6 +102,14 @@
                 <source>item.file.live_edit</source>
                 <target>Edit live</target>
             </trans-unit>
-         </body>
+             <trans-unit id="item_redacted_title">
+                <source>item.redacted.title</source>
+                <target>Deleted entry</target>
+            </trans-unit>
+            <trans-unit id="item_redacted_description">
+                <source>item.redacted.description</source>
+                <target>This entry was deleted and replaced with a placeholder in order to keep its context to other entries intact.</target>
+            </trans-unit>
+        </body>
     </file>
 </xliff>

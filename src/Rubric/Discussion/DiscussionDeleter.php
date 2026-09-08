@@ -116,7 +116,7 @@ class DiscussionDeleter implements RubricDeleter
 
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
@@ -177,7 +177,7 @@ class DiscussionDeleter implements RubricDeleter
             // thread hierarchy, so they can go even though the row stays.
             $this->rubricDeletionHelper->softDeleteLinks($articleId, $deleterId);
             $this->rubricDeletionHelper->softDeleteLinkItems($articleId, $deleterId);
-            $this->rubricDeletionHelper->softDeleteFileLinks($articleId);
+            $this->rubricDeletionHelper->softDeleteFileLinks($articleId, $deleterId);
         } else {
             $this->connection->executeStatement(
                 'UPDATE discussionarticles
@@ -188,7 +188,7 @@ class DiscussionDeleter implements RubricDeleter
 
             $this->rubricDeletionHelper->softDeleteLinks($articleId, $deleterId);
             $this->rubricDeletionHelper->softDeleteLinkItems($articleId, $deleterId);
-            $this->rubricDeletionHelper->softDeleteFileLinks($articleId);
+            $this->rubricDeletionHelper->softDeleteFileLinks($articleId, $deleterId);
             $this->rubricDeletionHelper->softDeleteItemsRow($articleId, $deleterId);
         }
 

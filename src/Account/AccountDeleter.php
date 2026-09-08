@@ -8,7 +8,6 @@ use App\Message\DeleteAccountMessage;
 use App\Repository\UserRepository;
 use App\Room\PrivateRoomDeleter;
 use App\Room\RoomDeletionOptions;
-use App\Rubric\UserContentDeleter;
 use App\Services\LegacyEnvironment;
 use App\User\UserListBuilder;
 use App\User\UserMembershipDeleter;
@@ -26,7 +25,6 @@ class AccountDeleter
     private readonly cs_environment $legacyEnvironment;
 
     public function __construct(
-        private readonly UserContentDeleter $userContentDeleter,
         private readonly UserListBuilder $userListBuilder,
         private readonly UserService $userService,
         private readonly UserRepository $userRepository,
@@ -90,50 +88,31 @@ class AccountDeleter
         // a different account — would otherwise survive the delete and later
         // get adopted by a new same-username signup.
         //
-        // We sweep them here BEFORE the main loop so eraseUserFootprint runs
-        // on every matching row, regardless of how it ended up in the table.
+        // We collect them BEFORE stamping anything so the membership delete
+        // below runs on every matching row, regardless of how it ended up
+        // in the table.
         $sweepUsers = $this->collectOrphansForAccount($account, $userList);
 
-        // Erase footprint per context, then soft-delete the membership row.
-        foreach ($userList as $user) {
-            /** @var cs_user_item $user */
-            $this->userContentDeleter->eraseUserFootprint(
-                $user->getItemID(),
-                $user->getContextID(),
-                $account,
-            );
-            $this->membershipDeleter->softDeleteMembership(
-                (int) $user->getItemID(),
-                $deleterId
-            );
-        }
+        // The official membership graph plus the orphan delta from the sweep.
+        $membershipItemIds = [
+            ...array_map('intval', $userList->getIDArray()),
+            ...array_map(static fn (User $orphan): int => $orphan->getItemId(), $sweepUsers),
+        ];
 
-        // Same treatment for sweep-only orphans. context_id is reconstructed
-        // from the entity: getRoom() covers every room user (project, community,
-        // group, userroom, privateroom) — Room.item_id IS user.context_id by
-        // mapping. getRoom() is NULL only for portal users (no Room entity
-        // exists with item_id == portal_id), where context_id == portal_id by
-        // construction (see AccountCreatorFacade::persistNewAccount), so the
-        // portal fallback returns the correct value.
-        foreach ($sweepUsers as $orphan) {
-            $contextId = $orphan->getRoom()?->getItemId()
-                ?? $orphan->getPortal()?->getId()
-                ?? 0;
-            $this->userContentDeleter->eraseUserFootprint(
-                $orphan->getItemId(),
-                $contextId,
-                $account,
-            );
+        // Passing the account keeps orphans with account_id IS NULL on its strategy.
+        foreach ($membershipItemIds as $membershipItemId) {
             $this->membershipDeleter->softDeleteMembership(
-                $orphan->getItemId(),
-                $deleterId
+                $membershipItemId,
+                $deleterId,
+                $account
             );
         }
 
         if ($portalUser !== null) {
             $this->membershipDeleter->softDeleteMembership(
                 (int) $portalUser->getItemID(),
-                $deleterId
+                $deleterId,
+                $account
             );
         }
 
@@ -167,7 +146,8 @@ class AccountDeleter
             foreach ($stragglers as $straggler) {
                 $this->membershipDeleter->softDeleteMembership(
                     $straggler->getItemId(),
-                    $deleterId
+                    $deleterId,
+                    $account
                 );
             }
         }

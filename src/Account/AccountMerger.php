@@ -192,9 +192,15 @@ class AccountMerger
 
         // For portal context, the legacy delete cascaded into
         // getOwnRoom()->delete() — already handled by rewritePrivateRoom().
+        //
+        // No content erase: the mergeAccounts() calls above have just moved
+        // every authored row over to $intoRoomUser. Relying on that alone
+        // would make a missed table silently *delete* what the merge failed
+        // to carry over, so the intent is stated here instead.
         $this->membershipDeleter->softDeleteMembership(
             (int) $fromRoomUser->getItemID(),
-            $this->currentDeleterId()
+            $this->currentDeleterId(),
+            eraseContent: false
         );
     }
 

@@ -113,29 +113,64 @@ class RubricDeletionHelper
     }
 
     /**
-     * Soft-deletes `item_link_file` rows attached to the given item.
-     * Applied uniformly across all rubrics (legacy only cleaned these for
-     * Material).
+     * Soft-deletes `item_link_file` rows attached to the given item, then
+     * ends the life of every file that lost its last carrying entry.
+     *
+     * The two steps belong together: stamping only the link would leave
+     * the file stranded — see
+     * {@see \App\Files\FileDeleter::softDeleteFilesWithoutLiveLinks()}.
      */
-    public function softDeleteFileLinks(int $itemId, ?int $versionId = null): void
+    public function softDeleteFileLinks(int $itemId, int $deleterId, ?int $versionId = null): void
     {
-        // versionId 0 = all versions.
-        $this->fileDeleter->softDeleteFileLink($itemId, $versionId ?? 0);
+        $fileIds = $this->findLinkedFileIds([$itemId]);
+
+        // versionId 0 = the unversioned rubrics' only version.
+        $this->fileDeleter->softDeleteFileLink($itemId, $versionId ?? 0, $deleterId);
+
+        $this->fileDeleter->softDeleteFilesWithoutLiveLinks($fileIds, $deleterId);
     }
 
     /**
      * Soft-deletes every version of `item_link_file` rows for the given
-     * item. For versioned rubrics (Material, Section) — the FileDeleter
+     * item, then ends the life of the files that lost their last carrying
+     * entry. For versioned rubrics (Material, Section) — the FileDeleter
      * variant filters on exact version_id.
      */
     public function softDeleteAllFileLinkVersions(int $itemId, int $deleterId): void
     {
+        $fileIds = $this->findLinkedFileIds([$itemId]);
+
         $this->connection->executeStatement(
             'UPDATE item_link_file
                 SET deletion_date = NOW(), deleter_id = :deleterId
                 WHERE item_iid = :itemId',
             ['deleterId' => $deleterId, 'itemId' => $itemId]
         );
+
+        $this->fileDeleter->softDeleteFilesWithoutLiveLinks($fileIds, $deleterId);
+    }
+
+    /**
+     * Every file id linked to any of the given items, regardless of the
+     * link's own deletion state. Read BEFORE the links are stamped so the
+     * orphan sweep still knows which files to look at.
+     *
+     * @param int[] $itemIds
+     *
+     * @return int[]
+     */
+    public function findLinkedFileIds(array $itemIds): array
+    {
+        $ids = array_values(array_unique(array_map('intval', $itemIds)));
+        if ($ids === []) {
+            return [];
+        }
+
+        return array_map('intval', $this->connection->fetchFirstColumn(
+            'SELECT DISTINCT file_id FROM item_link_file WHERE item_iid IN (:ids)',
+            ['ids' => $ids],
+            ['ids' => ArrayParameterType::INTEGER]
+        ));
     }
 
     /**
@@ -195,6 +230,8 @@ class RubricDeletionHelper
             ['ids' => ArrayParameterType::INTEGER]
         );
 
+        $fileIds = $this->findLinkedFileIds($ids);
+
         if ($allFileLinkVersions) {
             // Versioned rubrics: match regardless of version_id.
             $this->connection->executeStatement(
@@ -206,9 +243,11 @@ class RubricDeletionHelper
             );
         } else {
             foreach ($ids as $id) {
-                $this->fileDeleter->softDeleteFileLink($id, 0);
+                $this->fileDeleter->softDeleteFileLink($id, 0, $deleterId);
             }
         }
+
+        $this->fileDeleter->softDeleteFilesWithoutLiveLinks($fileIds, $deleterId);
 
         $itemsRowIds = array_values(array_unique(array_merge($ids, $linkItemIds)));
         $this->connection->executeStatement(

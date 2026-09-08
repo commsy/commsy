@@ -102,6 +102,14 @@
                 <source>item.file.live_edit</source>
                 <target>Live bearbeiten</target>
             </trans-unit>
+            <trans-unit id="item_redacted_title">
+                <source>item.redacted.title</source>
+                <target>Gelöschter Eintrag</target>
+            </trans-unit>
+            <trans-unit id="item_redacted_description">
+                <source>item.redacted.description</source>
+                <target>Dieser Eintrag wurde gelöscht und durch einen Platzhalter ersetzt, um den Zusammenhang zu anderen Einträgen zu wahren.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

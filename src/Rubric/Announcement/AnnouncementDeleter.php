@@ -68,7 +68,7 @@ class AnnouncementDeleter implements RubricDeleter
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteAnnotations($itemId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 

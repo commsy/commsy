@@ -5,12 +5,17 @@ namespace App\Rubric;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
- * Handles sub-entries (sections, discussion articles, steps, annotations) during
- * user deletion. Sub-entries are never deleted — only their content is redacted
- * (CASCADE) or their references nullified (KEEP/CASCADE).
+ * Handles sub-entries (sections, discussion articles, steps) during user
+ * deletion. Sub-entries are never deleted — only their content is redacted
+ * (CASCADE) or their references nullified (KEEP/CASCADE) — because deleting
+ * them would tear the surrounding entry apart: a discussion would lose its
+ * thread, a material its numbering.
  *
  * This is distinct from RubricDeleter which handles main entries (materials,
- * discussions, todos, etc.) that can be fully deleted.
+ * discussions, todos, etc.) that can be fully deleted. Annotations are NOT
+ * sub-entries in this sense: they hang off a parent but carry no structure
+ * anything else depends on, so {@see \App\Rubric\Annotation\AnnotationDeleter}
+ * deletes them outright.
  */
 #[AutoconfigureTag('app.rubric.sub_entry_redactor')]
 interface SubEntryRedactor

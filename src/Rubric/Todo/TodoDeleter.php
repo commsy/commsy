@@ -113,7 +113,7 @@ class TodoDeleter implements RubricDeleter
         // Todos don't carry annotations (same as discussions).
         $this->rubricDeletionHelper->softDeleteLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($itemId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteFileLinks($itemId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($itemId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
@@ -144,7 +144,7 @@ class TodoDeleter implements RubricDeleter
 
         $this->rubricDeletionHelper->softDeleteLinks($stepId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinkItems($stepId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteFileLinks($stepId);
+        $this->rubricDeletionHelper->softDeleteFileLinks($stepId, $deleterId);
         $this->rubricDeletionHelper->softDeleteItemsRow($stepId, $deleterId);
 
         // Re-index parent todo so the removed step disappears from its

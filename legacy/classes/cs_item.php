@@ -1810,7 +1810,11 @@ class cs_item
             $link_manager = $this->_environment->getLinkManager();
             $file_id_array = $this->getFileIDArray();
             if (empty($file_id_array)) {
-                $fileDeleter->softDeleteFileLink($this->getItemID(), $this->getVersionID());
+                $fileDeleter->softDeleteFileLink(
+                    $this->getItemID(),
+                    $this->getVersionID(),
+                    (int) $this->_environment->getCurrentUserID()
+                );
             } else {
                 $linkedIds = $itemLinkFileRepository->getLinkedFileIds($this->getItemID(), $this->getVersionID());
                 $keep_links = [];
@@ -1821,6 +1825,7 @@ class cs_item
                         $fileDeleter->softDeleteFileLink(
                             $this->getItemID(),
                             $this->getVersionID(),
+                            (int) $this->_environment->getCurrentUserID(),
                             $linkedId
                         );
                     }
