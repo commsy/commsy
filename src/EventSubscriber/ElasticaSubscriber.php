@@ -445,6 +445,12 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * Writes into `sections`, the field the material mapping declares.
+     * This wrote `steps` — the field name of {@see addSteps()}, which it
+     * was copied from — so the text landed in a dynamically created field
+     * with the standard analyzer instead. See #5455.
+     */
     public function addSections($event): void
     {
         $materialManager = $this->legacyEnvironment->getMaterialManager();
@@ -468,7 +474,7 @@ class ElasticaSubscriber implements EventSubscriberInterface
                 }
 
                 if (!empty($sectionContents)) {
-                    $event->getDocument()->set('steps', $sectionContents);
+                    $event->getDocument()->set('sections', $sectionContents);
                 }
             }
         }
