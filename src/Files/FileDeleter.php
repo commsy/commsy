@@ -13,15 +13,13 @@
 
 namespace App\Files;
 
+use App\Entity\Files;
 use App\Entity\ItemLinkFile;
 use App\Services\LegacyEnvironment;
 use cs_environment;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Types\Types;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\Parameter;
 
 class FileDeleter
 {
@@ -47,23 +45,19 @@ class FileDeleter
         int $deleterId,
         ?int $fileId = null,
     ): void {
-
-        $repository = $this->entityManager->getRepository(ItemLinkFile::class);
-        $qb = $repository->createQueryBuilder('ilf')
-            ->update()
-            ->set('ilf.deletionDate', ':deletionDate')
+        $qb = $this->entityManager->createQueryBuilder()
+            ->update(ItemLinkFile::class, 'ilf')
+            ->set('ilf.deletionDate', ':now')
             ->set('ilf.deleterId', ':deleterId')
-            ->andWhere('ilf.itemId = :itemId')
+            ->where('ilf.itemId = :itemId')
             ->andWhere('ilf.versionId = :versionId')
-            ->setParameters(new ArrayCollection([
-                new Parameter('deletionDate', new DateTime(), Types::DATETIME_MUTABLE),
-                new Parameter('deleterId', $deleterId),
-                new Parameter('itemId', $itemId),
-                new Parameter('versionId', $versionId),
-            ]));
+            ->setParameter('now', new DateTime())
+            ->setParameter('deleterId', $deleterId)
+            ->setParameter('itemId', $itemId)
+            ->setParameter('versionId', $versionId);
 
-        if ($fileId) {
-            $qb->andWhere('ilf.fileId = :fileId')
+        if ($fileId !== null) {
+            $qb->andWhere('ilf.file = :fileId')
                 ->setParameter('fileId', $fileId);
         }
 
@@ -79,21 +73,27 @@ class FileDeleter
      */
     public function softDeleteFile(int $fileId, int $deleterId): void
     {
-        $connection = $this->entityManager->getConnection();
+        $now = new DateTime();
 
-        $connection->executeStatement(
-            'UPDATE files
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE files_id = :fileId',
-            ['deleterId' => $deleterId, 'fileId' => $fileId]
-        );
+        $this->entityManager->createQueryBuilder()
+            ->update(Files::class, 'f')
+            ->set('f.deletionDate', ':now')
+            ->set('f.deleterId', ':deleterId')
+            ->where('f.filesId = :fileId')
+            ->setParameter('now', $now)
+            ->setParameter('deleterId', $deleterId)
+            ->setParameter('fileId', $fileId)
+            ->getQuery()->execute();
 
-        $connection->executeStatement(
-            'UPDATE item_link_file
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE file_id = :fileId',
-            ['deleterId' => $deleterId, 'fileId' => $fileId]
-        );
+        $this->entityManager->createQueryBuilder()
+            ->update(ItemLinkFile::class, 'ilf')
+            ->set('ilf.deletionDate', ':now')
+            ->set('ilf.deleterId', ':deleterId')
+            ->where('ilf.file = :fileId')
+            ->setParameter('now', $now)
+            ->setParameter('deleterId', $deleterId)
+            ->setParameter('fileId', $fileId)
+            ->getQuery()->execute();
     }
 
     /**
@@ -125,12 +125,15 @@ class FileDeleter
     {
         $fileIds = $this->findLinkedFileIds([$itemId]);
 
-        $this->entityManager->getConnection()->executeStatement(
-            'UPDATE item_link_file
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE item_iid = :itemId',
-            ['deleterId' => $deleterId, 'itemId' => $itemId]
-        );
+        $this->entityManager->createQueryBuilder()
+            ->update(ItemLinkFile::class, 'ilf')
+            ->set('ilf.deletionDate', ':now')
+            ->set('ilf.deleterId', ':deleterId')
+            ->where('ilf.itemId = :itemId')
+            ->setParameter('now', new DateTime())
+            ->setParameter('deleterId', $deleterId)
+            ->setParameter('itemId', $itemId)
+            ->getQuery()->execute();
 
         $this->softDeleteFilesWithoutLiveLinks($fileIds, $deleterId);
     }
@@ -151,11 +154,14 @@ class FileDeleter
             return [];
         }
 
-        return array_map('intval', $this->entityManager->getConnection()->fetchFirstColumn(
-            'SELECT DISTINCT file_id FROM item_link_file WHERE item_iid IN (:ids)',
-            ['ids' => $ids],
-            ['ids' => ArrayParameterType::INTEGER]
-        ));
+        $rows = $this->entityManager->createQueryBuilder()
+            ->select('DISTINCT IDENTITY(ilf.file) AS fileId')
+            ->from(ItemLinkFile::class, 'ilf')
+            ->where('ilf.itemId IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()->getScalarResult();
+
+        return array_map(static fn (array $row): int => (int) $row['fileId'], $rows);
     }
 
     /**
@@ -178,18 +184,17 @@ class FileDeleter
             return;
         }
 
-        $this->entityManager->getConnection()->executeStatement(
-            'UPDATE files f
-                SET f.deletion_date = NOW(), f.deleter_id = :deleterId
-                WHERE f.files_id IN (:fileIds)
-                  AND f.deletion_date IS NULL
-                  AND NOT EXISTS (
-                      SELECT 1 FROM item_link_file i
-                          WHERE i.file_id = f.files_id AND i.deletion_date IS NULL
-                  )',
-            ['deleterId' => $deleterId, 'fileIds' => $ids],
-            ['fileIds' => ArrayParameterType::INTEGER]
-        );
+        $this->entityManager->createQueryBuilder()
+            ->update(Files::class, 'f')
+            ->set('f.deletionDate', ':now')
+            ->set('f.deleterId', ':deleterId')
+            ->where('f.filesId IN (:fileIds)')
+            ->andWhere('f.deletionDate IS NULL')
+            ->andWhere($this->noLinkExists(aliveOnly: true))
+            ->setParameter('now', new DateTime())
+            ->setParameter('deleterId', $deleterId)
+            ->setParameter('fileIds', $ids)
+            ->getQuery()->execute();
     }
 
     /**
@@ -210,16 +215,15 @@ class FileDeleter
      */
     public function softDeleteUnlinkedFiles(int $minAgeHours = 24): int
     {
-        return (int) $this->entityManager->getConnection()->executeStatement(
-            'UPDATE files f
-                SET f.deletion_date = NOW()
-                WHERE f.deletion_date IS NULL
-                  AND f.creation_date < DATE_SUB(NOW(), INTERVAL :hours HOUR)
-                  AND NOT EXISTS (
-                      SELECT 1 FROM item_link_file i WHERE i.file_id = f.files_id
-                  )',
-            ['hours' => $minAgeHours]
-        );
+        return (int) $this->entityManager->createQueryBuilder()
+            ->update(Files::class, 'f')
+            ->set('f.deletionDate', ':now')
+            ->where('f.deletionDate IS NULL')
+            ->andWhere('f.creationDate < :cutoff')
+            ->andWhere($this->noLinkExists(aliveOnly: false))
+            ->setParameter('now', new DateTime())
+            ->setParameter('cutoff', new DateTimeImmutable('-' . $minAgeHours . ' hours'))
+            ->getQuery()->execute();
     }
 
     /**
@@ -229,46 +233,67 @@ class FileDeleter
      */
     public function hardDeleteExpiredFiles(int $days): void
     {
-        $connection = $this->entityManager->getConnection();
+        /** @var list<array{filesId: int, portalId: int|string|null, contextId: int, filename: string}> $expiredFiles */
+        $expiredFiles = $this->entityManager->createQueryBuilder()
+            ->select('f.filesId, IDENTITY(f.portal) AS portalId, f.contextId, f.filename')
+            ->from(Files::class, 'f')
+            ->where('f.deletionDate IS NOT NULL')
+            ->andWhere('f.deletionDate < :cutoff')
+            ->setParameter('cutoff', new DateTimeImmutable('-' . $days . ' days'))
+            ->getQuery()->getScalarResult();
 
-        /** @var list<array{files_id: int|string, portal_id: int|string, context_id: int|string, filename: string}> $expiredFiles */
-        $expiredFiles = $connection->fetchAllAssociative(
-            'SELECT files_id, portal_id, context_id, filename
-                FROM files
-                WHERE deletion_date IS NOT NULL
-                  AND deletion_date < DATE_SUB(CURRENT_DATE(), INTERVAL :days DAY)',
-            ['days' => $days]
-        );
-        if (empty($expiredFiles)) {
+        if ($expiredFiles === []) {
             return;
         }
 
-        $fileIds = array_map(static fn (array $row): int => (int) $row['files_id'], $expiredFiles);
+        $fileIds = array_map(static fn (array $row): int => (int) $row['filesId'], $expiredFiles);
 
         // FK constraint: `item_link_file` rows point at `files` and must
         // go first.
-        $connection->executeStatement(
-            'DELETE FROM item_link_file WHERE file_id IN (:fileIds)',
-            ['fileIds' => $fileIds],
-            ['fileIds' => ArrayParameterType::INTEGER]
-        );
+        $this->entityManager->createQueryBuilder()
+            ->delete(ItemLinkFile::class, 'ilf')
+            ->where('ilf.file IN (:fileIds)')
+            ->setParameter('fileIds', $fileIds)
+            ->getQuery()->execute();
 
-        $connection->executeStatement(
-            'DELETE FROM files WHERE files_id IN (:fileIds)',
-            ['fileIds' => $fileIds],
-            ['fileIds' => ArrayParameterType::INTEGER]
-        );
+        $this->entityManager->createQueryBuilder()
+            ->delete(Files::class, 'f')
+            ->where('f.filesId IN (:fileIds)')
+            ->setParameter('fileIds', $fileIds)
+            ->getQuery()->execute();
 
         // Filesystem cleanup: disc_manager computes the on-disk filename
         // from portal/context/files_id/filename, so feed one row at a time.
         $discManager = $this->legacyEnvironment->getDiscManager();
         foreach ($expiredFiles as $row) {
-            $filename = 'cid' . $row['context_id'] . '_' . $row['files_id'] . '_' . $row['filename'];
-            $discManager->setPortalID((int) $row['portal_id']);
-            $discManager->setContextID((int) $row['context_id']);
+            $filename = 'cid' . $row['contextId'] . '_' . $row['filesId'] . '_' . $row['filename'];
+            $discManager->setPortalID((int) $row['portalId']);
+            $discManager->setContextID((int) $row['contextId']);
             if ($discManager->existsFile($filename)) {
                 $discManager->unlinkFile($filename);
             }
         }
+    }
+
+    /**
+     * `NOT EXISTS` on the link table, correlated to the `files` alias `f`.
+     *
+     * @param bool $aliveOnly Whether a link that merely carries a deletion
+     *                        stamp still counts as a link
+     */
+    private function noLinkExists(bool $aliveOnly): string
+    {
+        $expr = $this->entityManager->getExpressionBuilder();
+
+        $subQuery = $this->entityManager->createQueryBuilder()
+            ->select('i.itemId')
+            ->from(ItemLinkFile::class, 'i')
+            ->where('IDENTITY(i.file) = f.filesId');
+
+        if ($aliveOnly) {
+            $subQuery->andWhere('i.deletionDate IS NULL');
+        }
+
+        return (string) $expr->not($expr->exists($subQuery->getDQL()));
     }
 }

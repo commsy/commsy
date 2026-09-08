@@ -91,6 +91,48 @@ final class FileDeleterTest extends KernelTestCase
     }
 
     #[WithStory(RoomWithMemberStory::class)]
+    public function testDetachEndsAFileWhoseLastCarrierIsGone(): void
+    {
+        $file = $this->createFile();
+        $this->createItemLinkFile($file, itemId: 1001, versionId: 0);
+
+        $this->fileDeleter->detachFromItem(1001, $this->deleterId);
+
+        self::assertNotNull($this->fileRow($file)['deletion_date']);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testDetachSparesAFileAnotherEntryStillCarries(): void
+    {
+        $file = $this->createFile();
+        $this->createItemLinkFile($file, itemId: 1001, versionId: 0);
+        $this->createItemLinkFile($file, itemId: 1002, versionId: 0);
+
+        $this->fileDeleter->detachFromItem(1001, $this->deleterId);
+
+        $this->assertItemLinkFileSoftDeleted($file, itemId: 1001, versionId: 0);
+        $this->assertItemLinkFileAlive($file, itemId: 1002, versionId: 0);
+        self::assertNull(
+            $this->fileRow($file)['deletion_date'],
+            'The file is still reachable through the other entry',
+        );
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testSoftDeleteFileLinkCanStampASingleAttachment(): void
+    {
+        $target = $this->createFile();
+        $sibling = $this->createFile();
+        $this->createItemLinkFile($target, itemId: 1001, versionId: 1);
+        $this->createItemLinkFile($sibling, itemId: 1001, versionId: 1);
+
+        $this->fileDeleter->softDeleteFileLink(1001, 1, $this->deleterId, $target);
+
+        $this->assertItemLinkFileSoftDeleted($target, itemId: 1001, versionId: 1);
+        $this->assertItemLinkFileAlive($sibling, itemId: 1001, versionId: 1);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
     public function testSweepStampsAnUploadThatNeverGotLinked(): void
     {
         $orphan = $this->createFile(new DateTime('-2 days'));
