@@ -1,17 +1,18 @@
-import { Calendar } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { EventApi } from "@fullcalendar/core";
-import deLocale from '@fullcalendar/core/locales/de';
-import enLocale from '@fullcalendar/core/locales/en-gb';
+import { Calendar } from 'fullcalendar';
+import dayGridPlugin from 'fullcalendar/daygrid';
+import timeGridPlugin from 'fullcalendar/timegrid';
+import interactionPlugin from 'fullcalendar/interaction';
+import themePlugin from 'fullcalendar/themes/forma';
+import { EventApi } from "fullcalendar";
+import deLocale from 'fullcalendar/locales/de';
+import enLocale from 'fullcalendar/locales/en-gb';
 
 export function setup(id: string, editable: boolean = true): void {
   document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById(id);
     if (calendarEl) {
       let calendar = new Calendar(calendarEl, {
-        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
+        plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin, themePlugin ],
         businessHours: {
           start: '8:00',
           end: '16:00',
@@ -20,10 +21,33 @@ export function setup(id: string, editable: boolean = true): void {
         initialView: calendarEl.dataset.defaultView ?? 'dayGridMonth',
         editable: editable,
         events: calendarEl.dataset.eventsUrl,
+        // The theme marks an event in its own colour: a bar for events drawn as
+        // a box, a dot for the entries of the month view. Both are invisible on
+        // a light calendar, and a box needs an outline to set it off from the
+        // one it overlaps. Styled in custom/full-calendar.less.
+        blockEventClass: 'cs-fc-block-event',
+        eventClass: (info) => info.event.extendedProps.lightColor ? 'cs-event-light-color' : '',
+        listItemEventBeforeClass: (info) => info.event.extendedProps.lightColor ? 'cs-event-light-dot' : '',
+        // An event's title is stuck to the top of its box by default, and
+        // WebKit paints such an element above boxes of a higher stacking level:
+        // the title of an event lying behind then shows through the one in
+        // front, which is the overlap the users reported. Only the time grid
+        // stacks events that way, so the row layouts keep their sticky titles.
+        columnEventTitleSticky: false,
         headerToolbar: {
           left: 'dayGridMonth,timeGridWeek,timeGridDay',
           center: 'title',
           right: 'prevYear,prev,today,next,nextYear'
+        },
+        // Buttons are rendered with generated class names, so they get stable
+        // hooks: one for sizing them in custom/full-calendar.less, and one per
+        // navigation button for setupTooltips() below.
+        buttonClass: 'cs-fc-button',
+        buttons: {
+          prevYear: { class: 'cs-fc-prev-year' },
+          prev: { class: 'cs-fc-prev' },
+          next: { class: 'cs-fc-next' },
+          nextYear: { class: 'cs-fc-next-year' }
         },
         locales: [deLocale, enLocale],
         locale: calendarEl.dataset.locale === 'de' ? 'de' : 'en-gb',
@@ -36,6 +60,13 @@ export function setup(id: string, editable: boolean = true): void {
               omitZeroMinute: false,
               meridiem: false
             }
+          },
+          // Without this every view would be titled by its month alone
+          timeGridWeek: {
+            titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+          },
+          timeGridDay: {
+            titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
           }
         },
         dateClick(info) {
@@ -79,22 +110,22 @@ function setupTooltips(calendarEl: HTMLElement): void {
   const translations = JSON.parse(calendarEl.dataset.translations);
 
   // @ts-ignore
-  $('.fc-prevYear-button').tooltipster({
+  $('.cs-fc-prev-year').tooltipster({
     content: translations.prevYear,
   });
 
   // @ts-ignore
-  $('.fc-prev-button').tooltipster({
+  $('.cs-fc-prev').tooltipster({
     content: translations.prev,
   });
 
   // @ts-ignore
-  $('.fc-next-button').tooltipster({
+  $('.cs-fc-next').tooltipster({
     content: translations.next,
   });
 
   // @ts-ignore
-  $('.fc-nextYear-button').tooltipster({
+  $('.cs-fc-next-year').tooltipster({
     content: translations.nextYear,
   });
 }

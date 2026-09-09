@@ -1,19 +1,50 @@
-.fc .fc-button {
-    border: none;
-    margin-left: 0;
+// FullCalendar 7 renders with generated class names and no longer marks its
+// root element with ".fc", so its appearance can only be reached through the
+// custom properties of the theme, scoped to our own containers. The theme
+// expects two darker shades of its accent colour for hover and pressed states.
+@fc-primary-over: darken(@button-primary-background, 8%);
+@fc-primary-down: darken(@button-primary-background, 16%);
+
+#calendar,
+#calendarDashboard {
+    --fc-forma-primary: ~"@{button-primary-background}";
+    --fc-forma-primary-over: ~"@{fc-primary-over}";
+    --fc-forma-primary-down: ~"@{fc-primary-down}";
 }
 
-.fc .fc-button-primary,
-.fc .fc-button-primary:hover {
-    background-color: @button-primary-background;
+// The theme sizes its buttons on a 16px scale of its own; these are the metrics
+// the calendar had before. The class is assigned by buttonClass in
+// assets/uikit2/js/commsy/fullcalendar.ts.
+#calendar .cs-fc-button,
+#calendarDashboard .cs-fc-button {
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 0.4em 0.65em;
 }
 
-.fc .fc-button-primary:not(:disabled):active,
-.fc .fc-button-primary:not(:disabled).fc-button-active {
-    background-color: @button-link-hover-color;
+// The paging icons ship as 20px graphics, which would make those buttons
+// taller than the ones holding text.
+#calendar .cs-fc-button svg,
+#calendarDashboard .cs-fc-button svg {
+    width: 18px;
+    height: 18px;
 }
 
-.fc .fc-button-primary:disabled {
-    background-color: @button-link-hover-color;
-    opacity: unset;
+// An event drawn as a box carries a bar on its left only, so overlapping boxes
+// do not set off from each other. A thin outline on the remaining sides gives
+// them an edge. The entries of the month view are not boxes and keep their dot.
+#calendar .cs-fc-block-event,
+#calendarDashboard .cs-fc-block-event {
+    border-top: 1px solid var(--fc-event-color);
+    border-right: 1px solid var(--fc-event-color);
+    border-bottom: 1px solid var(--fc-event-color);
+}
+
+// On a light calendar both markers carry a colour of their own that cannot be
+// seen, so bar, outline and dot are drawn in grey instead.
+#calendar .cs-event-light-color,
+#calendarDashboard .cs-event-light-color,
+#calendar .cs-event-light-dot,
+#calendarDashboard .cs-event-light-dot {
+    border-color: #888888;
 }

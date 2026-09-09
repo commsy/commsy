@@ -7,6 +7,12 @@ import 'jstree/dist/themes/default/style.css';
 import 'nprogress/nprogress.css';
 import 'tooltipster/dist/css/tooltipster.bundle.css';
 
+// FullCalendar 7 no longer injects its stylesheet at runtime: the skeleton plus
+// a theme and one of its palettes have to be imported.
+import 'fullcalendar/skeleton.css';
+import 'fullcalendar/themes/forma/theme.css';
+import 'fullcalendar/themes/forma/palettes/blue.css';
+
 // jQuery plugins and standalone libraries
 import 'jstree/dist/jstree.js';
 import 'expose-loader?exposes=NProgress!nprogress/nprogress.js';

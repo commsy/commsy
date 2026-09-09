@@ -535,8 +535,8 @@ class DateController extends BaseController
             $participantsDisplay = !empty($participantsNameArray) ? implode(', ', $participantsNameArray) : '';
 
             $color = $date->getCalendar()->getColor();
-            $textColor = $date->getCalendar()->hasLightColor() ? '#444444' : '#ffffff';
-            $borderColor = $date->getCalendar()->hasLightColor() ? '#888888' : $date->getCalendar()->getColor();
+            $hasLightColor = $date->getCalendar()->hasLightColor();
+            $contrastColor = $hasLightColor ? '#444444' : '#ffffff';
 
             $recurringDescription = '';
             if ('' != $date->getRecurrencePattern()) {
@@ -613,8 +613,8 @@ class DateController extends BaseController
                 'contextId' => $date->getContextID(),
                 'contextTitle' => '',
                 'recurringDescription' => $recurringDescription,
-                'textColor' => $textColor,
-                'borderColor' => $borderColor,
+                'contrastColor' => $contrastColor,
+                'lightColor' => $hasLightColor,
             ];
         }
 
@@ -680,16 +680,8 @@ class DateController extends BaseController
             }
 
             $color = $date->getCalendar()->getColor();
-
-            $textColor = '#ffffff';
-            if ($date->getCalendar()->hasLightColor()) {
-                $textColor = '#444444';
-            }
-
-            $borderColor = $date->getCalendar()->getColor();
-            if ($date->getCalendar()->hasLightColor()) {
-                $borderColor = '#888888';
-            }
+            $hasLightColor = $date->getCalendar()->hasLightColor();
+            $contrastColor = $hasLightColor ? '#444444' : '#ffffff';
 
             $recurringDescription = '';
             if ('' != $date->getRecurrencePattern()) {
@@ -761,8 +753,8 @@ class DateController extends BaseController
                 'contextId' => $context->getItemId(),
                 'contextTitle' => $context->getTitle(),
                 'recurringDescription' => $recurringDescription,
-                'textColor' => $textColor,
-                'borderColor' => $borderColor,
+                'contrastColor' => $contrastColor,
+                'lightColor' => $hasLightColor,
             ];
         }
 
