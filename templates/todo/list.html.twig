@@ -62,7 +62,7 @@
 
                 <li>
                     <a href="{{ path('app_todo_printlist', {'roomId': roomId}) }}" target="_blank" id="print">
-                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                        <i class="uk-icon-small uk-icon-print uk-icon-justify"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
 
@@ -75,11 +75,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </span>
                     {% endif %}
                 </li>
@@ -93,11 +93,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -111,11 +111,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap"></i> {{ 'categorize'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap"></i> {{ 'categorize'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -129,11 +129,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag"></i> {{ 'hashtag'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag"></i> {{ 'hashtag'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -147,11 +147,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on uk-visible-large"></i> {{ 'Activate'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on"></i> {{ 'Activate'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on uk-visible-large"></i> {{ 'Activate'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-on"></i> {{ 'Activate'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -165,11 +165,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off uk-visible-large"></i> {{ 'Deactivate'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off"></i> {{ 'Deactivate'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off uk-visible-large"></i> {{ 'Deactivate'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-toggle-off"></i> {{ 'Deactivate'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -182,7 +182,7 @@
                         'mode': 'selection',
                         'noSelectionMessage': 'no entry selected'|trans({},'item')
                     }|json_encode|e('html_attr') }}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                        <i class="uk-icon-justify uk-icon-small uk-icon-save"></i> {{ 'save'|trans({},'rubric')|capitalize }}
                     </a>
                 </li>
 
@@ -200,11 +200,11 @@
                             'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
                             'returnUrl': path('app_todo_list', {'roomId': roomId})
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </span>
                     {% endif %}
                 </li>
@@ -221,11 +221,11 @@
                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
                             'status': 'pending'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpending'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o todo"></i> {{ 'markpending'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large todo"></i> {{ 'markpending'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o todo"></i> {{ 'markpending'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -242,11 +242,11 @@
                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
                             'status': 'inprogress'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o inProgress"></i> {{ 'markinprogress'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -263,11 +263,11 @@
                             'returnUrl': path('app_todo_list', {'roomId': roomId}),
                             'status': 'done'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdone'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o done"></i> {{ 'markdone'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large done"></i> {{ 'markdone'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o done"></i> {{ 'markdone'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -284,11 +284,11 @@
                                 'returnUrl': path('app_todo_list', {'roomId': roomId}),
                                 'status': status
                             }|json_encode|e('html_attr') }}">
-                                <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large"></i> {{ 'marktodostatus'|trans({'%status%': status}, 'rubric') }}
+                                <i class="uk-icon-justify uk-icon-small uk-icon-circle"></i> {{ 'marktodostatus'|trans({'%status%': status}, 'rubric') }}
                             </a>
                         {% else %}
                             <span class="uk-text-muted">
-                                <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large"></i> {{ 'marktodostatus'|trans({'%status%': status}, 'rubric') }}
+                                <i class="uk-icon-justify uk-icon-small uk-icon-circle"></i> {{ 'marktodostatus'|trans({'%status%': status}, 'rubric') }}
                             </span>
                         {% endif %}
                     </li>

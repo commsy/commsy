@@ -34,11 +34,11 @@
                                     <li>
                                         {% if is_granted('ITEM_NEW') %}
                                             <a href="{{ path('app_material_create', {'roomId': roomId}) }}" id="newEntry">
-                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new'|trans({}) }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new'|trans({}) }}
                                                 </span>
                                         {% endif %}
                                     </li>
@@ -46,7 +46,7 @@
                                     {# print #}
                                     <li>
                                         <a href="{{ path('app_material_print', {'roomId': roomId, 'itemId': material.itemId}) }}" target="_blank" id="print">
-                                            <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                            <i class="uk-icon-small uk-icon-print uk-icon-justify"></i> {{ 'print'|trans({})|capitalize }}
                                         </a>
                                     </li>
 
@@ -59,7 +59,7 @@
                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                             'mode': 'click',
                                         }|json_encode|e('html_attr') }}">
-                                            <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                            <i class="uk-icon-small uk-icon-save uk-icon-justify"></i> {{ 'save'|trans({})|capitalize }}
                                         </a>
                                     </li>
 
@@ -75,11 +75,11 @@
                                                     'mode': 'click',
                                                     'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
                                                 }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                    <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                                 </a>
                                             {% else %}
                                                 <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                                     </span>
                                             {% endif %}
                                         </li>
@@ -96,11 +96,11 @@
                                                     'mode': 'click',
                                                     'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
                                                 }|json_encode|e('html_attr') }}">
-                                                    <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                    <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
                                                 </a>
                                             {% else %}
                                                 <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                        <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
                                                     </span>
                                             {% endif %}
                                         </li>
@@ -117,11 +117,11 @@
                                                 'mode': 'click',
                                                 'successMessage': '<i class="uk-icon-medium uk-icon-bookmark-o"></i>' ~ 'Entry marked|%count% entries marked'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+                                                    <i class="uk-icon-small uk-icon-bookmark-o uk-icon-justify"></i> {{ 'add to marked'|trans({}, 'rubric') }}
                                                 </span>
                                         {% endif %}
                                     </li>
@@ -130,11 +130,11 @@
                                     <li>
                                         {% if user.isUser %}
                                             <a href="{{ path('app_item_send', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify"></i> {{ 'send email'|trans({},'user') }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                                    <i class="uk-icon-small uk-icon-send-o uk-icon-justify"></i> {{ 'send email'|trans({},'user') }}
                                                 </span>
                                         {% endif %}
                                     </li>
@@ -155,11 +155,11 @@
                                                 'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
                                                 'returnUrl': path('app_material_list', {'roomId': roomId})
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify"></i> {{ 'trash'|trans({})|capitalize }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </span>
                                         {% endif %}
                                     </li>
@@ -167,7 +167,7 @@
                                     {# workflow #}
                                     {% if workflowRead or workflowUnread %}
                                         {# separator #}
-                                        <li>&nbsp;</li>
+                                        <li class="uk-nav-divider"></li>
                                     {% endif %}
 
                                     <li class="cs-workflow-action{% if not workflowRead %} uk-hidden{% endif %}">
@@ -180,7 +180,7 @@
                                             'successMessage': '<i class=\'uk-icon-medium uk-icon-eye-slash\'></i>' ~ 'marked as read'|trans({}, 'material'),
                                             'read': true
                                         }|json_encode|e('html_attr') }}">
-                                            <i class="uk-icon-small uk-icon-eye uk-icon-justify uk-visible-large"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
+                                            <i class="uk-icon-small uk-icon-eye uk-icon-justify"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
                                         </a>
                                     </li>
 
@@ -194,35 +194,35 @@
                                             'successMessage': '<i class=\'uk-icon-medium uk-icon-eye-slash\'></i>' ~ 'marked as not read'|trans({}, 'material'),
                                             'read': false
                                         }|json_encode|e('html_attr') }}">
-                                            <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify uk-visible-large"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
+                                            <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
                                         </a>
                                     </li>
 
                                     {% if canExportToWordpress %}
                                         {# separator #}
-                                        <li>&nbsp;</li>
+                                        <li class="uk-nav-divider"></li>
                                     {% endif %}
 
                                     {% if canExportToWordpress %}
                                         <li>
                                             <a href="#">
-                                                <i class="uk-icon-small uk-icon-wordpress uk-icon-justify uk-visible-large"></i> {{ 'Export to Wordpress'|trans({}, 'item') }}
+                                                <i class="uk-icon-small uk-icon-wordpress uk-icon-justify"></i> {{ 'Export to Wordpress'|trans({}, 'item') }}
                                             </a>
                                         </li>
                                     {% endif %}
 
                                     {# separator #}
-                                    <li>&nbsp;</li>
+                                    <li class="uk-nav-divider"></li>
 
                                     {# new section #}
                                     <li>
                                         {% if is_granted('ITEM_EDIT', item.itemId) %}
                                             <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new section'|trans({}) }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new section'|trans({}) }}
                                                 </span>
                                         {% endif %}
                                     </li>
@@ -232,11 +232,11 @@
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a class="newVersion" href="{{ path('app_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new version'|trans({}) }}
                                                 </a>
                                             {% else %}
                                                 <span class="uk-text-muted">
-                                                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
+                                                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new version'|trans({}) }}
                                                     </span>
                                             {% endif %}
                                         </li>
@@ -400,11 +400,11 @@
                                             <li>
                                                 {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                     <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new section'|trans({}) }}
                                                     </a>
                                                 {% else %}
                                                     <span class="uk-text-muted">
-                                                            <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                            <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new section'|trans({}) }}
                                                         </span>
                                                 {% endif %}
                                             </li>
@@ -424,11 +424,11 @@
                                                         'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
                                                         'confirmOk': 'confirm delete confirm'|trans({},'rubric')
                                                     }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify"></i> {{ 'trash'|trans({})|capitalize }}
                                                     </a>
                                                 {% else %}
                                                     <span class="uk-text-muted">
-                                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify"></i> {{ 'trash'|trans({})|capitalize }}
                                                         </span>
                                                 {% endif %}
                                             </li>

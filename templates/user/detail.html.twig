@@ -76,7 +76,7 @@
                                 {# print #}
                                 <li>
                                     <a href="{{ path('app_user_print', {'roomId': roomId, 'itemId': user.itemId}) }}" target="_blank" id="print">
-                                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                        <i class="uk-icon-small uk-icon-print uk-icon-justify"></i> {{ 'print'|trans({})|capitalize }}
                                     </a>
                                 </li>
 
@@ -92,11 +92,11 @@
                                                 'mode': 'click',
                                                 'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                             </span>
                                         {% endif %}
                                     </li>
@@ -113,11 +113,11 @@
                                                 'mode': 'click',
                                                 'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
                                             </span>
                                         {% endif %}
                                     </li>
@@ -125,7 +125,7 @@
 
                                 <li>
                                     <a href="{{ path('app_user_send', {'roomId' : roomId, 'itemId': user.itemId}) }}" id="send">
-                                        <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                        <i class="uk-icon-justify uk-icon-small uk-icon-send-o"></i> {{ 'send email'|trans({},'user') }}
                                     </a>
                                 </li>
                             </ul>
@@ -140,7 +140,7 @@
                                         {# confirm #}
                                         <li>
                                             <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-sign-in uk-visible-large"></i> {{ 'confirm'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-sign-in"></i> {{ 'confirm'|trans({},'user') }}
                                             </a>
                                         </li>
                                     {% endif %}
@@ -150,28 +150,28 @@
                                         {# delete #}
                                         <li>
                                             <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-delete', 'userDetail': 1}) }}" id="status-delete">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> {{ 'trash'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# block #}
                                         <li>
                                             <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-ban"></i> {{ 'block'|trans({},'user') }}
                                             </a>
                                         </li>
 
                                         {# reading #}
                                         <li>
                                             <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-reading-user', 'userDetail': 1}) }}" id="status-reading">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-user-secret"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
                                             </a>
                                         </li>
 
                                         {# user #}
                                         <li>
                                             <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-user', 'userDetail': 1}) }}" id="status-user">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-user"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
                                             </a>
                                         </li>
 
@@ -179,28 +179,28 @@
                                         {# reading #}
                                         <li>
                                             <a href="#" id="status-reading" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-user-secret"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
                                             </a>
                                         </li>
 
                                         {# user #}
                                         <li>
                                             <a href="#" id="status-user" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-user"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
                                             </a>
                                         </li>
 
                                         {# delete #}
                                         <li>
                                             <a href="#" id="" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
-                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify"></i> {{ 'trash'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# block #}
                                         <li>
                                             <a href="#" id="status-block" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-ban"></i> {{ 'block'|trans({},'user') }}
                                             </a>
                                         </li>
 
@@ -210,7 +210,7 @@
                                         {# moderator #}
                                         <li>
                                             <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-status-moderator', 'userDetail': 1}) }}" id="status-moderator">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-wrench uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-wrench"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
                                             </a>
                                         </li>
                                     {% endif %}
@@ -219,14 +219,14 @@
                                         {# remove contact#}
                                         <li>
                                             <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact-remove', 'userDetail': 1}) }}" id="status-remove-contact">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-square-o"></i> {{ 'contact remove'|trans({},'user') }}
                                             </a>
                                         </li>
                                     {% else %}
                                         {# contact #}
                                         <li>
                                             <a href="{{ path('app_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-contact', 'userDetail': 1}) }}" id="status-contact">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-phone uk-visible-large"></i> {{ 'contact'|trans({},'user') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-phone"></i> {{ 'contact'|trans({},'user') }}
                                             </a>
                                         </li>
                                     {% endif %}

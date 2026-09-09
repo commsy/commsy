@@ -56,7 +56,7 @@
                                         {# print #}
                                         <li>
                                             <a href="{{ path('app_date_printlist', {'roomId': roomId,'date_filter':app.request.query.all('date_filter')}) }}" target="_blank" id="print">
-                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-print uk-icon-justify"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
@@ -64,7 +64,7 @@
                                             {# date export #}
                                             <li class="uk-parent">
                                                 <a href="#">
-                                                    <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
+                                                    <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify"></i> {{ 'export dates'|trans({}, 'date') }}
                                                 </a>
                                                 <ul class="uk-nav-sub">
                                                     {% for calendar in calendars  %}
@@ -83,7 +83,7 @@
                                             {# date abo #}
                                             <li class="uk-parent">
                                                 <a href="#">
-                                                    <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
+                                                    <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify"></i> {{ 'abo dates'|trans({}, 'date') }}
                                                 </a>
                                                 <ul class="uk-nav-sub">
                                                     {% for calendar in calendars  %}
@@ -109,11 +109,11 @@
                                             <li>
                                                 {% if not isArchived %}
                                                     <a href="{{ path('app_date_import', {'roomId': roomId}) }}" >
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-download"></i> {{ 'import dates'|trans({},'date') }}
                                                     </a>
                                                 {% else %}
                                                     <span class="uk-text-muted">
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-download"></i> {{ 'import dates'|trans({},'date') }}
                                                     </span>
                                                 {% endif %}
                                             </li>

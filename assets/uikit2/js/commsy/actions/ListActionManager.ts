@@ -13,7 +13,7 @@ import {BaseAction} from "./AbstractAction";
      'mode': 'selection',
      'noSelectionMessage': 'no entry selected'|trans({},'item')
  }|json_encode|e('html_attr') }}">
-     <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o uk-visible-large"></i> {{ 'add to marked'|trans({}, 'rubric') }}
+     <i class="uk-icon-justify uk-icon-small uk-icon-bookmark-o"></i> {{ 'add to marked'|trans({}, 'rubric') }}
  </a>
 
  Notes:

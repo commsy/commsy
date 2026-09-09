@@ -68,7 +68,7 @@
             <ul class="uk-nav uk-nav-dropdown uk-list-striped">
                 <li>
                     <a href="{{ path('app_user_printlist', {'roomId': roomId,'user_filter':app.request.query.all('user_filter')}) }}" target="_blank" id="print">
-                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                        <i class="uk-icon-small uk-icon-print uk-icon-justify"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
 
@@ -81,11 +81,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-check uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </span>
                     {% endif %}
                 </li>
@@ -99,11 +99,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-send-o"></i> {{ 'send email'|trans({},'user') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-send-o"></i> {{ 'send email'|trans({},'user') }}
                         </span>
                     {% endif %}
                 </li>
@@ -117,11 +117,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({},'item')
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-paste uk-visible-large"></i> {{ 'paste'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-paste"></i> {{ 'paste'|trans({},'user') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-paste uk-visible-large"></i> {{ 'paste'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-paste"></i> {{ 'paste'|trans({},'user') }}
                         </span>
                     {% endif %}
                 </li>
@@ -144,7 +144,7 @@
                             'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-delete'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> {{ 'delete'|trans({},'user') }}
                         </a>
                     </li>
 
@@ -159,7 +159,7 @@
                             'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-block'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-ban"></i> {{ 'block'|trans({},'user') }}
                         </a>
                     </li>
 
@@ -174,7 +174,7 @@
                             'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-confirm'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-sign-in uk-visible-large"></i> {{ 'confirm'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sign-in"></i> {{ 'confirm'|trans({},'user') }}
                         </a>
                     </li>
 
@@ -189,7 +189,7 @@
                             'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-status-reading-user'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-user-secret"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
                         </a>
                     </li>
 
@@ -204,7 +204,7 @@
                             'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-status-user'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-user"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
                         </a>
                     </li>
 
@@ -219,7 +219,7 @@
                             'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-status-moderator'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-wrench uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-wrench"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
                         </a>
                     </li>
 
@@ -234,7 +234,7 @@
                             'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-contact'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-phone uk-visible-large"></i> {{ 'contact'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-phone"></i> {{ 'contact'|trans({},'user') }}
                         </a>
                     </li>
 
@@ -249,7 +249,7 @@
                             'returnUrl': path('app_user_list', {'roomId': roomId}),
                             'status': 'user-contact-remove'
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-square-o"></i> {{ 'contact remove'|trans({},'user') }}
                         </a>
                     </li>
                 </ul>

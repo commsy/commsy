@@ -35,7 +35,7 @@
                                     {% if item.isGroupRoomActivated %}
                                         <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
                                             <a href="{{ path('app_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-user-plus uk-icon-justify"></i> {{ 'join'|trans({})|capitalize }}
                                             </a>
                                         </li>
                                     {% endif %}
@@ -44,12 +44,12 @@
                                         {% if not lastModeratorStanding %}
                                             <a id="leave-group-link"
                                                href="{{path('app_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}" >
-                                                <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-user-times uk-icon-justify"></i> {{ 'leave'|trans({})|capitalize }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
                                                 <span data-uk-tooltip title="{{'To leave the group, please assign further moderators, or delete the group.'|trans({},'group') }}">
-                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
+                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify"></i> {{ 'leave'|trans({})|capitalize }}
                                                 </span>
                                             </span>
                                         {% endif %}
@@ -63,7 +63,7 @@
                                     <li>
                                         <a class="" href="{{ path('app_group_create', {'roomId': roomId}) }}"
                                            id="newEntry">
-                                            <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                            <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new'|trans({}) }}
                                         </a>
                                     </li>
                                 {% endif %}
@@ -72,7 +72,7 @@
                                 <li>
                                     <a href="{{ path('app_group_print', {'roomId': roomId, 'itemId': group.itemId}) }}"
                                        target="_blank" id="print">
-                                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                        <i class="uk-icon-small uk-icon-print uk-icon-justify"></i> {{ 'print'|trans({})|capitalize }}
                                     </a>
                                 </li>
 
@@ -85,7 +85,7 @@
                                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                         'mode': 'click',
                                     }|json_encode|e('html_attr') }}">
-                                        <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                        <i class="uk-icon-justify uk-icon-small uk-icon-save"></i> {{ 'save'|trans({})|capitalize }}
                                     </a>
                                 </li>
 
@@ -101,11 +101,11 @@
                                                 'mode': 'click',
                                                 'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry pinned|%count% entries pinned'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'add to pinned entries'|trans({}, 'rubric') }}
                                             </span>
                                         {% endif %}
                                     </li>
@@ -122,11 +122,11 @@
                                                 'mode': 'click',
                                                 'successMessage': '<i class="uk-icon-medium uk-icon-thumb-tack"></i>' ~ 'Entry unpinned|%count% entries unpinned'|trans({'%count%':1}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
                                             </a>
                                         {% else %}
                                             <span class="uk-text-muted">
-                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify uk-visible-large"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-small uk-icon-thumb-tack uk-icon-justify"></i> {{ 'remove from pinned entries'|trans({}, 'rubric') }}
                                             </span>
                                         {% endif %}
                                     </li>
@@ -135,7 +135,7 @@
                                 {# send #}
                                 <li>
                                     <a href="{{ path('app_group_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                                        <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
+                                        <i class="uk-icon-small uk-icon-send-o uk-icon-justify"></i> {{ 'send email'|trans({},'user') }}
                                     </a>
                                 </li>
 
@@ -156,29 +156,29 @@
                                                 'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
                                                 'returnUrl': path('app_group_list', {'roomId': roomId})
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify"></i> {{ 'trash'|trans({})|capitalize }}
                                             </a>
                                         </li>
                                     {% else %}
                                         {# delete group  and group room #}
                                         <li>
                                             <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({}, 'rubric') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> {{ 'delete'|trans({}, 'rubric') }}
                                             </a>
                                         </li>
 
                                         {# separator #}
-                                        <li>&nbsp;</li>
+                                        <li class="uk-nav-divider"></li>
 
                                         {# lock group room #}
                                         <li>
                                             {% if group.groupRoomItem.isLocked %}
                                                 <a href="{{ path('app_group_unlockgrouproom', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock group workspace'|trans({}, 'group') }}
+                                                    <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify"></i> {{ 'Unlock group workspace'|trans({}, 'group') }}
                                                 </a>
                                             {% else %}
                                                 <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock group workspace'|trans({}, 'group') }}
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-lock"></i> {{ 'Lock group workspace'|trans({}, 'group') }}
                                                 </a>
                                             {% endif %}
                                         </li>

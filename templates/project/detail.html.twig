@@ -33,17 +33,17 @@
                                     <li>
                                         {% if project.isLocked %}
                                             <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock project workspace'|trans({}, 'project') }}
+                                                <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify"></i> {{ 'Unlock project workspace'|trans({}, 'project') }}
                                             </a>
                                         {% else %}
                                             <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
-                                                <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock project workspace'|trans({}, 'project') }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-lock"></i> {{ 'Lock project workspace'|trans({}, 'project') }}
                                             </a>
                                         {% endif %}
                                     </li>
                                     <li>
                                         <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': roomId, 'itemId': project.itemId}) }}">
-                                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete project workspace'|trans({}, 'project') }}
+                                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> {{ 'Delete project workspace'|trans({}, 'project') }}
                                         </a>
                                     </li>
                                 </ul>

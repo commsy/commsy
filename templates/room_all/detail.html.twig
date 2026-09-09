@@ -28,18 +28,18 @@
                                 {% if project.isLocked %}
                                     {% if not project.isLockedByModerator() or is_granted('PORTAL_MODERATOR', commsy.portal) %}
                                         <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                            <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify uk-visible-large"></i> {{ 'Unlock workspace'|trans({}, 'room') }}
+                                            <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify"></i> {{ 'Unlock workspace'|trans({}, 'room') }}
                                         </a>
                                     {% endif %}
                                 {% else %}
                                     <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                        <i class="uk-icon-justify uk-icon-small uk-icon-lock uk-visible-large"></i> {{ 'Lock workspace'|trans({}, 'room') }}
+                                        <i class="uk-icon-justify uk-icon-small uk-icon-lock"></i> {{ 'Lock workspace'|trans({}, 'room') }}
                                     </a>
                                 {% endif %}
                             </li>
                             <li>
                                 <a href="{{ path('app_cancellablelockanddelete_deleteorlock', {'roomId': project.contextId, 'itemId': project.itemId}) }}">
-                                    <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'Delete workspace'|trans({}, 'room') }}
+                                    <i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> {{ 'Delete workspace'|trans({}, 'room') }}
                                 </a>
                             </li>
                         </ul>

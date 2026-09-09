@@ -36,7 +36,7 @@
                         'mode': 'selection',
                         'noSelectionMessage': 'no entry selected'|trans({},'item')
                     }|json_encode|e('html_attr') }}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-paste uk-visible-large"></i> {{ 'insert'|trans({'%roomname%': roomname },'rubric') }}
+                        <i class="uk-icon-justify uk-icon-small uk-icon-paste"></i> {{ 'insert'|trans({'%roomname%': roomname },'rubric') }}
                     </a>
                 </li>
 
@@ -57,11 +57,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap"></i> {{ 'categorize'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap uk-visible-large"></i> {{ 'categorize'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-sitemap"></i> {{ 'categorize'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -75,11 +75,11 @@
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
                         }|json_encode|e('html_attr') }}">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag"></i> {{ 'hashtag'|trans({},'rubric') }}
                         </a>
                     {% else %}
                         <span class="uk-text-muted">
-                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag uk-visible-large"></i> {{ 'hashtag'|trans({},'rubric') }}
+                            <i class="uk-icon-justify uk-icon-small uk-icon-hashtag"></i> {{ 'hashtag'|trans({},'rubric') }}
                         </span>
                     {% endif %}
                 </li>
@@ -97,7 +97,7 @@
                         'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
                         'returnUrl': path('app_marked_list', {'roomId': roomId})
                     }|json_encode|e('html_attr') }}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'remove marked'|trans({},'rubric') }}
+                        <i class="uk-icon-justify uk-icon-small uk-icon-remove"></i> {{ 'remove marked'|trans({},'rubric') }}
                     </a>
                 </li>
             </ul>

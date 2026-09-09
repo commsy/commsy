@@ -107,3 +107,16 @@
     max-height: 340px;
     overflow: auto;
 }
+
+/* Sub-object `uk-nav-divider`
+ ========================================================================== */
+/*
+    The striped rows already separate the entries, so the divider stays a
+    hairline: the default vertical margin would cut a gap into the striping,
+    and the striped background would paint the line grey.
+ */
+.uk-nav-dropdown.uk-list-striped > .uk-nav-divider {
+    margin-top: 0;
+    margin-bottom: 0;
+    background: none;
+}
