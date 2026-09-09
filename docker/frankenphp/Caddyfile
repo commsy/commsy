@@ -1,0 +1,50 @@
+{
+	# The container has no browser to trust the local CA, and installing it
+	# needs root, which the prod image does not have.
+	skip_install_trust
+
+	{$CADDY_DEBUG}
+	{$CADDY_GLOBAL_OPTIONS}
+
+	frankenphp {
+		{$FRANKENPHP_CONFIG}
+	}
+}
+
+# Optional extras, mounted by the compose overlays that need them.
+import /etc/caddy/conf.d/*.caddy
+
+{$CADDY_EXTRA_CONFIG}
+
+{$SERVER_NAME:localhost} {
+	log {
+		{$CADDY_SERVER_LOG_OPTIONS}
+	}
+
+	root /app/public
+	encode zstd br gzip
+
+	{$CADDY_SERVER_EXTRA_DIRECTIVES}
+
+	# Only the front controller is executed. public/commsy.php, the second
+	# entry point, has been dead since Symfony Runtime came in: it requires
+	# index.php without returning the callable, so it fatals whenever it is
+	# the entry script. Nothing points at it any more.
+	@phpRoute not file {path}
+	rewrite @phpRoute index.php
+
+	@frontController path index.php
+	php @frontController {
+		{$FRANKENPHP_SITE_CONFIG}
+
+		# Worker mode is deliberately off: the legacy environment resolves the
+		# current room once, in a constructor, which in a long-lived process
+		# would outlive the request it belongs to. Set FRANKENPHP_APP_WORKER to
+		# "worker ./public/index.php" once that is fixed.
+		{$FRANKENPHP_APP_WORKER}
+	}
+
+	file_server {
+		hide *.php
+	}
+}

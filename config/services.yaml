@@ -57,6 +57,7 @@ parameters:
     commsy.settings.session_lifetime: 6     # Session lifetime in hours
     commsy.settings.proxy_ip: '%env(PROXY_IP)%'      # Proxy Ip
     commsy.settings.proxy_port: '%env(PROXY_PORT)%'      # Propxy Port
+    commsy.settings.internal_base_url: '%env(INTERNAL_BASE_URL)%'    # How containers reach us from the inside
     commsy.settings.single_cat_selection: false     # Single selection for categories
 
     # Etherpad
@@ -406,6 +407,7 @@ services:
             $proxyIp: '%commsy.settings.proxy_ip%'
             $proxyPort: '%commsy.settings.proxy_port%'
             $kernelEnv: '%kernel.environment%'
+            $internalBaseUrl: '%commsy.settings.internal_base_url%'
 
     commsy.copy_service:
         alias: App\Services\MarkedService

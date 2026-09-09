@@ -19,7 +19,12 @@
 **/Thumbs.db
 .github/
 docs/
+# Uploads; the image only needs the directory, which it creates itself.
+files/
+node_modules/
 public/bundles/
+# Built in its own stage, never taken from the host.
+public/build/
 tests/
 var/
 vendor/

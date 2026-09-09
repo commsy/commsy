@@ -3,7 +3,7 @@ knp_snappy:
         enabled:    true
         binary:     '%env(WKHTMLTOPDF_PATH)%'
         options:    []
+    # No image renderer is shipped: nothing asks for one, and the binary is as
+    # large as wkhtmltopdf itself.
     image:
-        enabled:    true
-        binary:     '%env(WKHTMLTOIMAGE_PATH)%'
-        options:    []
+        enabled:    false

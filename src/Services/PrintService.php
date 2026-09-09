@@ -13,7 +13,6 @@
 
 namespace App\Services;
 
-use App\Entity\Files;
 use App\Repository\FilesRepository;
 use App\Room\RoomType;
 use App\Utils\FileService;
@@ -39,7 +38,8 @@ class PrintService
         private readonly FileService $fileService,
         private readonly string $proxyIp,
         private readonly string $proxyPort,
-        private readonly string $kernelEnv
+        private readonly string $kernelEnv,
+        private readonly string $internalBaseUrl
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -129,13 +129,14 @@ class PrintService
 
     private function preProcessHtml(string $html): string
     {
+        // The renderer runs beside us and cannot resolve the public host, so
+        // the origin is swapped for the one that works inside the network.
         if ($this->kernelEnv !== 'prod') {
-            $html = str_replace('https://localhost', 'http://caddy', $html);
+            $html = str_replace('https://localhost', $this->internalBaseUrl, $html);
         }
 
         $pattern = '~src=\".*/file/(\d+?)(/inline)?\"~';
         return preg_replace_callback($pattern, function ($matches) {
-            /** @var Files $file */
             $file = $this->filesRepository->find($matches[1]);
             if ($file) {
                 $path = $this->fileService->makeAbsolute($file);

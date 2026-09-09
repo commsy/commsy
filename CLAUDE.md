@@ -12,6 +12,13 @@ host — the container owns `vendor/` and `node_modules/`.
 docker compose up -d
 ```
 
+The `php` service is FrankenPHP, web server and PHP runtime in one process, so
+there is no separate web container. Messenger consumers run in their own
+`worker` service from the same image.
+
+Xdebug is off by default — an active Xdebug roughly triples the response time.
+Start with `make debug` to switch the step debugger on.
+
 ## Commands
 
 ### Tests

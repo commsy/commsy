@@ -248,7 +248,7 @@
 
         var $form = element.closest('form');
         $.ajax({
-            url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
+            url : '/room/{{ roomId }}/item/{{ itemId }}/editlinks',
             type: $form.attr('method'),
             data : $data,
             success: function(html) {
@@ -271,7 +271,7 @@
 
                 var $form = $(this).closest('form');
                 $.ajax({
-                    url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks/'+feedAmount,
+                    url : '/room/{{ roomId }}/item/{{ itemId }}/editlinks/'+feedAmount,
                     type: $form.attr('method'),
                     success: function(html) {
                         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);

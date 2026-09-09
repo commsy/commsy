@@ -124,6 +124,7 @@ final class PrintServiceCurrentContextCharacterizationTest extends KernelTestCas
             '',
             '',
             'test',
+            'http://php',
         );
 
         (new ReflectionMethod($service, 'setOptions'))->invoke($service);

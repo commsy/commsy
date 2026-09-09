@@ -3,3 +3,7 @@ services:
   php:
     environment:
       APP_SECRET: ${APP_SECRET}
+
+  worker:
+    environment:
+      APP_SECRET: ${APP_SECRET}

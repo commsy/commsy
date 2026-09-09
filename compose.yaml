@@ -1,3 +1,8 @@
+# The application and the web server are one process now: FrankenPHP embeds
+# Caddy, so there is no separate web container and no socket between them.
+x-app-environment: &app-environment
+  DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@db:3306/${MYSQL_DB:-app}?serverVersion=${MYSQL_VERSION:-11.8.5-MariaDB}&charset=${MYSQL_CHARSET:-utf8mb4}
+
 services:
   db:
     image: mariadb:11.8
@@ -25,20 +30,24 @@ services:
         soft: -1
         hard: -1
 
-  caddy:
-    image: commsy/caddy
+  php:
+    image: commsy/php
     build:
-      context: ./
-      target: commsy_caddy
+      context: .
+      target: commsy_php_prod
     depends_on:
-      - php
+      - db
+      - elastic
     restart: unless-stopped
     environment:
-      SERVER_NAME: ${SERVER_NAME:-localhost, caddy:80}
+      <<: *app-environment
+      # The second name lets sibling containers reach us by service name; it is
+      # what INTERNAL_BASE_URL points at.
+      SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
     volumes:
-      - php_socket:/var/run/php
       - caddy_data:/data
       - caddy_config:/config
+      - commsy_data:/app/files
     ports:
       # HTTP
       - target: 80
@@ -49,23 +58,32 @@ services:
         published: ${HTTPS_PORT:-443}
         protocol: tcp
 
-  php:
+  worker:
     image: commsy/php
     build:
       context: .
-      target: commsy_php
+      target: commsy_php_prod
     depends_on:
-      - db
-      - elastic
+      php:
+        condition: service_healthy
     restart: unless-stopped
-    volumes:
-      - php_socket:/var/run/php
-      - commsy_data:/var/www/html/files
     environment:
-      DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@db:3306/${MYSQL_DB:-app}?serverVersion=${MYSQL_VERSION:-11.8.5-MariaDB}&charset=${MYSQL_CHARSET:-utf8mb4}
+      <<: *app-environment
+      # The schema update belongs to whichever container serves the site.
+      COMMSY_SKIP_INIT: "1"
+    volumes:
+      - commsy_data:/app/files
+    command: ["php", "bin/console", "messenger:consume", "--all", "--time-limit=3600"]
+    # One consumer per container, so the count that supervisord carried as
+    # numprocs lives here. Override with `docker compose up --scale worker=N`.
+    deploy:
+      replicas: 2
+    # The image's health check asks FrankenPHP's admin API, which this
+    # container never starts.
+    healthcheck:
+      disable: true
 
 volumes:
-  php_socket:
   caddy_data:
   caddy_config:
   db_data:

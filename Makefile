@@ -11,7 +11,8 @@ SYMFONY  = $(PHP_CONT) bin/console
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        = help build up start down logs sh composer vendor sf cc
+.PHONY        : help build up detach debug start down logs sh bash test \
+                build-office up-office composer vendor sf cc
 
 ## —— 🎵 🐳 The Symfony-docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -29,6 +30,9 @@ up: ## Start the docker hub
 
 start: build up ## Build and start the containers
 
+debug: ## Start the containers with the Xdebug step debugger enabled
+	@XDEBUG_MODE=develop,debug $(DOCKER_COMP) up
+
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
 
@@ -45,10 +49,10 @@ test: ## Start tests with phpunit, pass the parameter "c=" to add options to php
 	@$(eval c ?=)
 	@$(DOCKER_COMP) exec -e APP_ENV=test php vendor/bin/simple-phpunit $(c)
 
-build-office:
+build-office: ## Build the images including the online office overlay
 	@$(DOCKER_COMP) -f compose.yaml -f compose.override.yaml -f docker/compose.office.yaml build --pull --no-cache
 
-debug-office:
+up-office: ## Start the containers including the online office overlay
 	@$(DOCKER_COMP) -f compose.yaml -f compose.override.yaml -f docker/compose.office.yaml up
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————

@@ -21,18 +21,14 @@ services:
     ports:
       - "82:9001"
 
-  caddy:
+  php:
     environment:
       # Etherpad gets a sibling host so the pad iframe is same-site with
       # CommSy and its cookies survive.
-      SERVER_NAME: ${SERVER_NAME:-localhost, caddy:80}
+      SERVER_NAME: ${SERVER_NAME:-localhost}, php:80
       ETHERPAD_SERVER_NAME: ${ETHERPAD_SERVER_NAME:-etherpad.localhost}
     volumes:
-      - ./docker/caddy/conf.d:/etc/caddy/conf.d:ro
-    depends_on:
-      - etherpad
-
-  php:
+      - ./docker/frankenphp/conf.d:/etc/caddy/conf.d:ro
     depends_on:
       - etherpad
 

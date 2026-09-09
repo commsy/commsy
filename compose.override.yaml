@@ -1,6 +1,6 @@
 # Development environment override
 services:
-  
+
   ###> symfony/mailer ###
   mailer:
     image: axllent/mailpit
@@ -11,7 +11,7 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
   ###< symfony/mailer ###
-  
+
   db:
     ports:
       - "3106:3306"
@@ -26,17 +26,29 @@ services:
     build:
       target: commsy_php_dev
     volumes:
-      # The "cached" option has no effect on Linux but improves performance on Mac
-      - ./:/var/www/html:rw,cached
-      - ./docker/php/conf.d/commsy.dev.ini:/usr/local/etc/php/conf.d/commsy.dev.ini:ro
-      # If you develop on Mac you can remove the var/ directory from the bind-mount
-      # for better performance by enabling the next line
-      # - /srv/app/var
+      - ./:/app
+      - ./docker/frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
+      - ./docker/php/conf.d/commsy.dev.ini:/usr/local/etc/php/app.conf.d/commsy.dev.ini:ro
+      # Taking var/ out of the bind mount speeds up cache writes on Mac and
+      # Windows considerably. The cost is that logs are no longer readable from
+      # the host, so it stays off by default.
+      # - /app/var
+    environment:
+      # Off by default: an active Xdebug costs roughly three times the response
+      # time even with no debugger attached. `make debug` turns it on.
+      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+      APP_ENV: "${APP_ENV:-dev}"
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
+    tty: true
 
-  caddy:
+  worker:
+    build:
+      target: commsy_php_dev
     volumes:
-      - ./public:/var/www/html/public:ro,cached
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./:/app
+      - ./docker/php/conf.d/commsy.dev.ini:/usr/local/etc/php/app.conf.d/commsy.dev.ini:ro
+    # One consumer is enough while developing; production runs two.
+    deploy:
+      replicas: 1
