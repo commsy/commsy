@@ -45,11 +45,11 @@ jobs:
             -   name: Run post install scripts
                 run: composer run-script --no-dev post-install-cmd
 
-            -   name: Install yarn deps
-                run: yarn install
+            -   name: Install node deps
+                run: npm ci
 
             -   name: Build frontend package
-                run: yarn build
+                run: npm run build
 
             -   name: Get tag
                 id: tag
@@ -59,7 +59,7 @@ jobs:
                 uses: thedoctor0/zip-release@master
                 with:
                     filename: commsy-${{ steps.tag.outputs.tag }}.zip
-                    exclusions: '*.git* /assets/* /docker/* /*node_modules/* /tests/* .dockerignore .editorconfig .env.test .php-cs-fixer.dist.php .travis.yml codeception.yml composer.lock composer.phar compose.* Dockerfile Makefile package.json php* rector.php symfony.lock tsconfig.json webpack.config.js yarn.lock'
+                    exclusions: '*.git* /assets/* /docker/* /*node_modules/* /tests/* .dockerignore .editorconfig .env.test .php-cs-fixer.dist.php .travis.yml codeception.yml composer.lock composer.phar compose.* Dockerfile Makefile package.json php* rector.php symfony.lock tsconfig.json webpack.config.js package-lock.json'
 
             -   name: Release
                 uses: softprops/action-gh-release@v1

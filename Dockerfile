@@ -122,11 +122,9 @@ EOF
 # wants 22, so it comes from the official image rather than from apt.
 COPY --from=node_upstream --link /usr/local/bin/node /usr/local/bin/node
 COPY --from=node_upstream --link /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY --from=node_upstream --link /opt/yarn-v1.22.22 /opt/yarn-v1.22.22
 RUN <<-EOF
 	ln -sf ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 	ln -sf ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
-	ln -sf /opt/yarn-v1.22.22/bin/yarn /usr/local/bin/yarn
 EOF
 
 COPY --link docker/php/conf.d/commsy.dev.ini $PHP_INI_DIR/app.conf.d/
@@ -152,11 +150,11 @@ FROM node_upstream AS commsy_assets
 WORKDIR /app
 
 COPY --from=commsy_vendor --link /app/vendor vendor/
-COPY --link package.json yarn.lock webpack.config.js tsconfig.json ./
-RUN yarn install --frozen-lockfile
+COPY --link package.json package-lock.json .npmrc webpack.config.js tsconfig.json ./
+RUN npm ci --no-audit --no-fund
 
 COPY --link assets assets/
-RUN yarn build
+RUN npm run build
 
 ##############################################################################
 # Builder for the prod image

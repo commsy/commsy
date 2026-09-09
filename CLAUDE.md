@@ -47,9 +47,9 @@ currently unguarded by tests, so verify it by hand.
 ### Frontend assets
 
 ```bash
-docker compose exec php yarn install
-docker compose exec php yarn dev      # development build
-docker compose exec php yarn build    # production build
+docker compose exec php npm ci
+docker compose exec php npm run dev      # development build
+docker compose exec php npm run build    # production build
 ```
 
 ### Console and Composer

@@ -6,6 +6,7 @@
 !.gitattributes
 !.github
 !.dockerignore
+!.npmrc
 *~
 
 # Windows image file caches

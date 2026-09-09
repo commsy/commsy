@@ -49,11 +49,11 @@ jobs:
             -   name: Generate JWT keypair
                 run: bin/console lexik:jwt:generate-keypair
 
-            -   name: Install yarn deps
-                run: yarn install
+            -   name: Install node deps
+                run: npm ci
 
             -   name: Build frontend package
-                run: yarn build
+                run: npm run build
 
             -   name: Run tests
                 run: vendor/bin/simple-phpunit
