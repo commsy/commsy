@@ -55,12 +55,12 @@
                                                 {# alt="" marks the avatar decorative: the name is already in the row and in the
                                                    link. It also keeps Firefox from painting a placeholder ring in the link colour
                                                    while it is still deciding what the image is. #}
-                                                <img class="uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" alt=""
+                                                <img class="uk-thumbnail uk-border-circle cs-comment-thumbnail" width="42" height="42" alt=""
                                                      src="{{ path('app_user_image', {'roomId': group.contextId, 'itemId': origin.payload.actorId}) }}"
                                                      title="{{ origin.actorName }}" data-uk-tooltip>
                                             </a>
                                         {% else %}
-                                            <img class="uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" alt=""
+                                            <img class="uk-thumbnail uk-border-circle cs-comment-thumbnail" width="42" height="42" alt=""
                                                  src="{{ path('app_user_guestimage') }}" title="{{ origin.actorName|default('') }}" data-uk-tooltip>
                                         {% endif %}
                                         <div class="uk-comment-meta">
