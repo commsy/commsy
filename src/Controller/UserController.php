@@ -917,13 +917,7 @@ class UserController extends BaseController
     public function guestimage(
         AvatarService $avatarService
     ): Response {
-        $response = new Response($avatarService->getUnknownUserImage(), Response::HTTP_OK,
-            ['content-type' => 'image']);
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            Strings::webalize('user_unknown.gif'));
-        $response->headers->set('Content-Disposition', $contentDisposition);
-
-        return $response;
+        return $this->imageResponse($avatarService->getUnknownUserImage());
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/initials')]
@@ -931,13 +925,7 @@ class UserController extends BaseController
         AvatarService $avatarService,
         int $itemId
     ): Response {
-        $response = new Response($avatarService->getAvatar($itemId), Response::HTTP_OK,
-            ['content-type' => 'image']);
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            Strings::webalize('user_unknown.gif'));
-        $response->headers->set('Content-Disposition', $contentDisposition);
-
-        return $response;
+        return $this->imageResponse($avatarService->getAvatar($itemId));
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/image')]
@@ -975,10 +963,28 @@ class UserController extends BaseController
         if (!$foundUserImage) {
             $content = $avatarService->getAvatar($itemId);
         }
-        $response = new Response($content, Response::HTTP_OK, ['content-type' => 'image']);
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,
-            Strings::webalize($file));
-        $response->headers->set('Content-Disposition', $contentDisposition);
+        return $this->imageResponse($content, $file);
+    }
+
+    /**
+     * Serves image bytes under the media type they actually are.
+     *
+     * These routes used to answer with "content-type: image", which is not a
+     * media type at all — it has no subtype. Browsers then have to sniff the
+     * bytes, and they do not all sniff the same way or at the same moment.
+     */
+    private function imageResponse(string|bool $content, string $filename = 'avatar'): Response
+    {
+        $content = is_string($content) ? $content : '';
+        $size = @getimagesizefromstring($content);
+
+        $response = new Response($content, Response::HTTP_OK, [
+            'content-type' => $size['mime'] ?? 'application/octet-stream',
+        ]);
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            Strings::webalize($filename)
+        ));
 
         return $response;
     }
