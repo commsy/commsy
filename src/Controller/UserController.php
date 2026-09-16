@@ -911,14 +911,20 @@ class UserController extends BaseController
         ]);
     }
 
-    /** How long a browser may keep an avatar before asking again. */
+    /**
+     * How long a browser may keep an avatar. A request that carries a version
+     * token may keep it for much longer: the token is the user's modification
+     * date, so a new picture means a new URL and the old entry is simply never
+     * asked for again. Without a token we fall back to a few minutes.
+     */
     private const AVATAR_MAX_AGE = 300;
+    private const AVATAR_VERSIONED_MAX_AGE = 604800;
 
     #[Route(path: '/room/user/guestimage')]
     public function guestimage(
         AvatarService $avatarService
     ): Response {
-        return $this->imageResponse($avatarService->getUnknownUserImage());
+        return $this->imageResponse($avatarService->getUnknownUserImage(), versioned: true);
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/initials')]
@@ -931,6 +937,7 @@ class UserController extends BaseController
 
     #[Route(path: '/room/{roomId}/user/{itemId}/image')]
     public function image(
+        Request $request,
         AvatarService $avatarService,
         DataManager $dataManager,
         FilterManager $filterManager,
@@ -962,7 +969,7 @@ class UserController extends BaseController
         if (!$foundUserImage) {
             $content = $avatarService->getAvatar($itemId);
         }
-        return $this->imageResponse($content);
+        return $this->imageResponse($content, $request->query->has('v'));
     }
 
     /**
@@ -980,7 +987,7 @@ class UserController extends BaseController
      * No Content-Disposition: it said "inline" with a made-up filename, which
      * means nothing for an <img> and only muddied what the response is.
      */
-    private function imageResponse(string|bool $content): Response
+    private function imageResponse(string|bool $content, bool $versioned = false): Response
     {
         $content = is_string($content) ? $content : '';
         $size = @getimagesizefromstring($content);
@@ -989,7 +996,7 @@ class UserController extends BaseController
             'content-type' => $size['mime'] ?? 'application/octet-stream',
         ]);
         $response->setPrivate();
-        $response->setMaxAge(self::AVATAR_MAX_AGE);
+        $response->setMaxAge($versioned ? self::AVATAR_VERSIONED_MAX_AGE : self::AVATAR_MAX_AGE);
         $response->setEtag(md5($content));
 
         return $response;

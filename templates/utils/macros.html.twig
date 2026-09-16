@@ -257,10 +257,17 @@
         {% set classes = classList %}
     {% endif %}
 
+    {# The modification date rides along as a version token: a new picture means a
+       new URL, so the browser may keep the old one for as long as it likes. #}
+    {% set imageParams = {'roomId': user.contextId ?? user.room.itemId, 'itemId': user.itemId} %}
+    {% if user.modificationDate is defined and user.modificationDate %}
+        {% set imageParams = imageParams|merge({'v': user.modificationDate|date('U')}) %}
+    {% endif %}
+
     {% if user.isDeleted %}
         <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "deleted person"|trans({}, 'user')}}">
     {% elseif user.itemId != "" %}
-        <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', {'roomId': user.contextId ?? user.room.itemId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+        <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_image', imageParams) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
     {% else %}
         <img class="{{ classes|join(' ') }}"{{ styleAttribute | raw }} src="{{ path('app_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}">
     {% endif %}

@@ -26,10 +26,12 @@
                          title="{{ userItem.fullname }}"
                     >
                         {% if userItem.picture is not empty %}
+                            {# Versioned, so a picture just uploaded is not served from cache. #}
                             <img src="{{ path('app_user_image', {
                                 'roomId': userItem.contextId,
-                                'itemId': userItem.itemId
-                            }) }}">
+                                'itemId': userItem.itemId,
+                                'v': userItem.modificationDate|date('U')
+                            }) }}" alt="">
                         {% endif %}
                     </div>
 
