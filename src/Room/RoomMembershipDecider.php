@@ -25,11 +25,18 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  * list performs, reachable from one call so the notification bell can offer it
  * inline.
  *
- * Mirrors the 'user-confirm' / 'user-block' arms of
- * {@see \App\Controller\UserController::changeStatus}: set the status, propagate
- * it to group rooms and groups, then announce it. Announcing is what feeds the
- * notification bookkeeping, so accepting or rejecting here clears the task for
- * every moderator and tells the requester.
+ * The status change itself is the one in {@see RoomMembershipStatusChanger},
+ * shared with the 'user-confirm' / 'user-block' arms of
+ * {@see \App\Controller\UserController::changeStatus}; what remains here is the
+ * decision around it: may this account decide, is there anything left to decide,
+ * and announcing the outcome. Announcing is what feeds the notification
+ * bookkeeping, so accepting or rejecting here clears the task for every
+ * moderator and tells the requester.
+ *
+ * One thing the list flow does is deliberately left out: it marks the person's
+ * entry read for the acting moderator. That resolves the reader against the
+ * current legacy context, which in a live component is whatever room the
+ * moderator is looking at — not the room being decided about.
  *
  * Authorisation is checked against the *request's own room*, not the room the
  * user happens to be in: MODERATOR is subject-blind (it asks about the current
@@ -40,6 +47,7 @@ class RoomMembershipDecider
 {
     public function __construct(
         private readonly UserService $userService,
+        private readonly RoomMembershipStatusChanger $statusChanger,
         private readonly Security $security,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {
@@ -65,14 +73,10 @@ class RoomMembershipDecider
             return false; // already decided elsewhere
         }
 
-        if ($accept) {
-            $user->makeUser();
-        } else {
-            $user->reject();
-        }
-        $user->save();
-
-        $this->userService->propagateStatusToGrouproomUsersForUser($user);
+        $this->statusChanger->changeTo(
+            $user,
+            $accept ? RoomMembershipStatus::User : RoomMembershipStatus::Blocked
+        );
         $this->userService->updateAllGroupStatus($user, $roomId);
 
         $this->eventDispatcher->dispatch(new UserStatusChangedEvent($user));

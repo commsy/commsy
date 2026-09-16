@@ -30,6 +30,8 @@ use App\Item\ItemType;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
 use App\Repository\UserRepository;
+use App\Room\RoomMembershipStatus;
+use App\Room\RoomMembershipStatusChanger;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
 use App\Services\CurrentContextResolver;
@@ -398,6 +400,7 @@ class UserController extends BaseController
         AccountMail $accountMail,
         UserMembershipDeleter $membershipDeleter,
         CurrentUserResolver $currentUserResolver,
+        RoomMembershipStatusChanger $statusChanger,
         int $roomId
     ): Response {
         $room = $this->getRoom($roomId);
@@ -460,53 +463,29 @@ class UserController extends BaseController
 
                         case 'user-block':
                             foreach ($users as $user) {
-                                $user->reject(); // status 0
-                                $user->save();
-                                $this->userService->propagateStatusToGrouproomUsersForUser($user);
+                                $statusChanger->changeTo($user, RoomMembershipStatus::Blocked);
                             }
                             break;
 
+                        // Confirming a request and setting the plain user status
+                        // are the same transition; only the mail text differs,
+                        // and that is picked by $formData['status'] further down.
                         case 'user-confirm':
+                        case 'user-status-user':
                             foreach ($users as $user) {
-                                $previousStatus = $user->getStatus();
-                                $user->makeUser(); // status 2
-                                $user->save();
-                                if (0 == $previousStatus) {
-                                    $this->userService->propagateStatusToGrouproomUsersForUser($user);
-                                }
+                                $statusChanger->changeTo($user, RoomMembershipStatus::User);
                             }
                             break;
 
                         case 'user-status-reading-user':
                             foreach ($users as $user) {
-                                $previousStatus = $user->getStatus();
-                                $user->makeReadOnlyUser(); // status 4
-                                $user->save();
-                                if (0 == $previousStatus) {
-                                    $this->userService->propagateStatusToGrouproomUsersForUser($user);
-                                }
-                            }
-                            break;
-
-                        case 'user-status-user':
-                            foreach ($users as $user) {
-                                $previousStatus = $user->getStatus();
-                                $user->makeUser(); // status 2
-                                $user->save();
-                                if (0 == $previousStatus) {
-                                    $this->userService->propagateStatusToGrouproomUsersForUser($user);
-                                }
+                                $statusChanger->changeTo($user, RoomMembershipStatus::ReadOnly);
                             }
                             break;
 
                         case 'user-status-moderator':
                             foreach ($users as $user) {
-                                $previousStatus = $user->getStatus();
-                                $user->makeModerator(); // status 3
-                                $user->save();
-                                if (0 == $previousStatus) {
-                                    $this->userService->propagateStatusToGrouproomUsersForUser($user);
-                                }
+                                $statusChanger->changeTo($user, RoomMembershipStatus::Moderator);
                             }
                             break;
 
