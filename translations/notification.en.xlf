@@ -6,61 +6,9 @@
                 <source>noNotifications</source>
                 <target>No notifications</target>
             </trans-unit>
-            <trans-unit id="showAllNotifications">
-                <source>showAllNotifications</source>
-                <target>Show all</target>
-            </trans-unit>
             <trans-unit id="markAllRead">
                 <source>markAllRead</source>
                 <target>Mark all as read</target>
-            </trans-unit>
-            <trans-unit id="event.newEntry">
-                <source>event.newEntry</source>
-                <target>%actor% published "%title%"</target>
-            </trans-unit>
-            <trans-unit id="event.newEntryAnonymous">
-                <source>event.newEntryAnonymous</source>
-                <target>New entry: "%title%"</target>
-            </trans-unit>
-            <trans-unit id="rubric.announcement">
-                <source>rubric.announcement</source>
-                <target>Announcement</target>
-            </trans-unit>
-            <trans-unit id="rubric.material">
-                <source>rubric.material</source>
-                <target>Material</target>
-            </trans-unit>
-            <trans-unit id="rubric.date">
-                <source>rubric.date</source>
-                <target>Date</target>
-            </trans-unit>
-            <trans-unit id="rubric.discussion">
-                <source>rubric.discussion</source>
-                <target>Discussion</target>
-            </trans-unit>
-            <trans-unit id="rubric.todo">
-                <source>rubric.todo</source>
-                <target>Task</target>
-            </trans-unit>
-            <trans-unit id="unread">
-                <source>unread</source>
-                <target>Unread</target>
-            </trans-unit>
-            <trans-unit id="event.edited">
-                <source>event.edited</source>
-                <target>%actor% edited "%title%"</target>
-            </trans-unit>
-            <trans-unit id="event.editedAnonymous">
-                <source>event.editedAnonymous</source>
-                <target>Entry edited: "%title%"</target>
-            </trans-unit>
-            <trans-unit id="rubric.group">
-                <source>rubric.group</source>
-                <target>Group</target>
-            </trans-unit>
-            <trans-unit id="rubric.topic">
-                <source>rubric.topic</source>
-                <target>Topic</target>
             </trans-unit>
             <trans-unit id="byCreator">
                 <source>byCreator</source>
