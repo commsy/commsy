@@ -90,6 +90,14 @@
                 <source>bell.indicatorChanged</source>
                 <target>Geänderte Einträge</target>
             </trans-unit>
+            <trans-unit id="bell.announcementExpiring">
+                <source>bell.announcementExpiring</source>
+                <target>Deine Ankündigung „%title%“ läuft bald ab</target>
+            </trans-unit>
+            <trans-unit id="bell.validUntil">
+                <source>bell.validUntil</source>
+                <target>gültig bis %date%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

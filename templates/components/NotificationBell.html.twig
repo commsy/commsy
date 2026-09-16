@@ -66,19 +66,30 @@
     {# Lower section: purely informational. #}
     {% for notification in messages %}
         {% set p = notification.payload %}
+        {% set expiring = notification.type.value == 'announcement_expiring' %}
         <li>
-            <a href="{{ path('app_room_home', {'roomId': notification.contextId}) }}"
+            {# An expiry warning names one entry, so it leads there; the rest lead to the room. #}
+            <a href="{{ this.linkFor(notification)|default(path('app_room_home', {'roomId': notification.contextId})) }}"
                style="display: block; {{ rowPadding }}{% if not loop.first %} {{ rowBorder }}{% endif %}">
                 <span style="display: block; line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
-                    <i class="uk-icon-bullhorn {{ rowIcon }}" style="{{ rowIconStyle }} {{ metaColor }}"></i>
-                    {%- if p.decision == 'rejected' -%}
-                        {{ 'bell.decisionRejected'|trans({'%room%': notification.roomTitle}, 'notification') }}
+                    {%- if expiring -%}
+                        <i class="uk-icon-clock-o {{ rowIcon }}" style="{{ rowIconStyle }} {{ metaColor }}"></i>
+                        {{- 'bell.announcementExpiring'|trans({'%title%': notification.title}, 'notification') -}}
                     {%- else -%}
-                        {{ 'bell.decisionAccepted'|trans({'%room%': notification.roomTitle}, 'notification') }}
+                        <i class="uk-icon-bullhorn {{ rowIcon }}" style="{{ rowIconStyle }} {{ metaColor }}"></i>
+                        {%- if p.decision == 'rejected' -%}
+                            {{ 'bell.decisionRejected'|trans({'%room%': notification.roomTitle}, 'notification') }}
+                        {%- else -%}
+                            {{ 'bell.decisionAccepted'|trans({'%room%': notification.roomTitle}, 'notification') }}
+                        {%- endif -%}
                     {%- endif -%}
                 </span>
                 <span class="uk-text-small" style="color: #666; display: block; margin-top: 3px;">
-                    {{ _self.shortDate(notification.createdAt) }}
+                    {%- if expiring and p.dateEnd -%}
+                        {{ notification.roomTitle }} &middot; {{ 'bell.validUntil'|trans({'%date%': p.dateEnd|format_date}, 'notification') }}
+                    {%- else -%}
+                        {{ _self.shortDate(notification.createdAt) }}
+                    {%- endif -%}
                 </span>
             </a>
         </li>

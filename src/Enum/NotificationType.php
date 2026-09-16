@@ -40,6 +40,12 @@ enum NotificationType: string
     case RoomJoinDecision = 'room_join_decision';
 
     /**
+     * An announcement is about to drop out of its room: its validity ends
+     * shortly. Addressed to whoever wrote it, one row per announcement.
+     */
+    case AnnouncementExpiring = 'announcement_expiring';
+
+    /**
      * Content activity belongs in the room/dashboard panels, not the bell.
      */
     public function isContentActivity(): bool
