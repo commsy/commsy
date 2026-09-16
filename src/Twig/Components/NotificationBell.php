@@ -175,7 +175,8 @@ final class NotificationBell
             return;
         }
 
-        // Act only on a task actually addressed to this account.
+        // Is this request still open at all? Who may decide it is settled one
+        // step down, where the room's own ROOM_MODERATOR check happens.
         if (!$this->notificationRepository->existsOfTypeForSourceItem(NotificationType::RoomJoinRequest, $id)) {
             $this->alreadyDecided = true;
 

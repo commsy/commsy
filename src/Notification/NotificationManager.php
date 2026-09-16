@@ -37,9 +37,8 @@ use function Symfony\Component\Clock\now;
  * {@see ItemViewChecker} the UI uses (ITEM_SEE), so a member who cannot see the
  * entry never gets notified about it. The view subject is built straight from
  * the signal snapshot rather than re-loading the rubric entity (which may
- * already be gone by the time the async handler runs): top-level rubric items
- * never carry overwritten content, and the room is looked up once for both the
- * title and the deleted-context flag.
+ * already be gone by the time the async handler runs); the room is looked up once
+ * for both the title and the deleted-context flag.
  */
 class NotificationManager
 {
@@ -71,7 +70,6 @@ class NotificationManager
             creatorId: $signal->creatorUserItemId,
             isDeactivated: $signal->isDeactivated,
             contextIsDeleted: $room === null || $room->getDeletionDate() !== null,
-            hasOverwrittenContent: false,
         );
 
         [$recipients, $actorAccountId] = $this->resolveRecipients($signal->contextId, $signal->actorUserItemId, $subject);

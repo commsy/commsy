@@ -117,7 +117,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
             $parent->getItemType(),
             $parent->getTitle(),
             $parent->getCreatorID(),
-            // The annotator is the actor and is excluded from the fan-out.
+            // The annotator is the actor: they are notified too, but pre-read.
             $annotation->getCreatorID(),
             $annotation->getCreatorItem()?->getFullName(),
             (bool) $parent->isNotActivated(),
@@ -143,8 +143,8 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
 
     private function signalFor(cs_item $item, NotificationAction $action): NotifyNewEntryMessage
     {
-        // The actor (excluded from the fan-out) is whoever caused this event:
-        // the creator on a create, the modificator on an edit.
+        // The actor is whoever caused this event — the creator on a create, the
+        // modificator on an edit. Their own row is stored already read.
         $actorUserItemId = $action === NotificationAction::Edited
             ? (int) ($item->getModificatorItem()?->getItemID() ?? $item->getCreatorID())
             : (int) $item->getCreatorID();

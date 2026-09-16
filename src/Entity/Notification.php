@@ -34,10 +34,10 @@ use Doctrine\ORM\Mapping as ORM;
  * columns ({@see $title}, {@see $roomTitle}, {@see $actorName}) plus the variable
  * rubric-specific extras in {@see $payload} (see {@see NotificationPayload}).
  *
- * Two independent states: "read" is owned here via {@see $readAt} (set when the
- * recipient opens the entry's detail page, regardless of path) and is decoupled
- * from the item read tracking in {@see Reader}; "dismiss" is not a flag but the
- * removal of the row (handled by the repository).
+ * "Read" is owned here via {@see $readAt} (set when the recipient opens the
+ * entry's detail page, regardless of path) and is decoupled from the item read
+ * tracking in {@see Reader}. Rows are never dismissed by hand; they leave only
+ * through the retention cron or with the item they point at.
  *
  * {@see $recipient} is FK-bound with ON DELETE CASCADE, so deleting an account
  * removes its notifications automatically.

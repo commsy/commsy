@@ -66,7 +66,14 @@ final class NotificationPanel
     public function markAllRead(): void
     {
         if ($this->account !== null) {
-            $this->notificationRepository->markAllReadForAccount($this->account, now(), $this->contextId);
+            // Content activity only: an open task belongs to the bell and must
+            // keep counting there, however this panel's list is cleared.
+            $this->notificationRepository->markAllReadForAccount(
+                $this->account,
+                now(),
+                $this->contextId,
+                NotificationType::contentTypes(),
+            );
         }
     }
 

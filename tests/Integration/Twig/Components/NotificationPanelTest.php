@@ -83,6 +83,21 @@ final class NotificationPanelTest extends KernelTestCase
         self::assertSame(0, $this->repository()->count(['readAt' => null]));
     }
 
+    public function testMarkAllReadLeavesAnUndecidedTaskAlone(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+        $this->persist($account, sourceItemId: 1, title: 'An entry');
+        $task = $this->persist($account, sourceItemId: 77, title: 'Someone wants in', type: NotificationType::RoomJoinRequest);
+
+        $component = $this->createLiveComponent('NotificationPanel', ['account' => $account]);
+        $component->call('markAllRead');
+
+        // The panel clears its own list; the bell keeps counting what still needs deciding.
+        self::assertNull($this->repository()->find($task->getId())->getReadAt());
+        self::assertSame(1, $this->repository()->count(['readAt' => null]));
+    }
+
     public function testScopesToOneRoomWhenContextGiven(): void
     {
         self::bootKernel();
@@ -109,10 +124,11 @@ final class NotificationPanelTest extends KernelTestCase
         int $contextId = 5,
         NotificationAction $action = NotificationAction::Created,
         ?\DateTimeImmutable $createdAt = null,
+        NotificationType $type = NotificationType::Entry,
     ): Notification {
         $notification = new Notification(
             $account,
-            NotificationType::Entry,
+            $type,
             $contextId,
             $title,
             'Room',

@@ -38,7 +38,7 @@ final class Version20260611120000 extends AbstractMigration
             title VARCHAR(255) NOT NULL,
             room_title VARCHAR(255) NOT NULL,
             actor_name VARCHAR(255) DEFAULT NULL,
-            payload LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json)',
+            payload JSON DEFAULT NULL COMMENT '(DC2Type:json)',
             created_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)',
             read_at DATETIME DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)',
             INDEX notification_recipient_idx (recipient_id, read_at, created_at),
