@@ -62,14 +62,6 @@
                 <source>no linked items</source>
                 <target>Keine Zuordnungen vorhanden</target>
             </trans-unit>
-            <trans-unit id="15">
-                <source>latest entries</source>
-                <target>Die neuesten Einträge in diesem Raum</target>
-            </trans-unit>
-            <trans-unit id="16">
-                <source>latest entries from my rooms</source>
-                <target>Die neuesten Einträge aus meinen Räumen</target>
-            </trans-unit>
             <trans-unit id="17">
                 <source>no hashtags</source>
                 <target>Keine Schlagwörter vorhanden</target>

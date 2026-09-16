@@ -20,7 +20,6 @@ use App\Repository\CalendarsRepository;
 use App\Repository\PortalRepository;
 use App\Repository\SavedSearchRepository;
 use App\Repository\ServerRepository;
-use App\RoomFeed\RoomFeedGenerator;
 use App\Security\Authorization\Voter\ContextCreateVoter;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -147,31 +146,6 @@ class DashboardController extends AbstractController
             'portal' => $portal,
             'server' => $server,
             'userMayCreateContext' => $userMayCreateContext,
-        ]);
-    }
-
-    #[Route(path: '/dashboard/{roomId}/feed/{start}/{sort}')]
-    public function feed(
-        int $roomId,
-        Request $request,
-        ReaderService $readerService,
-        RoomFeedGenerator $roomFeedGenerator,
-        int $max = 10
-    ): Response {
-        $lastId = null;
-        if ($request->query->has('lastId')) {
-            $lastId = $request->query->get('lastId');
-        }
-
-        $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
-        $feedItems = array_filter($feedList); // filter out any null values
-
-        $readerList = $readerService->getChangeStatusForItems(...$feedItems);
-
-        return $this->render('dashboard/feed.html.twig', [
-            'feedList' => $feedItems,
-            'readerList' => $readerList,
-            'currentContextId' => $roomId,
         ]);
     }
 

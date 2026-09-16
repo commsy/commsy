@@ -418,14 +418,6 @@ services:
     commsy.calendars_service:
         class: App\Services\CalendarsService
 
-    commsy.room_feed_generator:
-        class: App\RoomFeed\RoomFeedGenerator
-        public: true
-        arguments:
-            - '@commsy_legacy.environment'
-            - '@commsy_legacy.room_service'
-            - '@commsy_legacy.item_service'
-
     # actions
     commsy.action.mark_read.generic:
         class: App\Action\MarkRead\MarkReadAction
