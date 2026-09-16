@@ -62,16 +62,18 @@ class NotificationRepository extends ServiceEntityRepository
 
     /**
      * Notifications for the activity panel, newest first, optionally scoped to
-     * one room. Read and unread rows alike are listed; rows only ever leave the
-     * panel through the retention cron (or when their item is deleted).
+     * one room. Read and unread rows alike are listed by default; rows only ever
+     * leave the panel through the retention cron (or when their item is
+     * deleted). $unreadOnly narrows it for the bell, where a message that has
+     * been read has served its purpose and should stop taking up room.
      *
      * @param NotificationType[] $types empty means every type
      *
      * @return Notification[]
      */
-    public function findForAccount(Account $account, ?int $contextId = null, int $limit = 50, array $types = []): array
+    public function findForAccount(Account $account, ?int $contextId = null, int $limit = 50, array $types = [], bool $unreadOnly = false): array
     {
-        return $this->accountQuery($account, false, $contextId, $types)
+        return $this->accountQuery($account, $unreadOnly, $contextId, $types)
             ->orderBy('n.createdAt', 'DESC')->addOrderBy('n.id', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
@@ -197,15 +199,25 @@ class NotificationRepository extends ServiceEntityRepository
      */
     public function markReadForAccountAndSourceItem(Account $account, int $sourceItemId, \DateTimeImmutable $now): int
     {
+        // A task is settled by deciding it, never by looking at something. The
+        // source item of a join request is the requesting person's user entry,
+        // so opening their profile would otherwise silently clear the badge.
+        $tasks = array_values(array_filter(
+            NotificationType::cases(),
+            static fn (NotificationType $type): bool => $type->isTask(),
+        ));
+
         return (int) $this->getEntityManager()
             ->createQuery(
                 'UPDATE App\Entity\Notification n
                  SET n.readAt = :now
-                 WHERE n.recipient = :account AND n.sourceItemId = :item AND n.readAt IS NULL'
+                 WHERE n.recipient = :account AND n.sourceItemId = :item AND n.readAt IS NULL
+                   AND n.type NOT IN (:tasks)'
             )
             ->setParameter('now', $now)
             ->setParameter('account', $account)
             ->setParameter('item', $sourceItemId)
+            ->setParameter('tasks', $tasks)
             ->execute();
     }
 

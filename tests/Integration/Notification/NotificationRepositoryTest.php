@@ -229,6 +229,32 @@ class NotificationRepositoryTest extends KernelTestCase
         self::assertSame(1, $this->repository()->countUnreadForAccount($other), 'the other account is untouched');
     }
 
+    public function testOpeningAnItemNeverMarksAnOpenTaskRead(): void
+    {
+        self::bootKernel();
+        $moderator = AccountFactory::createOne();
+
+        // A join request carries the requesting person's user entry as its
+        // source item, so viewing that profile must not settle the request.
+        $this->repository()->save(new Notification(
+            $moderator,
+            NotificationType::RoomJoinRequest,
+            5,
+            'Someone wants in',
+            'Room',
+            new \DateTimeImmutable(),
+            180,
+            'user',
+            'Someone',
+        ));
+        $this->persist($moderator, sourceItemId: 180);
+
+        $marked = $this->repository()->markReadForAccountAndSourceItem($moderator, 180, new \DateTimeImmutable());
+
+        self::assertSame(1, $marked, 'only the entry activity is marked read');
+        self::assertSame(1, $this->repository()->countUnreadForAccount($moderator), 'the request still counts');
+    }
+
     private function repository(): NotificationRepository
     {
         return self::getContainer()->get(NotificationRepository::class);

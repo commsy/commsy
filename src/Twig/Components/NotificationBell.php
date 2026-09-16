@@ -16,6 +16,7 @@ namespace App\Twig\Components;
 use App\Entity\Account;
 use App\Entity\Notification;
 use App\Enum\NotificationType;
+use App\Notification\NotificationLinkResolver;
 use App\Notification\RoomActivitySummary;
 use App\Repository\NotificationRepository;
 use App\Room\RoomMembershipDecider;
@@ -61,7 +62,17 @@ final class NotificationBell
     public function __construct(
         private readonly NotificationRepository $notificationRepository,
         private readonly RoomMembershipDecider $membershipDecider,
+        private readonly NotificationLinkResolver $linkResolver,
     ) {
+    }
+
+    /**
+     * Where a row leads. Rows that name an entry link straight to it; the rest
+     * fall back to the room they happened in.
+     */
+    public function linkFor(Notification $notification): ?string
+    {
+        return $this->linkResolver->resolve($notification);
     }
 
     #[LiveAction]
@@ -104,15 +115,18 @@ final class NotificationBell
     }
 
     /**
-     * The lower section: notifications that only inform. Room activity is
-     * summarised separately, so it is excluded here.
+     * The lower section: notifications that only inform. Read ones are dropped —
+     * marking them read is how you say you have taken note, and unlike a task
+     * there is nothing left to come back to. Room activity is summarised
+     * separately, so it is excluded here.
      *
      * @return Notification[]
      */
     public function getMessages(): array
     {
         return $this->ofTypes(
-            static fn (NotificationType $type): bool => !$type->isTask() && !$type->isContentActivity()
+            static fn (NotificationType $type): bool => !$type->isTask() && !$type->isContentActivity(),
+            unreadOnly: true,
         );
     }
 
@@ -153,7 +167,7 @@ final class NotificationBell
      *
      * @return Notification[]
      */
-    private function ofTypes(callable $matches): array
+    private function ofTypes(callable $matches, bool $unreadOnly = false): array
     {
         if ($this->account === null) {
             return [];
@@ -163,7 +177,7 @@ final class NotificationBell
 
         return $types === []
             ? []
-            : $this->notificationRepository->findForAccount($this->account, null, self::LIMIT, $types);
+            : $this->notificationRepository->findForAccount($this->account, null, self::LIMIT, $types, $unreadOnly);
     }
 
     /**

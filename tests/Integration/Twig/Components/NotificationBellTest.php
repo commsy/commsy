@@ -127,6 +127,22 @@ final class NotificationBellTest extends KernelTestCase
         return self::getContainer()->get(NotificationRepository::class);
     }
 
+    public function testAReadDecisionLeavesTheDropdown(): void
+    {
+        self::bootKernel();
+        $account = AccountFactory::createOne();
+        $this->persist($account, NotificationType::RoomJoinDecision, 'Projektraum', 180,
+            new NotificationPayload(decision: 'accepted'));
+
+        $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
+        self::assertStringContainsString('angenommen', (string) $component->render());
+
+        $component->call('markAllRead');
+
+        // Unlike a task, an informational message has nothing left to come back to.
+        self::assertStringNotContainsString('angenommen', (string) $component->render());
+    }
+
     private function persist(
         Account $account,
         NotificationType $type,
