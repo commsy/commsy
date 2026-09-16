@@ -48,13 +48,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
-use Nette\Utils\Strings;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -913,6 +911,9 @@ class UserController extends BaseController
         ]);
     }
 
+    /** How long a browser may keep an avatar before asking again. */
+    private const AVATAR_MAX_AGE = 300;
+
     #[Route(path: '/room/user/guestimage')]
     public function guestimage(
         AvatarService $avatarService
@@ -941,7 +942,6 @@ class UserController extends BaseController
         $picture = $user->getPicture();
 
         $foundUserImage = false;
-        $file = 'user_unknown.gif';
         if ('' != $picture) {
             $disc_manager = $this->legacyEnvironment->getDiscManager();
             $portalId = $this->currentContextResolver->getPortal()?->getId() ?? 0;
@@ -955,7 +955,6 @@ class UserController extends BaseController
 
                 if ($content) {
                     $foundUserImage = true;
-                    $file = $picture;
                 }
             }
         }
@@ -963,17 +962,25 @@ class UserController extends BaseController
         if (!$foundUserImage) {
             $content = $avatarService->getAvatar($itemId);
         }
-        return $this->imageResponse($content, $file);
+        return $this->imageResponse($content);
     }
 
     /**
-     * Serves image bytes under the media type they actually are.
+     * Serves image bytes under the media type they actually are, and lets the
+     * browser keep them for a while.
      *
      * These routes used to answer with "content-type: image", which is not a
-     * media type at all — it has no subtype. Browsers then have to sniff the
-     * bytes, and they do not all sniff the same way or at the same moment.
+     * media type at all — it has no subtype. They also inherited the default
+     * "max-age=0, must-revalidate" of a session-bearing response, so every
+     * avatar on a page was fetched again on every single view. A short private
+     * lifetime is plenty here: a picture someone just changed is stale for a few
+     * minutes at worst, and in exchange the browser stops re-loading a dozen
+     * unchanged images per page.
+     *
+     * No Content-Disposition: it said "inline" with a made-up filename, which
+     * means nothing for an <img> and only muddied what the response is.
      */
-    private function imageResponse(string|bool $content, string $filename = 'avatar'): Response
+    private function imageResponse(string|bool $content): Response
     {
         $content = is_string($content) ? $content : '';
         $size = @getimagesizefromstring($content);
@@ -981,10 +988,9 @@ class UserController extends BaseController
         $response = new Response($content, Response::HTTP_OK, [
             'content-type' => $size['mime'] ?? 'application/octet-stream',
         ]);
-        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_INLINE,
-            Strings::webalize($filename)
-        ));
+        $response->setPrivate();
+        $response->setMaxAge(self::AVATAR_MAX_AGE);
+        $response->setEtag(md5($content));
 
         return $response;
     }
