@@ -2,7 +2,6 @@
 
 namespace App\Filter;
 
-use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Room;
 use App\Entity\User;
@@ -95,20 +94,24 @@ class AccountFilterType extends AbstractType
                     /** @var QueryBuilder $qb */
                     $qb = $filterQuery->getQueryBuilder();
 
-                    $accountRepository = $this->entityManager->getRepository(Account::class);
-                    $subquery = $accountRepository->createQueryBuilder('a2')
-                        ->select('COUNT(ru2.userId)')
-                        ->leftJoin(User::class, 'ru2', Join::WITH, 'ru2.userId = a2.username AND ru2.authSource = a2.authSource')
-                        ->where('ru2.userId = ru.userId')
+                    // One membership in a live project or community room, which
+                    // is what "Members" below asks for. Status 13 negates it.
+                    $workspaceMembership = $this->entityManager->createQueryBuilder()
+                        ->select('ru2.itemId')
+                        ->from(User::class, 'ru2')
+                        ->innerJoin(Room::class, 'r2', Join::WITH, 'r2.itemId = ru2.room')
+                        ->where('ru2.account = a')
                         ->andWhere('ru2.isNotDeleted = :notDeleted')
-                        ->setParameter('notDeleted', true)
+                        ->andWhere('r2.deleter IS NULL')
+                        ->andWhere('r2.deletionDate IS NULL')
+                        ->andWhere('(r2.type = :project OR r2.type = :community)')
                         ->getQuery()
                         ->getDQL();
 
                     match ($status) {
                         // Members
                         1 => $qb
-                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.account = a')
                             ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.room')
                             ->andWhere('r.itemId IS NOT NULL')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
@@ -124,27 +127,27 @@ class AccountFilterType extends AbstractType
                             ->setParameter('locked', true),
                         // Requesting
                         3 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.portal AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.account = a AND pu.room = a.portal')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 1),
                         // User
                         4 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.portal AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.account = a AND pu.room = a.portal')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 2),
                         // Moderator
                         5 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.portal AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.account = a AND pu.room = a.portal')
                             ->andWhere($expr->eq('pu.status', ':status'))
                             ->setParameter('status', 3),
                         // Contact
                         6 => $qb
-                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.room = a.portal AND pu.userId = a.username AND pu.authSource = a.authSource')
+                            ->innerJoin(User::class, 'pu', Join::WITH, 'pu.account = a AND pu.room = a.portal')
                             ->andWhere($expr->eq('pu.isContact', ':contact'))
                             ->setParameter('contact', true),
                         // Community workspace moderator
                         7 => $qb
-                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.account = a')
                             ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.room')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('ru.status = :status')
@@ -156,7 +159,7 @@ class AccountFilterType extends AbstractType
                             ->setParameter('status', 3),
                         // Community workspace contact
                         8 => $qb
-                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.account = a')
                             ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.room')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('ru.isContact = :contact')
@@ -168,7 +171,7 @@ class AccountFilterType extends AbstractType
                             ->setParameter('contact', true),
                         // Project workspace moderator
                         9 => $qb
-                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.account = a')
                             ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.room')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('ru.status = :status')
@@ -180,7 +183,7 @@ class AccountFilterType extends AbstractType
                             ->setParameter('status', 3),
                         // project workspace contact
                         10 => $qb
-                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.account = a')
                             ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.room')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
                             ->andWhere('ru.isContact = :contact')
@@ -192,7 +195,7 @@ class AccountFilterType extends AbstractType
                             ->setParameter('contact', true),
                         // moderator of any workspace
                         11 => $qb
-                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.account = a')
                             ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.room')
                             ->andWhere('ru.status = :status')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
@@ -202,7 +205,7 @@ class AccountFilterType extends AbstractType
                             ->setParameter('status', 3),
                         // contact of any workspace
                         12 => $qb
-                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
+                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.account = a')
                             ->innerJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.room')
                             ->andWhere('ru.isContact = :contact')
                             ->andWhere('ru.isNotDeleted = :notDeleted')
@@ -210,13 +213,16 @@ class AccountFilterType extends AbstractType
                             ->andWhere('r.deletionDate IS NULL')
                             ->setParameter('notDeleted', true)
                             ->setParameter('contact', true),
-                        // no workspace membership
+                        // no workspace membership — asked directly rather than
+                        // by counting the rows an account holds: how many of
+                        // those there are says nothing about room membership,
+                        // and a row left behind by a deleted room used to push
+                        // an account over the threshold.
                         13 => $qb
-                            ->leftJoin(User::class, 'ru', Join::WITH, 'ru.userId = a.username AND ru.authSource = a.authSource')
-                            ->leftJoin(Room::class, 'r', Join::WITH, 'r.itemId = ru.room')
-                            ->andWhere('ru.isNotDeleted = :notDeleted')
-                            ->andWhere($qb->expr()->eq('(' . $subquery . ')', 2))
-                            ->setParameter('notDeleted', true),
+                            ->andWhere($expr->not($expr->exists($workspaceMembership)))
+                            ->setParameter('notDeleted', true)
+                            ->setParameter('project', 'project')
+                            ->setParameter('community', 'community'),
                         default => $qb,
                     };
 

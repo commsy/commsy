@@ -16,12 +16,15 @@ namespace Tests\Application\Controller;
 use App\Entity\Account;
 use App\Entity\Portal;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\AccountFactory;
 use Tests\Factory\PortalFactory;
 use Tests\Story\AccountStory;
 use Tests\Story\PortalStory;
+use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 class PortalSettingsControllerTest extends AbstractApplicationTestCase
@@ -81,6 +84,118 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
         $this->assertAnySelectorTextContains('a', "{$account->getFirstname()} {$account->getLastname()}");
         $this->assertAnySelectorTextContains('a', $account->getEmail());
+    }
+
+    /**
+     * The status filter builds a different query per choice. Only "locked"
+     * stays on the account table; every other choice joins the user rows, so
+     * testAccountIndex above exercises none of them.
+     */
+    #[DataProvider('accountIndexStatusFilters')]
+    public function testAccountIndexFiltersByStatus(int $status): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getContextId();
+
+        $this->loginAsRoot();
+
+        $this->client->request('GET', "/portal/{$portalId}/settings/accountindex", [
+            'account_filter' => ['status' => $status],
+        ]);
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    /**
+     * Mirrors the choices in AccountFilterType. 14, 15 and 16 are the
+     * separator rows, which are selectable and therefore reachable too.
+     */
+    public static function accountIndexStatusFilters(): iterable
+    {
+        foreach (range(1, 16) as $status) {
+            yield "status {$status}" => [$status];
+        }
+    }
+
+    /**
+     * "No workspaces participation" asks who belongs to no project or
+     * community room. It must not answer by counting the rows an account
+     * holds — the number varies for reasons that have nothing to do with
+     * membership.
+     */
+    #[WithStory(AccountStory::class)]
+    public function testAccountIndexListsAnAccountWithoutAWorkspace(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+
+        $this->loginAsRoot();
+        $this->requestAccountIndexFilteredByStatus($account->getContextId(), 13);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertAnySelectorTextContains('a', $account->getEmail());
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testAccountIndexHidesAMemberOfAWorkspace(): void
+    {
+        /** @var Account $account */
+        $account = RoomWithMemberStory::get('account');
+
+        $this->loginAsRoot();
+        $crawler = $this->requestAccountIndexFilteredByStatus($account->getContextId(), 13);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString($account->getEmail(), $crawler->text());
+    }
+
+    /**
+     * A membership whose room is gone is no membership. The row stays with
+     * the account — deprovisioning left plenty of those behind — so counting
+     * rows hides exactly the people this filter is meant to surface.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testAccountIndexListsAMemberWhoseWorkspaceIsDeleted(): void
+    {
+        /** @var Account $account */
+        $account = RoomWithMemberStory::get('account');
+        $room = RoomWithMemberStory::get('room');
+
+        static::getContainer()->get(EntityManagerInterface::class)->getConnection()->executeStatement(
+            'UPDATE room SET deletion_date = NOW(), deleter_id = 1 WHERE item_id = ?',
+            [$room->getItemId()]
+        );
+
+        $this->loginAsRoot();
+        $this->requestAccountIndexFilteredByStatus($account->getContextId(), 13);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertAnySelectorTextContains('a', $account->getEmail());
+    }
+
+    /**
+     * The complement of the two above: the same member has to show up under
+     * "Members", which is what keeps the pair from passing on an empty list.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testAccountIndexListsAMemberOfAWorkspace(): void
+    {
+        /** @var Account $account */
+        $account = RoomWithMemberStory::get('account');
+
+        $this->loginAsRoot();
+        $this->requestAccountIndexFilteredByStatus($account->getContextId(), 1);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertAnySelectorTextContains('a', $account->getEmail());
+    }
+
+    private function requestAccountIndexFilteredByStatus(int $portalId, int $status): Crawler
+    {
+        return $this->client->request('GET', "/portal/{$portalId}/settings/accountindex", [
+            'account_filter' => ['status' => $status],
+        ]);
     }
 
     public function testAccountIndexDetail(): void
