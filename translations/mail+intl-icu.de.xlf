@@ -649,7 +649,7 @@ wurde der Mechanismus "Passwort vergessen" aktiviert.
 Über den Link
 {p3}
 
-können Sie Ihr Passwort in den nächsten {p4} Minuten neu setzen. Er ist nur von dem PC aus nutzbar, von dem der "Passwort-vergessen"-Mechanismus aus angestoßen wurde.
+können Sie Ihr Passwort in den nächsten {p4} Minuten neu setzen. Öffnen Sie ihn bitte in demselben Browser, in dem Sie "Passwort vergessen?" angeklickt haben. Andernfalls führt der Link nur zur Anmeldeseite.
 
 ---
 
