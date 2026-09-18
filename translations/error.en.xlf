@@ -22,6 +22,38 @@
                 <source>deprecated markup</source>
                 <target>The markup %markup% is no longer supported, please embed media content directly in the editor.</target>
             </trans-unit>
+            <trans-unit id="error-403-title">
+                <source>403 title</source>
+                <target>No access</target>
+            </trans-unit>
+            <trans-unit id="error-403-body">
+                <source>403 body</source>
+                <target>You do not have permission for this area. You may not be a member of the workspace it belongs to.</target>
+            </trans-unit>
+            <trans-unit id="error-back-to-portal">
+                <source>back to portal</source>
+                <target>Go to portal</target>
+            </trans-unit>
+            <trans-unit id="error-back-to-overview">
+                <source>back to overview</source>
+                <target>Go to portal overview</target>
+            </trans-unit>
+            <trans-unit id="error-404-title">
+                <source>404 title</source>
+                <target>Page not found</target>
+            </trans-unit>
+            <trans-unit id="error-404-body">
+                <source>404 body</source>
+                <target>This address does not lead to a page. It may have changed, or been copied incompletely.</target>
+            </trans-unit>
+            <trans-unit id="error-general-title">
+                <source>error title</source>
+                <target>Something went wrong</target>
+            </trans-unit>
+            <trans-unit id="error-general-body">
+                <source>error body</source>
+                <target>The operation could not be completed. Please try again. If it persists, let us know what you were doing.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

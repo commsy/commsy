@@ -1,0 +1,38 @@
+{% extends 'base_portal.html.twig' %}
+
+{#
+    Shared by every error page. These are shown for failures the firewall never
+    sees, where there may be no session: no app.user, no is_granted, no
+    sub-controllers — a page that throws while reporting an error leaves
+    nothing at all.
+#}
+
+{% block top_navigation %}
+    <nav class="uk-navbar-container" aria-label="{{ 'Portal'|trans([], 'portal') }}" uk-navbar>
+        <div class="uk-navbar-left">
+            <a id="commsy_logo" class="uk-navbar-item uk-logo" aria-label="{{ 'Portal'|trans([], 'portal') }}" href="{{ path('app_server_linkout') }}">
+                <img class="uk-responsive-height" alt="CommSy logo" src="{{ asset('build/commsy_logo_120.png') }}"/>
+            </a>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block main %}
+    {% set portal = commsy.portal %}
+    {% set portalId = app.request.attributes.get('portalId') ?: (portal ? portal.id : null) %}
+
+    <div uk-alert>
+        <h1>{% block error_title %}{% endblock %}</h1>
+        <p>{% block error_body %}{% endblock %}</p>
+    </div>
+
+    {% if portalId %}
+        <a class="uk-button uk-button-primary" href="{{ path('app_helper_portalenter', {'context': portalId}) }}">
+            {{ 'back to portal'|trans([], 'error') }}
+        </a>
+    {% else %}
+        <a class="uk-button uk-button-primary" href="{{ path('app_server_linkout') }}">
+            {{ 'back to overview'|trans([], 'error') }}
+        </a>
+    {% endif %}
+{% endblock %}

@@ -231,13 +231,15 @@ class AccountControllerTest extends AbstractApplicationTestCase
     public function testNotificationsPageRequiresPortalModerator(): void
     {
         // The notifications endpoint requires PORTAL_MODERATOR; AccountStory
-        // produces a regular non-moderator user, so the access-denied
-        // handler redirects to the portal/room fallback.
+        // produces a regular non-moderator user. This is a portal-level page,
+        // so there is no room to bounce to — the answer is 403. It used to
+        // redirect to /portal/X/room/X, a portal id in the item slot, which
+        // this test never noticed because it did not follow the bounce.
         $account = AccountStory::get('account');
         $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
 
         $this->client->request('GET', "/portal/{$account->getContextId()}/account/notifications");
-        $this->assertResponseRedirects();
+        $this->assertResponseStatusCodeSame(403);
     }
 
     public function testNewsletterPageRenders(): void

@@ -1,12 +1,6 @@
-{% extends 'base_portal.html.twig' %}
+{% extends 'error/layout.html.twig' %}
 
-{% block main %}
-    <div uk-alert>
-        <h1>Access forbidden</h1>
-        <h2>The server returned a "{{ status_code }} {{ status_text }}".</h2>
+{# Names nothing it refused — existence is itself information. #}
 
-        <p>
-            You have insufficient rights to access the resource.
-        </p>
-    </div>
-{% endblock %}
+{% block error_title %}{{ '403 title'|trans([], 'error') }}{% endblock %}
+{% block error_body %}{{ '403 body'|trans([], 'error') }}{% endblock %}

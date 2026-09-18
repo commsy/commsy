@@ -31,10 +31,13 @@ readonly class AuthenticationEntryPoint implements AuthenticationEntryPointInter
     public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
     {
         $portal = $this->requestContext->fetchPortal($request);
-        $contextId = null !== $portal ? $portal->getId() : $this->requestContext->fetchContextId($request);
+
+        // An id straight out of the URL may resolve to nothing, and its login
+        // page would answer 404 — telling a visitor which ids exist.
+        $context = null !== $portal ? $portal->getId() : 'server';
 
         $url = $this->urlGenerator->generate('app_login', [
-            'context' => $contextId,
+            'context' => $context,
         ]);
 
         return new RedirectResponse($url);

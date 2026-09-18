@@ -22,6 +22,38 @@
                 <source>deprecated markup</source>
                 <target>Die Anzeige von %markup% wird nicht mehr unterstützt, bitte betten Sie Medieninhalte direkt über den Editor ein.</target>
             </trans-unit>
+            <trans-unit id="error-403-title">
+                <source>403 title</source>
+                <target>Kein Zugriff</target>
+            </trans-unit>
+            <trans-unit id="error-403-body">
+                <source>403 body</source>
+                <target>Sie haben keine Berechtigung für diesen Bereich. Möglicherweise gehören Sie dem zugehörigen Raum nicht an.</target>
+            </trans-unit>
+            <trans-unit id="error-back-to-portal">
+                <source>back to portal</source>
+                <target>Zum Portal</target>
+            </trans-unit>
+            <trans-unit id="error-back-to-overview">
+                <source>back to overview</source>
+                <target>Zur Portalübersicht</target>
+            </trans-unit>
+            <trans-unit id="error-404-title">
+                <source>404 title</source>
+                <target>Seite nicht gefunden</target>
+            </trans-unit>
+            <trans-unit id="error-404-body">
+                <source>404 body</source>
+                <target>Diese Adresse führt zu keiner Seite. Möglicherweise hat sie sich geändert oder wurde unvollständig übernommen.</target>
+            </trans-unit>
+            <trans-unit id="error-general-title">
+                <source>error title</source>
+                <target>Etwas ist schiefgelaufen</target>
+            </trans-unit>
+            <trans-unit id="error-general-body">
+                <source>error body</source>
+                <target>Der Vorgang ließ sich nicht abschließen. Bitte versuchen Sie es erneut. Bleibt es dabei, melden Sie uns bitte, was Sie gerade getan haben.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

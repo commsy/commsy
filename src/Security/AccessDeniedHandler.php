@@ -43,7 +43,9 @@ readonly class AccessDeniedHandler implements AccessDeniedHandlerInterface
         $portal = $this->requestContext->fetchPortal($request);
         $contextId = $this->requestContext->fetchContextId($request);
 
-        if ($portal && $contextId) {
+        // Only bounce while a room is left to bounce to: on the detail page
+        // itself fetchContextId() falls through to the portal id, which is none.
+        if ($portal && $contextId && $contextId !== $portal->getId()) {
             return new RedirectResponse($this->urlGenerator->generate('app_roomall_detail', [
                 'portalId' => $portal->getId(),
                 'itemId' => $contextId,

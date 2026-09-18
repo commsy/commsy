@@ -154,6 +154,13 @@ class ItemVoter extends Voter
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         if ($item) {
+            // A portal is not an item: only ENTER and ROOM_DELETE take the
+            // proxy, the other checks are typed against cs_item.
+            if ($item instanceof PortalProxy
+                && !in_array($attribute, [self::ENTER, self::ROOM_DELETE], true)) {
+                return false;
+            }
+
             switch ($attribute) {
                 case self::SEE:
                     return $this->canView($item, $currentUser);

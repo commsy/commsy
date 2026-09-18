@@ -188,8 +188,14 @@ class cs_environment
                 $type = $item->getItemType();
                 $manager = $this->getManager($type);
             } else {
-                trigger_error('can not initiate room [' . $this->current_context_id . '] -> bug in item table',
-                    E_USER_ERROR);
+                // The id comes from the URL. Was E_USER_ERROR, which turned a
+                // mistyped address into a 500 before authorization had a say;
+                // the server fallback keeps this non-null and leaves the
+                // refusal to the voter.
+                $this->current_context_id = $this->getServerID();
+                $this->current_context = $this->getServerItem();
+
+                return $this->current_context;
             }
 
             if (!empty($manager) && is_object($manager)) {
