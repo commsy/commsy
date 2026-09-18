@@ -1,3 +1,65 @@
+// Tom Select ships two themes. We use the default one because it stands on
+// its own: the Bootstrap 5 theme paints itself from Bootstrap custom
+// properties, which this project never defines, so its dropdown came out
+// transparent. What the default theme brings in size and colour is set here
+// instead of inherited.
+
+// The theme sizes itself for Bootstrap, which runs on a larger base than this
+// one, so the field came out taller than the inputs beside it. Both take
+// their measurements from the same form variables now.
+.ts-wrapper {
+    min-height: @form-height;
+}
+
 .ts-control {
     border-radius: unset;
+    padding: @form-padding-vertical @form-padding-horizontal;
+    min-height: @form-height;
+    font-size: inherit;
+    box-shadow: none;
+    align-items: center;
+}
+
+.ts-dropdown {
+    border-radius: unset;
+    font-size: inherit;
+}
+
+// Selected entries stay a neutral chip. They appear in long rows next to a
+// room's own accent colour, so borrowing that colour would make the row
+// shout; the accent is kept for the one entry the keyboard has hold of.
+//
+// The theme paints these through `background-image`, not `background-color`,
+// and reaches them by attribute — a selector that outweighs one written
+// against the element. Both have to be answered in kind, or the gradient
+// stays and only the colour underneath it changes.
+.ts-wrapper.multi .ts-control [data-value] {
+    background-color: #efefef;
+    background-image: none;
+    color: #343a40;
+    border-color: #d0d0d0;
+    text-shadow: none;
+    box-shadow: none;
+    border-radius: unset;
+
+    &.active {
+        background-color: @button-primary-background;
+        background-image: none;
+        border-color: @button-primary-background;
+        color: #fff;
+    }
+}
+
+// The remove button keeps a divider from the theme's own blue; on a neutral
+// chip it is the only colour left over.
+.ts-wrapper.plugin-remove_button:not(.rtl) .ts-control [data-value] .remove {
+    border-left-color: #d0d0d0;
+}
+
+// The field's own input is an `input` like any other, so the theme gives it
+// the full control height — inside a box that already has one. It only needs
+// to be as tall as its line.
+.ts-wrapper .ts-control input {
+    height: auto;
+    min-height: 0;
 }
