@@ -83,6 +83,10 @@ trait BootsVoter
         $attrs = [
             'portal' => $portal,
             'authSource' => $portal?->getAuthSources()->first(),
+            // AccountFactory randomises `locked`, which decides CAN_SWITCH_USER
+            // on its own. An ordinary account is the baseline here; a test that
+            // wants a locked one says so.
+            'locked' => false,
         ];
         if ($username !== null) {
             $attrs['username'] = $username;

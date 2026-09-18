@@ -147,6 +147,22 @@ final class SwitchToUserVoterTest extends KernelTestCase
         );
     }
 
+    /**
+     * A locked account cannot authenticate, so taking it over leads nowhere.
+     * Root is refused too: the obstacle is the account's state, not a
+     * permission.
+     */
+    public function testALockedTargetIsRefusedEvenForRoot(): void
+    {
+        $rootAccount = $this->createPortalAccount('root');
+        $this->actAsRoot($rootAccount);
+
+        $target = $this->createPortalAccount();
+        $target->setLocked(true);
+
+        self::assertFalse($this->authChecker->isGranted('CAN_SWITCH_USER', $target));
+    }
+
     protected function setUp(): void
     {
         self::bootKernel();

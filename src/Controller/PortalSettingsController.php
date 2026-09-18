@@ -2064,6 +2064,11 @@ class PortalSettingsController extends AbstractController
         // same ITEM_EDIT rule as everywhere else here.
         $this->denyAccessUnlessGranted(ItemVoter::EDIT, $userService->getPortalUser($account)->getItemID());
 
+        // Third: is the take-over possible at all? Asking the same rule the
+        // menu asks keeps the route from offering a way the firewall refuses
+        // two redirects later.
+        $this->denyAccessUnlessGranted('CAN_SWITCH_USER', $account);
+
         // UserProvider resolves the impersonated account by (username, portal,
         // auth source), so both parts must come from the same account.
         $authSource = $account->getAuthSource();

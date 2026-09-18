@@ -339,6 +339,67 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
     }
 
     /**
+     * A locked account cannot authenticate — UserChecker refuses it right
+     * after the switch — so taking it over leads nowhere. Root is not exempt:
+     * the obstacle is the account's state, not a permission.
+     */
+    public function testTakeOverOfALockedAccountIsRefused(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getContextId();
+
+        static::getContainer()->get(EntityManagerInterface::class)->getConnection()->executeStatement(
+            'UPDATE accounts SET locked = 1 WHERE id = ?',
+            [$account->getId()]
+        );
+
+        $this->loginAsRoot();
+
+        $this->client->request(
+            'GET',
+            "/portal/{$portalId}/settings/accountIndex/detail/{$account->getId()}/takeOver"
+        );
+
+        $this->assertResponseStatusCodeSame(403);
+    }
+
+    /**
+     * And the menu must not offer what the route refuses — greyed out rather
+     * than removed, so a moderator sees the action exists and is unavailable.
+     */
+    public function testTheDetailPageDoesNotOfferTakeOverForALockedAccount(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getContextId();
+
+        static::getContainer()->get(EntityManagerInterface::class)->getConnection()->executeStatement(
+            'UPDATE accounts SET locked = 1 WHERE id = ?',
+            [$account->getId()]
+        );
+
+        $this->loginAsRoot();
+
+        $crawler = $this->client->request(
+            'GET',
+            "/portal/{$portalId}/settings/accountindex/detail/{$this->portalUserItemIdOf($account)}"
+        );
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString('/takeOver', $crawler->html());
+        $this->assertAnySelectorTextContains('li.uk-text-muted', $account->getFirstname());
+    }
+
+    private function portalUserItemIdOf(Account $account): int
+    {
+        return (int) static::getContainer()->get(EntityManagerInterface::class)->getConnection()->fetchOne(
+            'SELECT item_id FROM user WHERE account_id = ? AND context_id = ?',
+            [$account->getId(), $account->getPortal()->getId()]
+        );
+    }
+
+    /**
      * Root is not exempt from this one, and that is deliberate: it is not an
      * authorization question but a consistency one. The session pairs the
      * portal from the URL with the account's auth source, so a cross-portal

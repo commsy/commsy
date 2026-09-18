@@ -55,6 +55,13 @@ class SwitchToUserVoter extends Voter
             return false;
         }
 
+        // A locked account cannot authenticate — UserChecker refuses it right
+        // after the switch — so the take-over leads nowhere. Ahead of the root
+        // shortcut: the obstacle is the account's state, not a permission.
+        if ($subject instanceof Account && $subject->isLocked()) {
+            return false;
+        }
+
         if ('root' === $account->getUsername()) {
             return true;
         }
