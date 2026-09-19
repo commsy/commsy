@@ -912,7 +912,7 @@ class PortalSettingsController extends AbstractController
         if ($accountInactiveForm->isSubmitted() && $accountInactiveForm->isValid()) {
             // Reset all account if the feature has been disabled
             if (!$portal->isClearInactiveAccountsFeatureEnabled()) {
-                $accountManager->resetInactivityToPreviousNonNotificationState();
+                $accountManager->resetInactivityToPreviousNonNotificationState($portal);
             }
 
             $entityManager->persist($portal);
@@ -928,7 +928,7 @@ class PortalSettingsController extends AbstractController
         $roomInactiveForm->handleRequest($request);
         if ($roomInactiveForm->isSubmitted() && $roomInactiveForm->isValid()) {
             if (!$portal->isClearInactiveRoomsFeatureEnabled()) {
-                $roomManager->resetInactivityToPreviousNonNotificationState();
+                $roomManager->resetInactivityToPreviousNonNotificationState($portal);
             }
 
             $entityManager->persist($portal);

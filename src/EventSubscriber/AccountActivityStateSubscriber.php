@@ -15,6 +15,7 @@ namespace App\EventSubscriber;
 
 use App\Account\AccountDeleter;
 use App\Account\AccountManager;
+use App\Account\LastModeratorChecker;
 use App\Entity\Account;
 use App\Mail\Factories\AccountMessageFactory;
 use App\Mail\Mailer;
@@ -30,6 +31,7 @@ readonly class AccountActivityStateSubscriber implements EventSubscriberInterfac
 {
     public function __construct(
         private AccountManager $accountManager,
+        private LastModeratorChecker $lastModeratorChecker,
         private AccountDeleter $accountDeleter,
         private AccountMessageFactory $accountMessageFactory,
         private Mailer $mailer
@@ -51,18 +53,23 @@ readonly class AccountActivityStateSubscriber implements EventSubscriberInterfac
             return;
         }
 
-        // Block all transitions if the portal configuration has disabled the account activity feature
+        // Block all transitions if the portal configuration has disabled the
+        // account activity feature. No portal at all means the account belongs
+        // to none — `accounts.portal_id` is nullable to mark exactly that, and
+        // there are no settings that could apply.
         $portal = $account->getPortal();
-        if (!$portal->isClearInactiveAccountsFeatureEnabled()) {
+        if (null === $portal || !$portal->isClearInactiveAccountsFeatureEnabled()) {
             $event->setBlocked(true);
 
             return;
         }
 
-        // Deny, if account is last moderator (this will also reset the account state)
-        if ($this->accountManager->isLastModerator($account)) {
-            $this->accountManager->resetInactivity($account, false, true, false);
-
+        // Deny, if the account is the last moderator somewhere. Deciding only —
+        // rolling the account back to `active` is the caller's job, see
+        // AccountActivityStateTransitionsHandler. A guard runs several times
+        // per transition and also when nothing is applied, so writing from
+        // here made merely asking the workflow change the account.
+        if ($this->lastModeratorChecker->isLastModerator($account)) {
             $event->setBlocked(true);
         }
     }

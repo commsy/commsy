@@ -16,6 +16,7 @@ namespace App\Repository;
 use App\Entity\Account;
 use App\Entity\AuthSource;
 use App\Entity\Portal;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
@@ -93,14 +94,28 @@ class AccountsRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function updateActivity(string $oldState, string $newState): void
+    /**
+     * Moves every account of one portal from one activity state to another.
+     *
+     * Scoped to a portal on purpose: the settings that trigger this belong to
+     * a single portal, and without the filter one portal's change reset the
+     * accounts of all the others.
+     *
+     * $stateUpdated is the deadline base of the target state — null for
+     * states that have no deadline, see AccountManager.
+     */
+    public function updateActivity(Portal $portal, string $oldState, string $newState, ?DateTimeInterface $stateUpdated): void
     {
         $this->createQueryBuilder('a')
             ->update()
             ->set('a.activityState', ':newState')
+            ->set('a.activityStateUpdated', ':stateUpdated')
             ->where('a.activityState = :oldState')
+            ->andWhere('a.portal = :portal')
             ->setParameter('oldState', $oldState)
             ->setParameter('newState', $newState)
+            ->setParameter('stateUpdated', $stateUpdated)
+            ->setParameter('portal', $portal)
             ->getQuery()
             ->execute();
     }

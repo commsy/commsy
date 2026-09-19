@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Repository;
 
 use App\Entity\Account;
+use DateTime;
 use App\Repository\AccountsRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Factory\AccountFactory;
@@ -141,7 +142,7 @@ final class AccountsRepositoryTest extends KernelTestCase
             'activityState' => 'active',
         ]);
 
-        $this->repository->updateActivity('active', 'idle');
+        $this->repository->updateActivity($portal, 'active', 'idle', new DateTime());
 
         // Bulk update bypasses Doctrine's UoW — clear + reload.
         $em = self::getContainer()->get('doctrine.orm.entity_manager');

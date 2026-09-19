@@ -17,6 +17,8 @@ use App\Entity\Account;
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
+use App\User\UserStatus;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
@@ -140,6 +142,54 @@ class RoomRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * Rooms of the given types in the account's portal in which this account
+     * is the only living moderator.
+     *
+     * The room types are an argument on purpose. The legacy room list widened
+     * to group rooms as soon as a current portal happened to be set on the
+     * environment, so the answer depended on what the process had handled
+     * before.
+     *
+     * @param string[] $roomTypes
+     *
+     * @return Room[]
+     */
+    public function findRoomsWithSoleModerator(Account $account, array $roomTypes): array
+    {
+        $portalId = $account->getPortal()?->getId();
+        if (null === $portalId || [] === $roomTypes) {
+            return [];
+        }
+
+        $moderatorCount = $this->getEntityManager()->createQueryBuilder()
+            ->select('COUNT(other.itemId)')
+            ->from(User::class, 'other')
+            ->where('other.room = r')
+            ->andWhere('other.deleter IS NULL')
+            ->andWhere('other.deletionDate IS NULL')
+            ->andWhere('other.status = :moderator');
+
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb
+            ->select('r')
+            ->innerJoin(User::class, 'own', Join::WITH, 'own.room = r AND own.deleter IS NULL AND own.deletionDate IS NULL AND own.status = :moderator AND IDENTITY(own.account) = :accountId')
+            ->where('r.contextId = :portalId')
+            ->andWhere('r.deleter IS NULL')
+            ->andWhere('r.deletionDate IS NULL')
+            ->andWhere($qb->expr()->in('r.type', ':roomTypes'))
+            ->andWhere('('.$moderatorCount->getDQL().') = 1')
+            ->setParameters(new ArrayCollection([
+                new Parameter('portalId', $portalId),
+                new Parameter('accountId', $account->getId()),
+                new Parameter('moderator', UserStatus::Moderator->value),
+                new Parameter('roomTypes', $roomTypes),
+            ]))
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getProjectAndUserRoomIds(): array
     {
         $query = $this->getEntityManager()->createQuery('
@@ -154,14 +204,28 @@ class RoomRepository extends ServiceEntityRepository
         return array_column($query->getResult(), 'itemId');
     }
 
-    public function updateActivity(string $oldState, string $newState): mixed
+    /**
+     * Moves every room of one portal from one activity state to another.
+     *
+     * Scoped to a portal on purpose: the settings that trigger this belong to
+     * a single portal, and without the filter one portal's change reset the
+     * rooms of all the others.
+     *
+     * $stateUpdated is the deadline base of the target state — null for
+     * states that have no deadline, see RoomManager.
+     */
+    public function updateActivity(Portal $portal, string $oldState, string $newState, ?DateTimeInterface $stateUpdated): mixed
     {
         return $this->createQueryBuilder('r')
             ->update()
             ->set('r.activityState', ':newState')
+            ->set('r.activityStateUpdated', ':stateUpdated')
             ->where('r.activityState = :oldState')
+            ->andWhere('r.portal = :portal')
             ->setParameter('oldState', $oldState)
             ->setParameter('newState', $newState)
+            ->setParameter('stateUpdated', $stateUpdated)
+            ->setParameter('portal', $portal)
             ->getQuery()
             ->execute();
     }

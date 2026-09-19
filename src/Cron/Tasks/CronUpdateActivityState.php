@@ -24,7 +24,13 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class CronUpdateActivityState implements CronTaskInterface
 {
-    private const BATCH_SIZE = 100;
+    /**
+     * Accounts and rooms per message. Deliberately small: one message is one
+     * unit of work, so a failing flush can take at most this many state
+     * changes down with it. Individual failures are contained by the
+     * handlers, which skip the offending row.
+     */
+    private const int BATCH_SIZE = 25;
 
     public function __construct(
         private readonly AccountsRepository $accountRepository,

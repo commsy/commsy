@@ -15,6 +15,7 @@ namespace Tests\Integration\Repository;
 
 use App\Entity\Account;
 use App\Entity\Room;
+use DateTime;
 use App\Entity\User;
 use App\Repository\RoomRepository;
 use DateTimeImmutable;
@@ -222,7 +223,7 @@ final class RoomRepositoryTest extends KernelTestCase
             'activityState' => 'active',
         ]);
 
-        $affected = $this->repository->updateActivity('active', 'idle');
+        $affected = $this->repository->updateActivity($room->getPortal(), 'active', 'idle', new DateTime());
 
         self::assertGreaterThanOrEqual(1, $affected);
 

@@ -13,7 +13,9 @@
 
 namespace App\Room;
 
+use App\Entity\Portal;
 use App\Entity\Room;
+use App\Repository\RoomRepository;
 use App\Services\CalendarsService;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
@@ -40,6 +42,7 @@ class RoomManager
         private readonly ItemService $itemService,
         private readonly RoomService $roomService,
         private readonly CalendarsService $calendarsService,
+        private readonly RoomRepository $roomRepository,
         LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -112,12 +115,20 @@ class RoomManager
         }
     }
 
-    public function resetInactivityToPreviousNonNotificationState(): void
+    /**
+     * Revokes the pending notifications of one portal: a warned room goes back
+     * to the state before the warning.
+     *
+     * The timestamp belongs to the state it describes — it is the base for
+     * that state's deadline. `active` has no deadline (the next step is
+     * decided by the last login), so it carries null. `idle` has one, so it
+     * gets a fresh one: the deletion notice is being revoked, and the old
+     * value would carry a deadline nobody announced any more.
+     */
+    public function resetInactivityToPreviousNonNotificationState(Portal $portal): void
     {
-        $roomRepository = $this->entityManager->getRepository(Room::class);
-
-        $roomRepository->updateActivity(Room::ACTIVITY_IDLE_NOTIFIED, Room::ACTIVITY_IDLE);
-        $roomRepository->updateActivity(Room::ACTIVITY_ACTIVE_NOTIFIED, Room::ACTIVITY_ACTIVE);
+        $this->roomRepository->updateActivity($portal, Room::ACTIVITY_IDLE_NOTIFIED, Room::ACTIVITY_IDLE, new DateTime());
+        $this->roomRepository->updateActivity($portal, Room::ACTIVITY_ACTIVE_NOTIFIED, Room::ACTIVITY_ACTIVE, null);
     }
 
     /**

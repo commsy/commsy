@@ -14,20 +14,15 @@
 namespace App\Account;
 
 use App\Entity\Account;
-use App\Entity\AuthSource;
 use App\Entity\Portal;
-use App\Repository\UserRepository;
+use App\Repository\AccountsRepository;
 use App\Services\LegacyEnvironment;
-use App\User\UserListBuilder;
 use App\Utils\UserService;
 use BadMethodCallException;
 use cs_environment;
-use cs_list;
-use cs_room_item;
 use cs_user_item;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use LogicException;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -37,11 +32,10 @@ readonly class AccountManager
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserRepository $userRepository,
         LegacyEnvironment $legacyEnvironment,
+        private AccountsRepository $accountsRepository,
         private UserService $userService,
         private RequestStack $requestStack,
-        private UserListBuilder $userListBuilder,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -108,36 +102,6 @@ readonly class AccountManager
         }
     }
 
-    public function isLastModerator(Account $account): bool
-    {
-        $projectManager = $this->legacyEnvironment->getProjectManager();
-        $communityManager = $this->legacyEnvironment->getCommunityManager();
-
-        try {
-            $portalUser = $this->userService->getPortalUser($account);
-            $roomList = new cs_list();
-            $roomList->addList($projectManager->getRelatedProjectRooms($portalUser, $portalUser->getContextID()));
-            $roomList->addList($communityManager->getRelatedCommunityRooms($portalUser, $portalUser->getContextID()));
-
-            foreach ($roomList as $room) {
-                if ($this->accountIsLastModeratorForRoom($room, $account)) {
-                    return true;
-                }
-            }
-        } catch (Exception) {
-        }
-
-        return false;
-    }
-
-    public function accountIsLastModeratorForRoom(cs_room_item $room, Account $account): bool
-    {
-        $roomModeratorIds = $room->getModeratorList()->getIDArray();
-        $userInContext = $this->userService->getUserInContext($account, $room->getItemID());
-
-        return ((is_countable($roomModeratorIds) ? count($roomModeratorIds) : 0) === 1) && $userInContext && $userInContext->isModerator();
-    }
-
     public function getAccount(cs_user_item $user, int $portalId): ?Account
     {
         return $this->getAccountForUser($user);
@@ -162,9 +126,7 @@ readonly class AccountManager
 
     public function getPortal(Account $account): ?Portal
     {
-        $portalRepository = $this->entityManager->getRepository(Portal::class);
-
-        return $portalRepository->find($account->getContextId());
+        return $account->getPortal();
     }
 
     /**
@@ -242,11 +204,19 @@ readonly class AccountManager
         }
     }
 
-    public function resetInactivityToPreviousNonNotificationState(): void
+    /**
+     * Revokes the pending notifications of one portal: a warned account goes back
+     * to the state before the warning.
+     *
+     * The timestamp belongs to the state it describes — it is the base for
+     * that state's deadline. `active` has no deadline (the next step is
+     * decided by the last login), so it carries null. `idle` has one, so it
+     * gets a fresh one: the deletion notice is being revoked, and the old
+     * value would carry a deadline nobody announced any more.
+     */
+    public function resetInactivityToPreviousNonNotificationState(Portal $portal): void
     {
-        $accountRepository = $this->entityManager->getRepository(Account::class);
-
-        $accountRepository->updateActivity(Account::ACTIVITY_IDLE_NOTIFIED, Account::ACTIVITY_IDLE);
-        $accountRepository->updateActivity(Account::ACTIVITY_ACTIVE_NOTIFIED, Account::ACTIVITY_ACTIVE);
+        $this->accountsRepository->updateActivity($portal, Account::ACTIVITY_IDLE_NOTIFIED, Account::ACTIVITY_IDLE, new DateTime());
+        $this->accountsRepository->updateActivity($portal, Account::ACTIVITY_ACTIVE_NOTIFIED, Account::ACTIVITY_ACTIVE, null);
     }
 }
