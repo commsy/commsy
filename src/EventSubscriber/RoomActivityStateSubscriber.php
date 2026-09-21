@@ -78,13 +78,13 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
             $event->setBlocked(true);
         }
 
-        // Deny, if community room has linked project rooms (this will also reset the room state)
-        if ($room->isCommunityRoom()) {
-            if ($this->roomManager->getLinkedProjectRooms($room)->getCount() > 0) {
-                $this->roomManager->resetInactivity($room, false, true, false);
-
-                $event->setBlocked(true);
-            }
+        // Deny, if a community room still has project rooms hanging off it.
+        // Deciding only — rolling the room back to `active` is the caller's
+        // job, see WorkspaceActivityStateTransitionsHandler. A guard runs
+        // several times per transition and also when nothing is applied, so
+        // writing from here made merely asking the workflow change the room.
+        if ($room->isCommunityRoom() && $this->roomManager->getLinkedProjectRooms($room)->getCount() > 0) {
+            $event->setBlocked(true);
         }
     }
 
