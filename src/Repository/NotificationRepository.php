@@ -81,60 +81,6 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
-     * Newest notifications for the dropdown, newest first.
-     *
-     * @return Notification[]
-     */
-    public function findLatestForAccount(Account $account, int $limit): array
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.recipient = :account')->setParameter('account', $account)
-            ->orderBy('n.createdAt', 'DESC')->addOrderBy('n.id', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * One page of notifications for the standalone list, newest first.
-     *
-     * @return Notification[]
-     */
-    public function findForAccountPaginated(
-        Account $account,
-        int $page,
-        int $perPage,
-        bool $unreadOnly = false,
-        ?int $contextId = null,
-    ): array {
-        return $this->accountQuery($account, $unreadOnly, $contextId)
-            ->orderBy('n.createdAt', 'DESC')->addOrderBy('n.id', 'DESC')
-            ->setFirstResult(max(0, ($page - 1) * $perPage))
-            ->setMaxResults($perPage)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function countForAccount(Account $account, bool $unreadOnly = false, ?int $contextId = null): int
-    {
-        return (int) $this->accountQuery($account, $unreadOnly, $contextId)
-            ->select('COUNT(n.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    public function existsForSourceItem(int $sourceItemId): bool
-    {
-        $count = (int) $this->createQueryBuilder('n')
-            ->select('COUNT(n.id)')
-            ->andWhere('n.sourceItemId = :id')->setParameter('id', $sourceItemId)
-            ->getQuery()
-            ->getSingleScalarResult();
-
-        return $count > 0;
-    }
-
-    /**
      * Per-event idempotency guard: has the event for this item at this exact
      * time already been fanned out? Distinct edits happen at distinct times and
      * are logged separately; only a messenger retry of the same event matches.
@@ -310,22 +256,6 @@ class NotificationRepository extends ServiceEntityRepository
             ->createQuery('DELETE App\Entity\Notification n WHERE n.type = :type AND n.sourceItemId = :item')
             ->setParameter('type', $type)
             ->setParameter('item', $sourceItemId)
-            ->execute();
-    }
-
-    /**
-     * Retention sweep: drop already-read notifications older than a cutoff.
-     *
-     * @return int number of rows deleted
-     */
-    public function removeReadOlderThan(\DateTimeImmutable $cutoff): int
-    {
-        return (int) $this->getEntityManager()
-            ->createQuery(
-                'DELETE App\Entity\Notification n
-                 WHERE n.readAt IS NOT NULL AND n.readAt < :cutoff'
-            )
-            ->setParameter('cutoff', $cutoff)
             ->execute();
     }
 

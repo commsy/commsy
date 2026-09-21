@@ -46,7 +46,6 @@ class NotificationPayloadTest extends TestCase
             wholeDay: false,
             materialAuthor: 'Grace Hopper',
             publishingDate: '2026-06-01',
-            todoStatus: 'inProgress',
             hasAttachments: true,
         );
 

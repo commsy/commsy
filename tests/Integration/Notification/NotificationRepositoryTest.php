@@ -55,22 +55,6 @@ class NotificationRepositoryTest extends KernelTestCase
         self::assertSame(1, $this->repository()->countUnreadForAccount($other));
     }
 
-    public function testFindLatestReturnsNewestFirstWithinLimit(): void
-    {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
-
-        $this->persist($account, sourceItemId: 1, createdAt: new \DateTimeImmutable('2026-06-01 10:00:00'), title: 'oldest');
-        $this->persist($account, sourceItemId: 2, createdAt: new \DateTimeImmutable('2026-06-02 10:00:00'), title: 'middle');
-        $this->persist($account, sourceItemId: 3, createdAt: new \DateTimeImmutable('2026-06-03 10:00:00'), title: 'newest');
-
-        $latest = $this->repository()->findLatestForAccount($account, 2);
-
-        self::assertCount(2, $latest);
-        self::assertSame('newest', $latest[0]->getTitle());
-        self::assertSame('middle', $latest[1]->getTitle());
-    }
-
     public function testMarkAllReadForAccountTouchesOnlyOwnUnread(): void
     {
         self::bootKernel();
@@ -117,53 +101,8 @@ class NotificationRepositoryTest extends KernelTestCase
 
         self::assertSame(2, $removed);
         self::assertSame(1, $this->repository()->count([]));
-        self::assertTrue($this->repository()->existsForSourceItem(99));
-        self::assertFalse($this->repository()->existsForSourceItem(42));
-    }
-
-    public function testRemoveReadOlderThanKeepsUnreadAndRecent(): void
-    {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
-
-        $old = $this->persist($account, sourceItemId: 1);
-        $old->markRead(new \DateTimeImmutable('2026-01-01 00:00:00'));
-        $this->repository()->save($old);
-
-        $recentlyRead = $this->persist($account, sourceItemId: 2);
-        $recentlyRead->markRead(new \DateTimeImmutable('2026-06-10 00:00:00'));
-        $this->repository()->save($recentlyRead);
-
-        $this->persist($account, sourceItemId: 3); // unread
-
-        $removed = $this->repository()->removeReadOlderThan(new \DateTimeImmutable('2026-03-01 00:00:00'));
-
-        self::assertSame(1, $removed);
-        self::assertSame(2, $this->repository()->count([]));
-    }
-
-    public function testPaginationAndFilters(): void
-    {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
-
-        $unread = $this->persist($account, sourceItemId: 1, contextId: 10, createdAt: new \DateTimeImmutable('2026-06-03 10:00:00'));
-        $read = $this->persist($account, sourceItemId: 2, contextId: 20, createdAt: new \DateTimeImmutable('2026-06-02 10:00:00'));
-        $read->markRead(new \DateTimeImmutable());
-        $this->repository()->save($read);
-        $this->persist($account, sourceItemId: 3, contextId: 10, createdAt: new \DateTimeImmutable('2026-06-01 10:00:00'));
-
-        // First page, two per page, newest first.
-        $page1 = $this->repository()->findForAccountPaginated($account, 1, 2);
-        self::assertCount(2, $page1);
-        self::assertSame(1, $page1[0]->getSourceItemId());
-
-        // Unread-only filter.
-        self::assertSame(2, $this->repository()->countForAccount($account, unreadOnly: true));
-
-        // Context filter.
-        self::assertSame(2, $this->repository()->countForAccount($account, contextId: 10));
-        self::assertSame(3, $this->repository()->countForAccount($account));
+        self::assertCount(1, $this->repository()->findBy(['sourceItemId' => 99]));
+        self::assertCount(0, $this->repository()->findBy(['sourceItemId' => 42]));
     }
 
     public function testFindForAccountNewestFirstWithContextFilter(): void
@@ -196,7 +135,7 @@ class NotificationRepositoryTest extends KernelTestCase
         $removed = $this->repository()->removeOlderThan(new \DateTimeImmutable('2026-03-01 00:00:00'));
 
         self::assertSame(2, $removed, 'both old rows go regardless of read state');
-        self::assertSame(1, $this->repository()->countForAccount($account));
+        self::assertSame(1, $this->repository()->count([]));
     }
 
     public function testCountUnreadCanScopeToContext(): void

@@ -69,11 +69,4 @@ enum NotificationType: string
         return array_values(array_filter(self::cases(), static fn (self $type): bool => $type->isContentActivity()));
     }
 
-    /**
-     * @return self[] the types the navbar bell shows
-     */
-    public static function bellTypes(): array
-    {
-        return array_values(array_filter(self::cases(), static fn (self $type): bool => !$type->isContentActivity()));
-    }
 }

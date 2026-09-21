@@ -36,7 +36,6 @@ final readonly class NotificationPayload
         public bool $wholeDay = false,
         public ?string $materialAuthor = null,
         public ?string $publishingDate = null,
-        public ?string $todoStatus = null,
         /** 'accepted' or 'rejected' on a join-request decision. */
         public ?string $decision = null,
         public bool $hasAttachments = false,
@@ -57,7 +56,6 @@ final readonly class NotificationPayload
             wholeDay: (bool) ($data['wholeDay'] ?? false),
             materialAuthor: $data['materialAuthor'] ?? null,
             publishingDate: $data['publishingDate'] ?? null,
-            todoStatus: $data['todoStatus'] ?? null,
             decision: $data['decision'] ?? null,
             hasAttachments: (bool) ($data['hasAttachments'] ?? false),
         );
@@ -79,7 +77,6 @@ final readonly class NotificationPayload
             'wholeDay' => $this->wholeDay ?: null,
             'materialAuthor' => $this->materialAuthor,
             'publishingDate' => $this->publishingDate,
-            'todoStatus' => $this->todoStatus,
             'decision' => $this->decision,
             'hasAttachments' => $this->hasAttachments ?: null,
         ], static fn ($value): bool => $value !== null);

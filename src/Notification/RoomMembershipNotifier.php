@@ -89,7 +89,7 @@ class RoomMembershipNotifier
     /**
      * Is a join request for this user still awaiting a decision?
      */
-    public function hasOpenRequest(int $requesterItemId): bool
+    private function hasOpenRequest(int $requesterItemId): bool
     {
         return $this->notificationRepository->existsOfTypeForSourceItem(NotificationType::RoomJoinRequest, $requesterItemId);
     }
