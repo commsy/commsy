@@ -65,9 +65,69 @@ jobs:
                 with:
                   limit-access-to-actor: true
 
+    smoke:
+        name: Start the production image
+        needs: test
+        runs-on: ubuntu-latest
+        # The production image runs rootless while the development one runs as
+        # root, so a permission problem that only exists rootless cannot show up
+        # in the test suite. This job starts the real image and lets its own
+        # entrypoint run: key generation, migrations, then serving. Skipping the
+        # initialisation would defeat the purpose — that is the part that breaks.
+        services:
+            db:
+                image: mariadb:11.8
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_DATABASE: app_smoke
+                    MYSQL_USER: app
+                    MYSQL_PASSWORD: '!ChangeMe!'
+                ports:
+                    - 3306:3306
+        steps:
+            -   name: actions/checkout
+                uses: actions/checkout@v4
+
+            -   name: Set up Buildx
+                uses: docker/setup-buildx-action@v3
+
+            -   name: Build the production image
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    target: commsy_php_prod
+                    load: true
+                    tags: commsy:smoke
+                    cache-from: type=gha
+                    cache-to: type=gha,mode=max
+
+            -   name: Start it and wait until it serves
+                run: |
+                    docker run -d --name smoke --network host \
+                        -e SERVER_NAME=:8088 \
+                        -e APP_ENV=prod \
+                        -e APP_SECRET=smoke-only \
+                        -e DATABASE_URL='mysql://app:!ChangeMe!@127.0.0.1:3306/app_smoke?serverVersion=11.8.5-MariaDB&charset=utf8mb4' \
+                        commsy:smoke
+                    for i in $(seq 1 60); do
+                        state=$(docker inspect -f '{{.State.Health.Status}}{{if not .State.Running}} (exited){{end}}' smoke)
+                        case "$state" in
+                            healthy) echo "The image serves."; exit 0 ;;
+                            *exited*) echo "The container died:"; docker logs smoke; exit 1 ;;
+                        esac
+                        sleep 5
+                    done
+                    echo "Still not healthy after five minutes:"
+                    docker logs smoke
+                    exit 1
+
+            -   name: Show the log when it did not come up
+                if: ${{ failure() }}
+                run: docker logs smoke || true
+
     release-docker:
         name: Create and push docker images
-        needs: test
+        needs: [test, smoke]
         runs-on: ubuntu-latest
         steps:
             - name: actions/checkout
