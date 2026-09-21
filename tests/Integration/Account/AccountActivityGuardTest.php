@@ -15,8 +15,10 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Account;
 
+use App\Account\LastModeratorChecker;
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Entity\Room;
 use App\Message\AccountActivityStateTransitions;
 use App\MessageHandler\AccountActivityStateTransitionsHandler;
 use DateTime;
@@ -86,6 +88,58 @@ final class AccountActivityGuardTest extends KernelTestCase
         );
     }
 
+    /**
+     * And once the protection falls away — the room gets a second moderator,
+     * or goes altogether — the chain picks the account up again from where it
+     * stands. Nothing about the earlier protection is remembered.
+     */
+    public function testTheChainResumesOnceTheProtectionFallsAway(): void
+    {
+        $account = $this->createProtectedAccount(Account::ACTIVITY_ACTIVE);
+        $this->entityManager->getConnection()->executeStatement(
+            'UPDATE accounts SET activity_state_updated = NULL, locked = 1 WHERE id = ?',
+            [$account->getId()],
+        );
+        $this->entityManager->clear();
+
+        $this->handle($account);
+        self::assertSame(
+            Account::ACTIVITY_ACTIVE,
+            $this->reload($account)->getActivityState(),
+            'still protected, still standing still',
+        );
+
+        $this->giveTheGroupRoomASecondModerator($account);
+        $this->handle($account);
+
+        self::assertSame(
+            Account::ACTIVITY_ACTIVE_NOTIFIED,
+            $this->reload($account)->getActivityState(),
+            'the login is years old, so the chain starts at the first step again',
+        );
+    }
+
+    private function giveTheGroupRoomASecondModerator(Account $account): void
+    {
+        $groupRoomId = (int) $this->entityManager->getConnection()->fetchOne(
+            'SELECT r.item_id FROM room r
+             INNER JOIN user u ON u.context_id = r.item_id
+             WHERE r.type = ? AND u.account_id = ?',
+            ['grouproom', $account->getId()],
+        );
+        $groupRoom = $this->entityManager->getRepository(Room::class)->find($groupRoomId);
+        $portal = $groupRoom->getPortal();
+
+        RoomUserFactory::new()->asModerator()->create([
+            'account' => AccountFactory::createOne([
+                'portal' => $portal,
+                'authSource' => $portal->getAuthSources()->first(),
+            ]),
+            'room' => $groupRoom,
+        ]);
+        $this->entityManager->clear();
+    }
+
     protected function setUp(): void
     {
         self::bootKernel();
@@ -115,8 +169,15 @@ final class AccountActivityGuardTest extends KernelTestCase
         return $account;
     }
 
+    /**
+     * One call stands for one nightly message. The memo of
+     * LastModeratorChecker is dropped first, which is what the `kernel.reset`
+     * tag does between messages — calling the handler directly skips that.
+     */
     private function handle(Account $account): void
     {
+        self::getContainer()->get(LastModeratorChecker::class)->reset();
+
         $handler = self::getContainer()->get(AccountActivityStateTransitionsHandler::class);
         $handler(new AccountActivityStateTransitions([$account->getId()]));
 
