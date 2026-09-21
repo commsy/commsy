@@ -91,7 +91,9 @@ final class AuditLogViewTest extends AbstractApplicationTestCase
         $this->loginAsUser($portal->getId(), $member->getUsername(), $member->getPlainPassword());
         $this->client->request('GET', "/portal/{$portal->getId()}/settings/auditLog");
 
-        self::assertResponseRedirects();
+        // Their own portal is the context they are already in, so there is no
+        // room left to bounce to: the refusal is answered instead.
+        self::assertResponseStatusCodeSame(403);
         self::assertStringNotContainsString('takeover.target', (string) $this->client->getResponse()->getContent());
     }
 
