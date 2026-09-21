@@ -38,10 +38,9 @@ class CronCleanNotifications implements CronTaskInterface
 
     public function run(?DateTimeImmutable $lastRun): void
     {
-        // Tasks are excluded: an undecided join request must not age out silently.
         $expiring = array_values(array_filter(
             NotificationType::cases(),
-            static fn (NotificationType $type): bool => !$type->isTask(),
+            static fn (NotificationType $type): bool => $type->expires(),
         ));
 
         $this->notificationRepository->removeOlderThan(now()->modify(self::RETENTION), $expiring);

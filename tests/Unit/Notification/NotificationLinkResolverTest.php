@@ -15,6 +15,7 @@ namespace Tests\Unit\Notification;
 
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Notification\NotificationLinkResolver;
 use PHPUnit\Framework\TestCase;
@@ -79,6 +80,7 @@ class NotificationLinkResolverTest extends TestCase
             $sourceItemId,
             $type,
             null,
+            EntryAction::Created,
         );
     }
 }

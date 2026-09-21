@@ -13,7 +13,7 @@
 
 namespace Tests\Unit\EventSubscriber;
 
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 use App\Event\CommsyEditEvent;
 use App\Event\ItemAnnotatedEvent;
 use App\Event\ItemDeletedEvent;
@@ -58,7 +58,7 @@ class NotificationEventSubscriberTest extends TestCase
                     && 7 === $message->actorUserItemId
                     && 'Jane Doe' === $message->actorName
                     && true === $message->isDeactivated
-                    && NotificationAction::Created === $message->action
+                    && EntryAction::Created === $message->action
                     && $message->payload === $payload->toArray();
             }))
             ->willReturn(new Envelope(new \stdClass()));
@@ -85,7 +85,7 @@ class NotificationEventSubscriberTest extends TestCase
             ->method('dispatch')
             ->with($this->callback(function (NotifyNewEntryMessage $message): bool {
                 return 50 === $message->sourceItemId
-                    && NotificationAction::Edited === $message->action
+                    && EntryAction::Edited === $message->action
                     && 3 === $message->creatorUserItemId  // the item's creator (visibility)
                     && 7 === $message->actorUserItemId    // the editor, excluded from the fan-out
                     && 'The Editor' === $message->actorName;
@@ -165,7 +165,7 @@ class NotificationEventSubscriberTest extends TestCase
             ->method('dispatch')
             ->with($this->callback(function (NotifyNewEntryMessage $message): bool {
                 return 70 === $message->sourceItemId
-                    && NotificationAction::Annotated === $message->action
+                    && EntryAction::Annotated === $message->action
                     && 'Cara Ann' === $message->actorName
                     && 88 === $message->actorUserItemId   // the annotator, excluded from the fan-out
                     && 1 === $message->creatorUserItemId;  // the parent's creator (visibility only)

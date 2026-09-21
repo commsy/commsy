@@ -15,7 +15,7 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use App\Entity\Notification;
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Notification\RoomActivitySummary;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -150,7 +150,7 @@ class NotificationRepository extends ServiceEntityRepository
         // so opening their profile would otherwise silently clear the badge.
         $tasks = array_values(array_filter(
             NotificationType::cases(),
-            static fn (NotificationType $type): bool => $type->isTask(),
+            static fn (NotificationType $type): bool => $type->awaitsDecision(),
         ));
 
         return (int) $this->getEntityManager()
@@ -203,7 +203,7 @@ class NotificationRepository extends ServiceEntityRepository
         $byRoom = [];
         foreach ($rows as $row) {
             $contextId = (int) $row['contextId'];
-            $action = $row['action'] instanceof NotificationAction ? $row['action']->value : (string) $row['action'];
+            $action = $row['action'] instanceof EntryAction ? $row['action']->value : (string) $row['action'];
 
             $byRoom[$contextId]['title'] = (string) $row['roomTitle'];
             $byRoom[$contextId]['counts'][$action] = (int) $row['entries'];
@@ -218,9 +218,9 @@ class NotificationRepository extends ServiceEntityRepository
             $summaries[] = new RoomActivitySummary(
                 $contextId,
                 $room['title'],
-                $room['counts'][NotificationAction::Created->value] ?? 0,
-                $room['counts'][NotificationAction::Edited->value] ?? 0,
-                $room['counts'][NotificationAction::Annotated->value] ?? 0,
+                $room['counts'][EntryAction::Created->value] ?? 0,
+                $room['counts'][EntryAction::Edited->value] ?? 0,
+                $room['counts'][EntryAction::Annotated->value] ?? 0,
                 new \DateTimeImmutable($room['newest']),
             );
         }

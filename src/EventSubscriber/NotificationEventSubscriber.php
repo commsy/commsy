@@ -13,7 +13,7 @@
 
 namespace App\EventSubscriber;
 
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 use App\Event\CommsyEditEvent;
 use App\Event\ItemAnnotatedEvent;
 use App\Event\ItemDeletedEvent;
@@ -85,7 +85,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
 
     public function onPublished(ItemPublishedEvent $event): void
     {
-        $this->dispatchFor($event->getItem(), NotificationAction::Created);
+        $this->dispatchFor($event->getItem(), EntryAction::Created);
     }
 
     public function onSaved(CommsyEditEvent $event): void
@@ -98,7 +98,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
             return;
         }
 
-        $this->dispatchFor($item, NotificationAction::Edited);
+        $this->dispatchFor($item, EntryAction::Edited);
     }
 
     public function onAnnotated(ItemAnnotatedEvent $event): void
@@ -121,7 +121,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
             $annotation->getCreatorID(),
             $annotation->getCreatorItem()?->getFullName(),
             (bool) $parent->isNotActivated(),
-            NotificationAction::Annotated,
+            EntryAction::Annotated,
             $this->occurredAt($annotation),
             $this->payloadFactory->fromItem($parent)->toArray(),
         ));
@@ -132,7 +132,7 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
         $this->notificationRepository->removeForSourceItem($event->getItem()->getItemID());
     }
 
-    private function dispatchFor(cs_item $item, NotificationAction $action): void
+    private function dispatchFor(cs_item $item, EntryAction $action): void
     {
         if (!in_array($item->getItemType(), self::NOTIFIABLE_TYPES, true)) {
             return;
@@ -141,11 +141,11 @@ final readonly class NotificationEventSubscriber implements EventSubscriberInter
         $this->messageBus->dispatch($this->signalFor($item, $action));
     }
 
-    private function signalFor(cs_item $item, NotificationAction $action): NotifyNewEntryMessage
+    private function signalFor(cs_item $item, EntryAction $action): NotifyNewEntryMessage
     {
         // The actor is whoever caused this event — the creator on a create, the
         // modificator on an edit. Their own row is stored already read.
-        $actorUserItemId = $action === NotificationAction::Edited
+        $actorUserItemId = $action === EntryAction::Edited
             ? (int) ($item->getModificatorItem()?->getItemID() ?? $item->getCreatorID())
             : (int) $item->getCreatorID();
 

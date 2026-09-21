@@ -16,7 +16,7 @@ namespace App\Enum;
 /**
  * What a {@see \App\Entity\Notification} is about.
  *
- * This is the subject axis, orthogonal to {@see NotificationAction} (which says
+ * This is the subject axis, orthogonal to {@see EntryAction} (which says
  * what happened to it). It also decides where a notification surfaces: content
  * activity fills the room/dashboard panels, everything else is personal or
  * administrative and belongs in the navbar bell.
@@ -54,11 +54,24 @@ enum NotificationType: string
     }
 
     /**
-     * Whether deciding it is still pending, so it must not age out silently.
+     * Whether it sits in the bell's upper section waiting for someone to decide
+     * it. Such a row is never marked read and never cleared in passing — only
+     * the decision resolves it.
      */
-    public function isTask(): bool
+    public function awaitsDecision(): bool
     {
         return self::RoomJoinRequest === $this;
+    }
+
+    /**
+     * Whether the retention sweep may drop it once it is old enough. The two
+     * questions coincide today because the only thing that must outlive the
+     * sweep is an undecided request — but they are different questions, and a
+     * later type may answer them differently.
+     */
+    public function expires(): bool
+    {
+        return !$this->awaitsDecision();
     }
 
     /**

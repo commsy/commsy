@@ -14,14 +14,16 @@
 namespace App\Enum;
 
 /**
- * What happened to the source item the {@see \App\Entity\Notification} reports.
+ * What happened to an entry a {@see \App\Entity\Notification} reports.
  *
- * Mirrors the room/dashboard activity feed, which surfaces both freshly created
- * and edited entries, plus annotations. Each event is logged as its own
- * notification, so the action tells the view whether to read it as "created",
- * "edited" or "annotated".
+ * Belongs to {@see \App\Enum\NotificationType::Entry} alone, which is what the
+ * name says: only an entry has something happen *to* it. Every other kind of
+ * notification is the event itself and carries no action.
+ *
+ * Each event is logged as its own notification, so the action tells the view
+ * whether to read the row as "created", "edited" or "annotated".
  */
-enum NotificationAction: string
+enum EntryAction: string
 {
     case Created = 'created';
     case Edited = 'edited';

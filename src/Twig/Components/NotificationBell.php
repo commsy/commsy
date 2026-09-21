@@ -59,6 +59,17 @@ final class NotificationBell
 
     private const LIMIT = 10;
 
+    /**
+     * Rendering asks for both of these several times — the badge alone is read
+     * three times in the markup — and each ask is a query. They are remembered
+     * for the length of one request and dropped again whenever an action
+     * changes what they count.
+     *
+     * @var RoomActivitySummary[]|null
+     */
+    private ?array $roomActivity = null;
+    private ?int $unreadCount = null;
+
     public function __construct(
         private readonly NotificationRepository $notificationRepository,
         private readonly RoomMembershipDecider $membershipDecider,
@@ -98,10 +109,11 @@ final class NotificationBell
         // room lines, which is the same set of rows the panels show.
         $readable = array_values(array_filter(
             NotificationType::cases(),
-            static fn (NotificationType $type): bool => !$type->isTask(),
+            static fn (NotificationType $type): bool => !$type->awaitsDecision(),
         ));
 
         $this->notificationRepository->markAllReadForAccount($this->account, now(), null, $readable);
+        $this->forgetCounts();
     }
 
     /**
@@ -111,7 +123,7 @@ final class NotificationBell
      */
     public function getTasks(): array
     {
-        return $this->ofTypes(static fn (NotificationType $type): bool => $type->isTask());
+        return $this->ofTypes(static fn (NotificationType $type): bool => $type->awaitsDecision());
     }
 
     /**
@@ -125,7 +137,7 @@ final class NotificationBell
     public function getMessages(): array
     {
         return $this->ofTypes(
-            static fn (NotificationType $type): bool => !$type->isTask() && !$type->isContentActivity(),
+            static fn (NotificationType $type): bool => !$type->awaitsDecision() && !$type->isContentActivity(),
             unreadOnly: true,
         );
     }
@@ -137,7 +149,7 @@ final class NotificationBell
      */
     public function getRoomActivity(): array
     {
-        return $this->account !== null
+        return $this->roomActivity ??= $this->account !== null
             ? $this->notificationRepository->summariseUnreadEntryActivity($this->account)
             : [];
     }
@@ -153,12 +165,16 @@ final class NotificationBell
             return 0;
         }
 
+        if ($this->unreadCount !== null) {
+            return $this->unreadCount;
+        }
+
         $withoutActivity = array_values(array_filter(
             NotificationType::cases(),
             static fn (NotificationType $type): bool => !$type->isContentActivity(),
         ));
 
-        return $this->notificationRepository->countUnreadForAccount($this->account, null, $withoutActivity)
+        return $this->unreadCount = $this->notificationRepository->countUnreadForAccount($this->account, null, $withoutActivity)
             + count($this->getRoomActivity());
     }
 
@@ -181,10 +197,21 @@ final class NotificationBell
     }
 
     /**
+     * Anything that changes what the bell counts has to drop what it remembered.
+     */
+    private function forgetCounts(): void
+    {
+        $this->roomActivity = null;
+        $this->unreadCount = null;
+    }
+
+    /**
      * $id is the requesting user's item id, carried as the task's source item.
      */
     private function decide(int $id, bool $accept): void
     {
+        $this->forgetCounts();
+
         if ($this->account === null) {
             return;
         }

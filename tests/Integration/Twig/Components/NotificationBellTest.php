@@ -17,7 +17,7 @@ namespace Tests\Integration\Twig\Components;
 
 use App\Entity\Account;
 use App\Entity\Notification;
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Notification\NotificationPayload;
 use App\Repository\NotificationRepository;
@@ -39,9 +39,9 @@ final class NotificationBellTest extends KernelTestCase
         self::bootKernel();
         $account = AccountFactory::createOne();
         $this->persist($account, NotificationType::RoomJoinRequest, 'Ada Lovelace', sourceItemId: 42);
-        $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99, action: NotificationAction::Created);
-        $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99, action: NotificationAction::Edited);
-        $this->persist($account, NotificationType::Entry, 'Another material', sourceItemId: 100, action: NotificationAction::Edited);
+        $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99, action: EntryAction::Created);
+        $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99, action: EntryAction::Edited);
+        $this->persist($account, NotificationType::Entry, 'Another material', sourceItemId: 100, action: EntryAction::Edited);
 
         $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
         $bell = $component->component();
@@ -149,7 +149,7 @@ final class NotificationBellTest extends KernelTestCase
         string $title,
         int $sourceItemId,
         ?NotificationPayload $payload = null,
-        \App\Enum\NotificationAction $action = \App\Enum\NotificationAction::Created,
+        \App\Enum\EntryAction $action = \App\Enum\EntryAction::Created,
     ): void {
         $this->repository()->save(new Notification(
             $account,
@@ -161,7 +161,7 @@ final class NotificationBellTest extends KernelTestCase
             $sourceItemId,
             'user',
             $title,
-            $action,
+            $type === NotificationType::Entry ? $action : null,
             $payload ?? new NotificationPayload(actorId: $sourceItemId),
         ));
     }

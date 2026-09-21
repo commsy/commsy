@@ -15,6 +15,7 @@ namespace Tests\Integration\Notification;
 
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Repository\NotificationRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -216,6 +217,7 @@ class NotificationRepositoryTest extends KernelTestCase
             $sourceItemId,
             'material',
             'Actor',
+            EntryAction::Created,
         );
         $this->repository()->save($notification);
 

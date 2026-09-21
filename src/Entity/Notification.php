@@ -13,7 +13,7 @@
 
 namespace App\Entity;
 
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Notification\NotificationPayload;
 use App\Repository\NotificationRepository;
@@ -61,10 +61,12 @@ class Notification
     private NotificationType $type;
 
     /**
-     * Whether the reported event created or edited the source item.
+     * What happened to the entry this reports — null for every other kind of
+     * notification, which is the event itself rather than something that
+     * happened to a subject.
      */
-    #[ORM\Column(name: 'action', type: Types::STRING, length: 16, enumType: NotificationAction::class)]
-    private NotificationAction $action;
+    #[ORM\Column(name: 'action', type: Types::STRING, length: 16, nullable: true, enumType: EntryAction::class)]
+    private ?EntryAction $action = null;
 
     /**
      * Room (context) the event happened in.
@@ -118,7 +120,7 @@ class Notification
         ?int $sourceItemId = null,
         ?string $sourceItemType = null,
         ?string $actorName = null,
-        NotificationAction $action = NotificationAction::Created,
+        ?EntryAction $action = null,
         NotificationPayload $payload = new NotificationPayload(),
     ) {
         $this->recipient = $recipient;
@@ -130,6 +132,18 @@ class Notification
         $this->sourceItemId = $sourceItemId;
         $this->sourceItemType = $sourceItemType;
         $this->actorName = $actorName;
+
+        // The action belongs to entries and to nothing else: only an entry has
+        // something happen *to* it. Keeping that out of the data would mean
+        // storing a filler value that reads like a fact.
+        if (($type === NotificationType::Entry) !== ($action !== null)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Notification of type "%s" %s an action.',
+                $type->value,
+                $type === NotificationType::Entry ? 'requires' : 'must not carry'
+            ));
+        }
+
         $this->action = $action;
         $this->payload = $payload->toArray();
     }
@@ -149,7 +163,7 @@ class Notification
         return $this->type;
     }
 
-    public function getAction(): NotificationAction
+    public function getAction(): ?EntryAction
     {
         return $this->action;
     }

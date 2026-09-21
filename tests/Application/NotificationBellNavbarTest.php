@@ -16,7 +16,7 @@ namespace Tests\Application;
 use App\Entity\Account;
 use App\Entity\Notification;
 use App\Entity\Portal;
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Repository\NotificationRepository;
 use Tests\Factory\AccountFactory;
@@ -101,7 +101,7 @@ class NotificationBellNavbarTest extends AbstractApplicationTestCase
             $sourceItemId,
             'material',
             'Alice',
-            NotificationAction::Created,
+            EntryAction::Created,
         );
     }
 }

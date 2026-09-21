@@ -15,7 +15,6 @@ namespace App\Cron\Tasks;
 
 use App\Entity\Announcement;
 use App\Entity\Notification;
-use App\Enum\NotificationAction;
 use App\Enum\NotificationType;
 use App\Notification\NotificationPayload;
 use App\Repository\AnnouncementRepository;
@@ -99,7 +98,7 @@ class CronNotifyExpiringAnnouncements implements CronTaskInterface
             $announcement->getItemId(),
             'announcement',
             null,
-            NotificationAction::Created,
+            null,
             new NotificationPayload(dateEnd: $endsAt->format('Y-m-d H:i:s')),
         ));
     }

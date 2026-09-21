@@ -14,7 +14,7 @@
 namespace App\Notification;
 
 use App\Entity\Notification;
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 
 /**
  * All notification events for one source item, shown as a single panel row: the
@@ -52,7 +52,7 @@ final class NotificationGroup
     public function origin(): Notification
     {
         foreach ($this->events as $event) {
-            if ($event->getAction() === NotificationAction::Created) {
+            if ($event->getAction() === EntryAction::Created) {
                 return $event;
             }
         }
@@ -114,7 +114,7 @@ final class NotificationGroup
             if (!$event->isUnread()) {
                 continue;
             }
-            if ($event->getAction() === NotificationAction::Created) {
+            if ($event->getAction() === EntryAction::Created) {
                 return 'new';
             }
             $changed = true;

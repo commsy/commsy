@@ -14,7 +14,6 @@
 namespace App\Notification;
 
 use App\Entity\Notification;
-use App\Enum\NotificationAction;
 use App\Enum\NotificationType;
 use App\Repository\NotificationRepository;
 use App\Repository\RoomRepository;
@@ -75,7 +74,7 @@ class RoomMembershipNotifier
                 $requesterItemId,
                 'user',
                 $requesterName,
-                NotificationAction::Created,
+                null,
                 new NotificationPayload(actorId: $requesterItemId),
             ));
             $created = true;
@@ -123,7 +122,7 @@ class RoomMembershipNotifier
             $requesterItemId,
             'user',
             null,
-            NotificationAction::Created,
+            null,
             new NotificationPayload(decision: $accepted ? 'accepted' : 'rejected'),
         ));
     }

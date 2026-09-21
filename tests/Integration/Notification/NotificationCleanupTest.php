@@ -17,6 +17,7 @@ use App\Account\AccountDeleter;
 use App\Cron\Tasks\CronCleanNotifications;
 use App\Entity\Account;
 use App\Entity\Notification;
+use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Repository\NotificationRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -95,6 +96,7 @@ class NotificationCleanupTest extends KernelTestCase
             $sourceItemId,
             'material',
             null,
+            $type === NotificationType::Entry ? EntryAction::Created : null,
         ));
     }
 
@@ -119,6 +121,7 @@ class NotificationCleanupTest extends KernelTestCase
             $sourceItemId,
             'material',
             null,
+            EntryAction::Created,
         );
     }
 }

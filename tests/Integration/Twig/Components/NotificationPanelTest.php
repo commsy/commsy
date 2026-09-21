@@ -17,7 +17,7 @@ namespace Tests\Integration\Twig\Components;
 
 use App\Entity\Account;
 use App\Entity\Notification;
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Repository\NotificationRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -56,8 +56,8 @@ final class NotificationPanelTest extends KernelTestCase
     {
         self::bootKernel();
         $account = AccountFactory::createOne();
-        $this->persist($account, sourceItemId: 500, title: 'My material', action: NotificationAction::Created, createdAt: new \DateTimeImmutable('2026-06-01 10:00:00'));
-        $this->persist($account, sourceItemId: 500, title: 'My material', action: NotificationAction::Edited, createdAt: new \DateTimeImmutable('2026-06-02 10:00:00'));
+        $this->persist($account, sourceItemId: 500, title: 'My material', action: EntryAction::Created, createdAt: new \DateTimeImmutable('2026-06-01 10:00:00'));
+        $this->persist($account, sourceItemId: 500, title: 'My material', action: EntryAction::Edited, createdAt: new \DateTimeImmutable('2026-06-02 10:00:00'));
         $this->persist($account, sourceItemId: 600, title: 'Other entry', createdAt: new \DateTimeImmutable('2026-05-01 10:00:00'));
 
         $component = $this->createLiveComponent('NotificationPanel', ['account' => $account]);
@@ -122,7 +122,7 @@ final class NotificationPanelTest extends KernelTestCase
         int $sourceItemId,
         string $title,
         int $contextId = 5,
-        NotificationAction $action = NotificationAction::Created,
+        EntryAction $action = EntryAction::Created,
         ?\DateTimeImmutable $createdAt = null,
         NotificationType $type = NotificationType::Entry,
     ): Notification {
@@ -136,7 +136,8 @@ final class NotificationPanelTest extends KernelTestCase
             $sourceItemId,
             'material',
             'Actor',
-            $action,
+            // Only an entry carries an action; the entity refuses anything else.
+            $type === NotificationType::Entry ? $action : null,
         );
         $this->repository()->save($notification);
 

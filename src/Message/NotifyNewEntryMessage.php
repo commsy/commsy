@@ -13,7 +13,7 @@
 
 namespace App\Message;
 
-use App\Enum\NotificationAction;
+use App\Enum\EntryAction;
 
 /**
  * Signal that a feed-relevant entry was created or edited in a room.
@@ -51,7 +51,7 @@ final readonly class NotifyNewEntryMessage
         public int $actorUserItemId,
         public ?string $actorName = null,
         public bool $isDeactivated = false,
-        public NotificationAction $action = NotificationAction::Created,
+        public EntryAction $action = EntryAction::Created,
         public ?\DateTimeImmutable $occurredAt = null,
         public array $payload = [],
     ) {

@@ -31,7 +31,7 @@ final class Version20260611120000 extends AbstractMigration
             id INT AUTO_INCREMENT NOT NULL,
             recipient_id INT NOT NULL,
             type VARCHAR(32) NOT NULL,
-            action VARCHAR(16) NOT NULL,
+            action VARCHAR(16) DEFAULT NULL,
             context_id INT NOT NULL,
             source_item_id INT DEFAULT NULL,
             source_item_type VARCHAR(32) DEFAULT NULL,
