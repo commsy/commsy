@@ -53,6 +53,8 @@ final class AnnouncementFactory extends PersistentObjectFactory
             'description' => self::faker()->paragraph(),
             'room' => null,
             'creator' => null,
+            // End of validity; legacy stores it as the second date/time.
+            'enddate' => null,
         ];
     }
 
@@ -60,7 +62,7 @@ final class AnnouncementFactory extends PersistentObjectFactory
     {
         return $this
             ->withoutPersisting()
-            ->instantiateWith(Instantiator::withConstructor()->allowExtra('room', 'creator'))
+            ->instantiateWith(Instantiator::withConstructor()->allowExtra('room', 'creator', 'enddate'))
             ->afterInstantiate(function(Announcement $announcement, array $attributes): void {
                 $room = $attributes['room'] ?? null;
                 $creator = $attributes['creator'] ?? null;
@@ -81,7 +83,10 @@ final class AnnouncementFactory extends PersistentObjectFactory
                 }
                 $item->setContextID($room->getItemId());
                 // enddate is NOT NULL; legacy defaults to creation date.
-                $item->setSecondDateTime(date('Y-m-d H:i:s'));
+                $enddate = $attributes['enddate'] ?? null;
+                $item->setSecondDateTime($enddate instanceof \DateTimeInterface
+                    ? $enddate->format('Y-m-d H:i:s')
+                    : date('Y-m-d H:i:s'));
                 // Promote legacy trigger_error into a real failure.
                 set_error_handler(function(int $errno, string $errstr): bool {
                     throw new LogicException(sprintf('Legacy save() warning: %s', $errstr));

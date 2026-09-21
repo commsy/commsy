@@ -1,0 +1,157 @@
+{% macro shortDate(moment) %}
+    {%- if moment|date("d.m.Y") == "now"|date("d.m.Y") -%}
+        {{ 'today'|trans({})|capitalize }}, {{ moment|date("H:i") }}
+    {%- else -%}
+        {{ moment|format_date }}
+    {%- endif -%}
+{% endmacro %}
+
+{% set rows %}
+    {# uk-nav only pads its anchors, so every row carries its own padding to line up. #}
+    {% set rowPadding = 'padding: 10px 15px;' %}
+    {% set rowBorder = 'border-top: 1px solid rgba(0,0,0,.08);' %}
+    {# cs-theme paints uk-text-muted #ddd for dark bars — unreadable on the dropdown's light ground. #}
+    {% set metaColor = 'color: #666;' %}
+    {# One leading icon per row type; the room line carries the "!" indicator instead, since it aggregates several rubrics. #}
+    {# uk-icon-justify centres the glyph in its box, which pushes narrow icons like the "!" out of line with the text below.
+       A fixed-width column with the glyph flush left keeps the titles aligned and the icons on the text's left edge. #}
+    {% set rowIcon = 'uk-margin-small-right' %}
+    {% set rowIconStyle = 'display: inline-block; width: 1.3em; text-align: left;' %}
+    {% set tasks = this.tasks %}
+    {% set messages = this.messages %}
+    {% set activity = this.roomActivity %}
+
+    {% if this.alreadyDecided %}
+        <li>
+            <div class="uk-text-small" style="color: #666; {{ rowPadding }}">
+                {{ 'bell.alreadyDecided'|trans({}, 'notification') }}
+            </div>
+        </li>
+    {% endif %}
+
+    {# Upper section: waiting for a decision. #}
+    {% for notification in tasks %}
+        {% set p = notification.payload %}
+        <li>
+            <div style="{{ rowPadding }}{% if not loop.first or this.alreadyDecided %} {{ rowBorder }}{% endif %}">
+                <div style="line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
+                    <i class="uk-icon-user-plus {{ rowIcon }}" style="{{ rowIconStyle }} {{ metaColor }}"></i>{{ 'bell.joinRequest'|trans({'%name%': notification.title}, 'notification') }}
+                </div>
+                <div class="uk-text-small" style="color: #666; margin-top: 3px;">
+                    {{ notification.roomTitle }} &middot; {{ _self.shortDate(notification.createdAt) }}
+                </div>
+                <div style="margin-top: 8px;">
+                    <a href="#" class="uk-button uk-button-mini uk-button-primary"
+                       data-action="live#action" data-live-action-param="accept" data-live-id-param="{{ notification.sourceItemId }}">
+                        {{ 'bell.accept'|trans({}, 'notification') }}
+                    </a>
+                    <a href="#" class="uk-button uk-button-mini" style="margin-left: 4px;"
+                       data-action="live#action" data-live-action-param="reject" data-live-id-param="{{ notification.sourceItemId }}">
+                        {{ 'bell.reject'|trans({}, 'notification') }}
+                    </a>
+                    {% if p.actorId %}
+                        <a href="{{ path('app_user_detail', {'roomId': notification.contextId, 'itemId': p.actorId}) }}"
+                           class="uk-text-small" style="margin-left: 10px;">{{ 'bell.viewProfile'|trans({}, 'notification') }}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+
+    {# A plain divider separates what needs doing from what merely informs. #}
+    {% if tasks is not empty and (messages is not empty or activity is not empty) %}
+        <li style="border-top: 2px solid rgba(0,0,0,.15);"></li>
+    {% endif %}
+
+    {# Lower section: purely informational. #}
+    {% for notification in messages %}
+        {% set p = notification.payload %}
+        {% set expiring = notification.type.value == 'announcement_expiring' %}
+        <li>
+            {# An expiry warning names one entry, so it leads there; the rest lead to the room. #}
+            <a href="{{ this.linkFor(notification)|default(path('app_room_home', {'roomId': notification.contextId})) }}"
+               style="display: block; {{ rowPadding }}{% if not loop.first %} {{ rowBorder }}{% endif %}">
+                <span style="display: block; line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
+                    {%- if expiring -%}
+                        <i class="uk-icon-clock-o {{ rowIcon }}" style="{{ rowIconStyle }} {{ metaColor }}"></i>
+                        {{- 'bell.announcementExpiring'|trans({'%title%': notification.title}, 'notification') -}}
+                    {%- else -%}
+                        <i class="uk-icon-bullhorn {{ rowIcon }}" style="{{ rowIconStyle }} {{ metaColor }}"></i>
+                        {%- if p.decision == 'rejected' -%}
+                            {{ 'bell.decisionRejected'|trans({'%room%': notification.roomTitle}, 'notification') }}
+                        {%- else -%}
+                            {{ 'bell.decisionAccepted'|trans({'%room%': notification.roomTitle}, 'notification') }}
+                        {%- endif -%}
+                    {%- endif -%}
+                </span>
+                <span class="uk-text-small" style="color: #666; display: block; margin-top: 3px;">
+                    {%- if expiring and p.dateEnd -%}
+                        {{ notification.roomTitle }} &middot; {{ 'bell.validUntil'|trans({'%date%': p.dateEnd|format_date}, 'notification') }}
+                    {%- else -%}
+                        {{ _self.shortDate(notification.createdAt) }}
+                    {%- endif -%}
+                </span>
+            </a>
+        </li>
+    {% endfor %}
+
+    {# One condensed line per room; the panels carry the detail. #}
+    {% for room in activity %}
+        {% set parts = [] %}
+        {% if room.created > 0 %}{% set parts = parts|merge(['bell.activityCreated'|trans({'%count%': room.created}, 'notification')]) %}{% endif %}
+        {% if room.edited > 0 %}{% set parts = parts|merge(['bell.activityEdited'|trans({'%count%': room.edited}, 'notification')]) %}{% endif %}
+        {% if room.annotated > 0 %}{% set parts = parts|merge(['bell.activityAnnotated'|trans({'%count%': room.annotated}, 'notification')]) %}{% endif %}
+        <li>
+            <a href="{{ path('app_room_home', {'roomId': room.contextId}) }}"
+               style="display: block; {{ rowPadding }}{% if not loop.first or messages is not empty %} {{ rowBorder }}{% endif %}">
+                {% set indicator = room.indicatorStatus %}
+                <span style="display: block; line-height: 1.4; font-weight: 600;">
+                    <i class="uk-icon-exclamation {{ rowIcon }} {{ indicator == 'new' ? 'uk-text-danger' : 'uk-text-warning' }}"
+                       style="{{ rowIconStyle }}" data-uk-tooltip title="{{ (indicator == 'new' ? 'bell.indicatorNew' : 'bell.indicatorChanged')|trans({}, 'notification') }}"></i>{{ room.roomTitle }}
+                </span>
+                {# No date on this line: it would have to stand for several events at once, so it tells the reader nothing. #}
+                <span class="uk-text-small" style="color: #666; display: block; margin-top: 3px;">
+                    {{ parts|join(', ') }}
+                </span>
+            </a>
+        </li>
+    {% endfor %}
+
+    {% if tasks is empty and messages is empty and activity is empty and not this.alreadyDecided %}
+        <li>
+            <div style="color: #666; {{ rowPadding }}">{{ 'noNotifications'|trans({}, 'notification') }}</div>
+        </li>
+    {% endif %}
+
+    {% if this.unreadCount > 0 %}
+        <li>
+            <a href="#" style="display: block; {{ rowPadding }} {{ rowBorder }}"
+               data-action="live#action" data-live-action-param="markAllRead">
+                <i class="uk-icon-check {{ rowIcon }}" style="{{ rowIconStyle }}"></i>{{ 'markAllRead'|trans({}, 'notification') }}
+            </a>
+        </li>
+    {% endif %}
+{% endset %}
+
+{% if uikit3 %}
+    <li{{ attributes.defaults({'data-poll': 'delay(60000)|$render'}) }}>
+        <a href="#" title="{{ 'notifications'|trans({}, 'menu') }}" style="cursor: pointer;">
+            <span uk-icon="bell"></span>
+            <small id="cs-nav-notification-indicator">{% if this.unreadCount > 0 %}{{ this.unreadCount }}{% endif %}</small>
+        </a>
+        <div uk-dropdown="mode: click" class="uk-navbar-dropdown">
+            <ul class="uk-nav uk-navbar-dropdown-nav">{{ rows }}</ul>
+        </div>
+    </li>
+{% else %}
+    <li{{ attributes.defaults({class: 'uk-parent', 'data-uk-dropdown': "{mode:'click'}", 'data-poll': 'delay(60000)|$render'}) }}>
+        {# UIKit 2 sets cursor:text on navbar links with href="#"; the bell is a toggle, so restore the pointer. #}
+        <a href="#" title="{{ 'notifications'|trans({}, 'menu') }}" style="cursor: pointer;">
+            <i class="uk-icon-bell-o"></i>
+            <small id="cs-nav-notification-indicator">{% if this.unreadCount > 0 %}{{ this.unreadCount }}{% endif %}</small>
+        </a>
+        <div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-2">
+            <ul class="uk-nav uk-nav-navbar">{{ rows }}</ul>
+        </div>
+    </li>
+{% endif %}

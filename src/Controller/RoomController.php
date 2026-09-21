@@ -15,7 +15,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Event\UserJoinedRoomEvent;
-use App\Filter\HomeFilterType;
 use App\Filter\RoomFilterType;
 use App\Form\Type\ContextType;
 use App\Hash\HashManager;
@@ -25,7 +24,6 @@ use App\Security\Authorization\Voter\ContextCreateVoter;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Repository\UserRepository;
 use App\Room\Copy\LegacyCopy;
-use App\RoomFeed\RoomFeedGenerator;
 use App\Room\RoomType;
 use App\Rubric\RubricType;
 use App\Services\CalendarsService;
@@ -69,10 +67,8 @@ class RoomController extends AbstractController
 
     #[Route(path: '/room/{roomId}', requirements: ['roomId' => '\d+'])]
     public function home(
-        Request $request,
         ItemService $itemService,
         RoomService $roomService,
-        RoomFeedGenerator $roomFeedGenerator,
         LegacyMarkup $legacyMarkup,
         LegacyEnvironment $legacyEnvironment,
         ThemeRepositoryInterface $themeRepository,
@@ -98,19 +94,6 @@ class RoomController extends AbstractController
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
-        }
-
-        // setup filter form
-        $filterForm = $this->createForm(HomeFilterType::class, null, ['action' => $this->generateUrl('app_room_home', ['roomId' => $roomId]), 'hasHashtags' => $roomItem->withBuzzwords(), 'hasCategories' => $roomItem->withTags()]);
-
-        $header = 'latest entries';
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-            // set filter conditions in feed generator
-            $roomFeedGenerator->setFilterConditions($filterForm);
-            $header = 'search results';
         }
 
         // ...and prepare some data
@@ -196,7 +179,6 @@ class RoomController extends AbstractController
 
         return $this->render('room/home.html.twig', [
             'homeInformationEntry' => $homeInformationEntry,
-            'form' => $filterForm,
             'roomItem' => $roomItem,
             'timeSpread' => $timeSpread,
             'numNewEntries' => $numNewEntries,
@@ -210,58 +192,11 @@ class RoomController extends AbstractController
             'logoImageFilepath' => $logoImage,
             'serviceContact' => $serviceContact,
             'rss' => $rss,
-            'header' => $header,
             'isModerator' => $currentUserResolver->getUser()?->isModerator() ?? false,
             'userTasks' => $userTasks,
             'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
             'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
             'pinnedItemsCount' => count($pinnedItems)
-        ]);
-    }
-
-    #[Route(path: '/room/{roomId}/feed/{start}/{sort}', requirements: ['roomId' => '\d+'])]
-    public function feed(
-        Request $request,
-        ReaderService $readerService,
-        RoomFeedGenerator $roomFeedGenerator,
-        LegacyEnvironment $environment,
-        CurrentContextResolver $currentContextResolver,
-        RoomService $roomService,
-        int $roomId,
-        int $max = 10
-    ): Response {
-        // get room item for information panel
-        $roomItem = $roomService->getRoomItem($roomId);
-
-        if (!$roomItem) {
-            throw $this->createNotFoundException('The requested room does not exist');
-        }
-
-        // setup filter form
-        $filterForm = $this->createForm(HomeFilterType::class, null, ['action' => $this->generateUrl('app_room_home', ['roomId' => $roomId]), 'hasHashtags' => $roomItem->withBuzzwords(), 'hasCategories' => $roomItem->withTags()]);
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-            // set filter conditions in feed generator
-            $roomFeedGenerator->setFilterConditions($filterForm);
-        }
-
-        $lastId = null;
-        if ($request->query->has('lastId')) {
-            $lastId = $request->query->get('lastId');
-        }
-
-        $feedList = $roomFeedGenerator->getRoomFeedList($roomId, $max, $lastId);
-        $legacyEnvironment = $environment->getEnvironment();
-        $current_context = $currentContextResolver->getContextItem();
-
-        $readerList = $this->readerService->getChangeStatusForItems(...$feedList);
-
-        return $this->render('room/list.html.twig', [
-            'feedList' => $feedList,
-            'readerList' => $readerList,
-            'showRating' => $current_context->isAssessmentActive(),
         ]);
     }
 

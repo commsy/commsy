@@ -189,6 +189,10 @@
                 <source>Room categories</source>
                 <target>Raumkategorien</target>
             </trans-unit>
+            <trans-unit id="notifications">
+                <source>notifications</source>
+                <target>Benachrichtigungen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -119,6 +119,9 @@ services:
             - '../src/Mail/Messages/'
             - '../src/Message/'
             - '../src/Model/'
+            - '../src/Notification/NotificationGroup.php'
+            - '../src/Notification/NotificationPayload.php'
+            - '../src/Notification/RoomActivitySummary.php'
             - '../src/Proxy/'
             - '../src/Tests/'
             - '../src/WOPI/REST/Request'
@@ -414,14 +417,6 @@ services:
 
     commsy.calendars_service:
         class: App\Services\CalendarsService
-
-    commsy.room_feed_generator:
-        class: App\RoomFeed\RoomFeedGenerator
-        public: true
-        arguments:
-            - '@commsy_legacy.environment'
-            - '@commsy_legacy.room_service'
-            - '@commsy_legacy.item_service'
 
     # actions
     commsy.action.mark_read.generic:

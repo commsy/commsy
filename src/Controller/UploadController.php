@@ -15,6 +15,7 @@ namespace App\Controller;
 
 use App\Dto\TempUserFileDto;
 use App\Entity\Account;
+use App\Event\CommsyEditEvent;
 use App\Services\FileUploader;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -24,6 +25,7 @@ use App\Utils\MysqlDateTime;
 use App\Validator\UploadSizeValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -137,7 +139,8 @@ class UploadController extends AbstractController
         FileUploader $fileUploader,
         FileService $fileService,
         LegacyEnvironment $legacyEnvironment,
-        CurrentContextResolver $currentContextResolver
+        CurrentContextResolver $currentContextResolver,
+        EventDispatcherInterface $eventDispatcher
     ): JsonResponse {
         if ($this->uploadSizeValidator->isPostMaxSizeExceeded($request)) {
             return $this->postMaxSizeErrorResponse(['fileIds' => []]);
@@ -170,6 +173,11 @@ class UploadController extends AbstractController
         $item->setFileIDArray($newFileIds);
         $item->setModificatorItem($environment->getCurrentUserItem());
         $item->save();
+
+        // Attaching a file changes the entry, so surface it like any other edit:
+        // the item's own save() does not emit this event, which is why a file
+        // attachment used to slip past the activity notifications.
+        $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
 
         return $response->setData([
             'fileIds' => $responseData,

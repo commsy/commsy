@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="noNotifications">
+                <source>noNotifications</source>
+                <target>No notifications</target>
+            </trans-unit>
+            <trans-unit id="markAllRead">
+                <source>markAllRead</source>
+                <target>Mark all as read</target>
+            </trans-unit>
+            <trans-unit id="byCreator">
+                <source>byCreator</source>
+                <target>by %name%</target>
+            </trans-unit>
+            <trans-unit id="attachments">
+                <source>attachments</source>
+                <target>Attachments</target>
+            </trans-unit>
+            <trans-unit id="action.created">
+                <source>action.created</source>
+                <target>Created</target>
+            </trans-unit>
+            <trans-unit id="action.edited">
+                <source>action.edited</source>
+                <target>Edited</target>
+            </trans-unit>
+            <trans-unit id="action.annotated">
+                <source>action.annotated</source>
+                <target>Annotated</target>
+            </trans-unit>
+            <trans-unit id="createdBy">
+                <source>createdBy</source>
+                <target>Created by: %name%</target>
+            </trans-unit>
+            <trans-unit id="title.room">
+                <source>title.room</source>
+                <target>Recent activity in this workspace</target>
+            </trans-unit>
+            <trans-unit id="title.dashboard">
+                <source>title.dashboard</source>
+                <target>Recent activity from my workspaces</target>
+            </trans-unit>
+            <trans-unit id="bell.joinRequest">
+                <source>bell.joinRequest</source>
+                <target>%name% would like to join this workspace</target>
+            </trans-unit>
+            <trans-unit id="bell.accept">
+                <source>bell.accept</source>
+                <target>Accept</target>
+            </trans-unit>
+            <trans-unit id="bell.reject">
+                <source>bell.reject</source>
+                <target>Reject</target>
+            </trans-unit>
+            <trans-unit id="bell.viewProfile">
+                <source>bell.viewProfile</source>
+                <target>View profile</target>
+            </trans-unit>
+            <trans-unit id="bell.decisionAccepted">
+                <source>bell.decisionAccepted</source>
+                <target>Your request for "%room%" was accepted</target>
+            </trans-unit>
+            <trans-unit id="bell.decisionRejected">
+                <source>bell.decisionRejected</source>
+                <target>Your request for "%room%" was rejected</target>
+            </trans-unit>
+            <trans-unit id="bell.alreadyDecided">
+                <source>bell.alreadyDecided</source>
+                <target>This request has already been handled.</target>
+            </trans-unit>
+            <trans-unit id="bell.activityCreated">
+                <source>bell.activityCreated</source>
+                <target>%count% created</target>
+            </trans-unit>
+            <trans-unit id="bell.activityEdited">
+                <source>bell.activityEdited</source>
+                <target>%count% edited</target>
+            </trans-unit>
+            <trans-unit id="bell.activityAnnotated">
+                <source>bell.activityAnnotated</source>
+                <target>%count% annotated</target>
+            </trans-unit>
+            <trans-unit id="bell.indicatorNew">
+                <source>bell.indicatorNew</source>
+                <target>New entries</target>
+            </trans-unit>
+            <trans-unit id="bell.indicatorChanged">
+                <source>bell.indicatorChanged</source>
+                <target>Changed entries</target>
+            </trans-unit>
+            <trans-unit id="bell.announcementExpiring">
+                <source>bell.announcementExpiring</source>
+                <target>Your announcement "%title%" expires soon</target>
+            </trans-unit>
+            <trans-unit id="bell.validUntil">
+                <source>bell.validUntil</source>
+                <target>valid until %date%</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

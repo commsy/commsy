@@ -17,6 +17,7 @@ use App\Enum\EditableSection;
 use App\Etherpad\EtherpadException;
 use App\Etherpad\MaterialPad;
 use App\Event\CommsyEditEvent;
+use App\Event\ItemPublishedEvent;
 use App\Form\DataTransformer\ItemTransformer;
 use App\Form\DataTransformer\TransformerManager;
 use App\Form\Model\Send;
@@ -906,10 +907,18 @@ class ItemController extends AbstractController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function undraft(
         ItemService $itemService,
+        EventDispatcherInterface $eventDispatcher,
         int $roomId,
         int $itemId
     ): Response {
         $itemService->undraft($itemId);
+
+        // The entry is now visible to the room — this, not CommsyEditEvent::SAVE
+        // (which fires while still a draft), is the "new entry" moment.
+        $item = $itemService->getTypedItem($itemId);
+        if ($item !== null) {
+            $eventDispatcher->dispatch(new ItemPublishedEvent($item), ItemPublishedEvent::NAME);
+        }
 
         return new Response();
     }

@@ -74,26 +74,6 @@ class RoomControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testFeedRouteForProjectRoom(): void
-    {
-        /** @var Account $account */
-        $account = AccountStory::get('account');
-
-        $room = RoomFactory::createOne([
-            'contextId' => $account->getContextId(),
-            'portal' => $account->getPortal(),
-            'type' => 'project',
-        ]);
-
-        RoomUserFactory::createOne(['account' => $account, 'room' => $room]);
-
-        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
-
-        // feed route requires start + sort path params
-        $this->client->request('GET', "/room/{$room->getItemId()}/feed/0/date");
-        $this->assertResponseIsSuccessful();
-    }
-
     public function testListAllRendersForPortal(): void
     {
         /** @var Account $account */

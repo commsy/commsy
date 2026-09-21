@@ -56,16 +56,6 @@ class DashboardControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testFeedRenders(): void
-    {
-        $this->client->request(
-            'GET',
-            "/dashboard/{$this->privateRoomId}/feed/0/date"
-        );
-
-        $this->assertResponseIsSuccessful();
-    }
-
     public function testEditReturnsJson(): void
     {
         $this->client->request(

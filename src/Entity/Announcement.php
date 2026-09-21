@@ -17,12 +17,13 @@ use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
+use App\Repository\AnnouncementRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Announcement.
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: AnnouncementRepository::class)]
 #[ORM\Table(name: 'announcement')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]

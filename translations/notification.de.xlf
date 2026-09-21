@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="de" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="noNotifications">
+                <source>noNotifications</source>
+                <target>Keine Benachrichtigungen</target>
+            </trans-unit>
+            <trans-unit id="markAllRead">
+                <source>markAllRead</source>
+                <target>Alle als gelesen markieren</target>
+            </trans-unit>
+            <trans-unit id="byCreator">
+                <source>byCreator</source>
+                <target>von %name%</target>
+            </trans-unit>
+            <trans-unit id="attachments">
+                <source>attachments</source>
+                <target>Anhänge</target>
+            </trans-unit>
+            <trans-unit id="action.created">
+                <source>action.created</source>
+                <target>Erstellt</target>
+            </trans-unit>
+            <trans-unit id="action.edited">
+                <source>action.edited</source>
+                <target>Bearbeitet</target>
+            </trans-unit>
+            <trans-unit id="action.annotated">
+                <source>action.annotated</source>
+                <target>Annotiert</target>
+            </trans-unit>
+            <trans-unit id="createdBy">
+                <source>createdBy</source>
+                <target>Erstellt von: %name%</target>
+            </trans-unit>
+            <trans-unit id="title.room">
+                <source>title.room</source>
+                <target>Letzte Aktivitäten aus diesem Raum</target>
+            </trans-unit>
+            <trans-unit id="title.dashboard">
+                <source>title.dashboard</source>
+                <target>Letzte Aktivitäten aus meinen Räumen</target>
+            </trans-unit>
+            <trans-unit id="bell.joinRequest">
+                <source>bell.joinRequest</source>
+                <target>%name% möchte diesem Raum beitreten</target>
+            </trans-unit>
+            <trans-unit id="bell.accept">
+                <source>bell.accept</source>
+                <target>Annehmen</target>
+            </trans-unit>
+            <trans-unit id="bell.reject">
+                <source>bell.reject</source>
+                <target>Ablehnen</target>
+            </trans-unit>
+            <trans-unit id="bell.viewProfile">
+                <source>bell.viewProfile</source>
+                <target>Profil ansehen</target>
+            </trans-unit>
+            <trans-unit id="bell.decisionAccepted">
+                <source>bell.decisionAccepted</source>
+                <target>Deine Anfrage für „%room%“ wurde angenommen</target>
+            </trans-unit>
+            <trans-unit id="bell.decisionRejected">
+                <source>bell.decisionRejected</source>
+                <target>Deine Anfrage für „%room%“ wurde abgelehnt</target>
+            </trans-unit>
+            <trans-unit id="bell.alreadyDecided">
+                <source>bell.alreadyDecided</source>
+                <target>Diese Anfrage wurde bereits bearbeitet.</target>
+            </trans-unit>
+            <trans-unit id="bell.activityCreated">
+                <source>bell.activityCreated</source>
+                <target>%count% neu angelegt</target>
+            </trans-unit>
+            <trans-unit id="bell.activityEdited">
+                <source>bell.activityEdited</source>
+                <target>%count% bearbeitet</target>
+            </trans-unit>
+            <trans-unit id="bell.activityAnnotated">
+                <source>bell.activityAnnotated</source>
+                <target>%count% annotiert</target>
+            </trans-unit>
+            <trans-unit id="bell.indicatorNew">
+                <source>bell.indicatorNew</source>
+                <target>Neue Einträge</target>
+            </trans-unit>
+            <trans-unit id="bell.indicatorChanged">
+                <source>bell.indicatorChanged</source>
+                <target>Geänderte Einträge</target>
+            </trans-unit>
+            <trans-unit id="bell.announcementExpiring">
+                <source>bell.announcementExpiring</source>
+                <target>Deine Ankündigung „%title%“ läuft bald ab</target>
+            </trans-unit>
+            <trans-unit id="bell.validUntil">
+                <source>bell.validUntil</source>
+                <target>gültig bis %date%</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

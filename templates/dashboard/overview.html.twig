@@ -64,7 +64,7 @@
         <div class="uk-width-medium-1-2 uk-pull-1-2 uk-row-first">
             <main id="main-content">
             {{ macros.dashboardAllRooms(roomItem, userMayCreateContext) }}
-            {{ macros.dashboardFeed(roomItem) }}
+            <twig:NotificationPanel :account="app.user" :title="'title.dashboard'|trans({}, 'notification')" />
             </main>
         </div>
     </div>
