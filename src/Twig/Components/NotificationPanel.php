@@ -19,6 +19,7 @@ use App\Enum\NotificationType;
 use App\Notification\NotificationGroup;
 use App\Notification\NotificationLinkResolver;
 use App\Repository\NotificationRepository;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
@@ -62,7 +63,12 @@ final class NotificationPanel
     ) {
     }
 
+    // Its own HTTP endpoint: as far as the firewall is concerned /_components
+    // is PUBLIC_ACCESS, so the action states for itself that it needs a
+    // signed-in visitor. Whose rows are cleared follows from the signed account
+    // prop, which the client cannot forge.
     #[LiveAction]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function markAllRead(): void
     {
         if ($this->account !== null) {

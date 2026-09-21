@@ -26,6 +26,7 @@ use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 use function Symfony\Component\Clock\now;
 
@@ -86,19 +87,26 @@ final class NotificationBell
         return $this->linkResolver->resolve($notification);
     }
 
+    // A live action is its own HTTP endpoint, and the firewall lets
+    // /_components through as PUBLIC_ACCESS. Which moderator may decide *this*
+    // request is settled one step down, against the request's own room; here we
+    // only establish that somebody is signed in. The two are complementary.
     #[LiveAction]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function accept(#[LiveArg] int $id): void
     {
         $this->decide($id, true);
     }
 
     #[LiveAction]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function reject(#[LiveArg] int $id): void
     {
         $this->decide($id, false);
     }
 
     #[LiveAction]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function markAllRead(): void
     {
         if ($this->account === null) {

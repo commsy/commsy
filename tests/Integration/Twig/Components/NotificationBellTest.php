@@ -21,29 +21,69 @@ use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Notification\NotificationPayload;
 use App\Repository\NotificationRepository;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 use Tests\Factory\AccountFactory;
+use Tests\Factory\AuthSourceLocalFactory;
+use Tests\Factory\PortalFactory;
 
 /**
  * Pins the {@see \App\Twig\Components\NotificationBell} live component: it shows
  * personal/administrative notifications only, keeps content activity out, counts
  * open tasks, and resolves a task that someone else already decided.
  */
-final class NotificationBellTest extends KernelTestCase
+final class NotificationBellTest extends WebTestCase
 {
     use InteractsWithLiveComponents;
 
+    private KernelBrowser $client;
+    private Account $account;
+
+    protected function setUp(): void
+    {
+        static::ensureKernelShutdown();
+        $this->client = static::createClient();
+        $this->client->disableReboot();
+
+        // The live actions are guarded, so the component has to be driven by a
+        // browser that carries a signed-in session. loginUser() is not enough:
+        // UserProvider::refreshUser() resolves the portal from the request, and
+        // the component endpoint carries none — only a real login puts it in
+        // the session.
+        $password = 'bell-component-test';
+        $source = AuthSourceLocalFactory::createOne(['enabled' => true, 'default' => true]);
+        $portal = PortalFactory::createOne(['authSources' => [$source]]);
+        $account = AccountFactory::createOne([
+            'portal' => $portal,
+            'authSource' => $source,
+            'plainPassword' => $password,
+            'activityState' => Account::ACTIVITY_ACTIVE,
+            'locked' => false,
+        ]);
+        $portalId = $portal->getId();
+        $username = $account->getUsername();
+        $accountId = $account->getId();
+
+        $this->client->request('GET', "/login/{$portalId}");
+        $this->client->submitForm('login_local', ['email' => $username, 'password' => $password]);
+        $this->client->followRedirect();
+
+        // Each request detaches the Foundry entities, so take a managed one.
+        $this->account = self::getContainer()->get(EntityManagerInterface::class)
+            ->find(Account::class, $accountId);
+    }
+
     public function testSeparatesTasksFromInformationAndCondensesRoomActivity(): void
     {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
+        $account = $this->account;
         $this->persist($account, NotificationType::RoomJoinRequest, 'Ada Lovelace', sourceItemId: 42);
         $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99, action: EntryAction::Created);
         $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99, action: EntryAction::Edited);
         $this->persist($account, NotificationType::Entry, 'Another material', sourceItemId: 100, action: EntryAction::Edited);
 
-        $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
+        $component = $this->createLiveComponent('NotificationBell', ['account' => $account], $this->client);
         $bell = $component->component();
 
         self::assertCount(1, $bell->getTasks(), 'the join request is the only task');
@@ -64,11 +104,10 @@ final class NotificationBellTest extends KernelTestCase
 
     public function testRoomLineDisappearsOnceTheActivityIsRead(): void
     {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
+        $account = $this->account;
         $this->persist($account, NotificationType::Entry, 'Some material', sourceItemId: 99);
 
-        $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
+        $component = $this->createLiveComponent('NotificationBell', ['account' => $account], $this->client);
         self::assertCount(1, $component->component()->getRoomActivity());
 
         $component->call('markAllRead');
@@ -79,8 +118,7 @@ final class NotificationBellTest extends KernelTestCase
 
     public function testDecisionNotificationIsShown(): void
     {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
+        $account = $this->account;
         $this->persist(
             $account,
             NotificationType::RoomJoinDecision,
@@ -89,18 +127,17 @@ final class NotificationBellTest extends KernelTestCase
             payload: new NotificationPayload(decision: 'accepted'),
         );
 
-        $html = (string) $this->createLiveComponent('NotificationBell', ['account' => $account])->render();
+        $html = (string) $this->createLiveComponent('NotificationBell', ['account' => $account], $this->client)->render();
 
         self::assertStringContainsString('Projektraum', $html);
     }
 
     public function testDecidingAnAlreadyHandledRequestResolvesItQuietly(): void
     {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
+        $account = $this->account;
         $this->persist($account, NotificationType::RoomJoinRequest, 'Ada', sourceItemId: 42);
 
-        $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
+        $component = $this->createLiveComponent('NotificationBell', ['account' => $account], $this->client);
 
         // No such user exists, so the decider finds nothing to decide.
         $component->call('accept', ['id' => 42]);
@@ -111,12 +148,11 @@ final class NotificationBellTest extends KernelTestCase
 
     public function testMarkAllReadLeavesOpenTasksCountable(): void
     {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
+        $account = $this->account;
         $this->persist($account, NotificationType::RoomJoinRequest, 'Ada', sourceItemId: 42);
         $this->persist($account, NotificationType::RoomJoinDecision, 'Projektraum', sourceItemId: 43);
 
-        $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
+        $component = $this->createLiveComponent('NotificationBell', ['account' => $account], $this->client);
         $component->call('markAllRead');
 
         self::assertSame(1, $this->repository()->count(['readAt' => null]), 'the task stays unread, the decision is read');
@@ -129,12 +165,11 @@ final class NotificationBellTest extends KernelTestCase
 
     public function testAReadDecisionLeavesTheDropdown(): void
     {
-        self::bootKernel();
-        $account = AccountFactory::createOne();
+        $account = $this->account;
         $this->persist($account, NotificationType::RoomJoinDecision, 'Projektraum', 180,
             new NotificationPayload(decision: 'accepted'));
 
-        $component = $this->createLiveComponent('NotificationBell', ['account' => $account]);
+        $component = $this->createLiveComponent('NotificationBell', ['account' => $account], $this->client);
         self::assertStringContainsString('angenommen', (string) $component->render());
 
         $component->call('markAllRead');
