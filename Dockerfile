@@ -251,7 +251,12 @@ COPY --chown=www-data:0 --from=commsy_php_builder /app/var /app/var
 RUN <<-EOF
 	mkdir -p /app/files
 	chown www-data:0 /app/files
-	chmod -R g=u /app/var /app/files
+	# The JWT keypair is generated on first start, not baked into the image —
+	# it is a secret, and this image is public. The rootless user therefore
+	# needs to be able to write it.
+	mkdir -p /app/config/jwt
+	chown www-data:0 /app/config/jwt
+	chmod -R g=u /app/var /app/files /app/config/jwt
 EOF
 
 COPY --link --chmod=755 docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
