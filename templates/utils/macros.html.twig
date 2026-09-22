@@ -14,13 +14,15 @@
     {% elseif type is same as('group') %}
         uk-icon-group
     {% elseif type is same as('todo') %}
-        {% if status == 1 %}
+        {% set todoStatus = enum('App\\Rubric\\Todo\\TodoStatus') %}
+        {% if status == todoStatus.NotStarted.value %}
             uk-icon-circle-o todo
-        {% elseif status == 2 %}
+        {% elseif status == todoStatus.InProgress.value %}
             uk-icon-dot-circle-o inProgress
-        {% elseif status == 3 %}
+        {% elseif status == todoStatus.Done.value %}
             uk-icon-check-circle-o done
         {% else %}
+            {# A status the room named itself. #}
             uk-icon-check-square-o
         {% endif %}
     {% elseif type is same as('task') %}

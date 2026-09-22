@@ -15,14 +15,21 @@ namespace App\Search\FilterConditions;
 
 use Elastica\Query\AbstractQuery;
 use Elastica\Query\Range;
+use App\Rubric\Todo\TodoStatus;
 use Elastica\Query\Term;
 
 class TodoStatusFilterCondition implements FilterConditionInterface
 {
     /**
-     * @var int|null Todo status (1: 'pending', 2: 'in progress', 3: 'done')
+     * Everything above the three statuses of {@see TodoStatus} is a filter of
+     * its own rather than a status, see {@see self::NOT_DONE}.
      */
     private ?int $todoStatus = null;
+
+    /**
+     * Not a status but a question about one: everything that is not done.
+     */
+    private const NOT_DONE = 4;
 
     public function setTodoStatus(int $todoStatus): self
     {
@@ -39,30 +46,18 @@ class TodoStatusFilterCondition implements FilterConditionInterface
         $todoFilters = [];
 
         switch ($this->todoStatus) {
-            case 1:
-                // pending
+            case TodoStatus::NotStarted->value:
+            case TodoStatus::InProgress->value:
+            case TodoStatus::Done->value:
                 $todoTerm = new Term();
-                $todoTerm->setTerm('status', 1);
+                $todoTerm->setTerm('status', $this->todoStatus);
                 $todoFilters[] = $todoTerm;
                 break;
-            case 2:
-                // in progress
-                $todoTerm = new Term();
-                $todoTerm->setTerm('status', 2);
-                $todoFilters[] = $todoTerm;
-                break;
-            case 3:
-                // done
-                $todoTerm = new Term();
-                $todoTerm->setTerm('status', 3);
-                $todoFilters[] = $todoTerm;
-                break;
-            case 4:
-                // not done (pending + in progress)
+            case self::NOT_DONE:
                 $todoRange = new Range();
                 $todoRange->addField('status', [
-                    'gte' => 1,
-                    'lt' => 3,
+                    'gte' => TodoStatus::NotStarted->value,
+                    'lt' => TodoStatus::Done->value,
                 ]);
                 $todoFilters[] = $todoRange;
                 break;

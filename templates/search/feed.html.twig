@@ -119,9 +119,19 @@
             </div>
 
             <div class="uk-width-2-10 uk-text-right">
-                {% if result.type is same as('todo') and result.status in [1, 2, 3] %}
-                    {% set statusDescriptions = ['pending'|trans({},'todo'), 'in progress'|trans({},'todo'), 'done'|trans({},'todo')] %}
-                    <i class="{{ macros.iconClassForItemType(result.type, result.status) }} uk-icon-small" data-uk-tooltip title="{{ statusDescriptions[result.status - 1] }}"></i>
+                {% set todoStatusLabel = null %}
+                {% if result.type is same as('todo') %}
+                    {% set todoStatus = enum('App\\Rubric\\Todo\\TodoStatus') %}
+                    {# A status a room named itself has no label here, only its icon. #}
+                    {% set todoStatusLabel = {
+                        (todoStatus.NotStarted.value): 'pending'|trans({}, 'todo'),
+                        (todoStatus.InProgress.value): 'in progress'|trans({}, 'todo'),
+                        (todoStatus.Done.value): 'done'|trans({}, 'todo'),
+                    }[result.status] ?? null %}
+                {% endif %}
+
+                {% if todoStatusLabel %}
+                    <i class="{{ macros.iconClassForItemType(result.type, result.status) }} uk-icon-small" data-uk-tooltip title="{{ todoStatusLabel }}"></i>
                 {% else %}
                     <i class="{{ macros.iconClassForItemType(result.type) }} uk-icon-small"></i>
                 {% endif %}

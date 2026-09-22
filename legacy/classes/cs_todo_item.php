@@ -135,9 +135,10 @@ class cs_todo_item extends cs_item
     {
         $translator = $this->_environment->getSymfonyContainer()->get(\App\Legacy\LegacyTranslator::class);
         $value = $this->_getValue('status');
-        if ('2' == $value) {
+        $status = \App\Rubric\Todo\TodoStatus::tryFrom((int) $value);
+        if (\App\Rubric\Todo\TodoStatus::InProgress === $status) {
             return $translator->translate('TODO_IN_POGRESS');
-        } elseif ('3' == $value) {
+        } elseif (\App\Rubric\Todo\TodoStatus::Done === $status) {
             return $translator->translate('TODO_DONE');
         } else {
             // return $translator->translate('TODO_NOT_STARTED');

@@ -33,6 +33,7 @@ use App\Form\Type\StepType;
 use App\Form\Type\TodoType;
 use App\Item\ItemType;
 use App\Rubric\RubricType;
+use App\Rubric\Todo\TodoStatus;
 use App\Rubric\Todo\TodoDeleter;
 use App\Security\Authorization\Voter\CategoryVoter;
 use App\Security\Authorization\Voter\ItemVoter;
@@ -453,7 +454,12 @@ class TodoController extends BaseController
 
         $isDraft = $item->isDraft();
 
-        $statusChoices = [$this->translator->trans('pending', [], 'todo') => '1', $this->translator->trans('in progress', [], 'todo') => '2', $this->translator->trans('done', [], 'todo') => '3'];
+        // The three CommSy knows, followed by the ones the room named itself.
+        $statusChoices = [
+            $this->translator->trans('pending', [], 'todo') => (string) TodoStatus::NotStarted->value,
+            $this->translator->trans('in progress', [], 'todo') => (string) TodoStatus::InProgress->value,
+            $this->translator->trans('done', [], 'todo') => (string) TodoStatus::Done->value,
+        ];
 
         foreach ($roomItem->getExtraToDoStatusArray() as $key => $value) {
             $statusChoices[$value] = $key;

@@ -15,6 +15,7 @@ namespace App\Action\TodoStatus;
 
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
+use App\Rubric\Todo\TodoStatus;
 use App\Utils\TodoService;
 use cs_room_item;
 use cs_todo_item;
@@ -46,11 +47,11 @@ class TodoStatusAction implements ActionInterface
             throw new Exception('no status set for update');
         }
 
-        // map status string to int
+        // The three CommSy knows; anything else is a status the room named.
         $statusMap = [
-            'pending' => 1,
-            'inprogress' => 2,
-            'done' => 3,
+            'pending' => TodoStatus::NotStarted->value,
+            'inprogress' => TodoStatus::InProgress->value,
+            'done' => TodoStatus::Done->value,
         ];
 
         $newStatus = $statusMap[$this->newStatus] ?? null;
