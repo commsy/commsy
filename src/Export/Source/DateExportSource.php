@@ -32,6 +32,7 @@ final readonly class DateExportSource implements RubricExportSource
 {
     public function __construct(
         private DatesRepository $dates,
+        private AnnotationSubEntries $annotations,
     ) {
     }
 
@@ -47,7 +48,6 @@ final readonly class DateExportSource implements RubricExportSource
 
     public function subEntriesOf(ExportableEntry $entry): array
     {
-        // Nothing hangs under dates.
-        return [];
+        return $this->annotations->of($entry);
     }
 }

@@ -31,6 +31,7 @@ final readonly class TodoExportSource implements RubricExportSource
     public function __construct(
         private TodosRepository $todos,
         private StepRepository $steps,
+        private AnnotationSubEntries $annotations,
     ) {
     }
 
@@ -53,6 +54,7 @@ final readonly class TodoExportSource implements RubricExportSource
             return [];
         }
 
-        return ['steps' => $this->steps->findForExport($entry->getItemId())];
+        return $this->annotations->of($entry)
+            + ['steps' => $this->steps->findForExport($entry->getItemId())];
     }
 }

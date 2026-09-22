@@ -31,6 +31,7 @@ final readonly class DiscussionExportSource implements RubricExportSource
     public function __construct(
         private DiscussionsRepository $discussions,
         private DiscussionarticlesRepository $articles,
+        private AnnotationSubEntries $annotations,
     ) {
     }
 
@@ -54,6 +55,7 @@ final readonly class DiscussionExportSource implements RubricExportSource
             return [];
         }
 
-        return ['articles' => $this->articles->findForExport($entry->getItemId())];
+        return $this->annotations->of($entry)
+            + ['articles' => $this->articles->findForExport($entry->getItemId())];
     }
 }

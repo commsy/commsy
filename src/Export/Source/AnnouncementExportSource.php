@@ -31,6 +31,7 @@ final readonly class AnnouncementExportSource implements RubricExportSource
 {
     public function __construct(
         private AnnouncementRepository $announcements,
+        private AnnotationSubEntries $annotations,
     ) {
     }
 
@@ -46,7 +47,6 @@ final readonly class AnnouncementExportSource implements RubricExportSource
 
     public function subEntriesOf(ExportableEntry $entry): array
     {
-        // Nothing hangs under an announcement.
-        return [];
+        return $this->annotations->of($entry);
     }
 }

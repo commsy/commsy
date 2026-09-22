@@ -35,6 +35,7 @@ final readonly class MaterialExportSource implements RubricExportSource
     public function __construct(
         private MaterialsRepository $materials,
         private SectionRepository $sections,
+        private AnnotationSubEntries $annotations,
     ) {
     }
 
@@ -59,6 +60,7 @@ final readonly class MaterialExportSource implements RubricExportSource
             return [];
         }
 
-        return ['sections' => $this->sections->findForExport($entry->getItemId(), $entry->getVersionId())];
+        return $this->annotations->of($entry)
+            + ['sections' => $this->sections->findForExport($entry->getItemId(), $entry->getVersionId())];
     }
 }
