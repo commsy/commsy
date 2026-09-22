@@ -17,21 +17,24 @@ namespace App\Serializer;
 
 use App\Entity\Calendars;
 use App\Entity\Labels;
+use App\Entity\License;
 use App\Entity\Room;
 use App\Repository\CalendarsRepository;
 use App\Repository\LabelRepository;
+use App\Repository\LicenseRepository;
 use App\Repository\TagRepository;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
- * Adds to a room what its entries point at: its categories, its hashtags and
- * its calendars.
+ * Adds to a room what its entries point at: its categories, its hashtags, its
+ * calendars and its licences.
  *
  * None of them is a column on the room. Categories are `tags` linked into a
- * tree by `tag2tag`, hashtags are `labels` of type buzzword, calendars a table
- * of their own. Each stands once here and entries reference it by id.
+ * tree by `tag2tag`, hashtags are `labels` of type buzzword, calendars and
+ * licences tables of their own. Each stands once here and entries reference it
+ * by id.
  *
  * Decorates rather than replaces — the room's own fields still come from the
  * object normalizer, which this hands back to once per object.
@@ -46,6 +49,7 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
         private readonly TagRepository $tags,
         private readonly LabelRepository $labels,
         private readonly CalendarsRepository $calendars,
+        private readonly LicenseRepository $licenses,
         private readonly TitleCollator $titles,
     ) {
     }
@@ -66,6 +70,7 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
         $normalized['categories'] = $this->tags->findCategoryTreeFor($data->getItemId());
         $normalized['hashtags'] = $this->hashtagsFor($data->getItemId());
         $normalized['calendars'] = $this->calendarsFor($data->getItemId());
+        $normalized['licenses'] = $this->licensesFor($data->getItemId());
 
         return $normalized;
     }
@@ -128,5 +133,23 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
         usort($calendars, fn (array $a, array $b): int => $this->titles->compare($a['title'], $b['title']));
 
         return $calendars;
+    }
+
+    /**
+     * Licences a room defines for its materials. They come back in the order the
+     * room put them in, which is the order the material form offers them.
+     *
+     * @return list<array{id: int, title: string, content: string|null}>
+     */
+    private function licensesFor(int $roomId): array
+    {
+        return array_map(
+            static fn (License $license): array => [
+                'id' => (int) $license->getId(),
+                'title' => (string) $license->getTitle(),
+                'content' => $license->getContent(),
+            ],
+            $this->licenses->findByContextOrderByPosition($roomId)
+        );
     }
 }

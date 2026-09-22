@@ -48,16 +48,25 @@ final readonly class RoomExportBuilder
         $versionByItemId = [];
 
         foreach ($this->rubrics as $source) {
-            $entries = [...$source->entriesFor($room)];
+            $entries = [];
 
-            foreach ($entries as $entry) {
-                $versionByItemId[$entry->getItemId()] = ExportableEntry::UNVERSIONED;
+            foreach ($source->entriesFor($room) as $entry) {
+                $versionByItemId[$entry->getItemId()] = $entry->getVersionId();
+                $serialized = $this->serializer->toArray($entry);
+
+                foreach ($source->subEntriesOf($entry) as $key => $subEntries) {
+                    $serialized[$key] = [];
+
+                    foreach ($subEntries as $subEntry) {
+                        $versionByItemId[$subEntry->getItemId()] = $subEntry->getVersionId();
+                        $serialized[$key][] = $this->serializer->toArray($subEntry);
+                    }
+                }
+
+                $entries[] = $serialized;
             }
 
-            $rubrics[$source->rubric()->value] = array_map(
-                fn (ExportableEntry $entry): array => $this->serializer->toArray($entry),
-                $entries
-            );
+            $rubrics[$source->rubric()->value] = $entries;
         }
 
         // By rubric rather than in whatever order the sources were registered:

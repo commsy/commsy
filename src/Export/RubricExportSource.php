@@ -41,4 +41,16 @@ interface RubricExportSource
      *                                   unchanged room can be compared
      */
     public function entriesFor(Room $room): iterable;
+
+    /**
+     * The entries that hang under this one — a material's sections, a comment
+     * on an entry — keyed by the name they stand under inside it.
+     *
+     * Sub-entries do not stand on their own in the document; they belong to
+     * their parent and go no deeper than one level.
+     *
+     * @return array<string, list<ExportableEntry>> empty for a rubric whose
+     *                                              entries carry nothing
+     */
+    public function subEntriesOf(ExportableEntry $entry): array;
 }

@@ -21,14 +21,16 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Export\ExportableEntry;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MaterialsRepository::class)]
 #[ORM\Table(name: 'materials')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 #[ORM\Index(name: 'modifier_id', columns: ['modifier_id'])]
-class Materials
+class Materials implements ExportableEntry
 {
     use EntityDatesTrait;
     use EntityUsersTrait;
@@ -36,35 +38,43 @@ class Materials
     #[ORM\Id]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[Groups(['export'])]
     private int $itemId;
 
     #[ORM\Id]
     #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[Groups(['export'])]
     private int $versionId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['export'])]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
+    #[Groups(['export'])]
     private string $title;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    #[Groups(['export'])]
     private ?string $description = null;
 
     #[ORM\Column(name: 'author', type: Types::STRING, length: 200, nullable: true)]
+    #[Groups(['export'])]
     private ?string $author = null;
 
     #[ORM\Column(name: 'publishing_date', type: Types::STRING, length: 20, nullable: true)]
+    #[Groups(['export'])]
     private ?string $publishingDate = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private bool $public = false;
 
     #[ORM\Column(name: 'world_public', type: Types::BOOLEAN, nullable: false)]
+    #[Groups(['export'])]
     private bool $worldPublic = false;
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
@@ -77,13 +87,24 @@ class Materials
     private ?int $copyOf = null;
 
     #[ORM\Column(name: 'workflow_status', type: Types::STRING, length: 255, nullable: false)]
+    #[Groups(['export'])]
     private string $workflowStatus = '3_none';
 
     #[ORM\Column(name: 'workflow_resubmission_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['export'])]
     private ?DateTimeInterface $workflowResubmissionDate = null;
 
     #[ORM\Column(name: 'workflow_validity_date', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['export'])]
     private ?DateTimeInterface $workflowValidityDate = null;
+
+    /**
+     * The room's own licence this material was filed under, if any. A room
+     * defines its licences; the material points at one.
+     */
+    #[ORM\Column(name: 'license_id', type: Types::INTEGER, nullable: true)]
+    #[Groups(['export'])]
+    private ?int $licenseId = null;
 
     #[ORM\OneToMany(mappedBy: 'material', targetEntity: 'Section')]
     private Collection $sections;
@@ -147,6 +168,47 @@ class Materials
     public function getContextId(): ?int
     {
         return $this->contextId;
+    }
+
+    /**
+     * A material lives in a room; its context is never anything else.
+     */
+    public function getRoomId(): int
+    {
+        return (int) $this->contextId;
+    }
+
+    public function getLicenseId(): ?int
+    {
+        return $this->licenseId;
+    }
+
+    /**
+     * The citation a material carries, if it carries one.
+     *
+     * Legacy keeps it in `extras` under two keys: what kind of source it is, and
+     * the citation itself. That is content rather than bookkeeping, so it stands
+     * as a field of its own while the rest of `extras` stays out. The text is
+     * handed on as it is stored, editor markers and all — an export does not
+     * rewrite what the room shows.
+     *
+     * @return array{kind: string|null, text: string|null}|null
+     */
+    #[Groups(['export'])]
+    public function getBibliographic(): ?array
+    {
+        $kind = $this->extras['BIB_KIND'] ?? null;
+        $text = $this->extras['BIBLIOGRAPHIC'] ?? null;
+
+        // `none` is legacy's way of saying no kind was chosen.
+        $kind = in_array($kind, ['', 'none'], true) ? null : $kind;
+        $text = '' === $text ? null : $text;
+
+        if (null === $kind && null === $text) {
+            return null;
+        }
+
+        return ['kind' => $kind, 'text' => $text];
     }
 
     public function setActivationDate(?DateTime $activationDate): self

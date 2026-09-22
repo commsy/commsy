@@ -152,6 +152,14 @@ class Dates implements ExportableEntry
     }
 
     /**
+     * Only material and section keep versions.
+     */
+    public function getVersionId(): int
+    {
+        return self::UNVERSIONED;
+    }
+
+    /**
      * Dates generated from one recurrence share this id, which is the item id of
      * the first occurrence.
      *

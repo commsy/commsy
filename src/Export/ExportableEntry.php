@@ -26,13 +26,22 @@ namespace App\Export;
 interface ExportableEntry
 {
     /**
-     * The version an unversioned rubric's links carry. Only material and
-     * section keep versions at all; everything else sits at zero, and a
-     * versioned rubric will have to say which version it is exported at.
+     * The version of a rubric that keeps none. Only material and section keep
+     * versions at all; for everything else legacy writes a zero, and
+     * {@see \cs_item::getVersionID()} answers the same.
      */
     public const UNVERSIONED = 0;
 
     public function getItemId(): int;
+
+    /**
+     * The version this entry is exported at, or {@see self::UNVERSIONED}.
+     *
+     * Links belong to a version: an entry that loses an attachment or a hashtag
+     * keeps the old link on the old version. Saying which version is exported is
+     * therefore what keeps the export to what the entry shows today.
+     */
+    public function getVersionId(): int;
 
     /**
      * The room the entry belongs to.

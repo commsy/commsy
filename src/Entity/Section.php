@@ -13,17 +13,20 @@
 
 namespace App\Entity;
 
+use App\Export\ExportableEntry;
+use App\Repository\SectionRepository;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SectionRepository::class)]
 #[ORM\Table(name: 'section')]
 #[ORM\Index(name: 'context_id', columns: ['context_id'])]
 #[ORM\Index(name: 'creator_id', columns: ['creator_id'])]
 #[ORM\Index(name: 'material_item_id', columns: ['material_item_id'])]
-class Section
+class Section implements ExportableEntry
 {
     use EntityDatesTrait;
     use EntityUsersTrait;
@@ -31,23 +34,28 @@ class Section
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[Groups(['export'])]
     private int $itemId;
 
     #[ORM\Id]
     #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[Groups(['export'])]
     private int $versionId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
     private int $contextId;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
+    #[Groups(['export'])]
     private string $title;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    #[Groups(['export'])]
     private ?string $description = null;
 
     #[ORM\Column(name: 'number', type: Types::SMALLINT, nullable: false)]
+    #[Groups(['export'])]
     private int $number = 0;
 
     #[ORM\ManyToOne(targetEntity: 'Materials', inversedBy: 'sections')]
@@ -93,6 +101,14 @@ class Section
     }
 
     public function getContextId(): int
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * A section lives in the room its material lives in.
+     */
+    public function getRoomId(): int
     {
         return $this->contextId;
     }

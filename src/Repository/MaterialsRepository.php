@@ -13,12 +13,16 @@
 
 namespace App\Repository;
 
+use App\Entity\Items;
 use App\Entity\Materials;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<Materials>
+ */
 class MaterialsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -39,6 +43,40 @@ class MaterialsRepository extends ServiceEntityRepository
             ->setParameter('itemId', $itemId)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * The materials an export of this room carries, each at its newest version.
+     *
+     * Older versions are history the room does not show, and what hangs off an
+     * entry — attachments, hashtags — belongs to the version it was written on.
+     *
+     * Deleted entries and drafts stay out, the draft flag being a column on
+     * `items` rather than on the rubric.
+     *
+     * @return Materials[] oldest first
+     */
+    public function findForExport(int $contextId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin(
+                Materials::class,
+                'newer',
+                Expr\Join::WITH,
+                'm.itemId = newer.itemId AND m.versionId < newer.versionId'
+            )
+            ->join(Items::class, 'i', Expr\Join::WITH, 'i.itemId = m.itemId')
+            ->where('newer.itemId IS NULL')
+            ->andWhere('m.contextId = :contextId')
+            ->andWhere('m.deleter IS NULL')
+            ->andWhere('m.deletionDate IS NULL')
+            ->andWhere('i.draft = false')
+            ->andWhere('i.deleterId IS NULL')
+            ->andWhere('i.deletionDate IS NULL')
+            ->setParameter('contextId', $contextId)
+            ->orderBy('m.itemId', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

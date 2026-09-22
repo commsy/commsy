@@ -110,6 +110,14 @@ class Announcement implements ExportableEntry
         return (int) $this->contextId;
     }
 
+    /**
+     * Only material and section keep versions.
+     */
+    public function getVersionId(): int
+    {
+        return self::UNVERSIONED;
+    }
+
     public function isIndexable()
     {
         return null == $this->deleter && null == $this->deletionDate;

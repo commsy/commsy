@@ -73,15 +73,17 @@ final class EntryReferencesNormalizer implements NormalizerInterface, Normalizer
 
         $itemId = $data->getItemId();
         $contextId = $data->getRoomId();
+        $versionId = $data->getVersionId();
 
+        // Categories are the exception: `link_items` keeps no version.
         $normalized['categories'] = $this->sorted(
             $this->linkItems->findLinkedItemIds($itemId, self::CATEGORY_TYPE, $contextId)
         );
         $normalized['hashtags'] = $this->sorted(
-            $this->links->findLinkedItemIds($itemId, self::HASHTAG_LINK, $contextId, ExportableEntry::UNVERSIONED)
+            $this->links->findLinkedItemIds($itemId, self::HASHTAG_LINK, $contextId, $versionId)
         );
         $normalized['files'] = $this->sorted(
-            array_map('intval', $this->itemLinkFiles->getLinkedFileIds($itemId, ExportableEntry::UNVERSIONED))
+            array_map('intval', $this->itemLinkFiles->getLinkedFileIds($itemId, $versionId))
         );
 
         return $normalized;
