@@ -68,6 +68,30 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * The people behind these ids, deleted accounts left out and in a fixed
+     * order so two exports of an unchanged room can be compared.
+     *
+     * @param int[] $itemIds
+     *
+     * @return User[]
+     */
+    public function findActiveByItemIds(array $itemIds): array
+    {
+        if ([] === $itemIds) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.itemId IN (:itemIds)')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleter IS NULL')
+            ->setParameter('itemIds', $itemIds)
+            ->orderBy('u.itemId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findActiveUsers(int $contextId): mixed
     {
         return $this->createQueryBuilder('u')

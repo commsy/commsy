@@ -19,7 +19,9 @@ use App\Utils\EntityUsersTrait;
 use App\Validator\Constraints as CommsyAssert;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
+use App\Export\ExportableEntry;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: LabelRepository::class)]
 #[ORM\Table(name: 'labels')]
@@ -27,7 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 #[ORM\Index(columns: ['type'], name: 'type')]
 #[CommsyAssert\UniqueLabelName]
-class Labels
+class Labels implements ExportableEntry
 {
     use EntityDatesTrait;
     use EntityUsersTrait;
@@ -35,21 +37,26 @@ class Labels
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[Groups(['export'])]
     private ?int $itemId = null;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: false)]
     private int $contextId;
 
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['export'])]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255, nullable: false)]
+    #[Groups(['export'])]
     private string $name;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    #[Groups(['export'])]
     private ?string $description = null;
 
     #[ORM\Column(name: 'type', type: Types::STRING, length: 15, nullable: false)]
+    #[Groups(['export'])]
     private string $type;
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
@@ -75,9 +82,10 @@ class Labels
         ;
     }
 
-    public function getItemId(): ?int
+    public function getItemId(): int
     {
-        return $this->itemId;
+        // A row that was never written has no id yet.
+        return $this->itemId ?? 0;
     }
 
     public function setContextId(int $contextId): static
@@ -90,6 +98,22 @@ class Labels
     public function getContextId(): int
     {
         return $this->contextId;
+    }
+
+    /**
+     * A label lives in a room; its context is never anything else.
+     */
+    public function getRoomId(): int
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * Only material and section keep versions.
+     */
+    public function getVersionId(): int
+    {
+        return self::UNVERSIONED;
     }
 
     public function setActivationDate(?DateTime $activationDate): self

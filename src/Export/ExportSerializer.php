@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace App\Export;
 
 use App\Serializer\EntryReferencesNormalizer;
+use App\Serializer\LabelMembersNormalizer;
 use App\Serializer\RoomStructureNormalizer;
 use App\Serializer\UserNormalizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -48,6 +49,7 @@ final readonly class ExportSerializer
     public function __construct(
         RoomStructureNormalizer $roomStructureNormalizer,
         EntryReferencesNormalizer $entryReferencesNormalizer,
+        LabelMembersNormalizer $labelMembersNormalizer,
         UserNormalizer $userNormalizer,
         #[Autowire(service: 'api_platform.serializer.mapping.class_metadata_factory')]
         ClassMetadataFactoryInterface $classMetadataFactory,
@@ -62,6 +64,7 @@ final readonly class ExportSerializer
         $this->serializer = new Serializer([
             $roomStructureNormalizer,
             $entryReferencesNormalizer,
+            $labelMembersNormalizer,
             $userNormalizer,
             new DateTimeNormalizer(),
             new ObjectNormalizer(
