@@ -19,16 +19,19 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Export\ExportableEntry;
+use App\Repository\TodosRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Todos.
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TodosRepository::class)]
 #[ORM\Table(name: 'todos')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
-class Todos
+class Todos implements ExportableEntry
 {
     use EntityDatesTrait;
     use EntityUsersTrait;
@@ -36,21 +39,25 @@ class Todos
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[Groups(['export'])]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['export'])]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
+    #[Groups(['export'])]
     private string $title;
 
     #[ORM\Column(name: 'date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(name: 'status', type: Types::INTEGER, nullable: false)]
+    #[Groups(['export'])]
     private int $status = 1;
 
     #[ORM\Column(name: 'minutes', type: Types::FLOAT, precision: 10, scale: 0, nullable: true)]
@@ -60,6 +67,7 @@ class Todos
     private int $timeType = 1;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    #[Groups(['export'])]
     private ?string $description = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
@@ -121,6 +129,57 @@ class Todos
     public function getContextId(): ?int
     {
         return $this->contextId;
+    }
+
+    /**
+     * A task lives in a room; its context is never anything else.
+     */
+    public function getRoomId(): int
+    {
+        return (int) $this->contextId;
+    }
+
+    /**
+     * Only material and section keep versions.
+     */
+    public function getVersionId(): int
+    {
+        return self::UNVERSIONED;
+    }
+
+    /**
+     * Time booked on it, if any.
+     *
+     * The column is called `minutes` but holds a number in whatever unit
+     * `time_type` names, so a bare `minutes: 3` can mean three days. The two are
+     * handed on together and named.
+     *
+     * @return array{amount: float, unit: string}|null
+     */
+    #[Groups(['export'])]
+    public function getTimeSpent(): ?array
+    {
+        if (empty($this->minutes)) {
+            return null;
+        }
+
+        $unit = match ($this->timeType) {
+            2 => 'hours',
+            3 => 'days',
+            default => 'minutes',
+        };
+
+        return ['amount' => (float) $this->minutes, 'unit' => $unit];
+    }
+
+    /**
+     * When the task is due. The column says `date`, the form says `due date` and
+     * legacy says `end_date`; all three are this one value.
+     */
+    #[Groups(['export'])]
+    public function getDueDate(): ?\DateTimeInterface
+    {
+        return $this->date;
     }
 
     /**

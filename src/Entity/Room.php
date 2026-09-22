@@ -326,6 +326,21 @@ class Room
     /**
      * Get extras.
      */
+    /**
+     * Statuses a room added to the three a task always has.
+     *
+     * Legacy keeps them in `extras` as a map from the number stored on the task
+     * to the wording the room chose for it.
+     *
+     * @return array<int, string>
+     */
+    public function getExtraTodoStatuses(): array
+    {
+        $extras = $this->getExtras();
+
+        return $extras['TODOEXTRASTATUSARRAY'] ?? [];
+    }
+
     public function getExtras(): ?array
     {
         return $this->extras;

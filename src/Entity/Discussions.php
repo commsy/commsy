@@ -20,13 +20,16 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Export\ExportableEntry;
+use App\Repository\DiscussionsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: DiscussionsRepository::class)]
 #[ORM\Table(name: 'discussions')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
-class Discussions
+class Discussions implements ExportableEntry
 {
     use EntityDatesTrait;
     use EntityUsersTrait;
@@ -34,18 +37,22 @@ class Discussions
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[Groups(['export'])]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['export'])]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 200, nullable: false)]
+    #[Groups(['export'])]
     private string $title;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['export'])]
     private string $description;
 
     #[ORM\Column(name: 'latest_article_item_id', type: Types::INTEGER, nullable: true)]
@@ -58,6 +65,7 @@ class Discussions
     private int $status = 1;
 
     #[ORM\Column(name: 'discussion_type', type: Types::STRING, length: 10, nullable: false)]
+    #[Groups(['export'])]
     private string $discussionType = 'simple';
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
@@ -97,6 +105,22 @@ class Discussions
     public function getContextId(): ?int
     {
         return $this->contextId;
+    }
+
+    /**
+     * A discussion lives in a room; its context is never anything else.
+     */
+    public function getRoomId(): int
+    {
+        return (int) $this->contextId;
+    }
+
+    /**
+     * Only material and section keep versions.
+     */
+    public function getVersionId(): int
+    {
+        return self::UNVERSIONED;
     }
 
     public function setActivationDate(DateTime $activationDate): static

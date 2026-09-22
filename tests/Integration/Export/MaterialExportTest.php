@@ -210,6 +210,21 @@ final class MaterialExportTest extends KernelTestCase
         $this->assertSame([], $this->materials()[0]['sections']);
     }
 
+    /**
+     * A section can be a draft of its own while its material is not.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testADraftSectionIsLeftOut(): void
+    {
+        $material = $this->createMaterialEntity('Skript');
+        $this->createSection($material, 'Fertig');
+        $draft = $this->createSection($material, 'Entwurf');
+
+        $this->connection->executeStatement('UPDATE items SET draft = 1 WHERE item_id = :id', ['id' => $draft]);
+
+        $this->assertSame(['Fertig'], array_column($this->materials()[0]['sections'], 'title'));
+    }
+
     #[WithStory(RoomWithMemberStory::class)]
     public function testADeletedSectionIsLeftOut(): void
     {

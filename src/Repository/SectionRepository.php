@@ -15,8 +15,10 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Items;
 use App\Entity\Section;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -36,16 +38,23 @@ class SectionRepository extends ServiceEntityRepository
     }
 
     /**
+     * A section can be a draft of its own while its material is not, so the
+     * draft flag is asked here as well as on the parent.
+     *
      * @return Section[] in the order the material puts them in
      */
     public function findForExport(int $materialItemId, int $versionId): array
     {
         return $this->createQueryBuilder('s')
             ->join('s.material', 'm')
+            ->join(Items::class, 'i', Join::WITH, 'i.itemId = s.itemId')
             ->andWhere('m.itemId = :materialItemId')
             ->andWhere('s.versionId = :versionId')
             ->andWhere('s.deleter IS NULL')
             ->andWhere('s.deletionDate IS NULL')
+            ->andWhere('i.draft = false')
+            ->andWhere('i.deleterId IS NULL')
+            ->andWhere('i.deletionDate IS NULL')
             ->setParameter('materialItemId', $materialItemId)
             ->setParameter('versionId', $versionId)
             ->orderBy('s.number', 'ASC')

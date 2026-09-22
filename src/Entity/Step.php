@@ -16,17 +16,20 @@ namespace App\Entity;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
+use App\Export\ExportableEntry;
+use App\Repository\StepRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Step.
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: StepRepository::class)]
 #[ORM\Table(name: 'step')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
 #[ORM\Index(columns: ['todo_item_id'], name: 'todo_item_id')]
-class Step
+class Step implements ExportableEntry
 {
     use EntityDatesTrait;
     use EntityUsersTrait;
@@ -34,15 +37,18 @@ class Step
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[Groups(['export'])]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
+    #[Groups(['export'])]
     private string $title;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    #[Groups(['export'])]
     private ?string $description = null;
 
     #[ORM\Column(name: 'minutes', type: Types::FLOAT, precision: 10, scale: 0, nullable: false)]
@@ -79,6 +85,47 @@ class Step
     public function getContextId(): ?int
     {
         return $this->contextId;
+    }
+
+    /**
+     * A step lives in the room its task lives in.
+     */
+    public function getRoomId(): int
+    {
+        return (int) $this->contextId;
+    }
+
+    /**
+     * Only material and section keep versions.
+     */
+    public function getVersionId(): int
+    {
+        return self::UNVERSIONED;
+    }
+
+    /**
+     * Time booked on it, if any.
+     *
+     * The column is called `minutes` but holds a number in whatever unit
+     * `time_type` names, so a bare `minutes: 3` can mean three days. The two are
+     * handed on together and named.
+     *
+     * @return array{amount: float, unit: string}|null
+     */
+    #[Groups(['export'])]
+    public function getTimeSpent(): ?array
+    {
+        if (empty($this->minutes)) {
+            return null;
+        }
+
+        $unit = match ($this->timeType) {
+            2 => 'hours',
+            3 => 'days',
+            default => 'minutes',
+        };
+
+        return ['amount' => (float) $this->minutes, 'unit' => $unit];
     }
 
     public function setTitle(string $title): static

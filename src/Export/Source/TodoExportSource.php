@@ -1,0 +1,58 @@
+<?php
+
+/*
+ * This file is part of CommSy.
+ *
+ * (c) Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+ * Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+ * Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+namespace App\Export\Source;
+
+use App\Entity\Todos;
+use App\Entity\Room;
+use App\Export\ExportableEntry;
+use App\Export\RubricExportSource;
+use App\Repository\TodosRepository;
+use App\Repository\StepRepository;
+use App\Rubric\RubricType;
+
+/**
+ * The room's tasks.
+ */
+final readonly class TodoExportSource implements RubricExportSource
+{
+    public function __construct(
+        private TodosRepository $todos,
+        private StepRepository $steps,
+    ) {
+    }
+
+    public function rubric(): RubricType
+    {
+        return RubricType::Todo;
+    }
+
+    public function entriesFor(Room $room): iterable
+    {
+        return $this->todos->findForExport($room->getItemId());
+    }
+
+    /**
+     * A task can be broken into steps, each with its own booked time.
+     */
+    public function subEntriesOf(ExportableEntry $entry): array
+    {
+        if (!$entry instanceof Todos) {
+            return [];
+        }
+
+        return ['steps' => $this->steps->findForExport($entry->getItemId())];
+    }
+}

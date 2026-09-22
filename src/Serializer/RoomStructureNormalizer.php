@@ -23,13 +23,14 @@ use App\Repository\CalendarsRepository;
 use App\Repository\LabelRepository;
 use App\Repository\LicenseRepository;
 use App\Repository\TagRepository;
+use App\Rubric\Todo\TodoStatus;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Adds to a room what its entries point at: its categories, its hashtags, its
- * calendars and its licences.
+ * calendars, its licences and what a task's status number means here.
  *
  * None of them is a column on the room. Categories are `tags` linked into a
  * tree by `tag2tag`, hashtags are `labels` of type buzzword, calendars and
@@ -44,6 +45,7 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
     use NormalizerAwareTrait;
 
     private const ALREADY_CALLED = 'ROOM_STRUCTURE_NORMALIZER_ALREADY_CALLED';
+
 
     public function __construct(
         private readonly TagRepository $tags,
@@ -71,6 +73,7 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
         $normalized['hashtags'] = $this->hashtagsFor($data->getItemId());
         $normalized['calendars'] = $this->calendarsFor($data->getItemId());
         $normalized['licenses'] = $this->licensesFor($data->getItemId());
+        $normalized['todoStatuses'] = $this->todoStatusesFor($data);
 
         return $normalized;
     }
@@ -133,6 +136,30 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
         usort($calendars, fn (array $a, array $b): int => $this->titles->compare($a['title'], $b['title']));
 
         return $calendars;
+    }
+
+    /**
+     * What the number on a task means.
+     *
+     * Three statuses are CommSy's own, the rest a room adds for itself and
+     * explains in its own wording. Without this list a bare number says nothing.
+     *
+     * @return list<array{id: int, name: string}>
+     */
+    private function todoStatusesFor(Room $room): array
+    {
+        $statuses = [];
+        foreach (TodoStatus::cases() as $status) {
+            $statuses[$status->value] = ['id' => $status->value, 'name' => $status->slug()];
+        }
+
+        foreach ($room->getExtraTodoStatuses() as $id => $title) {
+            $statuses[(int) $id] = ['id' => (int) $id, 'name' => (string) $title];
+        }
+
+        ksort($statuses);
+
+        return array_values($statuses);
     }
 
     /**
