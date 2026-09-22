@@ -15,8 +15,10 @@ declare(strict_types=1);
 
 namespace App\Serializer;
 
+use App\Entity\Calendars;
 use App\Entity\Labels;
 use App\Entity\Room;
+use App\Repository\CalendarsRepository;
 use App\Repository\LabelRepository;
 use App\Repository\TagRepository;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
@@ -24,11 +26,12 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
- * Adds a room's categories and hashtags to its normalization.
+ * Adds to a room what its entries point at: its categories, its hashtags and
+ * its calendars.
  *
- * Neither is a column on the room: categories are `tags` linked into a tree by
- * `tag2tag`, hashtags are `labels` of type buzzword. Both are the room's own
- * vocabulary, so they stand once here and entries reference them by id.
+ * None of them is a column on the room. Categories are `tags` linked into a
+ * tree by `tag2tag`, hashtags are `labels` of type buzzword, calendars a table
+ * of their own. Each stands once here and entries reference it by id.
  *
  * Decorates rather than replaces — the room's own fields still come from the
  * object normalizer, which this hands back to once per object.
@@ -42,6 +45,7 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
     public function __construct(
         private readonly TagRepository $tags,
         private readonly LabelRepository $labels,
+        private readonly CalendarsRepository $calendars,
         private readonly TitleCollator $titles,
     ) {
     }
@@ -61,6 +65,7 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
 
         $normalized['categories'] = $this->tags->findCategoryTreeFor($data->getItemId());
         $normalized['hashtags'] = $this->hashtagsFor($data->getItemId());
+        $normalized['calendars'] = $this->calendarsFor($data->getItemId());
 
         return $normalized;
     }
@@ -100,5 +105,28 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
         usort($hashtags, fn (array $a, array $b): int => $this->titles->compare($a['title'], $b['title']));
 
         return $hashtags;
+    }
+
+    /**
+     * The subscription URL of an external calendar stays out: it is a way in,
+     * not content, and some carry a token that would travel with the archive.
+     *
+     * @return list<array{id: int, title: string, color: string|null, isDefault: bool}>
+     */
+    private function calendarsFor(int $roomId): array
+    {
+        $calendars = array_map(
+            static fn (Calendars $calendar): array => [
+                'id' => (int) $calendar->getId(),
+                'title' => (string) $calendar->getTitle(),
+                'color' => $calendar->getColor(),
+                'isDefault' => $calendar->getDefaultCalendar(),
+            ],
+            $this->calendars->findByRoomId($roomId)
+        );
+
+        usort($calendars, fn (array $a, array $b): int => $this->titles->compare($a['title'], $b['title']));
+
+        return $calendars;
     }
 }

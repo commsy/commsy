@@ -17,16 +17,19 @@ use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
+use App\Export\ExportableEntry;
+use App\Repository\DatesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Dates.
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: DatesRepository::class)]
 #[ORM\Table(name: 'dates')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
-class Dates
+class Dates implements ExportableEntry
 {
     use EntityDatesTrait;
     use EntityUsersTrait;
@@ -34,18 +37,25 @@ class Dates
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[Groups(['export'])]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
+    /**
+     * An entry not activated yet is part of the export; the date says so.
+     */
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['export'])]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
+    #[Groups(['export'])]
     private ?string $title = null;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    #[Groups(['export'])]
     private ?string $description = null;
 
     #[ORM\Column(name: 'start_time', type: Types::STRING, length: 100, nullable: true)]
@@ -61,12 +71,15 @@ class Dates
     private ?string $endDay = null;
 
     #[ORM\Column(name: 'place', type: Types::STRING, length: 100, nullable: true)]
+    #[Groups(['export'])]
     private ?string $place = null;
 
     #[ORM\Column(name: 'datetime_start', type: Types::DATETIME_MUTABLE, nullable: false)]
+    #[Groups(['export'])]
     private DateTime $datetimeStart;
 
     #[ORM\Column(name: 'datetime_end', type: Types::DATETIME_MUTABLE, nullable: false)]
+    #[Groups(['export'])]
     private DateTime $datetimeEnd;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
@@ -79,24 +92,33 @@ class Dates
     private ?array $extras = null;
 
     #[ORM\Column(name: 'color', type: Types::STRING, length: 255, nullable: true)]
+    #[Groups(['export'])]
     private ?string $color = null;
 
     #[ORM\Column(name: 'recurrence_id', type: Types::INTEGER, nullable: true)]
     private ?int $recurrenceId = null;
-    #
+
     #[ORM\Column(name: 'recurrence_pattern', type: Types::TEXT, length: 65535, nullable: true)]
     private ?string $recurrencePattern = null;
 
+    /**
+     * Set on a date that came in from a subscribed calendar rather than being
+     * written in the room.
+     */
     #[ORM\Column(name: 'external', type: Types::BOOLEAN, nullable: false)]
+    #[Groups(['export'])]
     private bool $external = false;
 
     #[ORM\Column(name: 'whole_day', type: Types::BOOLEAN, nullable: false)]
+    #[Groups(['export'])]
     private bool $wholeDay = false;
 
     #[ORM\Column(name: 'uid', type: Types::STRING, length: 255, nullable: true)]
+    #[Groups(['export'])]
     private ?string $uid = null;
 
     #[ORM\Column(name: 'calendar_id', type: Types::INTEGER, nullable: true)]
+    #[Groups(['export'])]
     private ?int $calendarId = null;
 
     public function isIndexable()
@@ -119,6 +141,29 @@ class Dates
     public function getContextId(): ?int
     {
         return $this->contextId;
+    }
+
+    /**
+     * A date lives in a room; its context is never anything else.
+     */
+    public function getRoomId(): int
+    {
+        return (int) $this->contextId;
+    }
+
+    /**
+     * Dates generated from one recurrence share this id, which is the item id of
+     * the first occurrence.
+     *
+     * Every occurrence is a date of its own, so an export carries them all and
+     * the id says which belong together. A date that stands alone is written
+     * with no group today; older rows carry a zero instead, which would read as
+     * a group of its own to anyone importing it.
+     */
+    #[Groups(['export'])]
+    public function getRecurrenceGroupId(): ?int
+    {
+        return empty($this->recurrenceId) ? null : $this->recurrenceId;
     }
 
     public function setActivationDate(?DateTime $activationDate): static

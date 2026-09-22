@@ -25,8 +25,8 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * The room's own vocabulary stands once in the document; entries reference it
- * by id rather than repeating it.
+ * What entries point at stands once on the room — vocabulary and calendars —
+ * and is referenced by id rather than repeated.
  */
 final class RoomStructureExportTest extends KernelTestCase
 {
@@ -68,6 +68,7 @@ final class RoomStructureExportTest extends KernelTestCase
 
         $this->assertSame([], $room['categories']);
         $this->assertSame([], $room['hashtags']);
+        $this->assertSame([], $room['calendars']);
     }
 
     /**
