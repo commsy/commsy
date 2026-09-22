@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Export;
 
+use App\Export\ExportFile;
 use App\Export\RoomExportArchiver;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -80,6 +81,46 @@ class RoomExportArchiverTest extends TestCase
         $zip->close();
 
         $this->assertStringContainsString('Übung & Größe', $contents);
+    }
+
+    public function testAttachmentsAreCarriedAtThePathTheDocumentNames(): void
+    {
+        $target = $this->workingDirectory.'/room-1-export-1.zip';
+        $source = $this->workingDirectory.'/source/8.pdf';
+        (new Filesystem())->dumpFile($source, 'the attachment');
+
+        (new RoomExportArchiver())->write($target, [], [
+            new ExportFile(8, 'Protokoll.pdf', 14, $source, 'files/8/Protokoll.pdf', available: true),
+        ]);
+
+        $zip = new ZipArchive();
+        $zip->open($target);
+        $carried = $zip->getFromName('files/8/Protokoll.pdf');
+        $zip->close();
+
+        $this->assertSame('the attachment', $carried);
+    }
+
+    /**
+     * Rows outlive their content. One attachment whose bytes are gone must not
+     * cost a room its whole export.
+     */
+    public function testAFileThatIsNoLongerOnDiskIsPassedOver(): void
+    {
+        $target = $this->workingDirectory.'/room-1-export-1.zip';
+
+        (new RoomExportArchiver())->write($target, ['formatVersion' => 1], [
+            new ExportFile(8, 'Weg.pdf', 0, $this->workingDirectory.'/gone.pdf', 'files/8/Weg.pdf', available: false),
+        ]);
+
+        $zip = new ZipArchive();
+        $zip->open($target);
+        $count = $zip->numFiles;
+        $document = $zip->getFromName(RoomExportArchiver::DOCUMENT_NAME);
+        $zip->close();
+
+        $this->assertSame(1, $count, 'the document, and nothing else');
+        $this->assertNotFalse($document);
     }
 
     /**

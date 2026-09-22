@@ -13,12 +13,16 @@
 
 namespace App\Repository;
 
+use App\Entity\Files;
 use App\Entity\ItemLinkFile;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<ItemLinkFile>
+ */
 class ItemLinkFileRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -47,6 +51,52 @@ class ItemLinkFileRepository extends ServiceEntityRepository
         ]));
 
         return $query->getSingleColumnResult();
+    }
+
+    /**
+     * The live files linked to these item versions, each file once.
+     *
+     * A link belongs to a *version* of an entry: editing an entry so that it
+     * loses an attachment leaves the old link on the old version. Asking for the
+     * version an entry is exported at therefore yields what the entry shows
+     * today, and not what it once carried.
+     *
+     * Legacy filters files by their deleter alone; both columns are filtered
+     * here, which makes no difference to the rows but says what is meant.
+     *
+     * @param array<int, int> $versionByItemId version per item id
+     *
+     * @return Files[] keyed by file id
+     */
+    public function findLinkedFiles(array $versionByItemId): array
+    {
+        if ([] === $versionByItemId) {
+            return [];
+        }
+
+        $links = $this->createQueryBuilder('ilf')
+            ->select('ilf', 'f')
+            ->join('ilf.file', 'f')
+            ->andWhere('ilf.itemId IN (:itemIds)')
+            ->andWhere('ilf.deleterId IS NULL')
+            ->andWhere('ilf.deletionDate IS NULL')
+            ->andWhere('f.deleterId IS NULL')
+            ->andWhere('f.deletionDate IS NULL')
+            ->setParameter('itemIds', array_keys($versionByItemId))
+            ->getQuery()
+            ->getResult();
+
+        $files = [];
+        foreach ($links as $link) {
+            if ($link->getVersionId() !== $versionByItemId[$link->getItemId()]) {
+                continue;
+            }
+
+            $file = $link->getFile();
+            $files[$file->getFilesId()] = $file;
+        }
+
+        return $files;
     }
 
     /**

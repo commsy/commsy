@@ -116,7 +116,7 @@ class RoomExportRequestedHandlerTest extends KernelTestCase
         $export = $this->requestExport();
 
         $failing = new readonly class extends RoomExportArchiver {
-            public function write(string $targetPath, array $document): int
+            public function write(string $targetPath, array $document, array $files = []): int
             {
                 throw new RuntimeException('disk went away');
             }

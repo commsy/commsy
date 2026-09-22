@@ -56,6 +56,11 @@ class ItemLinkFile
         return $this->versionId;
     }
 
+    public function getFile(): Files
+    {
+        return $this->file;
+    }
+
     public function setVersionId(int $versionId): self
     {
         $this->versionId = $versionId;

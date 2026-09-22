@@ -20,10 +20,11 @@ use Symfony\Component\Filesystem\Filesystem;
 use ZipArchive;
 
 /**
- * Writes the export document into a ZIP archive.
+ * Writes the export document and the attachments it names into a ZIP archive.
  *
- * Pretty-printed on purpose: whoever writes the importer has to read this, and
- * inside a compressed archive the extra whitespace costs next to nothing.
+ * The document is pretty-printed on purpose: whoever writes the importer has to
+ * read this, and inside a compressed archive the extra whitespace costs next to
+ * nothing.
  */
 readonly class RoomExportArchiver
 {
@@ -31,10 +32,11 @@ readonly class RoomExportArchiver
 
     /**
      * @param array<string, mixed> $document
+     * @param list<ExportFile>     $files
      *
      * @return int the size of the archive in bytes
      */
-    public function write(string $targetPath, array $document): int
+    public function write(string $targetPath, array $document, array $files = []): int
     {
         (new Filesystem())->mkdir(dirname($targetPath), 0750);
 
@@ -49,6 +51,19 @@ readonly class RoomExportArchiver
         }
 
         $zip->addFromString(self::DOCUMENT_NAME, $json);
+
+        foreach ($files as $file) {
+            // A row whose content is gone is named in the document and left out
+            // of the archive. One missing attachment must not cost a room its
+            // whole export.
+            if (!$file->available) {
+                continue;
+            }
+
+            if (!$zip->addFile($file->sourcePath, $file->archivePath)) {
+                throw new RuntimeException(sprintf('Cannot add %s to the archive', $file->archivePath));
+            }
+        }
 
         if (!$zip->close()) {
             throw new RuntimeException(sprintf('Cannot write archive at %s', $targetPath));
