@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use App\Repository\TagRepository;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
@@ -21,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Tag.
  */
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TagRepository::class)]
 #[ORM\Table(name: 'tag')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 class Tag
