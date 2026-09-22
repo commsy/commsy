@@ -15,17 +15,26 @@ namespace App\Utils;
 
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 trait EntityUsersTrait
 {
+    /**
+     * Rendered by {@see \App\Serializer\UserNormalizer}, which applies
+     * the person's visibility setting. Not in the `api` group: that would
+     * change what the existing room resource answers.
+     */
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'creator_id', referencedColumnName: 'item_id', nullable: true)]
+    #[Groups(['export'])]
     private ?User $creator = null;
 
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'modifier_id', referencedColumnName: 'item_id', nullable: true)]
+    #[Groups(['export'])]
     private ?User $modifier = null;
 
+    // No group: deleted entries are not exported.
     #[ORM\ManyToOne(targetEntity: 'User')]
     #[ORM\JoinColumn(name: 'deleter_id', referencedColumnName: 'item_id', nullable: true)]
     private ?User $deleter = null;

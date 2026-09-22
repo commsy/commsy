@@ -16,26 +16,22 @@ declare(strict_types=1);
 namespace App\Export;
 
 use App\Entity\Room;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * Builds the export document for a room.
  *
- * The fields come from the same entities and the same serialization the REST
- * interface uses — the `export` group decides what goes in. Nothing here knows
- * about individual fields, which is the point: a rubric joins the export by
- * carrying the group, not by being special-cased here.
+ * Knows no individual fields: a rubric joins the export by carrying the
+ * `export` group, not by being special-cased here.
  */
 final readonly class RoomExportBuilder
 {
     /**
-     * Raised when the shape of the document changes in a way an importer would
-     * notice. Consumers build against it, so it must not be left behind.
+     * Raised on any change an importer would notice.
      */
     public const FORMAT_VERSION = 1;
 
     public function __construct(
-        private NormalizerInterface $normalizer,
+        private ExportSerializer $serializer,
     ) {
     }
 
@@ -44,12 +40,9 @@ final readonly class RoomExportBuilder
      */
     public function build(Room $room): array
     {
-        /** @var array<string, mixed> $normalizedRoom */
-        $normalizedRoom = $this->normalizer->normalize($room, null, ['groups' => ['export']]);
-
         return [
             'formatVersion' => self::FORMAT_VERSION,
-            'room' => $normalizedRoom,
+            'room' => $this->serializer->toArray($room),
         ];
     }
 }

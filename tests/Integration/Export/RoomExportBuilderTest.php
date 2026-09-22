@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Export;
 
 use App\Entity\Room;
+use App\Entity\User;
 use App\Export\RoomExportBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -76,10 +77,50 @@ class RoomExportBuilderTest extends KernelTestCase
         // being in the document.
         $this->assertArrayNotHasKey('deletionDate', $document['room']);
 
-        // Personal data reaches the document through creator and modifier of the
-        // entries, assembled by a normalizer — not by serializing the relation.
-        $this->assertArrayNotHasKey('creator', $document['room']);
-        $this->assertArrayNotHasKey('modifier', $document['room']);
+        // Who deleted an entry says something about a person and nothing about
+        // content, and deleted entries are not exported anyway.
+        $this->assertArrayNotHasKey('deleter', $document['room']);
+    }
+
+    /**
+     * A missing creator yields null rather than crashing.
+     */
+    public function testAnEntryWithoutACreatorIsStillExported(): void
+    {
+        self::bootKernel();
+
+        $room = $this->managedRoom(RoomFactory::createOne(['portal' => PortalFactory::createOne()])->getItemId());
+
+        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room);
+
+        $this->assertNull($document['room']['creator']);
+        $this->assertNull($document['room']['modifier']);
+        $this->assertSame($room->getItemId(), $document['room']['itemId'], 'the rest is there');
+    }
+
+    /**
+     * A person on the row is rendered by UserNormalizer, not dumped.
+     */
+    public function testAPersonOnTheEntryIsRenderedTheExportWay(): void
+    {
+        self::bootKernel();
+
+        $room = $this->managedRoom(RoomFactory::createOne(['portal' => PortalFactory::createOne()])->getItemId());
+
+        $manager = self::getContainer()->get(EntityManagerInterface::class);
+        $creator = $manager->getRepository(User::class)->findOneBy([]);
+        self::assertNotNull($creator, 'the story leaves a room user behind to attribute this to');
+
+        $room->setCreator($creator);
+        $manager->flush();
+
+        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room);
+
+        $this->assertSame(
+            ['id', 'name', 'email', 'roomStatus'],
+            array_keys($document['room']['creator'])
+        );
+        $this->assertSame($creator->getItemId(), $document['room']['creator']['id']);
     }
 
     public function testAnArchivedRoomIsExportedAndSaysSo(): void
@@ -94,9 +135,8 @@ class RoomExportBuilderTest extends KernelTestCase
     }
 
     /**
-     * RoomFactory writes its rows with raw SQL, so the object it returns is
-     * detached and its lifecycle-filled dates were never set. Anything that
-     * hands the room to Doctrine or to the serializer needs the managed row.
+     * RoomFactory writes raw SQL, so its object is detached and its lifecycle
+     * dates unset. Doctrine and the serializer need the managed row.
      */
     private function managedRoom(int $itemId): Room
     {

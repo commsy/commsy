@@ -46,6 +46,21 @@ enum UserStatus: int
     }
 
     /**
+     * The status as a name for output outside the application. Spelled out
+     * rather than derived from the case names, as consumers read these strings.
+     */
+    public function slug(): string
+    {
+        return match ($this) {
+            self::Guest => 'guest',
+            self::Requested => 'requested',
+            self::User => 'user',
+            self::Moderator => 'moderator',
+            self::ReadOnly => 'readonly',
+        };
+    }
+
+    /**
      * Whether the status counts as "is a member" — `cs_user_item::isUser()`
      * semantics (status 2, 3 or 4).
      */
