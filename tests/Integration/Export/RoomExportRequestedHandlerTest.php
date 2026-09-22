@@ -21,13 +21,19 @@ use App\Export\RoomExportStorage;
 use App\Message\RoomExportRequested;
 use App\MessageHandler\RoomExportRequestedHandler;
 use App\Repository\RoomExportRepository;
+use App\Services\LegacyEnvironment;
 use Psr\Log\NullLogger;
 use RuntimeException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Tests\Factory\AnnouncementFactory;
+use Tests\Factory\Concerns\PrimesLegacyEnvironment;
+use Tests\Factory\FilesFactory;
 use Tests\Factory\PortalFactory;
 use Tests\Factory\RoomFactory;
+use Tests\Story\RoomWithMemberStory;
+use Zenstruck\Foundry\Attribute\WithStory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 use ZipArchive;
@@ -39,6 +45,7 @@ use ZipArchive;
 class RoomExportRequestedHandlerTest extends KernelTestCase
 {
     use Factories;
+    use PrimesLegacyEnvironment;
     use ResetDatabase;
 
     public function testItBuildsTheArchiveAndRecordsTheResult(): void
@@ -82,6 +89,47 @@ class RoomExportRequestedHandlerTest extends KernelTestCase
         // A duplicate delivery must not resurrect a settled run.
         $this->assertSame(RoomExportStatus::Failed, $export->getStatus());
         $this->assertSame('an earlier attempt', $export->getFailureReason());
+    }
+
+    /**
+     * The whole chain in one go: an entry's attachment has to be in the archive,
+     * under the path the document names for it.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testTheArchiveCarriesTheAttachmentsTheDocumentNames(): void
+    {
+        self::bootKernel();
+
+        $room = RoomWithMemberStory::get('room');
+        $roomUser = RoomWithMemberStory::get('roomUser');
+        $this->primeLegacyEnvironment($room, $roomUser);
+
+        $itemId = AnnouncementFactory::createOne([
+            'room' => $room,
+            'creator' => $roomUser,
+            'title' => 'Mit Anhang',
+        ])->getItemId();
+
+        $fileId = $this->attachFile($itemId, $room->getItemId(), 'Protokoll.pdf', 'a document');
+
+        $export = new RoomExport($this->managedRoom($room->getItemId()));
+        $this->repository()->save($export);
+
+        $this->handle($export);
+
+        $storage = self::getContainer()->get(RoomExportStorage::class);
+
+        $zip = new ZipArchive();
+        $zip->open($storage->pathFor($export));
+        $carried = $zip->getFromName('files/'.$fileId.'/Protokoll.pdf');
+        $document = json_decode((string) $zip->getFromName('export.json'), true, 512, JSON_THROW_ON_ERROR);
+        $zip->close();
+
+        $this->assertSame('a document', $carried);
+        $this->assertSame([$fileId], $document['rubrics']['announcement'][0]['files']);
+        $this->assertSame('files/'.$fileId.'/Protokoll.pdf', $document['files'][0]['path']);
+
+        (new Filesystem())->remove($storage->directoryFor($export));
     }
 
     /**
@@ -150,6 +198,33 @@ class RoomExportRequestedHandlerTest extends KernelTestCase
         $this->expectNotToPerformAssertions();
     }
 
+    /**
+     * Writes an uploaded file the way CommSy stores one and hangs it on the
+     * entry: a path relative to the project, the uploaded name kept apart.
+     */
+    private function attachFile(int $itemId, int $contextId, string $name, string $contents): int
+    {
+        $relativePath = 'var/tmp/commsy-export-handler-'.getmypid().'/'.uniqid('file', true);
+        $projectDir = self::getContainer()->getParameter('kernel.project_dir');
+
+        (new Filesystem())->dumpFile($projectDir.'/'.$relativePath, $contents);
+
+        $fileId = FilesFactory::createOne([
+            'contextId' => $contextId,
+            'filename' => $name,
+            'filepath' => $relativePath,
+            'size' => strlen($contents),
+        ])->getFilesId();
+
+        self::getContainer()->get(EntityManagerInterface::class)->getConnection()->insert('item_link_file', [
+            'item_iid' => $itemId,
+            'item_vid' => 0,
+            'file_id' => $fileId,
+        ]);
+
+        return $fileId;
+    }
+
     private function requestExport(): RoomExport
     {
         $room = $this->managedRoom(
@@ -172,6 +247,11 @@ class RoomExportRequestedHandlerTest extends KernelTestCase
     private function repository(): RoomExportRepository
     {
         return self::getContainer()->get(RoomExportRepository::class);
+    }
+
+    protected function getLegacyEnvironmentService(): LegacyEnvironment
+    {
+        return self::getContainer()->get(LegacyEnvironment::class);
     }
 
     /**

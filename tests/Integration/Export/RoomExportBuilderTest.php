@@ -15,6 +15,7 @@ namespace Tests\Integration\Export;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Export\RoomExportBuilder;
+use App\Rubric\RubricType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Factory\PortalFactory;
@@ -44,7 +45,7 @@ class RoomExportBuilderTest extends KernelTestCase
             'portal' => PortalFactory::createOne(),
         ])->getItemId());
 
-        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room);
+        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room)->content;
 
         $this->assertSame(RoomExportBuilder::FORMAT_VERSION, $document['formatVersion']);
 
@@ -65,7 +66,7 @@ class RoomExportBuilderTest extends KernelTestCase
 
         $room = $this->managedRoom(RoomFactory::createOne(['portal' => PortalFactory::createOne()])->getItemId());
 
-        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room);
+        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room)->content;
 
         // Internal bookkeeping, not room content.
         $this->assertArrayNotHasKey('activity', $document['room']);
@@ -91,7 +92,7 @@ class RoomExportBuilderTest extends KernelTestCase
 
         $room = $this->managedRoom(RoomFactory::createOne(['portal' => PortalFactory::createOne()])->getItemId());
 
-        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room);
+        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room)->content;
 
         $this->assertNull($document['room']['creator']);
         $this->assertNull($document['room']['modifier']);
@@ -114,7 +115,7 @@ class RoomExportBuilderTest extends KernelTestCase
         $room->setCreator($creator);
         $manager->flush();
 
-        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room);
+        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room)->content;
 
         $this->assertSame(
             ['id', 'name', 'email', 'roomStatus'],
@@ -129,9 +130,27 @@ class RoomExportBuilderTest extends KernelTestCase
 
         $room = $this->managedRoom(RoomFactory::createOne(['archived' => true, 'portal' => PortalFactory::createOne()])->getItemId());
 
-        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room);
+        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room)->content;
 
         $this->assertTrue($document['room']['archived']);
+    }
+
+    /**
+     * The top level is fixed, and every rubric stands under its own name inside
+     * `rubrics` — an importer walks them without knowing which ones exist.
+     */
+    public function testTheDocumentHasAFixedShape(): void
+    {
+        self::bootKernel();
+
+        $room = $this->managedRoom(RoomFactory::createOne(['portal' => PortalFactory::createOne()])->getItemId());
+
+        $document = self::getContainer()->get(RoomExportBuilder::class)->build($room)->content;
+
+        $this->assertSame(['formatVersion', 'room', 'rubrics', 'files'], array_keys($document));
+
+        // The section name is the rubric, spelled as `items.type` spells it.
+        $this->assertArrayHasKey(RubricType::Announcement->value, $document['rubrics']);
     }
 
     /**

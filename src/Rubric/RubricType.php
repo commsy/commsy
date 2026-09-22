@@ -14,7 +14,8 @@
 namespace App\Rubric;
 
 /**
- * Canonical rubric types understood by the deletion pipeline.
+ * Canonical rubric types. Named by the deletion pipeline and by the room
+ * export, which uses them as the section names of its document.
  *
  * Values mirror the legacy `cs_*_item::_type` strings so callers that still
  * hand around `$item->getItemType()` results map in/out without surprise.

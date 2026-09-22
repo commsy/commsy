@@ -16,12 +16,13 @@ declare(strict_types=1);
 namespace App\Export;
 
 use App\Entity\Room;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
  * Builds the export document for a room.
  *
- * Knows no individual fields: a rubric joins the export by carrying the
- * `export` group, not by being special-cased here.
+ * Knows neither fields nor rubrics: a field joins the export by carrying the
+ * `export` group, a rubric by registering a {@see RubricExportSource}.
  */
 final readonly class RoomExportBuilder
 {
@@ -30,19 +31,70 @@ final readonly class RoomExportBuilder
      */
     public const FORMAT_VERSION = 1;
 
+    /**
+     * @param iterable<RubricExportSource> $rubrics
+     */
     public function __construct(
         private ExportSerializer $serializer,
+        private RoomFileCollector $fileCollector,
+        #[AutowireIterator('app.export.rubric_source')]
+        private iterable $rubrics,
     ) {
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function build(Room $room): array
+    public function build(Room $room): RoomExportDocument
     {
-        return [
+        $rubrics = [];
+        $versionByItemId = [];
+
+        foreach ($this->rubrics as $source) {
+            $entries = [...$source->entriesFor($room)];
+
+            foreach ($entries as $entry) {
+                $versionByItemId[$entry->getItemId()] = ExportableEntry::UNVERSIONED;
+            }
+
+            $rubrics[$source->rubric()->value] = array_map(
+                fn (ExportableEntry $entry): array => $this->serializer->toArray($entry),
+                $entries
+            );
+        }
+
+        // By rubric rather than in whatever order the sources were registered:
+        // two exports of an unchanged room should be comparable.
+        ksort($rubrics);
+
+        $files = $this->fileCollector->collect($versionByItemId);
+
+        $content = [
             'formatVersion' => self::FORMAT_VERSION,
             'room' => $this->serializer->toArray($room),
+            // Kept in one place rather than spread over the top level: an
+            // importer can walk the rubrics without knowing which exist.
+            'rubrics' => $rubrics,
+            'files' => array_map($this->fileEntry(...), $files),
+        ];
+
+        return new RoomExportDocument($content, $files);
+    }
+
+    /**
+     * Attachments stand once, with the path they have inside the archive.
+     * Entries point at them by id.
+     *
+     * A file whose content is gone keeps its place in the list without a path:
+     * the entry that carries it should not point into nothing, and the archive
+     * is not asked to hold what it does not have.
+     *
+     * @return array{id: int, name: string, size: int, path: string|null}
+     */
+    private function fileEntry(ExportFile $file): array
+    {
+        return [
+            'id' => $file->id,
+            'name' => $file->name,
+            'size' => $file->size,
+            'path' => $file->available ? $file->archivePath : null,
         ];
     }
 }

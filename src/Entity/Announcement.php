@@ -13,12 +13,14 @@
 
 namespace App\Entity;
 
+use App\Export\ExportableEntry;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use App\Repository\AnnouncementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Announcement.
@@ -27,7 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'announcement')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
-class Announcement
+class Announcement implements ExportableEntry
 {
     use EntityDatesTrait;
     use EntityUsersTrait;
@@ -35,21 +37,34 @@ class Announcement
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[Groups(['export'])]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
+    /**
+     * An entry not activated yet is part of the export; the date says so.
+     */
     #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['export'])]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
+    #[Groups(['export'])]
     private string $title;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
+    #[Groups(['export'])]
     private ?string $description = null;
 
+    /**
+     * When the announcement stops being shown in the room. It stays in the
+     * export either way — having run out is not the same as never having been
+     * said.
+     */
     #[ORM\Column(name: 'enddate', type: Types::DATETIME_MUTABLE)]
+    #[Groups(['export'])]
     private DateTime $enddate;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
@@ -85,6 +100,14 @@ class Announcement
     public function getContextId(): ?int
     {
         return $this->contextId;
+    }
+
+    /**
+     * An announcement lives in a room; its context is never anything else.
+     */
+    public function getRoomId(): int
+    {
+        return (int) $this->contextId;
     }
 
     public function isIndexable()

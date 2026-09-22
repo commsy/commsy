@@ -68,7 +68,11 @@ final readonly class RoomExportRequestedHandler
         try {
             $document = $this->builder->build($export->getRoom());
             $filename = $this->storage->filenameFor($export);
-            $size = $this->archiver->write($this->storage->pathFor($export), $document);
+            $size = $this->archiver->write(
+                $this->storage->pathFor($export),
+                $document->content,
+                $document->files
+            );
 
             $export->markFinished($filename, $size);
         } catch (Throwable $e) {

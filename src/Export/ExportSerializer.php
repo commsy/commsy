@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Export;
 
+use App\Serializer\EntryReferencesNormalizer;
 use App\Serializer\RoomStructureNormalizer;
 use App\Serializer\UserNormalizer;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -31,9 +32,9 @@ use Symfony\Component\Serializer\Serializer;
  * Normalizes entities for the export document, using the same entities and
  * `export` groups as the interface.
  *
- * Separate from the application serializer: API Platform's item normalizer
- * handles any resource class and drops relations to non-resources, which would
- * silently lose an entry's creator.
+ * Separate from the application serializer: API Platform builds a resource's
+ * field list from the group that resource itself declares, so the `export`
+ * group would not reach a field the API does not already show.
  *
  * Wraps a Serializer rather than implementing NormalizerInterface, so
  * autoconfiguration cannot tag it into the application's own chain. Inner
@@ -46,6 +47,7 @@ final readonly class ExportSerializer
 
     public function __construct(
         RoomStructureNormalizer $roomStructureNormalizer,
+        EntryReferencesNormalizer $entryReferencesNormalizer,
         UserNormalizer $userNormalizer,
         #[Autowire(service: 'api_platform.serializer.mapping.class_metadata_factory')]
         ClassMetadataFactoryInterface $classMetadataFactory,
@@ -59,6 +61,7 @@ final readonly class ExportSerializer
     ) {
         $this->serializer = new Serializer([
             $roomStructureNormalizer,
+            $entryReferencesNormalizer,
             $userNormalizer,
             new DateTimeNormalizer(),
             new ObjectNormalizer(

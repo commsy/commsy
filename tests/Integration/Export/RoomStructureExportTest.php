@@ -129,7 +129,7 @@ final class RoomStructureExportTest extends KernelTestCase
         $managed = self::getContainer()->get(EntityManagerInterface::class)
             ->find(Room::class, $this->room->getItemId());
 
-        return self::getContainer()->get(RoomExportBuilder::class)->build($managed);
+        return self::getContainer()->get(RoomExportBuilder::class)->build($managed)->content;
     }
 
     private function createCategory(string $title, ?int $parentId = null): int
