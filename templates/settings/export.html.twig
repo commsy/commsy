@@ -52,6 +52,8 @@
                                             {{ ('export status ' ~ export.status.value)|trans({}, 'settings') }}
                                             {% if export.failureReason %}
                                                 <div class="uk-text-muted uk-text-small">{{ export.failureReason }}</div>
+                                            {% elseif export.status.value == 'abandoned' %}
+                                                <div class="uk-text-muted uk-text-small">{{ 'export abandoned hint'|trans({}, 'settings') }}</div>
                                             {% endif %}
                                         </td>
                                         <td>{{ export.sizeInBytes ? export.sizeInBytes|file_size : '–' }}</td>

@@ -29,11 +29,19 @@ use Doctrine\Persistence\ManagerRegistry;
 class RoomExportRepository extends ServiceEntityRepository
 {
     /**
-     * After this long, an export still claiming to be under way is taken to have
-     * died with its worker. Without the cut-off a killed worker would block its
-     * room from ever being exported again.
+     * After this long without being picked up, a queued export is taken to be
+     * lost. A worker claims a message within seconds, so anything older means
+     * there is no worker, or the one that claimed the message died before it
+     * could start.
      */
-    private const STALE_AFTER = 'PT1H';
+    private const PENDING_STALE_AFTER = 'PT15M';
+
+    /**
+     * After this long, a run that has not come back is taken to have died with
+     * its worker. The window is generous because how long a run legitimately
+     * takes follows from the size of the room.
+     */
+    private const RUNNING_STALE_AFTER = 'PT1H';
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -49,24 +57,42 @@ class RoomExportRepository extends ServiceEntityRepository
 
     /**
      * The export that stands in the way of starting a new one for this room, or
-     * null if none does. An export that has been running longer than
-     * {@see self::STALE_AFTER} does not stand in the way.
+     * null if none does. A stale export does not stand in the way.
      */
     public function findBlockingFor(Room $room): ?RoomExport
     {
-        $threshold = (new DateTimeImmutable())->sub(new DateInterval(self::STALE_AFTER));
+        foreach ($this->findInProgressFor($room) as $export) {
+            if (!$this->isStale($export)) {
+                return $export;
+            }
+        }
 
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.room = :room')
-            ->andWhere('e.status IN (:inProgress)')
-            ->andWhere('e.requestedAt > :threshold')
-            ->setParameter('room', $room)
-            ->setParameter('inProgress', [RoomExportStatus::Pending, RoomExportStatus::Running])
-            ->setParameter('threshold', $threshold)
-            ->orderBy('e.requestedAt', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
+        return null;
+    }
+
+    /**
+     * Settles the exports of this room that nothing is working on any more.
+     *
+     * A worker can be restarted or killed at any moment, and a row it leaves
+     * behind would otherwise keep claiming to be under way for as long as the
+     * room exists. Settling it both tells the moderation the truth and frees the
+     * room for another attempt.
+     */
+    public function releaseStale(Room $room): void
+    {
+        $released = false;
+
+        foreach ($this->findInProgressFor($room) as $export) {
+            if ($this->isStale($export)) {
+                $export->markAbandoned();
+                $this->getEntityManager()->persist($export);
+                $released = true;
+            }
+        }
+
+        if ($released) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     /**
@@ -81,5 +107,33 @@ class RoomExportRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return RoomExport[] newest first; a room has a handful of these at most
+     */
+    private function findInProgressFor(Room $room): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.room = :room')
+            ->andWhere('e.status IN (:inProgress)')
+            ->setParameter('room', $room)
+            ->setParameter('inProgress', [RoomExportStatus::Pending, RoomExportStatus::Running])
+            ->orderBy('e.requestedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Both windows are measured from the request: nothing records when a run
+     * began, and a worker picks a message up within seconds of it arriving.
+     */
+    private function isStale(RoomExport $export): bool
+    {
+        $window = RoomExportStatus::Pending === $export->getStatus()
+            ? self::PENDING_STALE_AFTER
+            : self::RUNNING_STALE_AFTER;
+
+        return $export->getRequestedAt() < (new DateTimeImmutable())->sub(new DateInterval($window));
     }
 }

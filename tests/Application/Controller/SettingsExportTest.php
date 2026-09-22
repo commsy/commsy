@@ -13,9 +13,12 @@ declare(strict_types=1);
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use App\Entity\RoomExport;
 use App\Export\RoomExportStatus;
 use App\Message\RoomExportRequested;
 use App\Repository\RoomExportRepository;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Story\AccountStory;
@@ -109,6 +112,30 @@ class SettingsExportTest extends AbstractApplicationTestCase
         $this->assertCount(0, $this->transport->getSent(), 'and no second message');
     }
 
+    /**
+     * A worker can be restarted or killed at any moment. The row it leaves
+     * behind would otherwise keep the room's moderation waiting for a run that
+     * nothing is doing.
+     */
+    public function testAnExportNoWorkerPickedUpIsSettledAndMakesWayForANewOne(): void
+    {
+        $this->startExport();
+
+        $abandoned = $this->exportRepository()->findBy([])[0];
+        $this->backdate($abandoned, '-20 minutes');
+        $this->transport->reset();
+
+        $this->startExport();
+
+        // The client boots a fresh kernel per request, so the row has to come
+        // back from the database rather than from the object held here.
+        $settled = $this->exportRepository()->find($abandoned->getId());
+
+        $this->assertSame(RoomExportStatus::Abandoned, $settled->getStatus());
+        $this->assertCount(2, $this->exportRepository()->findBy([]), 'the room takes a new export');
+        $this->assertCount(1, $this->transport->getSent());
+    }
+
     public function testStartingWithoutATokenIsRefused(): void
     {
         $this->client->request('POST', "/room/{$this->roomId}/settings/export/start");
@@ -198,6 +225,25 @@ class SettingsExportTest extends AbstractApplicationTestCase
         $this->client->request('POST', "/room/{$roomId}/settings/export/start", [
             '_token' => $token,
         ]);
+    }
+
+    /**
+     * requestedAt is set in the constructor and has no setter — the row is a
+     * record, not a form. Ageing it for the test goes through SQL.
+     */
+    private function backdate(RoomExport $export, string $modifier): void
+    {
+        $manager = self::getContainer()->get(EntityManagerInterface::class);
+
+        $manager->getConnection()->executeStatement(
+            'UPDATE room_export SET requested_at = :requestedAt WHERE id = :id',
+            [
+                'requestedAt' => (new DateTimeImmutable($modifier))->format('Y-m-d H:i:s'),
+                'id' => $export->getId(),
+            ]
+        );
+
+        $manager->refresh($export);
     }
 
     private function exportRepository(): RoomExportRepository

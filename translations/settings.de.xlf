@@ -923,6 +923,14 @@
                 <source>export status failed</source>
                 <target>Fehlgeschlagen</target>
             </trans-unit>
+            <trans-unit id="export_status_abandoned">
+                <source>export status abandoned</source>
+                <target>Abgebrochen</target>
+            </trans-unit>
+            <trans-unit id="export_abandoned_hint">
+                <source>export abandoned hint</source>
+                <target>Der Hintergrunddienst hat kein Ergebnis geliefert. Bitte starten Sie den Export erneut.</target>
+            </trans-unit>
             <trans-unit id="export_requested_at">
                 <source>Requested at</source>
                 <target>Angefordert am</target>

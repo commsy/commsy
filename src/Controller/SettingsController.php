@@ -563,6 +563,11 @@ class SettingsController extends AbstractController
             throw $this->createNotFoundException('No room found for id '.$roomId);
         }
 
+        // A worker can die between two page loads, and the row it leaves behind
+        // would keep claiming to be under way. Settling it here is what makes
+        // the list below honest.
+        $roomExports->releaseStale($room);
+
         $exports = $roomExports->findForRoom($room);
 
         // Whether an archive can still be fetched follows from the file being
@@ -600,6 +605,8 @@ class SettingsController extends AbstractController
         if (!$room) {
             throw $this->createNotFoundException('No room found for id '.$roomId);
         }
+
+        $roomExports->releaseStale($room);
 
         if ($roomExports->findBlockingFor($room)) {
             $this->addFlash('notice', $translator->trans('export already running', [], 'settings'));

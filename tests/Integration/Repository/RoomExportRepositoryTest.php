@@ -14,6 +14,7 @@ namespace Tests\Integration\Repository;
 
 use App\Entity\Room;
 use App\Entity\RoomExport;
+use App\Export\RoomExportStatus;
 use App\Repository\RoomExportRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -96,6 +97,90 @@ class RoomExportRepositoryTest extends KernelTestCase
         $this->backdate($recent, '-5 minutes');
 
         $this->assertNotNull($this->repository()->findBlockingFor($room));
+    }
+
+    /**
+     * A run may legitimately take a while — how long follows from the size of
+     * the room — so it is given more time than a message waiting for a worker.
+     */
+    public function testALongRunningExportStillBlocks(): void
+    {
+        self::bootKernel();
+        $room = $this->room();
+
+        $running = new RoomExport($room);
+        $running->markRunning();
+        $this->repository()->save($running);
+
+        $this->backdate($running, '-20 minutes');
+
+        $this->assertNotNull($this->repository()->findBlockingFor($room));
+    }
+
+    /**
+     * A worker claims a queued message within seconds. One still waiting after
+     * a quarter of an hour means there is nobody to claim it.
+     */
+    public function testAQueuedExportNobodyPickedUpStopsBlocking(): void
+    {
+        self::bootKernel();
+        $room = $this->room();
+
+        $pending = new RoomExport($room);
+        $this->repository()->save($pending);
+
+        $this->backdate($pending, '-20 minutes');
+
+        $this->assertNull($this->repository()->findBlockingFor($room));
+    }
+
+    public function testReleasingStaleExportsSettlesThemAsAbandoned(): void
+    {
+        self::bootKernel();
+        $room = $this->room();
+
+        $stale = new RoomExport($room);
+        $stale->markRunning();
+        $this->repository()->save($stale);
+        $this->backdate($stale, '-2 hours');
+
+        $this->repository()->releaseStale($room);
+
+        $this->assertSame(RoomExportStatus::Abandoned, $stale->getStatus());
+        $this->assertNotNull($stale->getFinishedAt());
+
+        // Nothing is known about why, so no reason is invented.
+        $this->assertNull($stale->getFailureReason());
+    }
+
+    public function testReleasingStaleExportsLeavesAliveOnesAlone(): void
+    {
+        self::bootKernel();
+        $room = $this->room();
+
+        $running = new RoomExport($room);
+        $running->markRunning();
+        $this->repository()->save($running);
+
+        $this->repository()->releaseStale($room);
+
+        $this->assertSame(RoomExportStatus::Running, $running->getStatus());
+        $this->assertNotNull($this->repository()->findBlockingFor($room));
+    }
+
+    public function testReleasingStaleExportsLeavesOtherRoomsAlone(): void
+    {
+        self::bootKernel();
+        $room = $this->room();
+        $otherRoom = $this->room();
+
+        $foreign = new RoomExport($otherRoom);
+        $this->repository()->save($foreign);
+        $this->backdate($foreign, '-2 hours');
+
+        $this->repository()->releaseStale($room);
+
+        $this->assertSame(RoomExportStatus::Pending, $foreign->getStatus());
     }
 
     public function testExportsOfARoomComeBackNewestFirst(): void

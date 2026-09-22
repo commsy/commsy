@@ -159,4 +159,15 @@ class RoomExport
         $this->failureReason = mb_substr($reason, 0, 255);
         $this->finishedAt = new DateTimeImmutable();
     }
+
+    /**
+     * No worker came back with a result. Settling the row frees the room for a
+     * new export, and a late delivery of the same message finds the row settled
+     * and stops.
+     */
+    public function markAbandoned(): void
+    {
+        $this->status = RoomExportStatus::Abandoned;
+        $this->finishedAt = new DateTimeImmutable();
+    }
 }

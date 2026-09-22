@@ -23,6 +23,10 @@ namespace App\Export;
  * knows nothing about these rows. A finished export whose file has expired
  * therefore stays `Finished` and says so at download time — the row remains the
  * record that the export happened.
+ *
+ * `Abandoned` is not a failure of the export itself: no worker came back with a
+ * result, so nothing is known about why. It is kept apart from `Failed`, which
+ * carries a reason the moderation can act on.
  */
 enum RoomExportStatus: string
 {
@@ -30,6 +34,7 @@ enum RoomExportStatus: string
     case Running = 'running';
     case Finished = 'finished';
     case Failed = 'failed';
+    case Abandoned = 'abandoned';
 
     /**
      * Waiting for a worker or in the hands of one — either way a second export

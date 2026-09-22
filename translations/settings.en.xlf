@@ -923,6 +923,14 @@
                 <source>export status failed</source>
                 <target>Failed</target>
             </trans-unit>
+            <trans-unit id="export_status_abandoned">
+                <source>export status abandoned</source>
+                <target>Abandoned</target>
+            </trans-unit>
+            <trans-unit id="export_abandoned_hint">
+                <source>export abandoned hint</source>
+                <target>The background service did not deliver a result. Please start the export again.</target>
+            </trans-unit>
             <trans-unit id="export_requested_at">
                 <source>Requested at</source>
                 <target>Requested at</target>

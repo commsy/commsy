@@ -85,6 +85,26 @@ class RoomExportRequestedHandlerTest extends KernelTestCase
     }
 
     /**
+     * The transport hands a message that was claimed by a worker which never
+     * acknowledged it back out after an hour. By then the row may have been
+     * settled as abandoned and a new export asked for, so the late copy has
+     * nothing left to do.
+     */
+    public function testALateDeliveryOfAnAbandonedExportDoesNothing(): void
+    {
+        self::bootKernel();
+
+        $export = $this->requestExport();
+        $export->markAbandoned();
+        $this->repository()->save($export);
+
+        $this->handle($export);
+
+        $this->assertSame(RoomExportStatus::Abandoned, $export->getStatus());
+        $this->assertNull($export->getFilename());
+    }
+
+    /**
      * A failure belongs on the row, because the row is what the moderation sees.
      * Rethrowing would put it in the failed queue instead, where retrying the
      * same room with the same code would fail the same way.
