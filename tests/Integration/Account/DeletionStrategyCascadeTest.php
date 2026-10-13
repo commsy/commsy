@@ -80,9 +80,8 @@ final class DeletionStrategyCascadeTest extends KernelTestCase
 
     /**
      * KEEP still has to erase authorship — a surviving entry must not stay
-     * attached to the removed person. A NULL creator renders as "-", whereas
-     * a reference left pointing at the soft-deleted membership row renders
-     * as "deleted person".
+     * attached to the removed person, not even through a reference to the
+     * soft-deleted membership row.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testKeepNullifiesAuthorship(): void
