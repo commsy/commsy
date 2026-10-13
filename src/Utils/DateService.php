@@ -285,23 +285,36 @@ readonly class DateService
         return $dateList->to_array();
     }
 
-    public function undraft(int $itemId): void
+    /**
+     * Lifts the draft flag of a date and of the rest of its series.
+     *
+     * @return int[] the ids of the dates released
+     */
+    public function undraft(int $itemId): array
     {
-        $subQueryBuilder = $this->entityManager->createQueryBuilder();
-        $subQueryBuilder
+        $dateIds = $this->entityManager->createQueryBuilder()
             ->select('d.itemId')
             ->from(Dates::class, 'd')
             ->where('d.recurrenceId = :itemId')
-            ->orWhere('d.itemId = :itemId');
+            ->orWhere('d.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        if ([] === $dateIds) {
+            return [];
+        }
 
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder
             ->update(Items::class, 'i')
             ->set('i.draft', ':draft')
-            ->where($queryBuilder->expr()->in('i.itemId', $subQueryBuilder->getDQL()))
-            ->setParameter('itemId', $itemId)
+            ->where($queryBuilder->expr()->in('i.itemId', ':dateIds'))
+            ->setParameter('dateIds', $dateIds)
             ->setParameter('draft', false)
             ->getQuery()
             ->execute();
+
+        return array_map('intval', $dateIds);
     }
 }

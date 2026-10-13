@@ -14,6 +14,7 @@
 namespace App\Utils;
 
 use App\Item\ItemType;
+use App\Legacy\LegacyIndexDispatcher;
 use App\Repository\ItemRepository;
 use App\Rubric\Label\LabelType;
 use App\Rubric\RubricType;
@@ -36,6 +37,7 @@ class ItemService
         private readonly Security $security,
         private readonly ItemRepository $itemRepository,
         private readonly DateService $dateService,
+        private readonly LegacyIndexDispatcher $indexDispatcher,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -251,7 +253,11 @@ class ItemService
         $item = $this->getItem($itemId);
         $typedItem = $this->getTypedItem($itemId);
         if ($typedItem instanceof cs_dates_item) {
-            $this->dateService->undraft($itemId);
+            // Same as below: a draft is skipped by the indexer, so every date released
+            // here, the rest of its series included, is queued once the flag is lifted.
+            foreach ($this->dateService->undraft($itemId) as $dateId) {
+                $this->indexDispatcher->reindex($dateId, RubricType::Date->value);
+            }
 
             return;
         }
