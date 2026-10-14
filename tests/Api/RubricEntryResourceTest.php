@@ -17,7 +17,12 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Symfony\Bundle\Test\Response;
 use App\Entity\Announcement;
+use App\Entity\Dates;
+use App\Entity\Discussions;
+use App\Entity\Labels;
+use App\Entity\Materials;
 use App\Entity\Room;
+use App\Entity\Todos;
 use App\Entity\User;
 use App\Export\RoomExportBuilder;
 use App\State\RubricEntryProvider;
@@ -28,8 +33,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Factory\AnnotationFactory;
 use Tests\Factory\AnnouncementFactory;
+use Tests\Factory\DatesFactory;
+use Tests\Factory\DiscussionArticleFactory;
+use Tests\Factory\DiscussionFactory;
+use Tests\Factory\LabelFactory;
 use Tests\Factory\LinkItemFactory;
+use Tests\Factory\MaterialFactory;
 use Tests\Factory\RoomFactory;
+use Tests\Factory\SectionFactory;
+use Tests\Factory\StepFactory;
+use Tests\Factory\TodoFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
@@ -58,6 +71,49 @@ class RubricEntryResourceTest extends AbstractApiTestCase
                 AnnotationFactory::createOne(['room' => $room, 'creator' => $user, 'linkedItemId' => $id]);
 
                 return $id;
+            },
+        ];
+        yield 'date' => ['dates', 'date', 'dates', Dates::class,
+            static fn (Room $room, User $user): int => DatesFactory::createOne(
+                ['room' => $room, 'creator' => $user]
+            )->getItemId(),
+        ];
+        yield 'discussion' => ['discussions', 'discussion', 'discussions', Discussions::class,
+            static function (Room $room, User $user): int {
+                $discussion = DiscussionFactory::createOne(['room' => $room, 'creator' => $user]);
+                DiscussionArticleFactory::createOne(
+                    ['room' => $room, 'creator' => $user, 'discussion' => $discussion, 'position' => '1']
+                );
+
+                return $discussion->getItemId();
+            },
+        ];
+        yield 'label' => ['labels', 'label', 'labels', Labels::class,
+            static function (Room $room, User $user): int {
+                $group = LabelFactory::createOne(
+                    ['room' => $room, 'creator' => $user, 'type' => 'group', 'name' => uniqid('Gruppe ', true)]
+                )->getItemId();
+                LinkItemFactory::createOne(
+                    ['room' => $room, 'creator' => $user, 'firstItemId' => $group, 'secondItemId' => $user->getItemId()]
+                );
+
+                return $group;
+            },
+        ];
+        yield 'material' => ['materials', 'material', 'materials', Materials::class,
+            static function (Room $room, User $user): int {
+                $material = MaterialFactory::createOne(['room' => $room, 'creator' => $user]);
+                SectionFactory::createOne(['room' => $room, 'creator' => $user, 'material' => $material]);
+
+                return $material->getItemId();
+            },
+        ];
+        yield 'todo' => ['todos', 'todo', 'todos', Todos::class,
+            static function (Room $room, User $user): int {
+                $todo = TodoFactory::createOne(['room' => $room, 'creator' => $user]);
+                StepFactory::createOne(['room' => $room, 'creator' => $user, 'todo' => $todo]);
+
+                return $todo->getItemId();
             },
         ];
     }

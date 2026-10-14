@@ -13,11 +13,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use App\Export\ExportableEntry;
+use App\State\RubricEntryProvider;
 use App\Repository\DatesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -29,6 +34,24 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Table(name: 'dates')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
+#[ApiResource(
+    shortName: 'Date',
+    operations: [
+        new GetCollection(
+            uriTemplate: '/rooms/{roomId}/dates',
+            uriVariables: ['roomId' => new Link(fromClass: Room::class, identifiers: ['itemId'])],
+        ),
+        new Get(uriTemplate: '/dates/{itemId}'),
+    ],
+    // The export's field list and shape: the interface hands out what the export
+    // carries, a null included.
+    normalizationContext: ['groups' => ['export'], 'skip_null_values' => false],
+    security: "is_granted('ROLE_API_READ')",
+    provider: RubricEntryProvider::class,
+    paginationItemsPerPage: RubricEntryProvider::ITEMS_PER_PAGE,
+    paginationMaximumItemsPerPage: RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE,
+    paginationClientItemsPerPage: true,
+)]
 class Dates implements ExportableEntry
 {
     use EntityDatesTrait;
