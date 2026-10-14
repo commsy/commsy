@@ -12,11 +12,13 @@ declare(strict_types=1);
 
 namespace Tests\Application\Controller;
 
+use App\Cron\Tasks\CronCleanTemporary;
 use App\Entity\Account;
 use App\Entity\RoomExport;
 use App\Export\RoomExportStatus;
 use App\Message\RoomExportRequested;
 use App\Repository\RoomExportRepository;
+use App\Repository\RoomRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
@@ -68,6 +70,42 @@ class SettingsExportTest extends AbstractApplicationTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form[action$="/settings/export/start"]');
+    }
+
+    /**
+     * The page says by when an archive is gone, in a translation. If the
+     * cleanup's limit is changed and the text is not, this is where it shows.
+     */
+    public function testThePageStatesTheLatestTimeAnArchiveIsKept(): void
+    {
+        $this->client->request('GET', "/room/{$this->roomId}/settings/export");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('main', (string) CronCleanTemporary::LATEST_REMOVAL_HOURS);
+    }
+
+    /**
+     * Once its archive is gone at the latest, a row has nothing left to say and
+     * would only read "no longer available" for as long as it stood there.
+     */
+    public function testAnExportOlderThanItsArchiveCanBeIsNoLongerListed(): void
+    {
+        $room = self::getContainer()->get(RoomRepository::class)->find($this->roomId);
+
+        $beyond = CronCleanTemporary::LATEST_REMOVAL_HOURS + 1;
+        $within = CronCleanTemporary::LATEST_REMOVAL_HOURS - 1;
+
+        foreach ([$beyond, $within] as $hours) {
+            $export = new RoomExport($room);
+            $export->markFinished('room-'.$this->roomId.'-export-'.$hours.'.zip', 10);
+            $this->exportRepository()->save($export);
+            $this->backdate($export, "-{$hours} hours");
+        }
+
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/settings/export");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(1, $crawler->filter('tbody tr'), 'only the export within the window is listed');
     }
 
     public function testStartingAnExportRecordsItAndHandsItToAWorker(): void

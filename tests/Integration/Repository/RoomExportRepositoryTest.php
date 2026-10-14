@@ -201,6 +201,28 @@ class RoomExportRepositoryTest extends KernelTestCase
         $this->assertSame($newer->getId(), $found[0]->getId());
     }
 
+    public function testExportsRequestedBeforeTheGivenTimeAreLeftOut(): void
+    {
+        self::bootKernel();
+        $room = $this->room();
+
+        $old = new RoomExport($room);
+        $this->repository()->save($old);
+        $this->backdate($old, '-49 hours');
+
+        $recent = new RoomExport($room);
+        $this->repository()->save($recent);
+        $this->backdate($recent, '-1 hour');
+
+        $found = $this->repository()->findForRoom($room, since: new DateTimeImmutable('-48 hours'));
+
+        $this->assertCount(1, $found);
+        $this->assertSame($recent->getId(), $found[0]->getId());
+
+        // Without a limit in time, nothing is left out.
+        $this->assertCount(2, $this->repository()->findForRoom($room));
+    }
+
     private function room(): Room
     {
         return $this->managedRoom(

@@ -889,7 +889,7 @@
             </trans-unit>
             <trans-unit id="export_explanation">
                 <source>Export explanation</source>
-                <target>Der Export erzeugt ein Archiv mit den Inhalten dieses Raums. Er läuft im Hintergrund; die Dauer richtet sich nach der Größe des Raums. Fertige Archive stehen 24 Stunden zum Herunterladen bereit und werden danach automatisch gelöscht.</target>
+                <target>Der Export erzeugt ein Archiv mit den Inhalten dieses Raums. Er läuft im Hintergrund; die Dauer richtet sich nach der Größe des Raums. Fertige Exporte werden spätestens nach 48 Stunden automatisch gelöscht.</target>
             </trans-unit>
             <trans-unit id="start_export">
                 <source>Start export</source>

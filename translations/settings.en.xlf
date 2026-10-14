@@ -889,7 +889,7 @@
             </trans-unit>
             <trans-unit id="export_explanation">
                 <source>Export explanation</source>
-                <target>The export builds an archive of this room's content. It runs in the background; how long it takes depends on the size of the room. Finished archives can be downloaded for 24 hours and are removed automatically afterwards.</target>
+                <target>The export builds an archive of this room's content. It runs in the background; how long it takes depends on the size of the room. Finished exports are removed automatically after 48 hours at the latest.</target>
             </trans-unit>
             <trans-unit id="start_export">
                 <source>Start export</source>

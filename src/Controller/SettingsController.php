@@ -16,6 +16,7 @@ namespace App\Controller;
 use App\Entity\AuthSource;
 use App\Entity\AuthSourceLocal;
 use App\Entity\Portal;
+use App\Cron\Tasks\CronCleanTemporary;
 use App\Entity\RoomExport;
 use App\Event\RoomSettingsChangedEvent;
 use App\Export\RoomExportStorage;
@@ -55,6 +56,7 @@ use cs_grouproom_item;
 use cs_project_item;
 use cs_room_item;
 use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -568,7 +570,12 @@ class SettingsController extends AbstractController
         // the list below honest.
         $roomExports->releaseStale($room);
 
-        $exports = $roomExports->findForRoom($room);
+        // A row has nothing left to say once its archive is gone, which it is by
+        // then at the latest.
+        $exports = $roomExports->findForRoom(
+            $room,
+            since: new DateTimeImmutable(sprintf('-%d hours', CronCleanTemporary::LATEST_REMOVAL_HOURS))
+        );
 
         // Whether an archive can still be fetched follows from the file being
         // there, not from the row: the cleanup that removes it by age knows

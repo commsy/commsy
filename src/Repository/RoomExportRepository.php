@@ -96,17 +96,23 @@ class RoomExportRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param DateTimeImmutable|null $since only exports requested after this
+     *
      * @return RoomExport[] newest first
      */
-    public function findForRoom(Room $room, int $limit = 10): array
+    public function findForRoom(Room $room, int $limit = 10, ?DateTimeImmutable $since = null): array
     {
-        return $this->createQueryBuilder('e')
+        $builder = $this->createQueryBuilder('e')
             ->andWhere('e.room = :room')
             ->setParameter('room', $room)
             ->orderBy('e.requestedAt', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($limit);
+
+        if (null !== $since) {
+            $builder->andWhere('e.requestedAt > :since')->setParameter('since', $since);
+        }
+
+        return $builder->getQuery()->getResult();
     }
 
     /**
