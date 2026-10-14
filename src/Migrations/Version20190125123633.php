@@ -23,9 +23,7 @@ final class Version20190125123633 extends AbstractMigration
         ];
 
         foreach ($tables as $table) {
-            $columns = $schemaManager->listTableColumns($table);
-
-            if (empty(array_filter($columns, fn($column) => $column->getName() === 'public'))) {
+            if (!($schemaManager->tableExists($table) && $schemaManager->introspectTable($table)->hasColumn('public'))) {
                 $this->addSql('ALTER TABLE ' . $table . ' ADD public TINYINT NOT NULL DEFAULT 0;');
             }
         }

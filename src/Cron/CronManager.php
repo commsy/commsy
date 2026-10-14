@@ -77,7 +77,7 @@ class CronManager
             }
 
             $cronRun = array_filter($lastCronRuns, fn (CronTask $task) => $task->getName() === $cronTask::class);
-            $lastRun = !empty($cronRun) ? DateTimeImmutable::createFromMutable(current($cronRun)->getLastRun()) : null;
+            $lastRun = !empty($cronRun) ? current($cronRun)->getLastRun() : null;
 
             $cmp = (new DateTimeImmutable())->sub(new DateInterval('PT23H'));
             if (!$force && $lastRun && $lastRun >= $cmp) {
@@ -100,7 +100,7 @@ class CronManager
         // Get the last time this cron was run
         $allCronRuns = $this->cronTaskRepository->findAll();
         $cronRun = array_filter($allCronRuns, fn (CronTask $task) => $task->getName() === $className);
-        $lastRun = !empty($cronRun) ? DateTimeImmutable::createFromMutable(current($cronRun)->getLastRun()) : null;
+        $lastRun = !empty($cronRun) ? current($cronRun)->getLastRun() : null;
 
         $cron?->run($lastRun);
     }

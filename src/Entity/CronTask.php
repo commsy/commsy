@@ -14,7 +14,7 @@
 namespace App\Entity;
 
 use App\Repository\CronTaskRepository;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,20 +29,20 @@ class CronTask
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $name;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private DateTimeInterface $lastRun;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private DateTimeImmutable $lastRun;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getLastRun(): DateTimeInterface
+    public function getLastRun(): DateTimeImmutable
     {
         return $this->lastRun;
     }
 
-    public function setLastRun(DateTimeInterface $lastRun): self
+    public function setLastRun(DateTimeImmutable $lastRun): self
     {
         $this->lastRun = $lastRun;
 

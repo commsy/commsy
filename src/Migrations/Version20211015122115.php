@@ -22,18 +22,11 @@ final class Version20211015122115 extends AbstractMigration
     {
         $schemaManager = $this->connection->createSchemaManager();
 
-        $tables = $schemaManager->listTables();
-        $tablesWithExtras = array_filter($tables, function ($table) {
-            $columns = $table->getColumns();
-
-            $withExtras = array_filter($columns, fn($column) => $column->getName() === 'extras');
-            $withItemId = array_filter($columns, fn($column) => $column->getName() === 'item_id');
-
-            return $withExtras && $withItemId;
-        });
+        $tables = $schemaManager->introspectTables();
+        $tablesWithExtras = array_filter($tables, fn ($table) => $table->hasColumn('extras') && $table->hasColumn('item_id'));
 
         foreach ($tablesWithExtras as $tableWithExtra) {
-            $this->removeWikiExtras($tableWithExtra->getName());
+            $this->removeWikiExtras($tableWithExtra->getObjectName()->getUnqualifiedName()->getValue());
         }
     }
 

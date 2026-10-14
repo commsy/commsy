@@ -18,6 +18,7 @@ use App\Repository\UserRepository;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTimeInterface;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -99,7 +100,7 @@ class User
     #[ORM\Column(name: 'visible', type: Types::INTEGER, nullable: false)]
     private int $visible = 1;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 65535, nullable: true)]

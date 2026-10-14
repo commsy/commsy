@@ -22,8 +22,8 @@ use App\Controller\Api\GetServerAnnouncement;
 use App\Repository\ServerRepository;
 use App\Utils\EntityUsersTrait;
 use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -93,7 +93,7 @@ class Server
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
     private string $title;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\Column(name: 'status', type: Types::STRING, length: 20, nullable: false)]
@@ -149,7 +149,7 @@ class Server
         if (null !== $logoImageFile) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->modificationDate = new DateTimeImmutable();
+            $this->modificationDate = new DateTime();
         }
         return $this;
     }

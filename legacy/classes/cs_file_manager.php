@@ -78,7 +78,7 @@ class cs_file_manager extends cs_manager
             ' filepath="' . \App\Legacy\SqlStringEscaper::escape($file_item->getFilePath()) . '", ' .
             ' extras="' . \App\Legacy\SqlStringEscaper::escape(serialize($file_item->getExtraInformation())) . '"';
 
-        if (!$result = $this->_db_connector->performQuery($query)) {
+        if (!$result = $this->_db_connector->performInsert($query)) {
             throw new Exception();
         }
         $file_item->setFileID($result);

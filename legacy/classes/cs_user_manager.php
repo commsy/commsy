@@ -871,7 +871,7 @@ class cs_user_manager extends cs_manager
         $query .= 'context_id="' . \App\Legacy\SqlStringEscaper::escape($item->getContextID()) . '", ';
         $query .= 'modification_date="' . \App\Utils\MysqlDateTime::now() . '",' .
             'type="user"';
-        $result = $this->_db_connector->performQuery($query);
+        $result = $this->_db_connector->performInsert($query);
         if (!isset($result)) {
             trigger_error('Problems creating user.', E_USER_WARNING);
             $this->_create_id = null;

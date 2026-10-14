@@ -7,10 +7,9 @@ doctrine:
         #server_version: '16'
 
         profiling_collect_backtrace: '%kernel.debug%'
-        use_savepoints: true
 
-        mapping_types:
-            enum: string
+        types:
+            array: App\Doctrine\Type\PhpArrayType
 
     orm:
         auto_generate_proxy_classes: true
@@ -36,7 +35,6 @@ when@test:
         dbal:
             # "TEST_TOKEN" is typically set by ParaTest
             dbname_suffix: '_test%env(default::TEST_TOKEN)%'
-            use_savepoints: true
 
 when@prod:
     doctrine:

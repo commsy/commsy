@@ -15,7 +15,9 @@ namespace App\Entity;
 
 use App\Repository\FilesRepository;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -58,7 +60,7 @@ class Files
     #[ORM\Column(name: 'size', type: Types::INTEGER, nullable: true)]
     private ?int $size = null;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\ManyToOne()]
@@ -71,8 +73,8 @@ class Files
     #[ORM\Column(length: 1024, nullable: true)]
     private ?string $lockingId = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $lockingDate = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $lockingDate = null;
 
     public function __construct()
     {
@@ -261,12 +263,12 @@ class Files
         return $this;
     }
 
-    public function getLockingDate(): ?DateTimeInterface
+    public function getLockingDate(): ?DateTimeImmutable
     {
         return $this->lockingDate;
     }
 
-    public function setLockingDate(?DateTimeInterface $lockingDate): self
+    public function setLockingDate(?DateTimeImmutable $lockingDate): self
     {
         $this->lockingDate = $lockingDate;
 

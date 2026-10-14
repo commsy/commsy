@@ -17,7 +17,7 @@ namespace Tests\Integration\Repository;
 
 use App\Entity\Files;
 use App\Repository\FilesRepository;
-use DateTime;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Tests\Factory\FilesFactory;
 
@@ -54,8 +54,8 @@ final class FilesRepositoryTest extends KernelTestCase
 
     public function testFindAllLockedBeforeReturnsRowsWithLockingDateBeforeThreshold(): void
     {
-        $past = new DateTime('-1 day');
-        $future = new DateTime('+1 day');
+        $past = new DateTimeImmutable('-1 day');
+        $future = new DateTimeImmutable('+1 day');
 
         $expired = FilesFactory::createOne([
             'contextId' => 50_003,
@@ -70,7 +70,7 @@ final class FilesRepositoryTest extends KernelTestCase
             'lockingDate' => null,
         ]);
 
-        $threshold = new DateTime('now');
+        $threshold = new DateTimeImmutable('now');
         $results = $this->repository->findAllLockedBefore($threshold);
         $ids = array_map(static fn (Files $f): int => $f->getFilesId(), $results);
 

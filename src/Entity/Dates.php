@@ -21,6 +21,7 @@ use ApiPlatform\Metadata\Link;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use App\Export\ExportableEntry;
 use App\State\PageSize;
@@ -120,7 +121,7 @@ class Dates implements ExportableEntry
     #[ORM\Column(name: 'date_mode', type: Types::BOOLEAN, nullable: false)]
     private bool $dateMode = false;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, length: 65535, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\Column(name: 'color', type: Types::STRING, length: 255, nullable: true)]

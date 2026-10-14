@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Migrations;
 
-use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -24,8 +23,7 @@ final class Version20190924133007 extends AbstractMigration
 
         // This will drop the primary key only if it exists
         $schemaManager = $this->connection->createSchemaManager();
-        $authTableIndexes = $schemaManager->listTableIndexes('auth');
-        if (!empty(array_filter($authTableIndexes, fn(Index $index) => $index->isPrimary()))) {
+        if (null !== $schemaManager->introspectTable('auth')->getPrimaryKeyConstraint()) {
             $this->addSql('ALTER TABLE auth DROP PRIMARY KEY;');
         }
 

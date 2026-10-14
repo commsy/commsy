@@ -24,6 +24,7 @@ use App\State\RubricEntryProvider;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use App\Repository\AnnouncementRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -104,7 +105,7 @@ class Announcement implements ExportableEntry
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private bool $public = false;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, length: 65535, nullable: true)]
     private ?array $extras = null;
 
     public function __construct()

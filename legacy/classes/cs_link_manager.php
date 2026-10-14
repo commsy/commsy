@@ -663,7 +663,7 @@ class cs_link_manager extends cs_manager
                  'context_id="'.\App\Legacy\SqlStringEscaper::escape($link_item->getContextID()).'",'.
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="link_item"';
-        $result = $this->_db_connector->performQuery($query);
+        $result = $this->_db_connector->performInsert($query);
         if (!isset($result)) {
             trigger_error('Problems creating link item from query: "'.$query.'"', E_USER_WARNING);
             $this->_create_id = null;

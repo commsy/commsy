@@ -127,8 +127,8 @@ final class Version20221208104314 extends AbstractMigration
         $sm = $this->connection->createSchemaManager();
         $srcTable = $sm->introspectTable($srcTableName);
 
-        $srcColumns = implode(', ', array_values(array_map(fn(Column $column) => "$srcTableName." . $column->getName(), $srcTable->getColumns())));
-        $columns = implode(', ', array_values(array_map(fn(Column $column) => $column->getName(), $srcTable->getColumns())));
+        $srcColumns = implode(', ', array_values(array_map(fn(Column $column) => "$srcTableName." . $column->getObjectName()->getIdentifier()->getValue(), $srcTable->getColumns())));
+        $columns = implode(', ', array_values(array_map(fn(Column $column) => $column->getObjectName()->getIdentifier()->getValue(), $srcTable->getColumns())));
 
         return "INSERT IGNORE INTO $destTableName ($columns) SELECT $srcColumns FROM $srcTableName";
     }

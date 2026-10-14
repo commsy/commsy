@@ -25,6 +25,7 @@ use App\Services\LegacyEnvironment;
 use cs_environment;
 use cs_list;
 use DateTime;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -145,7 +146,7 @@ class Portal
     #[ORM\Column(name: 'terms_en', type: Types::TEXT)]
     private ?string $termsEnglish = null;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\Column(name: 'status', type: Types::STRING, length: 20, nullable: false)]

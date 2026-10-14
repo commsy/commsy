@@ -417,7 +417,7 @@ class cs_section_manager extends cs_manager
                'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                'type="section",'.
                'draft="'.\App\Legacy\SqlStringEscaper::escape($item->isDraft()).'"';
-      $result = $this->_db_connector->performQuery($query);
+      $result = $this->_db_connector->performInsert($query);
       if (!isset($result)) {
           trigger_error('Problems creating section from query: "'.$query.'"', E_USER_WARNING);
           $this->_create_id = null;

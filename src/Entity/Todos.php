@@ -21,6 +21,7 @@ use ApiPlatform\Metadata\Link;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -105,7 +106,7 @@ class Todos implements ExportableEntry
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
     private bool $public = false;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\OneToMany(targetEntity: 'Step', mappedBy: 'todo')]

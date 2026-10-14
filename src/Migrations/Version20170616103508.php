@@ -234,9 +234,9 @@ final class Version20170616103508 extends AbstractMigration
 
     private function addDateToCalendar ($itemId, $calendarId) {
         $queryBuilderUpdate = $this->connection->createQueryBuilder();
-        $queryBuilderUpdate->update('dates', 'd')
-            ->set("d.calendar_id", ":calendarId")
-            ->where("d.item_id = :itemId")
+        $queryBuilderUpdate->update('dates')
+            ->set("calendar_id", ":calendarId")
+            ->where("item_id = :itemId")
             ->setParameter("calendarId", $calendarId)
             ->setParameter("itemId", $itemId)
             ->executeStatement();

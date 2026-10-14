@@ -11,7 +11,9 @@ class FixExtras extends GeneralCheck
         $conn = $this->entityManager->getConnection();
         $schema = $conn->createSchemaManager();
 
-        foreach ($schema->listTables() as $table) {
+        foreach ($schema->introspectTables() as $table) {
+            $tableName = $table->getObjectName()->getUnqualifiedName()->getValue();
+
             if ($table->hasColumn('extras')) {
                 if ($table->hasColumn('files_id')) {
                     $identifier = 'files_id';
@@ -22,9 +24,9 @@ class FixExtras extends GeneralCheck
                 }
 
                 // empty extras or "b:0;" or 's:0:"";' to null
-                $this->executeSQL("UPDATE {$table->getName()} SET extras = null WHERE extras = '' OR extras = '0' OR extras = 'b:0;' OR extras = 's:0:\"\";'", $io);
+                $this->executeSQL("UPDATE {$tableName} SET extras = null WHERE extras = '' OR extras = '0' OR extras = 'b:0;' OR extras = 's:0:\"\";'", $io);
 
-                $stmt = $this->executeSQL("SELECT $identifier, extras FROM {$table->getName()} WHERE extras IS NOT NULL", $io);
+                $stmt = $this->executeSQL("SELECT $identifier, extras FROM {$tableName} WHERE extras IS NOT NULL", $io);
                 $extras = $stmt->fetchAllKeyValue();
                 foreach ($extras as $itemId => $extra) {
                     $unserialized = @unserialize($extra);
@@ -35,11 +37,11 @@ class FixExtras extends GeneralCheck
                         $io->info("Fixing to: $repaired");
 
                         if (!@unserialize($repaired)) {
-                            $io->error("Error fixing {$table->getName()}($itemId): '$extra'");
+                            $io->error("Error fixing {$tableName}($itemId): '$extra'");
                             return false;
                         }
 
-                        $sql = "UPDATE {$table->getName()} SET extras = :extras WHERE $identifier = :itemId";
+                        $sql = "UPDATE {$tableName} SET extras = :extras WHERE $identifier = :itemId";
                         $stmt = $conn->prepare($sql);
                         $stmt->bindValue('extras', $repaired);
                         $stmt->bindValue('itemId', $itemId);

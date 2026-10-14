@@ -18,6 +18,7 @@ use App\Export\ExportableEntry;
 use App\Repository\SectionRepository;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -68,7 +69,7 @@ class Section implements ExportableEntry
     #[ORM\JoinColumn(name: 'version_id', referencedColumnName: 'version_id')]
     private ?Materials $material = null;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]

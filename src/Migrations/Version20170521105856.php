@@ -20,8 +20,8 @@ final class Version20170521105856 extends AbstractMigration
         $this->removeIndex('room_description', 'room');
         $this->removeIndex('room_description', 'zzz_room');
 
-        foreach ($schema->getTables() as $tableName => $table) {
-            $this->addSql('ALTER TABLE ' . $tableName . ' ENGINE=InnoDB');
+        foreach ($schema->getTables() as $table) {
+            $this->addSql('ALTER TABLE ' . $table->getObjectName()->getUnqualifiedName()->getValue() . ' ENGINE=InnoDB');
         }
     }
 
@@ -34,11 +34,8 @@ final class Version20170521105856 extends AbstractMigration
     private function removeIndex($indexName, $tableName)
     {
         $schemaManager = $this->connection->createSchemaManager();
-        $tableIndexes = $schemaManager->listTableIndexes($tableName);
 
-        $filteredIndexes = array_filter($tableIndexes, fn($index) => $index->getName() === $indexName);
-
-        if (!empty($filteredIndexes)) {
+        if ($schemaManager->tableExists($tableName) && $schemaManager->introspectTable($tableName)->hasIndex($indexName)) {
             $this->addSql('DROP INDEX ' . $indexName . ' ON ' . $tableName);
         }
     }
@@ -48,8 +45,8 @@ final class Version20170521105856 extends AbstractMigration
      */
     public function down(Schema $schema) : void
     {
-        foreach ($schema->getTables() as $tableName => $table) {
-            $this->addSql('ALTER TABLE ' . $tableName . ' ENGINE=MyISAM');
+        foreach ($schema->getTables() as $table) {
+            $this->addSql('ALTER TABLE ' . $table->getObjectName()->getUnqualifiedName()->getValue() . ' ENGINE=MyISAM');
         }
 
         $this->addSql('CREATE INDEX room_description ON room(room_description)');

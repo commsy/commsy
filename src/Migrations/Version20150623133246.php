@@ -38,9 +38,14 @@ final class Version20150623133246 extends AbstractMigration
     private function dropIndexes($tableName) {
         $schemaManager = $this->connection->createSchemaManager();
 
-        $indexes = $schemaManager->listTableIndexes($tableName);
+        $indexes = $schemaManager->introspectTableIndexesByUnquotedName($tableName);
         foreach ($indexes as $index) {
-            $this->addSql('DROP INDEX `' . $index->getName() . '` ON ' . $tableName);
+            $this->addSql('DROP INDEX `' . $index->getObjectName()->getIdentifier()->getValue() . '` ON ' . $tableName);
+        }
+
+        // The primary key is no longer listed among the indexes.
+        if ($schemaManager->tableExists($tableName) && null !== $schemaManager->introspectTable($tableName)->getPrimaryKeyConstraint()) {
+            $this->addSql('ALTER TABLE ' . $tableName . ' DROP PRIMARY KEY');
         }
     }
 

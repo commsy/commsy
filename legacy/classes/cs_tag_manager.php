@@ -492,7 +492,7 @@ class cs_tag_manager extends cs_manager
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="'.\App\Item\ItemType::Tag->value.'"';
 
-        $result = $this->_db_connector->performQuery($query);
+        $result = $this->_db_connector->performInsert($query);
         if (!isset($result)) {
             trigger_error('Problems creating '.$this->_db_table.'.', E_USER_ERROR);
             $this->_create_id = null;

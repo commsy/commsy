@@ -27,7 +27,7 @@ class AppFixtures extends Fixture
         foreach ($finder as $file) {
             $sql = $file->getContents();
 
-            $manager->getConnection()->exec($sql);
+            $manager->getConnection()->executeStatement($sql);
 
             $manager->flush();
         }

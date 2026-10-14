@@ -14,7 +14,7 @@
 namespace App\Repository;
 
 use App\Entity\Files;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
@@ -45,7 +45,7 @@ class FilesRepository extends ServiceEntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function findAllLockedBefore(DateTime $threshold): array
+    public function findAllLockedBefore(DateTimeImmutable $threshold): array
     {
         $query = $this->getEntityManager()->createQuery('
             SELECT f FROM App\Entity\Files f

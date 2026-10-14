@@ -17,7 +17,7 @@ use App\Entity\Files;
 use App\Lock\FileLockManager;
 use App\Repository\FilesRepository;
 use DateInterval;
-use DateTime;
+use DateTimeImmutable;
 use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 
 #[AsPeriodicTask(frequency: '5 minutes')]
@@ -32,7 +32,7 @@ readonly class RemoveFileLocks
     public function __invoke(): void
     {
         // Find files locked by more than two hours ago
-        $threshold = (new DateTime())->sub(new DateInterval('PT2H'));
+        $threshold = (new DateTimeImmutable())->sub(new DateInterval('PT2H'));
         $exceededFiles = $this->filesRepository->findAllLockedBefore($threshold);
 
         // Unlock all

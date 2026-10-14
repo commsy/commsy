@@ -280,7 +280,7 @@ class cs_tasks_manager extends cs_manager
                  'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
                  'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                  'type="task"';
-        $result = $this->_db_connector->performQuery($query);
+        $result = $this->_db_connector->performInsert($query);
         if (!isset($result)) {
             trigger_error('Problems creating task item in items table from query: "'.$query.'"', E_USER_WARNING);
             $this->_create_id = null;

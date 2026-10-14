@@ -24,6 +24,7 @@ use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use App\Validator\Constraints as CommsyAssert;
 use DateTime;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use App\Export\ExportableEntry;
 use App\State\PageSize;
@@ -97,7 +98,7 @@ class Labels implements ExportableEntry
     ])]
     private string $type;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]

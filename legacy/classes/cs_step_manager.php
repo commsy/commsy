@@ -353,7 +353,7 @@ class cs_step_manager extends cs_manager
                'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                'type="step",'.
                'draft="'.\App\Legacy\SqlStringEscaper::escape($item->isDraft()).'"';
-      $result = $this->_db_connector->performQuery($query);
+      $result = $this->_db_connector->performInsert($query);
       if (!isset($result)) {
           trigger_error('Problems creating step from query: "'.$query.'"', E_USER_WARNING);
           $this->_create_id = null;

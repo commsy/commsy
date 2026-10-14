@@ -15,7 +15,7 @@
         "ext-zip": "*",
         "api-platform/doctrine-orm": "^4.1",
         "api-platform/symfony": "^4.1",
-        "doctrine/dbal": "^3.8",
+        "doctrine/dbal": "^4.0",
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^3.2",

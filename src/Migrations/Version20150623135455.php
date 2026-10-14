@@ -61,13 +61,13 @@ final class Version20150623135455 extends AbstractMigration
         ];
 
         foreach ($tables as $table) {
-            $columns = $schemaManager->listTableColumns($table);
+            $tableSchema = $schemaManager->tableExists($table) ? $schemaManager->introspectTable($table) : null;
 
-            if (array_filter($columns, fn($column) => $column->getName() === 'creator_id')) {
+            if ($tableSchema?->hasColumn('creator_id')) {
                 $this->addSql('ALTER TABLE ' . $table . ' MODIFY creator_id INT(11) NULL');
             }
 
-            if (array_filter($columns, fn($column) => $column->getName() === 'modifier_id')) {
+            if ($tableSchema?->hasColumn('modifier_id')) {
                 $this->addSql('ALTER TABLE ' . $table . ' MODIFY modifier_id INT(11) NULL');
             }
         }
@@ -84,14 +84,11 @@ final class Version20150623135455 extends AbstractMigration
             }
         }
 
-        $roomColumns = $schemaManager->listTableColumns('room');
-
-        if (array_filter($roomColumns, fn($column) => $column->getName() === 'description')) {
+        if ($schemaManager->tableExists('room') && $schemaManager->introspectTable('room')->hasColumn('description')) {
             $this->addSql('ALTER TABLE room DROP COLUMN description');
         }
 
-        $zzzRoomColumns = $schemaManager->listTableColumns('zzz_room');
-        if (array_filter($zzzRoomColumns, fn($column) => $column->getName() === 'description')) {
+        if ($schemaManager->tableExists('zzz_room') && $schemaManager->introspectTable('zzz_room')->hasColumn('description')) {
             $this->addSql('ALTER TABLE zzz_room DROP COLUMN description');
         }
     }
@@ -117,9 +114,8 @@ final class Version20150623135455 extends AbstractMigration
         $userTable = $archived ? 'zzz_user' : 'user';
 
         $schemaManager = $this->connection->createSchemaManager();
-        $roomColumns = $schemaManager->listTableColumns($tableName);
 
-        if (array_filter($roomColumns, fn($column) => $column->getName() === $columnName)) {
+        if ($schemaManager->tableExists($tableName) && $schemaManager->introspectTable($tableName)->hasColumn($columnName)) {
             $this->addSql('UPDATE ' . $tableName . ' LEFT JOIN ' . $userTable . ' ON ' . $tableName . '.' . $columnName . ' = ' . $userTable . '.item_id SET ' . $tableName . '.' . $columnName . ' = NULL WHERE ' . $userTable . '.item_id IS NULL');
         }
     }

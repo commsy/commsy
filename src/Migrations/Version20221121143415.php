@@ -137,7 +137,7 @@ final class Version20221121143415 extends AbstractMigration
             ->orWhere('t.extras lIKE "%DELETE_SEND_MAIL_DATETIME%"');
         $entries = $qb->executeQuery();
 
-        foreach ($entries as $entry) {
+        foreach ($entries->iterateAssociative() as $entry) {
             $extras = DbConverter::convertToPHPValue($entry['extras']);
 
             $keys = ['MAIL_SEND_LOCK', 'MAIL_SEND_NEXT_LOCK', 'MAIL_SEND_LOCKED', 'MAIL_SEND_DELETE',
@@ -180,7 +180,7 @@ final class Version20221121143415 extends AbstractMigration
             ->orWhere('p.extras lIKE "%DELETING_ROOMS_STATUS%"');
         $entries = $qb->executeQuery();
 
-        foreach ($entries as $entry) {
+        foreach ($entries->iterateAssociative() as $entry) {
             $extras = DbConverter::convertToPHPValue($entry['extras']);
 
             $keys = ['INACTIVITY_LOCK', 'INACTIVITY_MAIL_BEFORE_LOCK', 'INACTIVITY_DELETE', 'INACTIVITY_MAIL_DELETE',

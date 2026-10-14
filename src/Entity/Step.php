@@ -16,6 +16,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use App\Export\ExportableEntry;
 use App\Repository\StepRepository;
@@ -63,7 +64,7 @@ class Step implements ExportableEntry
     #[ORM\Column(name: 'todo_item_id', type: Types::INTEGER, nullable: false)]
     private int $todoItemId;
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, length: 65535, nullable: true)]
     private ?array $extras = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]

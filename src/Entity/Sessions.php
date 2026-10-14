@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'sessions')]
 class Sessions
 {
-    #[ORM\Column(name: 'sess_id', type: Types::BINARY)]
+    #[ORM\Column(name: 'sess_id', type: Types::BINARY, length: 128)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private ?string $sessId = null;

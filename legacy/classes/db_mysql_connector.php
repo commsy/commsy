@@ -32,7 +32,7 @@ class db_mysql_connector
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    public function performQuery($query, array $params = []): Result|array|string
+    public function performQuery($query, array $params = []): Result|array
     {
         $this->resetErrors();
 
@@ -45,28 +45,27 @@ class db_mysql_connector
 
             if ('SELECT' === mb_substr(trim((string) $query), 0, 6) || 'SHOW' === mb_substr(trim((string) $query), 0, 4)) {
                 return $result->fetchAllAssociative();
-            } elseif ('INSERT' === mb_substr(trim((string) $query), 0, 6)) {
-                if (strstr((string) $query, 'INSERT INTO item_link_file')
-                    || strstr((string) $query, 'INSERT INTO external2commsy_id')
-                    || strstr((string) $query, 'INSERT INTO links')
-                    || strstr((string) $query, 'INSERT INTO link_modifier_item')
-                    || strstr((string) $query, 'INSERT INTO materials')
-                    || strstr((string) $query, 'INSERT INTO noticed')
-                    || strstr((string) $query, 'INSERT INTO reader')
-                    || strstr((string) $query, 'INSERT INTO section')) {
-                    return $result;
-                } else {
-                    return $this->connection->lastInsertId();
-                }
-            } else {
-                return $result;
             }
+
+            return $result;
         } catch (\Doctrine\DBAL\Exception $e) {
             $this->dbErrorCode = $e->getCode();
             $this->dbError = $e->getMessage();
 
             throw $e;
         }
+    }
+
+    /**
+     * Runs an INSERT into a table with an auto-increment key and returns the new id.
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function performInsert(string $query): int|string
+    {
+        $this->performQuery($query);
+
+        return $this->connection->lastInsertId();
     }
 
     public function getConnection(): Connection

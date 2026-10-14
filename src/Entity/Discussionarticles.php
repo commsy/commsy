@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use App\Utils\EntityUsersTrait;
 use DateTime;
 use DateTimeInterface;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\DBAL\Types\Types;
 use App\Export\ExportableEntry;
 use App\Repository\DiscussionarticlesRepository;
@@ -76,7 +77,7 @@ class Discussionarticles implements ExportableEntry
     )]
     private string $position = '1';
 
-    #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]
+    #[ORM\Column(name: 'extras', type: PhpArrayType::NAME, length: 65535, nullable: true)]
     private ?array $extras = null;
 
     /**

@@ -14,6 +14,7 @@
 namespace App\Entity;
 
 use App\Enum\AddAccountSetting;
+use App\Doctrine\Type\PhpArrayType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -51,7 +52,7 @@ class AuthSourceShibboleth extends AuthSource
     #[Assert\Length(max: 50)]
     private ?string $mappingEmail = null;
 
-    #[ORM\Column(type: Types::ARRAY, name: 'identity_provider')]
+    #[ORM\Column(type: PhpArrayType::NAME, name: 'identity_provider')]
     private ?Collection $identityProviders;
 
     protected string $type = 'shib';

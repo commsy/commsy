@@ -1210,7 +1210,7 @@ class cs_manager
               'context_id="'.\App\Legacy\SqlStringEscaper::escape($context_id).'",'.
               'modification_date="'.\App\Legacy\SqlStringEscaper::escape($date).'",'.
               'type="'.$type.'"';
-       $result = $this->_db_connector->performQuery($query);
+       $result = $this->_db_connector->performInsert($query);
        if (!isset($result)) {
            trigger_error('Problem creating item.', E_USER_ERROR);
        } else {

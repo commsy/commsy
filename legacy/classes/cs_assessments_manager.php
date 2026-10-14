@@ -236,7 +236,7 @@ class cs_assessments_manager extends cs_manager
 	 			modification_date = "'.\App\Utils\MysqlDateTime::now().'",
 	 			type = "'.\App\Legacy\SqlStringEscaper::escape($assessments_item->getItemType()).'"
 	 	';
-            $result = $this->_db_connector->performQuery($query);
+            $result = $this->_db_connector->performInsert($query);
             if (!isset($result)) {
                 trigger_error('Problems creating assessment from query: "'.$query.'"', E_USER_WARNING);
                 $this->_create_id = null;

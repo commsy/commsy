@@ -398,7 +398,7 @@ class cs_project_manager extends cs_room2_manager
                'context_id="'.\App\Legacy\SqlStringEscaper::escape($item->getContextID()).'",'.
                'modification_date="'.\App\Utils\MysqlDateTime::now().'",'.
                'type="'.\App\Legacy\SqlStringEscaper::escape($this->_room_type).'"';
-      $result = $this->_db_connector->performQuery($query);
+      $result = $this->_db_connector->performInsert($query);
       if (!isset($result)) {
           trigger_error('Problems creating '.$this->_db_table.' item from query: "'.$query.'"', E_USER_WARNING);
           $this->_create_id = null;
