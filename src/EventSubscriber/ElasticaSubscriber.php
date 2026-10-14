@@ -19,32 +19,25 @@ use App\Item\ItemType;
 use App\Message\ReindexItem;
 use App\Message\RemoveItemFromIndex;
 use App\Search\ItemIndexer;
-use App\Room\RoomType;
-use App\Rubric\RubricType;
 use App\Services\LegacyEnvironment;
 use App\Utils\ItemService;
 use cs_environment;
+use cs_discussion_item;
 use cs_file_item;
-use cs_list;
+use cs_item;
+use cs_material_item;
 use cs_project_item;
-use Elastica\Exception\NotFoundException;
-use Elastica\Exception\ResponseException;
+use cs_todo_item;
 use Elastica\Pipeline;
 use Elastica\Processor\AttachmentProcessor;
 use Elastica\Processor\ForeachProcessor;
-use Elastica\Processor\RemoveProcessor;
-use Elastica\Request;
 use FOS\ElasticaBundle\Event\PostIndexResetEvent;
 use FOS\ElasticaBundle\Event\PostTransformEvent;
 use FOS\ElasticaBundle\Index\IndexManager;
-use FOS\ElasticaBundle\Persister\PersisterRegistry;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Psr\Cache\InvalidArgumentException;
 use ReflectionClass;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mime\MimeTypes;
 
@@ -59,7 +52,8 @@ class ElasticaSubscriber implements EventSubscriberInterface
         LegacyEnvironment $legacyEnvironment,
         private readonly ItemService $itemService,
         private readonly IndexManager $indexManager,
-        private readonly ParameterBagInterface $parameterBag,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
         private readonly ItemIndexer $itemIndexer,
         private readonly MessageBusInterface $messageBus,
     ) {
@@ -106,49 +100,32 @@ class ElasticaSubscriber implements EventSubscriberInterface
         $this->messageBus->dispatch(new RemoveItemFromIndex((int) $item->getItemID(), $item->getItemType()));
     }
 
+    /**
+     * Writes the attachment pipeline on every index reset, so a changed definition
+     * reaches existing installations too. Putting a pipeline is idempotent.
+     *
+     * Tika reads the base64 data of each attachment; only the extracted text is kept.
+     */
     public function prepareIngestPipeline(PostIndexResetEvent $event): void
     {
         $index = $this->indexManager->getIndex($event->getIndex());
+
+        $attachmentProcessor = new AttachmentProcessor('_ingest._value.data');
+        $attachmentProcessor->setTargetField('_ingest._value.attachment');
+        $attachmentProcessor->setProperties(['content']);
+        $attachmentProcessor->setIndexedChars(self::ATTACHMENT_INDEXED_CHARS);
+        $attachmentProcessor->setParam('remove_binary', true);
+        // files indexed by name only carry no data
+        $attachmentProcessor->setIgnoreMissing(true);
+
+        $foreachAttachmentProcessor = new ForeachProcessor('attachments', $attachmentProcessor);
+        $foreachAttachmentProcessor->setIgnoreMissing(true);
+
         $pipeline = new Pipeline($index->getClient());
-
-        $attachmentPipelineId = 'attachment';
-
-        $response = $pipeline->getPipeline($attachmentPipelineId);
-        if (404 === $response->getStatus()) {
-            $pipeline->setId($attachmentPipelineId);
-            $pipeline->setDescription('Pipeline for attachments');
-
-            $attachmentProcessor = new AttachmentProcessor('_ingest._value.data');
-            $attachmentProcessor->setTargetField('_ingest._value.attachment');
-            $foreachAttachmentProcessor = new ForeachProcessor('attachments', $attachmentProcessor);
-            $foreachAttachmentProcessor->setIgnoreMissing(true);
-//            $pipeline->addProcessor($foreachAttachmentProcessor);
-
-            $removeProcessor = new RemoveProcessor('_ingest._value.data');
-            $foreachRemoveProcessor = new ForeachProcessor('attachments', $removeProcessor);
-            $foreachRemoveProcessor->setIgnoreMissing(true);
-//            $pipeline->addProcessor($foreachRemoveProcessor);
-
-            /*
-             * TODO: This is a workaround (see https://github.com/ruflin/Elastica/issues/1810), because ruflin/elastica
-             * does not support creating multiple processors with the same name yet. It will override the previously
-             * added processors.
-             */
-            $pipelineDefinition = [
-                'description' => 'Pipeline for attachments',
-                'processors' => [
-                    $foreachAttachmentProcessor->toArray(),
-                    $foreachRemoveProcessor->toArray(),
-                ],
-            ];
-            $index->getClient()->request(
-                "_ingest/pipeline/$attachmentPipelineId",
-                Request::PUT,
-                json_encode($pipelineDefinition)
-            );
-
-//            $pipeline->create();
-        }
+        $pipeline->setId('attachment');
+        $pipeline->setDescription('Pipeline for attachments');
+        $pipeline->addProcessor($foreachAttachmentProcessor);
+        $pipeline->create();
     }
 
     /**
@@ -316,69 +293,96 @@ class ElasticaSubscriber implements EventSubscriberInterface
         }
     }
 
+    /**
+     * Indexes the files of the entry together with those of its sub-entries
+     * (discussion articles, todo steps, material sections): a hit lands on the
+     * entry either way, so they share its `attachments` field.
+     */
     private function addAttachments(PostTransformEvent $event): void
     {
         $item = $this->itemService->getTypedItem($event->getObject()->getItemId());
+        if (!$item) {
+            return;
+        }
 
-        if ($item) {
-            $files = $item->getFileList();
-            $filesBase64 = $this->getBase64ContentofAllFiles($files);
-
-            if (!empty($filesBase64)) {
-                $event->getDocument()->set('attachments', $filesBase64);
+        $attachments = [];
+        foreach ([$item, ...$this->subEntriesOf($item)] as $entry) {
+            foreach ($entry->getFileList() as $file) {
+                /** @var cs_file_item $file */
+                $attachment = $this->attachmentOf($file);
+                if (null !== $attachment) {
+                    // a file linked to the entry and to a sub-entry is indexed once
+                    $attachments[$file->getFileID()] = $attachment;
+                }
             }
+        }
+
+        if ([] !== $attachments) {
+            $event->getDocument()->set('attachments', array_values($attachments));
         }
     }
 
-    private function getBase64ContentofAllFiles(cs_list $files): array
+    /**
+     * The sub-entries whose text is indexed with the entry, by the same rules.
+     *
+     * @return cs_item[]
+     */
+    private function subEntriesOf(cs_item $item): array
     {
-        $filesBase64 = [];
+        $subEntries = match (true) {
+            $item instanceof cs_discussion_item => $item->getAllArticles(),
+            // the CLI populate has no context set, which the step list needs
+            $item instanceof cs_todo_item => $this->setLegacyContext($item->getContextID())
+                ? $item->getStepItemList()
+                : null,
+            $item instanceof cs_material_item => $item->getSectionList(),
+            default => null,
+        };
 
-        foreach ($files as $legacyFile) {
-            /** @var cs_file_item $legacyFile */
-            if (!$legacyFile->isDeleted()) {
-                $fileInfo = pathinfo($this->parameterBag->get('kernel.project_dir').'/'.$legacyFile->getFilepath());
-                $dirname = $fileInfo['dirname'];
-                $basename = $fileInfo['basename'];
-
-                if (!file_exists($dirname.'/'.$basename)) {
-                    continue;
-                }
-
-                $finder = new Finder();
-                $finder
-                    ->files()
-                    ->size('<= 25M')
-                    ->name($fileInfo['basename'])
-                    ->in($fileInfo['dirname']);
-
-                if ($finder->hasResults()) {
-                    $results = iterator_to_array($finder);
-                    /** @var SplFileInfo $splFile */
-                    $splFile = current($results);
-
-                    // If the file has a whitelisted mime-type index the content, otherwise just the filename
-                    $mimeTypes = new MimeTypes();
-                    $mimeType = $mimeTypes->guessMimeType($splFile->getPathname());
-
-                    $indexInfo = [
-                        'filename' => $legacyFile->getFileName(),
-                        'filename_no_ext' => pathinfo((string) $legacyFile->getFileName(), PATHINFO_FILENAME),
-                        'data' => '',
-                    ];
-                    if (in_array($mimeType, self::VALID_MIMES)) {
-                        $content = base64_encode($splFile->getContents());
-                        if (!empty($content)) {
-                            $indexInfo['data'] = $content;
-                        }
-                    }
-
-                    $filesBase64[] = $indexInfo;
-                }
+        $result = [];
+        foreach ($subEntries ?? [] as $subEntry) {
+            if (!$subEntry->isDeleted() && !$subEntry->isDraft()) {
+                $result[] = $subEntry;
             }
         }
 
-        return $filesBase64;
+        return $result;
+    }
+
+    /**
+     * Every file is findable by its name. Its content goes along, base64 encoded
+     * for the attachment pipeline, only for the text-bearing types and sizes Tika
+     * is asked to read.
+     *
+     * @return array{filename: string, filename_no_ext: string, data?: string}|null
+     */
+    private function attachmentOf(cs_file_item $file): ?array
+    {
+        if ($file->isDeleted()) {
+            return null;
+        }
+
+        $path = $this->projectDir.'/'.$file->getFilepath();
+        if (!is_file($path)) {
+            return null;
+        }
+
+        $attachment = [
+            'filename' => (string) $file->getFileName(),
+            'filename_no_ext' => pathinfo((string) $file->getFileName(), PATHINFO_FILENAME),
+        ];
+
+        $size = filesize($path);
+        if (false !== $size && $size > 0 && $size <= self::MAX_CONTENT_FILE_SIZE
+            && in_array(MimeTypes::getDefault()->guessMimeType($path), self::VALID_MIMES, true)
+        ) {
+            $content = file_get_contents($path);
+            if (false !== $content) {
+                $attachment['data'] = base64_encode($content);
+            }
+        }
+
+        return $attachment;
     }
 
     public function addDiscussionArticles($event): void
@@ -393,9 +397,6 @@ class ElasticaSubscriber implements EventSubscriberInterface
 
                 foreach ($articles as $article) {
                     if (!$article->isDeleted() && !$article->isDraft()) {
-//                        $files = $article->getFileList();
-//                        $filesBase64 = $this->getBase64ContentofAllFiles($files);
-
                         $articleContents[] = [
                             'description' => $article->getDescription(),
                         ];
@@ -427,12 +428,9 @@ class ElasticaSubscriber implements EventSubscriberInterface
 
                     foreach ($steps as $step) {
                         if (!$step->isDeleted() && !$step->isDraft()) {
-//                            $files = $step->getFileList();
-//                            $filesBase64 = $this->getBase64ContentofAllFiles($files);
                             $stepContents[] = [
                                 'title' => $step->getTitle(),
                                 'description' => $step->getDescription(),
-//                                'files' => $filesBase64,
                             ];
                         }
                     }
@@ -463,12 +461,9 @@ class ElasticaSubscriber implements EventSubscriberInterface
 
                 foreach ($sections as $section) {
                     if (!$section->isDeleted() && !$section->isDraft()) {
-//                        $files = $section->getFileList();
-//                        $filesBase64 = $this->getBase64ContentofAllFiles($files);
                         $sectionContents[] = [
                             'title' => $section->getTitle(),
                             'description' => $section->getDescription(),
-//                            'files' => $filesBase64,
                         ];
                     }
                 }
@@ -571,6 +566,19 @@ class ElasticaSubscriber implements EventSubscriberInterface
 
         return false;
     }
+
+    /**
+     * Files above this size are indexed by name only. Each one travels base64
+     * encoded, a third larger, inside the indexing request.
+     */
+    private const int MAX_CONTENT_FILE_SIZE = 25 * 1024 * 1024;
+
+    /**
+     * Characters Tika extracts per file; Elasticsearch stops at 100,000 by default,
+     * which leaves most of a long document unsearchable. Extraction runs on the
+     * Elasticsearch heap, so this stays bounded rather than unlimited (-1).
+     */
+    private const int ATTACHMENT_INDEXED_CHARS = 1_000_000;
 
     private const VALID_MIMES = [
         'application/msword',

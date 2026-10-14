@@ -115,12 +115,6 @@
     "eluceo/ical": {
         "version": "0.15.1"
     },
-    "ezimuel/guzzlestreams": {
-        "version": "3.0.1"
-    },
-    "ezimuel/ringphp": {
-        "version": "1.1.2"
-    },
     "ezyang/htmlpurifier": {
         "version": "v4.12.0"
     },
@@ -245,9 +239,6 @@
     "nikic/php-parser": {
         "version": "v4.3.0"
     },
-    "nyholm/dsn": {
-        "version": "2.0.1"
-    },
     "ocramius/package-versions": {
         "version": "1.5.1"
     },
@@ -337,9 +328,6 @@
     },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
-    },
-    "react/promise": {
-        "version": "v2.7.1"
     },
     "ruflin/elastica": {
         "version": "6.1.1"
@@ -586,9 +574,6 @@
         "version": "v1.17.1"
     },
     "symfony/polyfill-mbstring": {
-        "version": "v1.14.0"
-    },
-    "symfony/polyfill-php73": {
         "version": "v1.14.0"
     },
     "symfony/process": {

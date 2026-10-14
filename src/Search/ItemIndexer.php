@@ -21,8 +21,10 @@ use App\Item\TypedEntityResolver;
 use App\Room\RoomType;
 use App\Rubric\RubricType;
 use Doctrine\ORM\EntityManagerInterface;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
-use Elastica\Exception\ResponseException;
+use Elastica\Exception\ClientException;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Persister\PersisterRegistry;
 use InvalidArgumentException;
@@ -145,7 +147,7 @@ readonly class ItemIndexer
 
         try {
             $persister->insertOne($object);
-        } catch (BulkResponseException|ResponseException $e) {
+        } catch (BulkResponseException|ClientResponseException|ClientException $e) {
             // Retrying a document the server rejected would fail exactly the same way,
             // so this one is logged and considered done. Everything else — a connection
             // that dropped, a cluster that is briefly unwell — is left to propagate so
@@ -170,12 +172,12 @@ readonly class ItemIndexer
      * document, or an attachment the ingest pipeline cannot parse. Anything else is
      * treated as worth another attempt.
      */
-    private function isPermanentRejection(BulkResponseException|ResponseException $exception): bool
+    private function isPermanentRejection(BulkResponseException|ClientResponseException|ClientException $exception): bool
     {
         $statuses = [];
 
-        if ($exception instanceof ResponseException) {
-            $statuses[] = $exception->getResponse()->getStatus();
+        if (!$exception instanceof BulkResponseException) {
+            $statuses[] = $this->statusOf($exception);
         } else {
             // Bulk\Response does not pass the per-action status to its parent, so
             // getStatus() is empty there: the status of the individual action lives in
@@ -215,9 +217,9 @@ readonly class ItemIndexer
 
         try {
             $this->indexManager->getIndex($indexName)->deleteById((string) $itemId);
-        } catch (ResponseException $e) {
+        } catch (ClientResponseException|ServerResponseException|ClientException $e) {
             // 404 responses (missing document/index) are not fatal; swallow them.
-            if (404 !== $e->getResponse()->getStatus()) {
+            if (404 !== $this->statusOf($e)) {
                 $this->logger->error('Removing item from the search index failed.', [
                     'itemId' => $itemId,
                     'itemType' => $itemType,
@@ -228,6 +230,18 @@ readonly class ItemIndexer
         } catch (InvalidArgumentException) {
             // IndexManager throws this when the index name is unknown — skip silently.
         }
+    }
+
+    private function statusOf(ClientResponseException|ServerResponseException|ClientException $exception): ?int
+    {
+        // The bundle wraps the codes listed in its http_error_codes.
+        if ($exception instanceof ClientException) {
+            $exception = $exception->getPrevious();
+        }
+
+        return $exception instanceof ClientResponseException || $exception instanceof ServerResponseException
+            ? $exception->getCode()
+            : null;
     }
 
     private function isConfigured(): bool

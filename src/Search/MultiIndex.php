@@ -72,7 +72,7 @@ class MultiIndex extends Index
     public function createSearch($query = '', $options = null, ?BuilderInterface $builder = null): Search
     {
         $search = new Search($this->getClient(), $builder);
-        $search->addIndices($this->getIndices());
+        $search->addIndicesByName($this->getIndices());
         $search->setOptionsAndQuery($options, $query);
 
         return $search;

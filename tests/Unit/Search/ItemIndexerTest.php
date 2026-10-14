@@ -10,6 +10,10 @@ use App\Item\TypedEntityResolver;
 use App\Search\ItemIndexer;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Exception\ServerResponseException;
+use Elastic\Transport\Exception\NoNodeAvailableException;
+use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\PersisterRegistry;
@@ -18,10 +22,7 @@ use PHPUnit\Framework\TestCase;
 use Elastica\Bulk\Response as BulkResponse;
 use Elastica\Bulk\ResponseSet;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
-use Elastica\Exception\ConnectionException;
-use Elastica\Exception\ResponseException;
-use Elastica\Request;
-use Elastica\Response;
+use Elastica\Exception\ClientException;
 use Psr\Log\LoggerInterface;
 
 class ItemIndexerTest extends TestCase
@@ -30,6 +31,7 @@ class ItemIndexerTest extends TestCase
 
     private MockObject $persister;
     private MockObject $logger;
+    private MockObject $index;
 
     public function testWritesTheItemWithoutDeletingItFirst(): void
     {
@@ -88,10 +90,10 @@ class ItemIndexerTest extends TestCase
      */
     public function testLetsATransientFailureThrough(): void
     {
-        $this->persister->method('insertOne')->willThrowException(new ConnectionException('no route'));
+        $this->persister->method('insertOne')->willThrowException(new NoNodeAvailableException('no route'));
         $this->logger->expects(self::never())->method('error');
 
-        $this->expectException(ConnectionException::class);
+        $this->expectException(NoNodeAvailableException::class);
 
         $this->indexer()->reindex(42, self::MATERIAL);
     }
@@ -100,9 +102,43 @@ class ItemIndexerTest extends TestCase
     {
         $this->persister->method('insertOne')->willThrowException($this->rejection(503));
 
-        $this->expectException(ResponseException::class);
+        $this->expectException(ServerResponseException::class);
 
         $this->indexer()->reindex(42, self::MATERIAL);
+    }
+
+    /**
+     * The bundle wraps the codes in its http_error_codes (400, 403) into its own
+     * exception; the status is on the one it wraps.
+     */
+    public function testRecognisesARejectionTheBundleWrapped(): void
+    {
+        $this->persister->method('insertOne')->willThrowException(
+            new ClientException('refused', 0, $this->rejection(400))
+        );
+        $this->logger->expects(self::once())->method('error');
+
+        $this->indexer()->reindex(42, self::MATERIAL);
+    }
+
+    /**
+     * Elastica 9 answers a delete of a document that was never indexed with a 404
+     * exception; that is the common case for drafts and must stay silent.
+     */
+    public function testRemovingADocumentThatIsNotThereIsNoError(): void
+    {
+        $this->index->method('deleteById')->willThrowException($this->rejection(404));
+        $this->logger->expects(self::never())->method('error');
+
+        $this->indexer()->remove(42, self::MATERIAL);
+    }
+
+    public function testLogsAFailedRemoval(): void
+    {
+        $this->index->method('deleteById')->willThrowException($this->rejection(503));
+        $this->logger->expects(self::once())->method('error');
+
+        $this->indexer()->remove(42, self::MATERIAL);
     }
 
     /**
@@ -142,18 +178,19 @@ class ItemIndexerTest extends TestCase
         return $exception;
     }
 
-    private function rejection(int $status): ResponseException
+    private function rejection(int $status): ClientResponseException|ServerResponseException
     {
-        $response = $this->createMock(Response::class);
-        $response->method('getStatus')->willReturn($status);
-
-        return new ResponseException($this->createMock(Request::class), $response);
+        // The client raises these with the HTTP status as code.
+        return $status >= 500
+            ? new ServerResponseException("$status", $status)
+            : new ClientResponseException("$status", $status);
     }
 
     protected function setUp(): void
     {
         $this->persister = $this->createMock(ObjectPersisterInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->index = $this->createMock(Index::class);
     }
 
     private function indexer(
@@ -179,11 +216,14 @@ class ItemIndexerTest extends TestCase
         $registry = $this->createMock(PersisterRegistry::class);
         $registry->method('getPersister')->willReturn($this->persister);
 
+        $indexManager = $this->createMock(IndexManager::class);
+        $indexManager->method('getIndex')->willReturn($this->index);
+
         return new ItemIndexer(
             $entityManager,
             $resolver,
             $registry,
-            $this->createMock(IndexManager::class),
+            $indexManager,
             $this->logger,
             $elasticsearchUrl
         );

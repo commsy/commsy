@@ -17,18 +17,27 @@ services:
       - MYSQL_PASSWORD=commsy
 
   elastic:
-    build: ./docker/elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.5.5
     restart: unless-stopped
     volumes:
-      - elastic_data:/usr/share/elasticsearch/data
+      - elasticsearch_data:/usr/share/elasticsearch/data
     environment:
       - "discovery.type=single-node"
       - "bootstrap.memory_lock=true"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # Reachable only inside the compose network. A cluster of its own enables
+      # security there and passes credentials and CA through ELASTICSEARCH_URL
+      # and ELASTICSEARCH_CA.
+      - "xpack.security.enabled=false"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
 
   php:
     image: commsy/php
@@ -87,5 +96,5 @@ volumes:
   caddy_data:
   caddy_config:
   db_data:
-  elastic_data:
+  elasticsearch_data:
   commsy_data:

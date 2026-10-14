@@ -164,24 +164,3 @@ jobs:
                   tags: ${{ steps.meta_app.outputs.tags }}
                   labels: ${{ steps.meta_app.outputs.labels }}
 
-            # elasticsearch image
-            - name: docker/metadata-action
-              uses: docker/metadata-action@v5
-              id: meta_elastic
-              with:
-                  images: |
-                      effectivewebwork/commsy
-                  tags: |
-                      type=ref,event=branch
-                      type=ref,event=pr
-                      type=semver,pattern={{major}}.{{minor}}
-                  flavor: |
-                      suffix=-elastic,onlatest=true
-
-            - name: Build elasticsearch image and push
-              uses: docker/build-push-action@v6
-              with:
-                  context: ./docker/elasticsearch
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.meta_elastic.outputs.tags }}
-                  labels: ${{ steps.meta_elastic.outputs.labels }}

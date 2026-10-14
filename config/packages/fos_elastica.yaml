@@ -11,7 +11,12 @@
 
 fos_elastica:
     clients:
-        default: { url: '%env(ELASTICSEARCH_URL)%' }
+        default:
+            # Credentials go into the URL (https://user:password@host:9200/).
+            hosts: ['%env(ELASTICSEARCH_URL)%']
+            client_config:
+                # CA certificate of the server, for TLS with a certificate of its own
+                ssl_ca: '%env(default::ELASTICSEARCH_CA)%'
 
     indexes:
         # Announcements
@@ -19,6 +24,10 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_announcement'
             client: default
             finder: ~
+            # The text Tika extracts is searched, never read back: results are
+            # loaded from the database.
+            _source: &attachment_source
+                excludes: ['attachments.attachment.content']
             settings: &index_settings
                 max_ngram_diff: 20
                 analysis:
@@ -54,15 +63,15 @@ fos_elastica:
 
                         stop_de_filter:
                             type: stop
-                            stopword: _german_
+                            stopwords: _german_
 
                         stop_en_filter:
                             type: stop
-                            stopword: _english_
+                            stopwords: _english_
 
                         stemmer_filter:
                             type: stemmer
-                            language: german2
+                            language: german
 
             persistence:
                 driver: orm
@@ -142,12 +151,22 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: object
+                    properties: &attachment_properties
+                        attachment:
+                            # filled in by the attachment ingest pipeline
+                            type: object
+                            properties:
+                                content:
+                                    type: text
+                                    analyzer: commsy_default_analyzer
+                                    search_analyzer: commsy_default_analyzer
 
         # Dates
         commsy_date:
             index_name: '%commsy.elastic.prefix%_date'
             client: default
             finder: ~
+            _source: *attachment_source
             settings: *index_settings
 
             persistence:
@@ -212,12 +231,14 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: object
+                    properties: *attachment_properties
 
         # Discussions
         commsy_discussion:
             index_name: '%commsy.elastic.prefix%_discussion'
             client: default
             finder: ~
+            _source: *attachment_source
             settings: *index_settings
 
             persistence:
@@ -267,6 +288,7 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: object
+                    properties: *attachment_properties
                 hashtags:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
@@ -390,6 +412,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_todo'
             client: default
             finder: ~
+            _source: *attachment_source
             settings: *index_settings
 
             persistence:
@@ -449,6 +472,7 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: object
+                    properties: *attachment_properties
                 hashtags:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
@@ -567,6 +591,7 @@ fos_elastica:
             index_name: '%commsy.elastic.prefix%_material'
             client: default
             finder: ~
+            _source: *attachment_source
             settings: *index_settings
 
             persistence:
@@ -651,3 +676,4 @@ fos_elastica:
                     # resolved by FOSElastica using POST_TRANSFORM
                     property_path: false
                     type: object
+                    properties: *attachment_properties
