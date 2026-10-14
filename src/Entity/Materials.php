@@ -35,6 +35,41 @@ class Materials implements ExportableEntry
     use EntityDatesTrait;
     use EntityUsersTrait;
 
+    /**
+     * The structured citation fields legacy keeps in `extras`, by the name they
+     * carry in the export. The name is the key without its `BIB_` prefix, in
+     * camel case — nothing is invented, so it maps back one to one.
+     *
+     * `author` and `publishing_date` are columns and stand on the material
+     * itself; the kind and the free text are handled apart from these.
+     */
+    private const BIBLIOGRAPHIC_FIELDS = [
+        'address' => 'BIB_ADDRESS',
+        'booktitle' => 'BIB_BOOKTITLE',
+        'documentEditor' => 'BIB_DOCUMENT_EDITOR',
+        'documentMaintainer' => 'BIB_DOCUMENT_MAINTAINER',
+        'documentReleaseDate' => 'BIB_DOCUMENT_RELEASE_DATE',
+        'documentReleaseNumber' => 'BIB_DOCUMENT_RELEASE_NUMBER',
+        'edition' => 'BIB_EDITION',
+        'editor' => 'BIB_EDITOR',
+        'faculty' => 'BIB_FACULTY',
+        'fotoCopyright' => 'BIB_FOTO_COPYRIGHT',
+        'fotoDate' => 'BIB_FOTO_DATE',
+        'fotoReason' => 'BIB_FOTO_REASON',
+        'isbn' => 'BIB_ISBN',
+        'issn' => 'BIB_ISSN',
+        'issue' => 'BIB_ISSUE',
+        'journal' => 'BIB_JOURNAL',
+        'pages' => 'BIB_PAGES',
+        'publisher' => 'BIB_PUBLISHER',
+        'series' => 'BIB_SERIES',
+        'thesisKind' => 'BIB_THESIS_KIND',
+        'university' => 'BIB_UNIVERSITY',
+        'url' => 'BIB_URL',
+        'urlDate' => 'BIB_URL_DATE',
+        'volume' => 'BIB_VOLUME',
+    ];
+
     #[ORM\Id]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
@@ -186,13 +221,18 @@ class Materials implements ExportableEntry
     /**
      * The citation a material carries, if it carries one.
      *
-     * Legacy keeps it in `extras` under two keys: what kind of source it is, and
-     * the citation itself. That is content rather than bookkeeping, so it stands
-     * as a field of its own while the rest of `extras` stays out. The text is
-     * handed on as it is stored, editor markers and all — an export does not
-     * rewrite what the room shows.
+     * Legacy keeps it in `extras`: what kind of source it is, the citation as
+     * free text, and — depending on the kind — a few dozen structured fields. All
+     * of that is content rather than bookkeeping, so it stands as a field of its
+     * own while the rest of `extras` stays out.
      *
-     * @return array{kind: string|null, text: string|null}|null
+     * Every known field that holds something is handed on, whatever the kind:
+     * the interface shows only those of the chosen kind, but the others stay in
+     * the row when the kind is changed, and an importer is better placed to
+     * decide what it needs than the export is. Values are handed on as stored,
+     * editor markers and all — an export does not rewrite what the room shows.
+     *
+     * @return array<string, string|null>|null
      */
     #[Groups(['export'])]
     public function getBibliographic(): ?array
@@ -204,11 +244,17 @@ class Materials implements ExportableEntry
         $kind = in_array($kind, ['', 'none'], true) ? null : $kind;
         $text = '' === $text ? null : $text;
 
-        if (null === $kind && null === $text) {
-            return null;
+        $citation = ['kind' => $kind, 'text' => $text];
+
+        foreach (self::BIBLIOGRAPHIC_FIELDS as $name => $key) {
+            $value = $this->extras[$key] ?? null;
+
+            if (is_string($value) && '' !== trim($value)) {
+                $citation[$name] = $value;
+            }
         }
 
-        return ['kind' => $kind, 'text' => $text];
+        return null === $kind && null === $text && 2 === count($citation) ? null : $citation;
     }
 
     public function setActivationDate(?DateTime $activationDate): self

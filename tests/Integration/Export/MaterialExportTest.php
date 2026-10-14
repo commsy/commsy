@@ -125,11 +125,21 @@ final class MaterialExportTest extends KernelTestCase
     {
         $itemId = $this->createMaterial('Aufsatz');
 
-        $this->setExtras($itemId, ['BIB_KIND' => 'article', 'BIBLIOGRAPHIC' => 'In: Pädagogik 2003 Nr. 1']);
+        $this->setExtras($itemId, [
+            'BIB_KIND' => 'article',
+            'BIBLIOGRAPHIC' => 'In: Pädagogik 2003 Nr. 1',
+            'BIB_JOURNAL' => 'Pädagogik',
+            'BIB_PAGES' => '50 - 51',
+            'BIB_PUBLISHER' => '',
+        ]);
 
         $material = $this->materials()[0];
 
-        $this->assertSame(['kind' => 'article', 'text' => 'In: Pädagogik 2003 Nr. 1'], $material['bibliographic']);
+        // The structured fields travel with it; an empty one does not.
+        $this->assertSame(
+            ['kind' => 'article', 'text' => 'In: Pädagogik 2003 Nr. 1', 'journal' => 'Pädagogik', 'pages' => '50 - 51'],
+            $material['bibliographic']
+        );
         $this->assertArrayNotHasKey('extras', $material);
     }
 
