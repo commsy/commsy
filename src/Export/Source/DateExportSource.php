@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Export\Source;
 
+use App\Entity\Dates;
 use App\Entity\Room;
 use App\Export\ExportableEntry;
 use App\Export\RubricExportSource;
@@ -41,9 +42,19 @@ final readonly class DateExportSource implements RubricExportSource
         return RubricType::Date;
     }
 
+    public function entryClass(): string
+    {
+        return Dates::class;
+    }
+
     public function entriesFor(Room $room): iterable
     {
         return $this->dates->findForExport($room->getItemId());
+    }
+
+    public function find(int $itemId): ?ExportableEntry
+    {
+        return $this->dates->findOneForExport($itemId);
     }
 
     public function subEntriesOf(ExportableEntry $entry): array

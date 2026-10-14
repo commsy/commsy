@@ -20,6 +20,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\Parameter;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -62,6 +63,28 @@ class LabelRepository extends ServiceEntityRepository
      */
     public function findForExport(int $contextId): array
     {
+        return $this->exportable()
+            ->andWhere('l.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->orderBy('l.itemId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * One label by id, on the same terms as {@see self::findForExport()}.
+     */
+    public function findOneForExport(int $itemId): ?Labels
+    {
+        return $this->exportable()
+            ->andWhere('l.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function exportable(): QueryBuilder
+    {
         $types = array_map(
             static fn (LabelType $type): string => $type->value,
             array_filter(LabelType::cases(), static fn (LabelType $type): bool => LabelType::Buzzword !== $type)
@@ -69,18 +92,13 @@ class LabelRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('l')
             ->join(Items::class, 'i', Join::WITH, 'i.itemId = l.itemId')
-            ->andWhere('l.contextId = :contextId')
             ->andWhere('l.type IN (:types)')
             ->andWhere('l.deleter IS NULL')
             ->andWhere('l.deletionDate IS NULL')
             ->andWhere('i.draft = false')
             ->andWhere('i.deleterId IS NULL')
             ->andWhere('i.deletionDate IS NULL')
-            ->setParameter('contextId', $contextId)
-            ->setParameter('types', $types)
-            ->orderBy('l.itemId', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->setParameter('types', $types);
     }
 
     public function findLabelsByContextIdAndNameAndType($contextId, $name, $type)

@@ -19,6 +19,7 @@ use App\Entity\Items;
 use App\Entity\Todos;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,17 +42,34 @@ class TodosRepository extends ServiceEntityRepository
      */
     public function findForExport(int $contextId): array
     {
-        return $this->createQueryBuilder('t')
-            ->join(Items::class, 'i', Join::WITH, 'i.itemId = t.itemId')
+        return $this->exportable()
             ->andWhere('t.contextId = :contextId')
-            ->andWhere('t.deleter IS NULL')
-            ->andWhere('t.deletionDate IS NULL')
-            ->andWhere('i.draft = false')
-            ->andWhere('i.deleterId IS NULL')
-            ->andWhere('i.deletionDate IS NULL')
             ->setParameter('contextId', $contextId)
             ->orderBy('t.itemId', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * One entry by id, on the same terms as {@see self::findForExport()}.
+     */
+    public function findOneForExport(int $itemId): ?Todos
+    {
+        return $this->exportable()
+            ->andWhere('t.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function exportable(): QueryBuilder
+    {
+        return $this->createQueryBuilder('t')
+            ->join(Items::class, 'i', Join::WITH, 'i.itemId = t.itemId')
+            ->andWhere('t.deleter IS NULL')
+            ->andWhere('t.deletionDate IS NULL')
+            ->andWhere('i.draft = false')
+            ->andWhere('i.deleterId IS NULL')
+            ->andWhere('i.deletionDate IS NULL');
     }
 }

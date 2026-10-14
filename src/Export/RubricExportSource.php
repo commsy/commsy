@@ -20,11 +20,12 @@ use App\Rubric\RubricType;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
- * Hands the export the entries of exactly one rubric.
+ * Hands the export and the REST interface the entries of exactly one rubric.
  *
- * A rubric joins the export by being here; the document builder knows none of
- * them by name. What belongs in an export — no deleted entries, no drafts — is
- * each source's own business, because only it knows how its rubric stores that.
+ * A rubric joins by being here; neither the document builder nor the interface's
+ * provider knows any of them by name. What belongs — no deleted entries, no
+ * drafts — is each source's own business, because only it knows how its rubric
+ * stores that.
  */
 #[AutoconfigureTag('app.export.rubric_source')]
 interface RubricExportSource
@@ -37,10 +38,24 @@ interface RubricExportSource
     public function rubric(): RubricType;
 
     /**
+     * The entity this rubric's entries are, which is how an entry finds its
+     * source again.
+     *
+     * @return class-string<ExportableEntry>
+     */
+    public function entryClass(): string;
+
+    /**
      * @return iterable<ExportableEntry> in a fixed order, so two exports of an
      *                                   unchanged room can be compared
      */
     public function entriesFor(Room $room): iterable;
+
+    /**
+     * One entry by id, or null where {@see self::entriesFor()} would not list
+     * it: unknown, deleted, a draft.
+     */
+    public function find(int $itemId): ?ExportableEntry;
 
     /**
      * The entries that hang under this one — a material's sections, a comment

@@ -58,6 +58,29 @@ class MaterialsRepository extends ServiceEntityRepository
      */
     public function findForExport(int $contextId): array
     {
+        return $this->exportable()
+            ->andWhere('m.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->orderBy('m.itemId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * One material by id, at the version the room shows, on the same terms as
+     * {@see self::findForExport()}.
+     */
+    public function findOneForExport(int $itemId): ?Materials
+    {
+        return $this->exportable()
+            ->andWhere('m.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function exportable(): QueryBuilder
+    {
         return $this->createQueryBuilder('m')
             ->leftJoin(
                 Materials::class,
@@ -67,16 +90,11 @@ class MaterialsRepository extends ServiceEntityRepository
             )
             ->join(Items::class, 'i', Expr\Join::WITH, 'i.itemId = m.itemId')
             ->where('newer.itemId IS NULL')
-            ->andWhere('m.contextId = :contextId')
             ->andWhere('m.deleter IS NULL')
             ->andWhere('m.deletionDate IS NULL')
             ->andWhere('i.draft = false')
             ->andWhere('i.deleterId IS NULL')
-            ->andWhere('i.deletionDate IS NULL')
-            ->setParameter('contextId', $contextId)
-            ->orderBy('m.itemId', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->andWhere('i.deletionDate IS NULL');
     }
 
     /**

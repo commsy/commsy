@@ -40,9 +40,19 @@ final readonly class TodoExportSource implements RubricExportSource
         return RubricType::Todo;
     }
 
+    public function entryClass(): string
+    {
+        return Todos::class;
+    }
+
     public function entriesFor(Room $room): iterable
     {
         return $this->todos->findForExport($room->getItemId());
+    }
+
+    public function find(int $itemId): ?ExportableEntry
+    {
+        return $this->todos->findOneForExport($itemId);
     }
 
     /**

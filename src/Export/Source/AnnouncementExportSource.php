@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Export\Source;
 
+use App\Entity\Announcement;
 use App\Entity\Room;
 use App\Export\ExportableEntry;
 use App\Export\RubricExportSource;
@@ -40,9 +41,19 @@ final readonly class AnnouncementExportSource implements RubricExportSource
         return RubricType::Announcement;
     }
 
+    public function entryClass(): string
+    {
+        return Announcement::class;
+    }
+
     public function entriesFor(Room $room): iterable
     {
         return $this->announcements->findForExport($room->getItemId());
+    }
+
+    public function find(int $itemId): ?ExportableEntry
+    {
+        return $this->announcements->findOneForExport($itemId);
     }
 
     public function subEntriesOf(ExportableEntry $entry): array

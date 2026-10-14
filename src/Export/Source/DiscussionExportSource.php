@@ -40,9 +40,19 @@ final readonly class DiscussionExportSource implements RubricExportSource
         return RubricType::Discussion;
     }
 
+    public function entryClass(): string
+    {
+        return Discussions::class;
+    }
+
     public function entriesFor(Room $room): iterable
     {
         return $this->discussions->findForExport($room->getItemId());
+    }
+
+    public function find(int $itemId): ?ExportableEntry
+    {
+        return $this->discussions->findOneForExport($itemId);
     }
 
     /**

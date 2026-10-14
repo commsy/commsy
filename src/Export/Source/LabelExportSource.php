@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace App\Export\Source;
 
+use App\Entity\Labels;
 use App\Entity\Room;
 use App\Export\ExportableEntry;
 use App\Export\RubricExportSource;
@@ -41,9 +42,19 @@ final readonly class LabelExportSource implements RubricExportSource
         return RubricType::Label;
     }
 
+    public function entryClass(): string
+    {
+        return Labels::class;
+    }
+
     public function entriesFor(Room $room): iterable
     {
         return $this->labels->findForExport($room->getItemId());
+    }
+
+    public function find(int $itemId): ?ExportableEntry
+    {
+        return $this->labels->findOneForExport($itemId);
     }
 
     public function subEntriesOf(ExportableEntry $entry): array

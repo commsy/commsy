@@ -17,6 +17,7 @@ use App\Entity\Announcement;
 use App\Entity\Items;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,18 +42,35 @@ class AnnouncementRepository extends ServiceEntityRepository
      */
     public function findForExport(int $contextId): array
     {
-        return $this->createQueryBuilder('a')
-            ->join(Items::class, 'i', Join::WITH, 'i.itemId = a.itemId')
+        return $this->exportable()
             ->andWhere('a.contextId = :contextId')
-            ->andWhere('a.deleter IS NULL')
-            ->andWhere('a.deletionDate IS NULL')
-            ->andWhere('i.draft = false')
-            ->andWhere('i.deleterId IS NULL')
-            ->andWhere('i.deletionDate IS NULL')
             ->setParameter('contextId', $contextId)
             ->orderBy('a.itemId', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * One entry by id, on the same terms as {@see self::findForExport()}.
+     */
+    public function findOneForExport(int $itemId): ?Announcement
+    {
+        return $this->exportable()
+            ->andWhere('a.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function exportable(): QueryBuilder
+    {
+        return $this->createQueryBuilder('a')
+            ->join(Items::class, 'i', Join::WITH, 'i.itemId = a.itemId')
+            ->andWhere('a.deleter IS NULL')
+            ->andWhere('a.deletionDate IS NULL')
+            ->andWhere('i.draft = false')
+            ->andWhere('i.deleterId IS NULL')
+            ->andWhere('i.deletionDate IS NULL');
     }
 
     /**
