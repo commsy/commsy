@@ -24,6 +24,7 @@ use App\Repository\LabelRepository;
 use App\Repository\LicenseRepository;
 use App\Repository\TagRepository;
 use App\Rubric\Todo\TodoStatus;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -40,6 +41,9 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  * Decorates rather than replaces — the room's own fields still come from the
  * object normalizer, which this hands back to once per object.
  */
+// Not shared: whichever serializer it is given to points it back at itself, and
+// the export and the interface each need it pointing at their own chain.
+#[Autoconfigure(shared: false)]
 final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;

@@ -14,8 +14,10 @@ namespace Tests\Integration\Export;
 
 use App\Entity\User;
 use App\Export\ExportSerializer;
+use App\Repository\AnnouncementRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Tests\Factory\AnnouncementFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
@@ -77,5 +79,32 @@ final class ExportSerializerTest extends KernelTestCase
             self::getContainer()->get(ExportSerializer::class),
             'the export must not be routed through the interface serializer'
         );
+    }
+
+    /**
+     * The decorating normalizers stand in the application's chain as well, and a
+     * Serializer points the normalizers it is given back at itself. Without a
+     * chain of their own, whichever serializer was built last would own them and
+     * the export would run through the interface's chain — sub-entries added
+     * twice, and which fields come out decided by the resource's own group.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testItKeepsItsOwnChainOnceTheApplicationSerializerIsBuilt(): void
+    {
+        self::bootKernel();
+
+        $exportSerializer = self::getContainer()->get(ExportSerializer::class);
+        self::getContainer()->get('serializer');
+
+        $itemId = AnnouncementFactory::createOne([
+            'room' => RoomWithMemberStory::get('room'),
+            'creator' => RoomWithMemberStory::get('roomUser'),
+        ])->getItemId();
+        $announcement = self::getContainer()->get(AnnouncementRepository::class)->findOneForExport($itemId);
+
+        $normalized = $exportSerializer->toArray($announcement);
+
+        $this->assertArrayHasKey('categories', $normalized, 'its own decorator still ran');
+        $this->assertArrayNotHasKey('annotations', $normalized, 'sub-entries are the builder\'s business here');
     }
 }

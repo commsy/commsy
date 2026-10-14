@@ -13,7 +13,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Export\ExportableEntry;
+use App\State\RubricEntryProvider;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use DateTime;
@@ -29,6 +34,20 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Table(name: 'announcement')]
 #[ORM\Index(columns: ['context_id'], name: 'context_id')]
 #[ORM\Index(columns: ['creator_id'], name: 'creator_id')]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/rooms/{roomId}/announcements',
+            uriVariables: ['roomId' => new Link(fromClass: Room::class, identifiers: ['itemId'])],
+        ),
+        new Get(uriTemplate: '/announcements/{itemId}'),
+    ],
+    // The export's field list and shape: the interface hands out what the export
+    // carries, a null included.
+    normalizationContext: ['groups' => ['export'], 'skip_null_values' => false],
+    security: "is_granted('ROLE_API_READ')",
+    provider: RubricEntryProvider::class,
+)]
 class Announcement implements ExportableEntry
 {
     use EntityDatesTrait;

@@ -40,7 +40,8 @@ use Symfony\Component\Serializer\Serializer;
  * Wraps a Serializer rather than implementing NormalizerInterface, so
  * autoconfiguration cannot tag it into the application's own chain. Inner
  * normalizers are built here because a Serializer overwrites their
- * setSerializer() back-reference.
+ * setSerializer() back-reference; the decorators injected are not shared for
+ * the same reason.
  */
 final readonly class ExportSerializer
 {

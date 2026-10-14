@@ -19,6 +19,7 @@ use App\Export\ExportableEntry;
 use App\Repository\ItemLinkFileRepository;
 use App\Repository\LinkItemsRepository;
 use App\Repository\LinksRepository;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -35,6 +36,9 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  * Attachments are referenced by id as well; what they are called and where they
  * sit in the archive stands once in the document.
  */
+// Not shared: whichever serializer it is given to points it back at itself, and
+// the export and the interface each need it pointing at their own chain.
+#[Autoconfigure(shared: false)]
 final class EntryReferencesNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;

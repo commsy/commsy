@@ -20,6 +20,7 @@ use App\Item\ItemType;
 use App\Repository\LinkItemsRepository;
 use App\Repository\UserRepository;
 use App\Rubric\Label\LabelType;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -34,6 +35,9 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  * The people are rendered as they are anywhere else in the document, which is
  * what keeps an export from showing an address the room hides.
  */
+// Not shared: whichever serializer it is given to points it back at itself, and
+// the export and the interface each need it pointing at their own chain.
+#[Autoconfigure(shared: false)]
 final class LabelMembersNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;

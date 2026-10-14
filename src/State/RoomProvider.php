@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
+use App\Room\RoomType;
 use Override;
 
 /**
@@ -25,6 +26,12 @@ use Override;
  */
 readonly class RoomProvider implements ProviderInterface
 {
+    /**
+     * The rooms the interface knows. Anything else — private rooms, user rooms —
+     * answers 404, and so must whatever hangs under a room.
+     */
+    public const ROOM_TYPES = [RoomType::Project, RoomType::Community, RoomType::GroupRoom];
+
     public function __construct(
         private RoomRepository $roomRepository
     ) {
@@ -34,12 +41,12 @@ readonly class RoomProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         if ($operation instanceof CollectionOperationInterface) {
-            return $this->roomRepository->findBy(['type' => ['project', 'community', 'grouproom']]);
+            return $this->roomRepository->findBy(['type' => self::ROOM_TYPES]);
         }
 
         return $this->roomRepository->findOneBy([
             'itemId' => $uriVariables['itemId'],
-            'type' => ['project', 'community', 'grouproom'],
+            'type' => self::ROOM_TYPES,
         ]);
     }
 }
