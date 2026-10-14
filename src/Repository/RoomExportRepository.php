@@ -116,6 +116,22 @@ class RoomExportRepository extends ServiceEntityRepository
     }
 
     /**
+     * Removes the exports requested before the given time, whatever became of
+     * them. Not per room: this is housekeeping for all of them.
+     *
+     * @return int number of rows deleted
+     */
+    public function removeRequestedBefore(DateTimeImmutable $before): int
+    {
+        return (int) $this->createQueryBuilder('e')
+            ->delete()
+            ->andWhere('e.requestedAt < :before')
+            ->setParameter('before', $before)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
      * @return RoomExport[] newest first; a room has a handful of these at most
      */
     private function findInProgressFor(Room $room): array
