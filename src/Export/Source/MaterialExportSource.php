@@ -49,9 +49,14 @@ final readonly class MaterialExportSource implements RubricExportSource
         return Materials::class;
     }
 
-    public function entriesFor(Room $room): iterable
+    public function entriesFor(Room $room, int $offset = 0, ?int $limit = null): iterable
     {
-        return $this->materials->findForExport($room->getItemId());
+        return $this->materials->findForExport($room->getItemId(), $offset, $limit);
+    }
+
+    public function countFor(Room $room): int
+    {
+        return $this->materials->countForExport($room->getItemId());
     }
 
     public function find(int $itemId): ?ExportableEntry

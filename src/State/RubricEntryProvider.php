@@ -17,10 +17,13 @@ namespace App\State;
 
 use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\Pagination\Pagination;
+use ApiPlatform\State\Pagination\TraversablePaginator;
 use ApiPlatform\State\ProviderInterface;
 use App\Export\ExportableEntry;
 use App\Export\RubricExportSource;
 use App\Repository\RoomRepository;
+use ArrayIterator;
 use LogicException;
 use Override;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -32,10 +35,23 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * and a rubric that joins the export is ready for the interface by declaring a
  * resource.
  *
+ * A list is always a page: the database reads only the window asked for, and
+ * the total says how many pages there are.
+ *
  * @implements ProviderInterface<ExportableEntry>
  */
 readonly class RubricEntryProvider implements ProviderInterface
 {
+    /**
+     * A page unless the client asks for another size.
+     */
+    public const ITEMS_PER_PAGE = 30;
+
+    /**
+     * The most a client may ask for at once.
+     */
+    public const MAXIMUM_ITEMS_PER_PAGE = 100;
+
     /**
      * @param iterable<RubricExportSource> $sources
      */
@@ -43,6 +59,7 @@ readonly class RubricEntryProvider implements ProviderInterface
         #[AutowireIterator('app.export.rubric_source')]
         private iterable $sources,
         private RoomRepository $rooms,
+        private Pagination $pagination,
     ) {
     }
 
@@ -64,7 +81,15 @@ readonly class RubricEntryProvider implements ProviderInterface
             throw new NotFoundHttpException('Room not found.');
         }
 
-        return [...$source->entriesFor($room)];
+        $offset = $this->pagination->getOffset($operation, $context);
+        $limit = $this->pagination->getLimit($operation, $context);
+
+        return new TraversablePaginator(
+            new ArrayIterator([...$source->entriesFor($room, $offset, $limit)]),
+            $this->pagination->getPage($context),
+            $limit,
+            $source->countFor($room),
+        );
     }
 
     private function sourceFor(?string $class): RubricExportSource

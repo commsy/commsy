@@ -40,16 +40,31 @@ class DatesRepository extends ServiceEntityRepository
      * regardless of `date_mode` (see cs_dates_manager::setWithoutDateModeLimit),
      * and an export should show no less and no more.
      *
-     * @return Dates[] oldest first
+     * @return Dates[] oldest first, a window of them if $limit is given
      */
-    public function findForExport(int $contextId): array
+    public function findForExport(int $contextId, int $offset = 0, ?int $limit = null): array
     {
         return $this->exportable()
             ->andWhere('d.contextId = :contextId')
             ->setParameter('contextId', $contextId)
             ->orderBy('d.itemId', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * How many entries {@see self::findForExport()} holds in all.
+     */
+    public function countForExport(int $contextId): int
+    {
+        return (int) $this->exportable()
+            ->select('COUNT(d.itemId)')
+            ->andWhere('d.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

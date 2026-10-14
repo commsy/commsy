@@ -38,16 +38,31 @@ class TodosRepository extends ServiceEntityRepository
      * Deleted entries and drafts stay out, the draft flag being a column on
      * `items` rather than on the rubric.
      *
-     * @return Todos[] oldest first
+     * @return Todos[] oldest first, a window of them if $limit is given
      */
-    public function findForExport(int $contextId): array
+    public function findForExport(int $contextId, int $offset = 0, ?int $limit = null): array
     {
         return $this->exportable()
             ->andWhere('t.contextId = :contextId')
             ->setParameter('contextId', $contextId)
             ->orderBy('t.itemId', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * How many entries {@see self::findForExport()} holds in all.
+     */
+    public function countForExport(int $contextId): int
+    {
+        return (int) $this->exportable()
+            ->select('COUNT(t.itemId)')
+            ->andWhere('t.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

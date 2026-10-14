@@ -46,9 +46,14 @@ final readonly class AnnouncementExportSource implements RubricExportSource
         return Announcement::class;
     }
 
-    public function entriesFor(Room $room): iterable
+    public function entriesFor(Room $room, int $offset = 0, ?int $limit = null): iterable
     {
-        return $this->announcements->findForExport($room->getItemId());
+        return $this->announcements->findForExport($room->getItemId(), $offset, $limit);
+    }
+
+    public function countFor(Room $room): int
+    {
+        return $this->announcements->countForExport($room->getItemId());
     }
 
     public function find(int $itemId): ?ExportableEntry

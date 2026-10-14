@@ -59,16 +59,31 @@ class LabelRepository extends ServiceEntityRepository
      * Deleted entries and drafts stay out, the draft flag being a column on
      * `items` rather than on the rubric.
      *
-     * @return Labels[] oldest first
+     * @return Labels[] oldest first, a window of them if $limit is given
      */
-    public function findForExport(int $contextId): array
+    public function findForExport(int $contextId, int $offset = 0, ?int $limit = null): array
     {
         return $this->exportable()
             ->andWhere('l.contextId = :contextId')
             ->setParameter('contextId', $contextId)
             ->orderBy('l.itemId', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * How many entries {@see self::findForExport()} holds in all.
+     */
+    public function countForExport(int $contextId): int
+    {
+        return (int) $this->exportable()
+            ->select('COUNT(l.itemId)')
+            ->andWhere('l.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

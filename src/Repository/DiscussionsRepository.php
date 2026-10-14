@@ -38,16 +38,31 @@ class DiscussionsRepository extends ServiceEntityRepository
      * Deleted entries and drafts stay out, the draft flag being a column on
      * `items` rather than on the rubric.
      *
-     * @return Discussions[] oldest first
+     * @return Discussions[] oldest first, a window of them if $limit is given
      */
-    public function findForExport(int $contextId): array
+    public function findForExport(int $contextId, int $offset = 0, ?int $limit = null): array
     {
         return $this->exportable()
             ->andWhere('d.contextId = :contextId')
             ->setParameter('contextId', $contextId)
             ->orderBy('d.itemId', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * How many entries {@see self::findForExport()} holds in all.
+     */
+    public function countForExport(int $contextId): int
+    {
+        return (int) $this->exportable()
+            ->select('COUNT(d.itemId)')
+            ->andWhere('d.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

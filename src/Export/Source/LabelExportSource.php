@@ -47,9 +47,14 @@ final readonly class LabelExportSource implements RubricExportSource
         return Labels::class;
     }
 
-    public function entriesFor(Room $room): iterable
+    public function entriesFor(Room $room, int $offset = 0, ?int $limit = null): iterable
     {
-        return $this->labels->findForExport($room->getItemId());
+        return $this->labels->findForExport($room->getItemId(), $offset, $limit);
+    }
+
+    public function countFor(Room $room): int
+    {
+        return $this->labels->countForExport($room->getItemId());
     }
 
     public function find(int $itemId): ?ExportableEntry

@@ -16,6 +16,7 @@ use App\Entity\Room;
 use App\Entity\User;
 use App\Export\RoomExportBuilder;
 use App\Services\LegacyEnvironment;
+use App\State\RubricEntryProvider;
 use App\Utils\CategoryService;
 use DateTime;
 use Doctrine\DBAL\Connection;
@@ -202,6 +203,20 @@ final class AnnouncementExportTest extends KernelTestCase
         $this->createAnnouncement('Abgelaufen', enddate: new DateTime('-1 year'));
 
         $this->assertSame(['Abgelaufen'], $this->titles());
+    }
+
+    /**
+     * The interface hands a rubric out a page at a time; the export is never a
+     * page, whatever the largest one the interface allows.
+     */
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testTheExportCarriesMoreThanAPageHolds(): void
+    {
+        for ($i = 0; $i <= RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE; ++$i) {
+            $this->createAnnouncement('Ankündigung '.$i);
+        }
+
+        $this->assertCount(RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE + 1, $this->announcements());
     }
 
     #[WithStory(RoomWithMemberStory::class)]

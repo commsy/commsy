@@ -45,9 +45,14 @@ final readonly class DiscussionExportSource implements RubricExportSource
         return Discussions::class;
     }
 
-    public function entriesFor(Room $room): iterable
+    public function entriesFor(Room $room, int $offset = 0, ?int $limit = null): iterable
     {
-        return $this->discussions->findForExport($room->getItemId());
+        return $this->discussions->findForExport($room->getItemId(), $offset, $limit);
+    }
+
+    public function countFor(Room $room): int
+    {
+        return $this->discussions->countForExport($room->getItemId());
     }
 
     public function find(int $itemId): ?ExportableEntry

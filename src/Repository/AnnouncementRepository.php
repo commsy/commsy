@@ -38,16 +38,31 @@ class AnnouncementRepository extends ServiceEntityRepository
      * than read through a relation: `items` is an index over all rubrics, not a
      * parent of this one.
      *
-     * @return Announcement[] oldest first
+     * @return Announcement[] oldest first, a window of them if $limit is given
      */
-    public function findForExport(int $contextId): array
+    public function findForExport(int $contextId, int $offset = 0, ?int $limit = null): array
     {
         return $this->exportable()
             ->andWhere('a.contextId = :contextId')
             ->setParameter('contextId', $contextId)
             ->orderBy('a.itemId', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * How many entries {@see self::findForExport()} holds in all.
+     */
+    public function countForExport(int $contextId): int
+    {
+        return (int) $this->exportable()
+            ->select('COUNT(a.itemId)')
+            ->andWhere('a.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**

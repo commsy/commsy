@@ -47,6 +47,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
     normalizationContext: ['groups' => ['export'], 'skip_null_values' => false],
     security: "is_granted('ROLE_API_READ')",
     provider: RubricEntryProvider::class,
+    paginationItemsPerPage: RubricEntryProvider::ITEMS_PER_PAGE,
+    paginationMaximumItemsPerPage: RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE,
+    paginationClientItemsPerPage: true,
 )]
 class Announcement implements ExportableEntry
 {

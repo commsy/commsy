@@ -47,9 +47,14 @@ final readonly class DateExportSource implements RubricExportSource
         return Dates::class;
     }
 
-    public function entriesFor(Room $room): iterable
+    public function entriesFor(Room $room, int $offset = 0, ?int $limit = null): iterable
     {
-        return $this->dates->findForExport($room->getItemId());
+        return $this->dates->findForExport($room->getItemId(), $offset, $limit);
+    }
+
+    public function countFor(Room $room): int
+    {
+        return $this->dates->countForExport($room->getItemId());
     }
 
     public function find(int $itemId): ?ExportableEntry

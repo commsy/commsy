@@ -46,10 +46,18 @@ interface RubricExportSource
     public function entryClass(): string;
 
     /**
+     * All of the room's entries, or the window the interface asks for a page.
+     *
      * @return iterable<ExportableEntry> in a fixed order, so two exports of an
-     *                                   unchanged room can be compared
+     *                                   unchanged room can be compared and a
+     *                                   page follows on from the one before
      */
-    public function entriesFor(Room $room): iterable;
+    public function entriesFor(Room $room, int $offset = 0, ?int $limit = null): iterable;
+
+    /**
+     * How many entries {@see self::entriesFor()} holds in all.
+     */
+    public function countFor(Room $room): int;
 
     /**
      * One entry by id, or null where {@see self::entriesFor()} would not list

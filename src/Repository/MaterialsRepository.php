@@ -54,16 +54,31 @@ class MaterialsRepository extends ServiceEntityRepository
      * Deleted entries and drafts stay out, the draft flag being a column on
      * `items` rather than on the rubric.
      *
-     * @return Materials[] oldest first
+     * @return Materials[] oldest first, a window of them if $limit is given
      */
-    public function findForExport(int $contextId): array
+    public function findForExport(int $contextId, int $offset = 0, ?int $limit = null): array
     {
         return $this->exportable()
             ->andWhere('m.contextId = :contextId')
             ->setParameter('contextId', $contextId)
             ->orderBy('m.itemId', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * How many entries {@see self::findForExport()} holds in all.
+     */
+    public function countForExport(int $contextId): int
+    {
+        return (int) $this->exportable()
+            ->select('COUNT(m.itemId)')
+            ->andWhere('m.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
