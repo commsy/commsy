@@ -88,6 +88,31 @@ final readonly class RoomExportBuilder
     }
 
     /**
+     * The shape of an entry in the document's list of files, as JSON Schema —
+     * next to {@see self::fileEntry()}, which builds it.
+     *
+     * @return array<string, mixed>
+     */
+    public static function fileEntrySchema(): array
+    {
+        return [
+            'type' => 'object',
+            'additionalProperties' => false,
+            'required' => ['id', 'name', 'size', 'path'],
+            'properties' => [
+                'id' => ['type' => 'integer', 'description' => 'The file\'s id; entries point at it in their files.'],
+                'name' => ['type' => 'string', 'description' => 'The name it was uploaded under.'],
+                'size' => ['type' => 'integer', 'description' => 'Its size in bytes.'],
+                'path' => [
+                    'type' => ['string', 'null'],
+                    'description' => 'Where it lies in the archive, files/<id>/<name>; null if its content is '
+                        .'missing on the server.',
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Attachments stand once, with the path they have inside the archive.
      * Entries point at them by id.
      *
