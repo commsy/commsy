@@ -150,6 +150,8 @@ final class AccessDeniedPathTest extends AbstractApplicationTestCase
      */
     public function testTheForbiddenPageNamesNothingItRefused(): void
     {
+        $this->answerErrorsLikeProduction();
+
         ['portal' => $portal, 'stranger' => $stranger] = $this->createScenario();
         $portalId = $portal->getId();
 

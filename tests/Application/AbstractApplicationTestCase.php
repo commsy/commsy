@@ -28,6 +28,19 @@ class AbstractApplicationTestCase extends WebTestCase
         $this->client->disableReboot();
     }
 
+    /**
+     * Answers errors the way production does. With debug on, an exception is
+     * rendered as the debug page - trace and source excerpts, the test's own
+     * code included - which is no page to assert on for what a refusal reveals.
+     */
+    protected function answerErrorsLikeProduction(): void
+    {
+        static::ensureKernelShutdown();
+
+        $this->client = static::createClient(['debug' => false]);
+        $this->client->disableReboot();
+    }
+
     protected function loginAsRoot(): void
     {
         // This would be a better solution, but does not work yet

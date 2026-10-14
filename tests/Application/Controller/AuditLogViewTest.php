@@ -85,6 +85,8 @@ final class AuditLogViewTest extends AbstractApplicationTestCase
      */
     public function testAPlainMemberIsRefused(): void
     {
+        $this->answerErrorsLikeProduction();
+
         ['portal' => $portal, 'member' => $member] = $this->createScenario();
         $this->recordEntry($portal, AuditEvent::AccountTakeOver, 'takeover.target', 'Tarek Target');
 
