@@ -20,13 +20,22 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 trait EntityDatesTrait
 {
+    /**
+     * Nullable although every write path fills it: some tables allow NULL here
+     * (a section's or a step's creation date, most rubrics' modification date),
+     * and a row holding it must read as null rather than leave the property
+     * unset, which fails on first access and drops the field from a document.
+     */
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     #[Groups(['api', 'export'])]
-    private DateTime $creationDate;
+    private ?DateTime $creationDate = null;
 
+    /**
+     * Nullable for the same reason as the creation date.
+     */
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE)]
     #[Groups(['api', 'export'])]
-    private DateTime $modificationDate;
+    private ?DateTime $modificationDate = null;
 
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTime $deletionDate = null;
@@ -50,7 +59,7 @@ trait EntityDatesTrait
         return $this;
     }
 
-    public function getCreationDate(): DateTime
+    public function getCreationDate(): ?DateTime
     {
         return $this->creationDate;
     }
@@ -61,7 +70,7 @@ trait EntityDatesTrait
         return $this;
     }
 
-    public function getModificationDate(): DateTime
+    public function getModificationDate(): ?DateTime
     {
         return $this->modificationDate;
     }

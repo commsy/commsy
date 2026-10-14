@@ -77,7 +77,7 @@ class Discussions implements ExportableEntry
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['export'])]
-    private string $description;
+    private ?string $description = null;
 
     #[ORM\Column(name: 'latest_article_item_id', type: Types::INTEGER, nullable: true)]
     private ?int $latestArticleItemId = null;
