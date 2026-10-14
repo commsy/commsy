@@ -65,4 +65,9 @@ final readonly class AnnouncementExportSource implements RubricExportSource
     {
         return $this->annotations->of($entry);
     }
+
+    public function subEntryTypes(): array
+    {
+        return $this->annotations->types();
+    }
 }

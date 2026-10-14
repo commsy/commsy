@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -102,19 +103,25 @@ class Materials implements ExportableEntry
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Id]
     #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The version the room shows; earlier versions are not part of the output.')]
     private int $versionId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
-    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'When the entry becomes visible in the room; null if it is visible right away. '
+            .'Entries not visible yet are part of the export.',
+    )]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
@@ -123,14 +130,20 @@ class Materials implements ExportableEntry
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'As HTML, the way CommSy stores it. For a material written in Etherpad, the content '
+            .'of the pad, which CommSy takes over when the material is saved.',
+    )]
     private ?string $description = null;
 
     #[ORM\Column(name: 'author', type: Types::STRING, length: 200, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Its author or authors, as entered.')]
     private ?string $author = null;
 
     #[ORM\Column(name: 'publishing_date', type: Types::STRING, length: 20, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Year or date of publication, as free text.')]
     private ?string $publishingDate = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
@@ -138,6 +151,7 @@ class Materials implements ExportableEntry
 
     #[ORM\Column(name: 'world_public', type: Types::BOOLEAN, nullable: false)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Whether it is published beyond the room.')]
     private bool $worldPublic = false;
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, nullable: true)]
@@ -151,14 +165,20 @@ class Materials implements ExportableEntry
 
     #[ORM\Column(name: 'workflow_status', type: Types::STRING, length: 255, nullable: false)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'The workflow\'s traffic light as stored: 0_green, 1_yellow, 2_red or 3_none. '
+            .'May be empty.',
+    )]
     private string $workflowStatus = '3_none';
 
     #[ORM\Column(name: 'workflow_resubmission_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'When the workflow asks for it to be looked at again.')]
     private ?DateTimeInterface $workflowResubmissionDate = null;
 
     #[ORM\Column(name: 'workflow_validity_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Until when the workflow considers it valid.')]
     private ?DateTimeInterface $workflowValidityDate = null;
 
     /**
@@ -167,6 +187,7 @@ class Materials implements ExportableEntry
      */
     #[ORM\Column(name: 'license_id', type: Types::INTEGER, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Its licence, as an id into the room\'s licences.')]
     private ?int $licenseId = null;
 
     #[ORM\OneToMany(mappedBy: 'material', targetEntity: 'Section')]
@@ -262,6 +283,46 @@ class Materials implements ExportableEntry
      *
      * @return array<string, string|null>|null
      */
+    #[ApiProperty(schema: [
+        'type' => ['object', 'null'],
+        'description' => 'Its citation; null if none is given. Every structured field that holds something is '
+            .'included, whatever the kind; empty ones are left out. Field names are CommSy\'s keys without their '
+            .'BIB_ prefix.',
+        'additionalProperties' => false,
+        'required' => ['kind', 'text'],
+        'properties' => [
+            'kind' => [
+                'type' => ['string', 'null'],
+                'description' => 'The kind of source as chosen, such as book, article or website. Older rooms hold '
+                    .'kinds the interface no longer offers.',
+            ],
+            'text' => ['type' => ['string', 'null'], 'description' => 'The citation as free text, as HTML.'],
+            'address' => ['type' => 'string'],
+            'booktitle' => ['type' => 'string'],
+            'documentEditor' => ['type' => 'string'],
+            'documentMaintainer' => ['type' => 'string'],
+            'documentReleaseDate' => ['type' => 'string'],
+            'documentReleaseNumber' => ['type' => 'string'],
+            'edition' => ['type' => 'string'],
+            'editor' => ['type' => 'string'],
+            'faculty' => ['type' => 'string'],
+            'fotoCopyright' => ['type' => 'string'],
+            'fotoDate' => ['type' => 'string'],
+            'fotoReason' => ['type' => 'string'],
+            'isbn' => ['type' => 'string'],
+            'issn' => ['type' => 'string'],
+            'issue' => ['type' => 'string'],
+            'journal' => ['type' => 'string'],
+            'pages' => ['type' => 'string'],
+            'publisher' => ['type' => 'string'],
+            'series' => ['type' => 'string'],
+            'thesisKind' => ['type' => 'string'],
+            'university' => ['type' => 'string'],
+            'url' => ['type' => 'string'],
+            'urlDate' => ['type' => 'string'],
+            'volume' => ['type' => 'string'],
+        ],
+    ])]
     #[Groups(['export'])]
     public function getBibliographic(): ?array
     {

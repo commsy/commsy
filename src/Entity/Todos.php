@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -64,13 +65,18 @@ class Todos implements ExportableEntry
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
-    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'When the entry becomes visible in the room; null if it is visible right away. '
+            .'Entries not visible yet are part of the export.',
+    )]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255, nullable: false)]
@@ -82,6 +88,7 @@ class Todos implements ExportableEntry
 
     #[ORM\Column(name: 'status', type: Types::INTEGER, nullable: false)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Its status, as an id into the room\'s task statuses.')]
     private int $status = 1;
 
     #[ORM\Column(name: 'minutes', type: Types::FLOAT, precision: 10, scale: 0, nullable: true)]
@@ -92,6 +99,7 @@ class Todos implements ExportableEntry
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'As HTML, the way CommSy stores it.')]
     private ?string $description = null;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]
@@ -181,6 +189,16 @@ class Todos implements ExportableEntry
      * @return array{amount: float, unit: string}|null
      */
     #[Groups(['export'])]
+    #[ApiProperty(schema: [
+        'type' => ['object', 'null'],
+        'description' => 'Time booked on it, in the unit named; null if none is booked.',
+        'additionalProperties' => false,
+        'required' => ['amount', 'unit'],
+        'properties' => [
+            'amount' => ['type' => 'number'],
+            'unit' => ['type' => 'string', 'enum' => ['minutes', 'hours', 'days']],
+        ],
+    ])]
     public function getTimeSpent(): ?array
     {
         if (empty($this->minutes)) {
@@ -201,6 +219,7 @@ class Todos implements ExportableEntry
      * legacy says `end_date`; all three are this one value.
      */
     #[Groups(['export'])]
+    #[ApiProperty(description: 'When it is due.')]
     public function getDueDate(): ?\DateTimeInterface
     {
         return $this->date;
@@ -233,11 +252,6 @@ class Todos implements ExportableEntry
         return $this;
     }
 
-    /**
-     * Get title.
-     *
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;

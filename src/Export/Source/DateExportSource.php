@@ -66,4 +66,9 @@ final readonly class DateExportSource implements RubricExportSource
     {
         return $this->annotations->of($entry);
     }
+
+    public function subEntryTypes(): array
+    {
+        return $this->annotations->types();
+    }
 }

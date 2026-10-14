@@ -16,6 +16,9 @@ declare(strict_types=1);
 namespace App\Serializer;
 
 use App\Entity\User;
+use App\Serializer\Schema\FieldDescriber;
+use App\Serializer\Schema\FieldDescription;
+use App\Serializer\Schema\SchemaReferences;
 use App\User\UserStatus;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -32,7 +35,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  * Built by hand rather than delegating to the object normalizer, which would
  * expose the rest of the user row.
  */
-final readonly class UserNormalizer implements NormalizerInterface
+final readonly class UserNormalizer implements NormalizerInterface, FieldDescriber
 {
     private const EMAIL_VISIBILITY = 'EMAIL_VISIBILITY';
     private const EMAIL_HIDDEN = '-1';
@@ -68,6 +71,28 @@ final readonly class UserNormalizer implements NormalizerInterface
     {
         // Not cacheable: support depends on the context groups, not the class.
         return [User::class => false];
+    }
+
+    public function describe(string $class, SchemaReferences $references): ?FieldDescription
+    {
+        if (!is_a($class, User::class, true)) {
+            return null;
+        }
+
+        return new FieldDescription([
+            'id' => ['type' => 'integer', 'description' => 'The person in this room; not their account.'],
+            'name' => ['type' => 'string', 'description' => 'First and last name.'],
+            'email' => [
+                'type' => ['string', 'null'],
+                'description' => 'The address, only if the person made it visible to others; null otherwise.',
+            ],
+            'roomStatus' => [
+                'type' => 'string',
+                'enum' => array_map(static fn (UserStatus $status): string => $status->slug(), UserStatus::cases()),
+                'description' => 'The person\'s role in the room today. No history of roles is kept: '
+                    .'someone who wrote an entry as a moderator and is a member now appears as a member.',
+            ],
+        ], replaces: true);
     }
 
     private function emailIfVisible(User $user): ?string

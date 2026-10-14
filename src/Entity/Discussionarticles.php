@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Utils\EntityUsersTrait;
 use DateTime;
 use DateTimeInterface;
@@ -35,6 +36,7 @@ class Discussionarticles implements ExportableEntry
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
@@ -49,10 +51,12 @@ class Discussionarticles implements ExportableEntry
 
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'When it was written.')]
     private DateTime $creationDate;
 
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'When it was last changed; null if no date is stored.')]
     private ?DateTimeInterface $modificationDate = null;
 
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -60,10 +64,16 @@ class Discussionarticles implements ExportableEntry
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The text, as HTML.')]
     private ?string $description = null;
 
     #[ORM\Column(name: 'position', type: Types::STRING, length: 255)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'Where it stands in the conversation: four-digit numbers, nested with dots for '
+            .'answers — 0001, 0002, and 0002.0001 for an answer to the second. Sorted as text they '
+            .'give the order of the conversation.',
+    )]
     private string $position = '1';
 
     #[ORM\Column(name: 'extras', type: Types::ARRAY, length: 65535, nullable: true)]

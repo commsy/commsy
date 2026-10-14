@@ -17,8 +17,10 @@ namespace App\Export\Source;
 
 use App\Entity\Todos;
 use App\Entity\Room;
+use App\Entity\Step;
 use App\Export\ExportableEntry;
 use App\Export\RubricExportSource;
+use App\Export\SubEntryType;
 use App\Repository\TodosRepository;
 use App\Repository\StepRepository;
 use App\Rubric\RubricType;
@@ -71,5 +73,11 @@ final readonly class TodoExportSource implements RubricExportSource
 
         return $this->annotations->of($entry)
             + ['steps' => $this->steps->findForExport($entry->getItemId())];
+    }
+
+    public function subEntryTypes(): array
+    {
+        return $this->annotations->types()
+            + ['steps' => new SubEntryType(Step::class, 'The steps of the task, oldest first.')];
     }
 }

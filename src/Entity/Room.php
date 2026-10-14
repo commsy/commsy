@@ -19,6 +19,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\RoomRepository;
 use App\Room\RoomStatus;
+use App\Room\RoomType;
 use App\State\PageSize;
 use App\State\RoomProvider;
 use App\Utils\EntityDatesTrait;
@@ -79,7 +80,7 @@ class Room
     #[ORM\JoinColumn(name: 'portal_id', referencedColumnName: 'id')]
     private ?Portal $portal = null;
 
-    #[ApiProperty(openapiContext: ['type' => 'string', 'maxLength' => 255])]
+    #[ApiProperty(schema: ['type' => 'string', 'maxLength' => 255])]
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
     #[Groups(['api', 'export'])]
     private string $title;
@@ -92,12 +93,23 @@ class Room
 
     #[ORM\Column(name: 'archived', type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Whether the room is archived.')]
     private bool $archived;
 
     #[ORM\Column(name: 'activity', type: Types::INTEGER, options: ['default' => 0])]
     private int $activity = 0;
 
-    #[ApiProperty(description: 'Either project or community')]
+    #[ApiProperty(schema: [
+        'type' => 'string',
+        'enum' => [
+            RoomType::Project->value,
+            RoomType::Community->value,
+            RoomType::GroupRoom->value,
+            RoomType::PrivateRoom->value,
+            RoomType::UserRoom->value,
+        ],
+        'description' => 'What kind of room it is.',
+    ])]
     #[ORM\Column(name: 'type', type: Types::STRING, length: 20)]
     #[Groups(['api', 'export'])]
     private string $type = 'project';
@@ -114,7 +126,7 @@ class Room
     #[ORM\Column(name: 'contact_persons', type: Types::STRING, length: 255, nullable: true)]
     private ?string $contactPersons = null;
 
-    #[ApiProperty(openapiContext: ['type' => 'string', 'nullable' => true])]
+    #[ApiProperty(schema: ['type' => ['string', 'null'], 'description' => 'As HTML, the way CommSy stores it.'])]
     #[ORM\Column(name: 'room_description', type: Types::STRING, length: 10000, nullable: true)]
     #[Groups(['api', 'export'])]
     private ?string $roomDescription = null;
@@ -310,9 +322,6 @@ class Room
         return $this;
     }
 
-    /**
-     * Get title.
-     */
     public function getTitle(): string
     {
         return $this->title;

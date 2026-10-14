@@ -44,4 +44,23 @@ class DocumentationTest extends AbstractApiTestCase
 
         $this->assertResponseIsSuccessful();
     }
+
+    /**
+     * The interface describes an entry as it comes out, not as the entity holds
+     * it: what the normalizers add is there, and a person is what the person
+     * normalizer makes of the user row.
+     */
+    public function testARubricEntryIsDescribedAsItComesOut(): void
+    {
+        $schemas = static::createClient()->request('GET', '/api/v2/doc', [
+            'headers' => ['Accept' => 'application/vnd.openapi+json'],
+        ])->toArray()['components']['schemas'];
+
+        $announcement = $schemas['Announcement-export'];
+        foreach (['categories', 'hashtags', 'files', 'annotations'] as $field) {
+            self::assertArrayHasKey($field, $announcement['properties']);
+        }
+        self::assertFalse($announcement['additionalProperties']);
+        self::assertSame(['id', 'name', 'email', 'roomStatus'], array_keys($schemas['User-export']['properties']));
+    }
 }

@@ -16,10 +16,14 @@ declare(strict_types=1);
 namespace App\Serializer;
 
 use App\Entity\Labels;
+use App\Entity\User;
 use App\Item\ItemType;
 use App\Repository\LinkItemsRepository;
 use App\Repository\UserRepository;
 use App\Rubric\Label\LabelType;
+use App\Serializer\Schema\FieldDescriber;
+use App\Serializer\Schema\FieldDescription;
+use App\Serializer\Schema\SchemaReferences;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
@@ -38,7 +42,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 // Not shared: whichever serializer it is given to points it back at itself, and
 // the export and the interface each need it pointing at their own chain.
 #[Autoconfigure(shared: false)]
-final class LabelMembersNormalizer implements NormalizerInterface, NormalizerAwareInterface
+final class LabelMembersNormalizer implements NormalizerInterface, NormalizerAwareInterface, FieldDescriber
 {
     use NormalizerAwareTrait;
 
@@ -75,6 +79,21 @@ final class LabelMembersNormalizer implements NormalizerInterface, NormalizerAwa
         );
 
         return $normalized;
+    }
+
+    public function describe(string $class, SchemaReferences $references): ?FieldDescription
+    {
+        if (!is_a($class, Labels::class, true)) {
+            return null;
+        }
+
+        return new FieldDescription([
+            'members' => [
+                'type' => 'array',
+                'items' => $references->to(User::class),
+                'description' => 'Only on a group: the people in it.',
+            ],
+        ], optional: ['members']);
     }
 
     /**

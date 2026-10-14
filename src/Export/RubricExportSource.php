@@ -76,4 +76,12 @@ interface RubricExportSource
      *                                              entries carry nothing
      */
     public function subEntriesOf(ExportableEntry $entry): array;
+
+    /**
+     * What {@see self::subEntriesOf()} hands back, by name, without an entry to
+     * hand: the shape of the output has to be known before there is any.
+     *
+     * @return array<string, SubEntryType>
+     */
+    public function subEntryTypes(): array;
 }

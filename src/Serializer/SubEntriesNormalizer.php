@@ -17,6 +17,9 @@ namespace App\Serializer;
 
 use App\Export\ExportableEntry;
 use App\Export\RubricExportSource;
+use App\Serializer\Schema\FieldDescriber;
+use App\Serializer\Schema\FieldDescription;
+use App\Serializer\Schema\SchemaReferences;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
@@ -40,7 +43,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 // the export and the interface each need it pointing at their own chain.
 #[Autoconfigure(shared: false)]
 #[AutoconfigureTag('serializer.normalizer', ['priority' => 100])]
-final class SubEntriesNormalizer implements NormalizerInterface, NormalizerAwareInterface
+final class SubEntriesNormalizer implements NormalizerInterface, NormalizerAwareInterface, FieldDescriber
 {
     use NormalizerAwareTrait;
 
@@ -99,10 +102,38 @@ final class SubEntriesNormalizer implements NormalizerInterface, NormalizerAware
         return [ExportableEntry::class => false];
     }
 
+    /**
+     * The export document carries the same sub-entries, put there by its
+     * builder, so this describes both.
+     */
+    public function describe(string $class, SchemaReferences $references): ?FieldDescription
+    {
+        $source = $this->sourceForClass($class);
+        if (null === $source) {
+            return null;
+        }
+
+        $fields = [];
+        foreach ($source->subEntryTypes() as $key => $type) {
+            $fields[$key] = [
+                'type' => 'array',
+                'items' => $references->to($type->class),
+                'description' => $type->description,
+            ];
+        }
+
+        return new FieldDescription($fields);
+    }
+
     private function sourceFor(ExportableEntry $entry): ?RubricExportSource
     {
+        return $this->sourceForClass($entry::class);
+    }
+
+    private function sourceForClass(string $class): ?RubricExportSource
+    {
         foreach ($this->sources as $source) {
-            if ($entry instanceof ($source->entryClass())) {
+            if (is_a($class, $source->entryClass(), true)) {
                 return $source;
             }
         }

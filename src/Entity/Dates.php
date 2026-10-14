@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -62,6 +63,7 @@ class Dates implements ExportableEntry
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
@@ -70,8 +72,12 @@ class Dates implements ExportableEntry
     /**
      * An entry not activated yet is part of the export; the date says so.
      */
-    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'When the entry becomes visible in the room; null if it is visible right away. '
+            .'Entries not visible yet are part of the export.',
+    )]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
@@ -80,6 +86,7 @@ class Dates implements ExportableEntry
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'As HTML, the way CommSy stores it.')]
     private ?string $description = null;
 
     #[ORM\Column(name: 'start_time', type: Types::STRING, length: 100, nullable: true)]
@@ -96,6 +103,7 @@ class Dates implements ExportableEntry
 
     #[ORM\Column(name: 'place', type: Types::STRING, length: 100, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Where it takes place.')]
     private ?string $place = null;
 
     #[ORM\Column(name: 'datetime_start', type: Types::DATETIME_MUTABLE, nullable: false)]
@@ -117,6 +125,7 @@ class Dates implements ExportableEntry
 
     #[ORM\Column(name: 'color', type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'A colour of its own, if one was set.')]
     private ?string $color = null;
 
     #[ORM\Column(name: 'recurrence_id', type: Types::INTEGER, nullable: true)]
@@ -131,18 +140,22 @@ class Dates implements ExportableEntry
      */
     #[ORM\Column(name: 'external', type: Types::BOOLEAN, nullable: false)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Whether it came in from a subscribed calendar rather than being written in the room.')]
     private bool $external = false;
 
     #[ORM\Column(name: 'whole_day', type: Types::BOOLEAN, nullable: false)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Whether it lasts the whole day.')]
     private bool $wholeDay = false;
 
     #[ORM\Column(name: 'uid', type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Its identifier in iCalendar terms, mostly on dates from a subscribed calendar.')]
     private ?string $uid = null;
 
     #[ORM\Column(name: 'calendar_id', type: Types::INTEGER, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Its calendar, as an id into the room\'s calendars.')]
     private ?int $calendarId = null;
 
     public function isIndexable()
@@ -193,6 +206,10 @@ class Dates implements ExportableEntry
      * a group of its own to anyone importing it.
      */
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'Dates of one series share this id, the one of the first date; each date of a series '
+            .'is an entry of its own. Null for a date that stands alone.',
+    )]
     public function getRecurrenceGroupId(): ?int
     {
         return empty($this->recurrenceId) ? null : $this->recurrenceId;

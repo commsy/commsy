@@ -15,10 +15,12 @@ declare(strict_types=1);
 
 namespace App\Export\Source;
 
-use App\Entity\Room;
 use App\Entity\Materials;
+use App\Entity\Room;
+use App\Entity\Section;
 use App\Export\ExportableEntry;
 use App\Export\RubricExportSource;
+use App\Export\SubEntryType;
 use App\Repository\MaterialsRepository;
 use App\Repository\SectionRepository;
 use App\Rubric\RubricType;
@@ -77,5 +79,14 @@ final readonly class MaterialExportSource implements RubricExportSource
 
         return $this->annotations->of($entry)
             + ['sections' => $this->sections->findForExport($entry->getItemId(), $entry->getVersionId())];
+    }
+
+    public function subEntryTypes(): array
+    {
+        return $this->annotations->types()
+            + ['sections' => new SubEntryType(
+                Section::class,
+                'The sections of the material at the version the room shows, in their order.'
+            )];
     }
 }

@@ -24,6 +24,9 @@ use App\Repository\LabelRepository;
 use App\Repository\LicenseRepository;
 use App\Repository\TagRepository;
 use App\Rubric\Todo\TodoStatus;
+use App\Serializer\Schema\FieldDescriber;
+use App\Serializer\Schema\FieldDescription;
+use App\Serializer\Schema\SchemaReferences;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
@@ -44,7 +47,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 // Not shared: whichever serializer it is given to points it back at itself, and
 // the export and the interface each need it pointing at their own chain.
 #[Autoconfigure(shared: false)]
-final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAwareInterface
+final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAwareInterface, FieldDescriber
 {
     use NormalizerAwareTrait;
 
@@ -80,6 +83,59 @@ final class RoomStructureNormalizer implements NormalizerInterface, NormalizerAw
         $normalized['todoStatuses'] = $this->todoStatusesFor($data);
 
         return $normalized;
+    }
+
+    public function describe(string $class, SchemaReferences $references): ?FieldDescription
+    {
+        if (!is_a($class, Room::class, true)) {
+            return null;
+        }
+
+        $list = static fn (array $item, string $description): array => [
+            'type' => 'array',
+            'items' => $item,
+            'description' => $description,
+        ];
+        $shape = static fn (array $properties): array => [
+            'type' => 'object',
+            'additionalProperties' => false,
+            'required' => array_keys($properties),
+            'properties' => $properties,
+        ];
+        $id = ['type' => 'integer'];
+        $title = ['type' => 'string'];
+
+        $category = $references->define('Category-export', $shape([
+            'id' => $id,
+            'title' => $title,
+            'children' => $list($references->named('Category-export'), 'Its subcategories.'),
+        ]));
+
+        return new FieldDescription([
+            'categories' => $list($category, 'The room\'s categories as a tree; entries point at them by id.'),
+            'hashtags' => $list(
+                $shape(['id' => $id, 'title' => $title]),
+                'The room\'s hashtags, by title; entries point at them by id.'
+            ),
+            'calendars' => $list($shape([
+                'id' => $id,
+                'title' => $title,
+                'color' => ['type' => ['string', 'null']],
+                'isDefault' => ['type' => 'boolean', 'description' => 'The room\'s default calendar.'],
+            ]), 'The room\'s calendars; dates point at them by calendarId.'),
+            'licenses' => $list($shape([
+                'id' => $id,
+                'title' => ['type' => 'string', 'description' => 'The name of the licence.'],
+                'content' => ['type' => ['string', 'null'], 'description' => 'The licence text, as HTML.'],
+            ]), 'The room\'s licences; materials point at them by licenseId.'),
+            'todoStatuses' => $list($shape([
+                'id' => $id,
+                'name' => [
+                    'type' => 'string',
+                    'description' => 'not_started, in_progress, done, or the name of a status of the room\'s own.',
+                ],
+            ]), 'What the status numbers of the room\'s tasks mean.'),
+        ]);
     }
 
     /**

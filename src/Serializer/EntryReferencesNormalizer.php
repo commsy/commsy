@@ -19,6 +19,9 @@ use App\Export\ExportableEntry;
 use App\Repository\ItemLinkFileRepository;
 use App\Repository\LinkItemsRepository;
 use App\Repository\LinksRepository;
+use App\Serializer\Schema\FieldDescriber;
+use App\Serializer\Schema\FieldDescription;
+use App\Serializer\Schema\SchemaReferences;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
@@ -39,7 +42,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 // Not shared: whichever serializer it is given to points it back at itself, and
 // the export and the interface each need it pointing at their own chain.
 #[Autoconfigure(shared: false)]
-final class EntryReferencesNormalizer implements NormalizerInterface, NormalizerAwareInterface
+final class EntryReferencesNormalizer implements NormalizerInterface, NormalizerAwareInterface, FieldDescriber
 {
     use NormalizerAwareTrait;
 
@@ -110,6 +113,25 @@ final class EntryReferencesNormalizer implements NormalizerInterface, Normalizer
     {
         // Not cacheable: support depends on the context, not the class.
         return [ExportableEntry::class => false];
+    }
+
+    public function describe(string $class, SchemaReferences $references): ?FieldDescription
+    {
+        if (!is_a($class, ExportableEntry::class, true)) {
+            return null;
+        }
+
+        $ids = static fn (string $description): array => [
+            'type' => 'array',
+            'items' => ['type' => 'integer'],
+            'description' => $description,
+        ];
+
+        return new FieldDescription([
+            'categories' => $ids('The categories the entry is filed under, as ids into the room\'s categories.'),
+            'hashtags' => $ids('The hashtags of the entry, as ids into the room\'s hashtags.'),
+            'files' => $ids('The files attached to the entry, as ids into the list of files.'),
+        ]);
     }
 
     /**

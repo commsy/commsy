@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Export\ExportableEntry;
 use App\Repository\SectionRepository;
 use App\Utils\EntityDatesTrait;
@@ -35,12 +36,14 @@ class Section implements ExportableEntry
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Id]
     #[ORM\Column(name: 'version_id', type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The version of the material it belongs to.')]
     private int $versionId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER)]
@@ -52,10 +55,12 @@ class Section implements ExportableEntry
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'As HTML, the way CommSy stores it.')]
     private ?string $description = null;
 
     #[ORM\Column(name: 'number', type: Types::SMALLINT, nullable: false)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'Its place within the material.')]
     private int $number = 0;
 
     #[ORM\ManyToOne(targetEntity: 'Materials', inversedBy: 'sections')]

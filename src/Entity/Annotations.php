@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
@@ -38,6 +39,7 @@ class Annotations implements ExportableEntry
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
@@ -45,6 +47,7 @@ class Annotations implements ExportableEntry
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The text of the comment, as HTML.')]
     private ?string $description = null;
 
     #[ORM\Column(name: 'linked_item_id', type: Types::INTEGER)]

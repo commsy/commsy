@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -62,13 +63,18 @@ class Discussions implements ExportableEntry
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
     private ?int $contextId = null;
 
-    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'When the entry becomes visible in the room; null if it is visible right away. '
+            .'Entries not visible yet are part of the export.',
+    )]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 200, nullable: false)]
@@ -77,6 +83,7 @@ class Discussions implements ExportableEntry
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'As HTML, the way CommSy stores it.')]
     private ?string $description = null;
 
     #[ORM\Column(name: 'latest_article_item_id', type: Types::INTEGER, nullable: true)]
@@ -90,6 +97,12 @@ class Discussions implements ExportableEntry
 
     #[ORM\Column(name: 'discussion_type', type: Types::STRING, length: 10, nullable: false)]
     #[Groups(['export'])]
+    #[ApiProperty(schema: [
+        'type' => 'string',
+        'enum' => ['simple', 'threaded'],
+        'description' => 'simple: one line of articles; threaded: answers branch off, '
+            .'see the position of the articles.',
+    ])]
     private string $discussionType = 'simple';
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]

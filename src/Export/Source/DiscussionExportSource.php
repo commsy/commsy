@@ -15,10 +15,12 @@ declare(strict_types=1);
 
 namespace App\Export\Source;
 
+use App\Entity\Discussionarticles;
 use App\Entity\Discussions;
 use App\Entity\Room;
 use App\Export\ExportableEntry;
 use App\Export\RubricExportSource;
+use App\Export\SubEntryType;
 use App\Repository\DiscussionsRepository;
 use App\Repository\DiscussionarticlesRepository;
 use App\Rubric\RubricType;
@@ -72,5 +74,14 @@ final readonly class DiscussionExportSource implements RubricExportSource
 
         return $this->annotations->of($entry)
             + ['articles' => $this->articles->findForExport($entry->getItemId())];
+    }
+
+    public function subEntryTypes(): array
+    {
+        return $this->annotations->types()
+            + ['articles' => new SubEntryType(
+                Discussionarticles::class,
+                'The articles of the discussion, ordered by position, which is the order of the conversation.'
+            )];
     }
 }

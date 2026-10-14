@@ -15,7 +15,9 @@ declare(strict_types=1);
 
 namespace App\Export\Source;
 
+use App\Entity\Annotations;
 use App\Export\ExportableEntry;
+use App\Export\SubEntryType;
 use App\Repository\AnnotationsRepository;
 
 /**
@@ -36,5 +38,15 @@ final readonly class AnnotationSubEntries
     public function of(ExportableEntry $entry): array
     {
         return ['annotations' => $this->annotations->findForEntry($entry->getItemId())];
+    }
+
+    /**
+     * @return array<string, SubEntryType>
+     */
+    public function types(): array
+    {
+        return [
+            'annotations' => new SubEntryType(Annotations::class, 'The comments written on the entry, oldest first.'),
+        ];
     }
 }

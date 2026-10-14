@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
 use Doctrine\DBAL\Types\Types;
@@ -38,6 +39,7 @@ class Step implements ExportableEntry
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
@@ -49,6 +51,7 @@ class Step implements ExportableEntry
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'As HTML, the way CommSy stores it.')]
     private ?string $description = null;
 
     #[ORM\Column(name: 'minutes', type: Types::FLOAT, precision: 10, scale: 0, nullable: false)]
@@ -113,6 +116,16 @@ class Step implements ExportableEntry
      * @return array{amount: float, unit: string}|null
      */
     #[Groups(['export'])]
+    #[ApiProperty(schema: [
+        'type' => ['object', 'null'],
+        'description' => 'Time booked on it, in the unit named; null if none is booked.',
+        'additionalProperties' => false,
+        'required' => ['amount', 'unit'],
+        'properties' => [
+            'amount' => ['type' => 'number'],
+            'unit' => ['type' => 'string', 'enum' => ['minutes', 'hours', 'days']],
+        ],
+    ])]
     public function getTimeSpent(): ?array
     {
         if (empty($this->minutes)) {

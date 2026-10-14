@@ -13,6 +13,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -61,6 +62,7 @@ class Announcement implements ExportableEntry
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
@@ -69,8 +71,12 @@ class Announcement implements ExportableEntry
     /**
      * An entry not activated yet is part of the export; the date says so.
      */
-    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(name: 'activation_date', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'When the entry becomes visible in the room; null if it is visible right away. '
+            .'Entries not visible yet are part of the export.',
+    )]
     private ?DateTime $activationDate = null;
 
     #[ORM\Column(name: 'title', type: Types::STRING, length: 255)]
@@ -79,6 +85,7 @@ class Announcement implements ExportableEntry
 
     #[ORM\Column(name: 'description', type: Types::TEXT, length: 16_777_215, nullable: true)]
     #[Groups(['export'])]
+    #[ApiProperty(description: 'As HTML, the way CommSy stores it.')]
     private ?string $description = null;
 
     /**
@@ -88,6 +95,10 @@ class Announcement implements ExportableEntry
      */
     #[ORM\Column(name: 'enddate', type: Types::DATETIME_MUTABLE)]
     #[Groups(['export'])]
+    #[ApiProperty(
+        description: 'Until when the room shows the announcement. Announcements past it are part of the '
+            .'export.',
+    )]
     private DateTime $enddate;
 
     #[ORM\Column(name: 'public', type: Types::BOOLEAN, nullable: false)]

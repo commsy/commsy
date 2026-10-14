@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use ApiPlatform\Metadata\ApiProperty;
 use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,9 +26,17 @@ trait EntityDatesTrait
      * (a section's or a step's creation date, most rubrics' modification date),
      * and a row holding it must read as null rather than leave the property
      * unset, which fails on first access and drops the field from a document.
+     *
+     * The schema states this itself: the mapping, which it would go by, is
+     * shared with tables that do not allow NULL.
      */
     #[ORM\Column(name: 'creation_date', type: Types::DATETIME_MUTABLE)]
     #[Groups(['api', 'export'])]
+    #[ApiProperty(schema: [
+        'type' => ['string', 'null'],
+        'format' => 'date-time',
+        'description' => 'When it was created; null if no date is stored.',
+    ])]
     private ?DateTime $creationDate = null;
 
     /**
@@ -35,6 +44,11 @@ trait EntityDatesTrait
      */
     #[ORM\Column(name: 'modification_date', type: Types::DATETIME_MUTABLE)]
     #[Groups(['api', 'export'])]
+    #[ApiProperty(schema: [
+        'type' => ['string', 'null'],
+        'format' => 'date-time',
+        'description' => 'When it was last changed; null if no date is stored.',
+    ])]
     private ?DateTime $modificationDate = null;
 
     #[ORM\Column(name: 'deletion_date', type: Types::DATETIME_MUTABLE, nullable: true)]
