@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use App\Export\ExportableEntry;
+use App\State\PageSize;
 use App\State\RubricEntryProvider;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
@@ -47,8 +48,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
     normalizationContext: ['groups' => ['export'], 'skip_null_values' => false],
     security: "is_granted('ROLE_API_READ')",
     provider: RubricEntryProvider::class,
-    paginationItemsPerPage: RubricEntryProvider::ITEMS_PER_PAGE,
-    paginationMaximumItemsPerPage: RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE,
+    paginationItemsPerPage: PageSize::DEFAULT,
+    paginationMaximumItemsPerPage: PageSize::MAXIMUM,
     paginationClientItemsPerPage: true,
 )]
 class Announcement implements ExportableEntry

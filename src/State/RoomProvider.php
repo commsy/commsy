@@ -15,14 +15,17 @@ namespace App\State;
 
 use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\Pagination\Pagination;
+use ApiPlatform\State\Pagination\TraversablePaginator;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
 use App\Room\RoomType;
+use ArrayIterator;
 use Override;
 
 /**
- * @implements ProviderInterface<Room[]|Room|null>
+ * @implements ProviderInterface<Room>
  */
 readonly class RoomProvider implements ProviderInterface
 {
@@ -33,7 +36,8 @@ readonly class RoomProvider implements ProviderInterface
     public const ROOM_TYPES = [RoomType::Project, RoomType::Community, RoomType::GroupRoom];
 
     public function __construct(
-        private RoomRepository $roomRepository
+        private RoomRepository $roomRepository,
+        private Pagination $pagination,
     ) {
     }
 
@@ -41,7 +45,19 @@ readonly class RoomProvider implements ProviderInterface
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         if ($operation instanceof CollectionOperationInterface) {
-            return $this->roomRepository->findBy(['type' => self::ROOM_TYPES]);
+            $limit = $this->pagination->getLimit($operation, $context);
+
+            // A page: all rooms of all portals would otherwise be one list.
+            return new TraversablePaginator(
+                new ArrayIterator($this->roomRepository->findOfTypes(
+                    self::ROOM_TYPES,
+                    $this->pagination->getOffset($operation, $context),
+                    $limit,
+                )),
+                $this->pagination->getPage($context),
+                $limit,
+                $this->roomRepository->countOfTypes(self::ROOM_TYPES),
+            );
         }
 
         return $this->roomRepository->findOneBy([

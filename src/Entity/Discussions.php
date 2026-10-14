@@ -25,6 +25,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use App\Export\ExportableEntry;
+use App\State\PageSize;
 use App\State\RubricEntryProvider;
 use App\Repository\DiscussionsRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -48,8 +49,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
     normalizationContext: ['groups' => ['export'], 'skip_null_values' => false],
     security: "is_granted('ROLE_API_READ')",
     provider: RubricEntryProvider::class,
-    paginationItemsPerPage: RubricEntryProvider::ITEMS_PER_PAGE,
-    paginationMaximumItemsPerPage: RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE,
+    paginationItemsPerPage: PageSize::DEFAULT,
+    paginationMaximumItemsPerPage: PageSize::MAXIMUM,
     paginationClientItemsPerPage: true,
 )]
 class Discussions implements ExportableEntry

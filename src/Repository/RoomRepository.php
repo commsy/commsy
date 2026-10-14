@@ -17,6 +17,7 @@ use App\Entity\Account;
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\User;
+use App\Room\RoomType;
 use App\User\UserStatus;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -91,6 +92,41 @@ class RoomRepository extends ServiceEntityRepository
             ->andWhere('r.type != :privateRoomType')
             ->setParameter('portalId', $portalId)
             ->setParameter('privateRoomType', 'privateroom')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Rooms of the given types across all portals, oldest first — a window of
+     * them if $limit is given, so a page follows on from the one before.
+     *
+     * @param list<RoomType> $types
+     *
+     * @return Room[]
+     */
+    public function findOfTypes(array $types, int $offset = 0, ?int $limit = null): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.type IN (:types)')
+            ->setParameter('types', $types)
+            ->orderBy('r.itemId', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * How many rooms {@see self::findOfTypes()} holds in all.
+     *
+     * @param list<RoomType> $types
+     */
+    public function countOfTypes(array $types): int
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(r.itemId)')
+            ->andWhere('r.type IN (:types)')
+            ->setParameter('types', $types)
             ->getQuery()
             ->getSingleScalarResult();
     }

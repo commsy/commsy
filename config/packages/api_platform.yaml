@@ -1,7 +1,7 @@
 api_platform:
     title: CommSy
     description: A web-based community system.
-    version: 2.1.0
+    version: 2.2.0
     swagger:
         api_keys:
             JWT:

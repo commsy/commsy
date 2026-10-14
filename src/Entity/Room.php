@@ -19,6 +19,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\RoomRepository;
 use App\Room\RoomStatus;
+use App\State\PageSize;
 use App\State\RoomProvider;
 use App\Utils\EntityDatesTrait;
 use App\Utils\EntityUsersTrait;
@@ -48,7 +49,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
     normalizationContext: ['groups' => ['api']],
     denormalizationContext: ['groups' => ['api']],
     security: "is_granted('ROLE_API_READ')",
-    provider: RoomProvider::class
+    provider: RoomProvider::class,
+    paginationItemsPerPage: PageSize::DEFAULT,
+    paginationMaximumItemsPerPage: PageSize::MAXIMUM,
+    paginationClientItemsPerPage: true,
 )]
 class Room
 {

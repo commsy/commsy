@@ -16,7 +16,7 @@ use App\Entity\Room;
 use App\Entity\User;
 use App\Export\RoomExportBuilder;
 use App\Services\LegacyEnvironment;
-use App\State\RubricEntryProvider;
+use App\State\PageSize;
 use App\Utils\CategoryService;
 use DateTime;
 use Doctrine\DBAL\Connection;
@@ -212,11 +212,11 @@ final class AnnouncementExportTest extends KernelTestCase
     #[WithStory(RoomWithMemberStory::class)]
     public function testTheExportCarriesMoreThanAPageHolds(): void
     {
-        for ($i = 0; $i <= RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE; ++$i) {
+        for ($i = 0; $i <= PageSize::MAXIMUM; ++$i) {
             $this->createAnnouncement('Ankündigung '.$i);
         }
 
-        $this->assertCount(RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE + 1, $this->announcements());
+        $this->assertCount(PageSize::MAXIMUM + 1, $this->announcements());
     }
 
     #[WithStory(RoomWithMemberStory::class)]

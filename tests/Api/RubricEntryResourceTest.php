@@ -25,7 +25,7 @@ use App\Entity\Room;
 use App\Entity\Todos;
 use App\Entity\User;
 use App\Export\RoomExportBuilder;
-use App\State\RubricEntryProvider;
+use App\State\PageSize;
 use App\Utils\CategoryService;
 use Closure;
 use Doctrine\DBAL\Connection;
@@ -249,9 +249,9 @@ class RubricEntryResourceTest extends AbstractApiTestCase
         }
 
         $this->assertCount(1, $collections);
-        $this->assertSame(RubricEntryProvider::ITEMS_PER_PAGE, $collections[0]->getPaginationItemsPerPage());
+        $this->assertSame(PageSize::DEFAULT, $collections[0]->getPaginationItemsPerPage());
         $this->assertSame(
-            RubricEntryProvider::MAXIMUM_ITEMS_PER_PAGE,
+            PageSize::MAXIMUM,
             $collections[0]->getPaginationMaximumItemsPerPage()
         );
         $this->assertTrue($collections[0]->getPaginationClientItemsPerPage());
@@ -329,11 +329,11 @@ class RubricEntryResourceTest extends AbstractApiTestCase
 
     public function testAPageIsAsLongAsTheRubricsSayUnlessAskedOtherwise(): void
     {
-        for ($i = 0; $i <= RubricEntryProvider::ITEMS_PER_PAGE; ++$i) {
+        for ($i = 0; $i <= PageSize::DEFAULT; ++$i) {
             AnnouncementFactory::createOne(['room' => $this->room, 'creator' => $this->roomUser]);
         }
 
-        $this->assertCount(RubricEntryProvider::ITEMS_PER_PAGE, $this->list('announcements'));
+        $this->assertCount(PageSize::DEFAULT, $this->list('announcements'));
     }
 
     /**

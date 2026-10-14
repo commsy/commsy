@@ -13,6 +13,10 @@
 
 namespace Tests\Api;
 
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
+use App\Entity\Room;
+use App\State\PageSize;
 use Tests\Factory\PortalFactory;
 use Tests\Factory\RoomFactory;
 use Tests\Story\RoomStory;
@@ -231,5 +235,58 @@ class RoomTest extends AbstractApiTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    /**
+     * All rooms of all portals would be one list; it is a page like any other.
+     */
+    public function testTheRoomListIsAPage(): void
+    {
+        $room = RoomStory::get('room');
+        $portal = $room->getPortal();
+        $second = RoomFactory::createOne(['type' => 'project', 'portal' => $portal]);
+        RoomFactory::createOne(['type' => 'community', 'portal' => $portal]);
+        RoomFactory::createOne(['type' => 'privateroom', 'portal' => $portal]);
+
+        $response = $this->createClientWithCredentials()->request('GET', '/api/v2/rooms?itemsPerPage=1&page=2', [
+            'headers' => ['Accept' => 'application/json'],
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSame([$second->getItemId()], array_column($response->toArray(), 'itemId'));
+        // The private room is not on the list, and not in the count either.
+        $this->assertSame('3', $response->getHeaders()['x-total-count'][0]);
+    }
+
+    public function testTheRoomListIsShortUnlessAskedOtherwise(): void
+    {
+        $portal = RoomStory::get('room')->getPortal();
+        for ($i = 0; $i < PageSize::DEFAULT; ++$i) {
+            RoomFactory::createOne(['type' => 'project', 'portal' => $portal]);
+        }
+
+        $response = $this->createClientWithCredentials()->request('GET', '/api/v2/rooms', [
+            'headers' => ['Accept' => 'application/json'],
+        ]);
+
+        $this->assertCount(PageSize::DEFAULT, $response->toArray());
+        $this->assertSame((string) (PageSize::DEFAULT + 1), $response->getHeaders()['x-total-count'][0]);
+    }
+
+    public function testTheRoomListTakesTheSharedPageSizes(): void
+    {
+        $collections = [];
+        foreach (self::getContainer()->get(ResourceMetadataCollectionFactoryInterface::class)->create(Room::class) as $resource) {
+            foreach ($resource->getOperations() ?? [] as $operation) {
+                if ($operation instanceof GetCollection) {
+                    $collections[] = $operation;
+                }
+            }
+        }
+
+        $this->assertCount(1, $collections);
+        $this->assertSame(PageSize::DEFAULT, $collections[0]->getPaginationItemsPerPage());
+        $this->assertSame(PageSize::MAXIMUM, $collections[0]->getPaginationMaximumItemsPerPage());
+        $this->assertTrue($collections[0]->getPaginationClientItemsPerPage());
     }
 }
