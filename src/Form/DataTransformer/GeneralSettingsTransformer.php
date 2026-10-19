@@ -15,10 +15,11 @@ namespace App\Form\DataTransformer;
 
 use App\Entity\Room;
 use App\Repository\RoomRepository;
+use App\Room\RubricConfiguration;
+use App\Room\RubricVisibility;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\RoomCategoriesService;
-use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_community_item;
 use cs_environment;
@@ -35,7 +36,6 @@ class GeneralSettingsTransformer extends AbstractTransformer
     public function __construct(
         LegacyEnvironment $legacyEnvironment,
         private readonly CurrentContextResolver $currentContextResolver,
-        private readonly RoomService $roomService,
         private readonly UserService $userService,
         private readonly RoomRepository $roomRepository,
         private readonly ManagerRegistry $managerRegistry,
@@ -75,11 +75,10 @@ class GeneralSettingsTransformer extends AbstractTransformer
             $roomORM = $this->roomRepository->findOneBy(['itemId' => $roomItem->getItemID()]);
             $roomData['slugs'] = $roomORM->getSlugs();
 
-            $rubrics = [];
-            foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
-                [$rubricName, $modifier] = explode('_', (string) $rubric);
-                $rubrics[$rubricName] = $modifier;
-            }
+            $rubrics = array_map(
+                static fn (RubricVisibility $visibility): string => $visibility->value,
+                $roomItem->getRubricConfiguration()->visibilities()
+            );
             foreach (array_diff($defaultRubrics, array_keys($rubrics)) as $deactivated_rubric) {
                 $rubrics[$deactivated_rubric] = 'off';
             }
@@ -135,16 +134,15 @@ class GeneralSettingsTransformer extends AbstractTransformer
     public function applyTransformation($roomObject, $roomData): cs_room_item
     {
         if ($roomData['rubricOrder']) {
-            $rubricArray = [];
+            $visibilities = [];
             foreach (explode(',', (string) $roomData['rubricOrder']) as $rubricName) {
-                $rubricValue = $roomData['rubrics'][$rubricName];
-                if (0 == strcmp((string) $rubricValue, 'off')) {
-                    continue;
+                $rubricValue = (string) $roomData['rubrics'][$rubricName];
+                if ('off' !== $rubricValue) {
+                    $visibilities[$rubricName] = RubricVisibility::from($rubricValue);
                 }
-                $rubricArray[] = $rubricName.'_'.$rubricValue;
             }
 
-            $roomObject->setHomeConf(implode(',', $rubricArray));
+            $roomObject->setHomeConf((new RubricConfiguration($visibilities))->toString());
         }
 
         $roomObject->setTitle($roomData['title']);

@@ -16,7 +16,6 @@ namespace App\Newsletter;
 use App\Enum\ReaderStatus;
 use App\Repository\ReaderRepository;
 use App\Services\LegacyEnvironment;
-use cs_context_item;
 use cs_environment;
 use cs_privateroom_item;
 use DateTime;
@@ -63,22 +62,6 @@ class NewsletterGenerator
                 && $roomItem->getItemID() > 0
             );
         });
-    }
-
-    /**
-     * Returns an array of configuration strings for the rubrics used by the given room.
-     * Returns an empty array if the given room's home configuration couldn't be found.
-     */
-    private function rubricsForRoom(cs_context_item $roomItem): array
-    {
-        $rubrics = [];
-
-        $conf = $roomItem->getHomeConf();
-        if (!empty($conf)) {
-            $rubrics = explode(',', (string) $conf);
-        }
-
-        return $rubrics;
     }
 
     /**
@@ -134,19 +117,10 @@ class NewsletterGenerator
             $annotationsInNewsletter = [];
 
             // rubrics
-            $rubrics = $this->rubricsForRoom($roomItem);
-            $numRubrics = count($rubrics);
             $rubricsData = [];
 
-            for ($i = 0; $i < $numRubrics; ++$i) {
-                $rubricConfigArray = explode('_', $rubrics[$i]);
-                $rubricSpecifier = $rubricConfigArray[0];
-                $rubricDisplayStatus = $rubricConfigArray[1];
-                if ('none' === $rubricDisplayStatus) {
-                    continue;
-                }
-
-                $rubricManager = $this->legacyEnvironment->getManager($rubricConfigArray[0]);
+            foreach ($roomItem->getRubricConfiguration()->rubrics() as $rubricSpecifier) {
+                $rubricManager = $this->legacyEnvironment->getManager($rubricSpecifier);
                 $rubricItemList = $rubricManager->getItemsForRoomIDChangedWithinDays($roomItem->getItemID(), $dayLimit);
 
                 $countEntries = 0;

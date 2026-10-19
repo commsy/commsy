@@ -98,19 +98,10 @@ final readonly class UserViewChecker
     }
 
     /**
-     * Whether the Room's home configuration lists the user rubric. The
-     * legacy `cs_context_item::withRubric()` does a substring match on
-     * the comma-separated `HOMECONF` extras string against `'user'`.
+     * Whether the room offers the user rubric, shown or hidden.
      */
     private function roomHasUserRubric(Room $room): bool
     {
-        $extras = $room->getExtras();
-        if (!is_array($extras) || !isset($extras['HOMECONF'])) {
-            // Without an explicit HOMECONF the legacy returns a default
-            // module list — which DOES include 'user' in production.
-            // Conservative match here: treat as activated.
-            return true;
-        }
-        return stripos((string) $extras['HOMECONF'], 'user') !== false;
+        return $room->getRubricConfiguration()->offers('user');
     }
 }

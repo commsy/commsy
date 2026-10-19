@@ -95,7 +95,7 @@ class MenuBuilderTest extends KernelTestCase
         ]);
 
         $roomService = $this->createConfiguredMock(RoomService::class, [
-            'getVisibleRoomRubrics' => [
+            'getRubricInformation' => [
                 'date', 'todo', 'some'
             ],
             'getRoomItem' => $this->createConfiguredMock(cs_project_item::class, [

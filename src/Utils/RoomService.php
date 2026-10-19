@@ -50,59 +50,15 @@ class RoomService
     }
 
     /**
-     * returns the rubrics for the room with the $roomId.
+     * The rubrics the room with the $roomId offers, shown or hidden, in its order.
      *
-     * @param int  $roomId          room id
-     * @param bool $includeModifier include or remove "_show" and "_hide" modifier
+     * @param int $roomId room id
      *
-     * @return array Array with rubric strings
+     * @return list<string>
      */
-    public function getRubricInformation($roomId, $includeModifier = false): array
+    public function getRubricInformation($roomId): array
     {
-        $rubricConfigurations = [];
-
-        // get the rooms rubric configuration
-        $roomItem = $this->getRoomItem($roomId);
-        if ($roomItem) {
-            $homeConfiguration = $roomItem->getHomeConf();
-
-            $rubrics = [];
-            if (!empty($homeConfiguration)) {
-                $rubricConfigurations = explode(',', (string) $homeConfiguration);
-
-                foreach ($rubricConfigurations as $rubricConfiguration) {
-                    [$rubricName] = explode('_', $rubricConfiguration);
-                    $rubrics[] = $rubricName;
-                }
-            }
-            if ($includeModifier) {
-                return $rubricConfigurations;
-            } else {
-                return $rubrics;
-            }
-        }
-
-        return [];
-    }
-
-    /**
-     * @param int $roomId The id of the room
-     * @return string[] List of rubrics needed for querying
-     */
-    public function getVisibleRoomRubrics(int $roomId, array $exclude = ['hide', 'off']): array
-    {
-        $rubricConfiguration = $this->getRubricInformation($roomId, true);
-
-        $visibleRubrics = array_filter($rubricConfiguration, function ($rubric) use ($exclude) {
-            [, $modifier] = explode('_', $rubric);
-
-            return !in_array($modifier, $exclude);
-        });
-
-        return array_map(function ($rubric) {
-            [$name] = explode('_', $rubric);
-            return $name;
-        }, $visibleRubrics);
+        return $this->getRoomItem($roomId)?->getRubricConfiguration()->rubrics() ?? [];
     }
 
     public function copySettings($masterRoom, $targetRoom)

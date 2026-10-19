@@ -32,6 +32,8 @@ use App\Mail\Mailer;
 use App\Repository\UserRepository;
 use App\Room\RoomMembershipStatus;
 use App\Room\RoomMembershipStatusChanger;
+use App\Room\RubricVisibility;
+use App\Rubric\Label\LabelType;
 use App\Security\Authorization\Voter\ItemVoter;
 use App\Services\AvatarService;
 use App\Services\CurrentContextResolver;
@@ -712,8 +714,8 @@ class UserController extends BaseController
 
         $groups = [];
         $context_item = $this->currentContextResolver->getContextItem();
-        $conf = $context_item->getHomeConf();
-        if (strpos((string) $conf, 'group_show')) {
+        $groupVisibility = $context_item->getRubricConfiguration()->visibilityOf(LabelType::Group->value);
+        if (RubricVisibility::Show === $groupVisibility) {
             $groups = $this->userService->getUser($itemId)->getGroupList()->to_array();
         }
 

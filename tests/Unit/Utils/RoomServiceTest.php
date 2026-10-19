@@ -14,6 +14,7 @@
 namespace Tests\Unit\Utils;
 
 use App\Room\Copy\LegacyCopy;
+use App\Room\RubricConfiguration;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -25,22 +26,14 @@ use PHPUnit\Framework\TestCase;
 
 class RoomServiceTest extends TestCase
 {
-    public function testGetRubricInformationWithoutModifier(): void
-    {
-        $rubrics = $this->roomService('material_show')->getRubricInformation(1, false);
-
-        $this->assertCount(1, $rubrics);
-        $this->assertContains('material', $rubrics);
-    }
-
     /**
      * The menu lists every rubric the room offers, hidden ones included.
      */
-    public function testTheMenuGetsEveryRubricTheRoomOffers(): void
+    public function testEveryRubricTheRoomOffersIsListedShownOrHidden(): void
     {
-        $rubrics = $this->roomService('material_show,todo_hide')->getVisibleRoomRubrics(1, ['off']);
+        $rubrics = $this->roomService('material_show,todo_hide')->getRubricInformation(1);
 
-        $this->assertSame(['material', 'todo'], array_values($rubrics));
+        $this->assertSame(['material', 'todo'], $rubrics);
     }
 
     private function roomService(string $homeConf): RoomService
@@ -49,7 +42,7 @@ class RoomServiceTest extends TestCase
             'getEnvironment' => $this->createConfiguredMock(cs_environment::class, [
                 'getRoomManager' => $this->createConfiguredMock(cs_room_manager::class, [
                     'getItem' => $this->createConfiguredMock(cs_project_item::class, [
-                        'getHomeConf' => $homeConf,
+                        'getRubricConfiguration' => RubricConfiguration::fromString($homeConf),
                     ])
                 ])
             ]),
