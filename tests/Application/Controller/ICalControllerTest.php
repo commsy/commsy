@@ -14,8 +14,11 @@ use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
 use App\Hash\HashManager;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\CalendarsFactory;
+use Tests\Factory\DatesFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
@@ -96,6 +99,72 @@ class ICalControllerTest extends AbstractApplicationTestCase
      * using the room's creator) is not exercised — RoomFactory builds the
      * room via direct SQL without setting a creator.
      */
+    /**
+     * The feed of a room lists the dates of its default calendar: deleted
+     * dates, dates of another calendar and, unless exported, dates older than
+     * 13 months stay out; a private date is marked; participants are attendees.
+     */
+    public function testTheFeedListsTheDatesOfTheCalendar(): void
+    {
+        $this->seedDefaultCalendar();
+        $soon = date('Y-m-d H:i:s', strtotime('+1 day'));
+        $planning = $this->createDate('Planung', $soon);
+        $this->createDate('Vertraulich', $soon, ['date_mode' => 1]);
+        $this->createDate('Vorjahr', date('Y-m-d H:i:s', strtotime('-20 months')));
+        $this->createDate('Geloescht', $soon, ['deletion_date' => $soon, 'deleter_id' => $this->roomUser->getItemId()]);
+        $elsewhere = $this->createDate('Anderswo', $soon);
+        $other = CalendarsFactory::createOne(['room' => $this->room, 'creator' => $this->roomUser, 'title' => 'Andere'])->getId();
+        $this->connection()->update('dates', ['calendar_id' => $other], ['item_id' => $elsewhere]);
+        $this->linkParticipant($planning);
+
+        $feed = $this->feed('');
+        $this->assertStringContainsString('SUMMARY:Planung', $feed);
+        $this->assertMatchesRegularExpression('/SUMMARY:Vertraulich \[[^\]]+\]/', $feed);
+        $this->assertStringContainsString('ATTENDEE', $feed);
+        $this->assertStringNotContainsString('Vorjahr', $feed);
+        $this->assertStringNotContainsString('Geloescht', $feed);
+        $this->assertStringNotContainsString('Anderswo', $feed);
+
+        $this->assertStringContainsString('SUMMARY:Vorjahr', $this->feed('&export=1'));
+    }
+
+    private function feed(string $query): string
+    {
+        $hash = self::getContainer()->get(HashManager::class)->getUserHashes($this->roomUser->getItemId());
+        $this->client->request('GET', "/ical/{$this->room->getItemId()}?hid={$hash->getIcal()}$query");
+        $this->assertResponseIsSuccessful();
+
+        return (string) $this->client->getResponse()->getContent();
+    }
+
+    /**
+     * @param array<string, mixed> $columns
+     */
+    private function createDate(string $title, string $start, array $columns = []): int
+    {
+        $itemId = (int) DatesFactory::createOne(['title' => $title, 'room' => $this->room, 'creator' => $this->roomUser])->getItemId();
+        $this->connection()->update('dates', ['datetime_start' => $start, 'datetime_end' => $start] + $columns, ['item_id' => $itemId]);
+
+        return $itemId;
+    }
+
+    private function linkParticipant(int $dateId): void
+    {
+        $now = date('Y-m-d H:i:s');
+        $this->connection()->insert('items', ['context_id' => $this->room->getItemId(), 'modification_date' => $now, 'type' => 'link_item']);
+        $this->connection()->insert('link_items', [
+            'item_id' => (int) $this->connection()->lastInsertId(),
+            'first_item_id' => $dateId, 'first_item_type' => 'date',
+            'second_item_id' => $this->roomUser->getItemId(), 'second_item_type' => 'user',
+            'context_id' => $this->room->getItemId(), 'modification_date' => $now,
+        ]);
+    }
+
+    private function connection(): Connection
+    {
+        return self::getContainer()->get(EntityManagerInterface::class)->getConnection();
+    }
+
     private function seedDefaultCalendar(): void
     {
         CalendarsFactory::createOne([
