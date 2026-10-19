@@ -43,11 +43,20 @@ class RoomExportBuilderTest extends KernelTestCase
             'roomDescription' => 'Eine Beschreibung',
             'archived' => false,
             'portal' => PortalFactory::createOne(),
+            'extras' => [
+                'HOMECONF' => 'material_show',
+                'USAGE_INFO_HEADER' => ['MATERIAL' => 'Lesestoff'],
+                'USAGE_INFO_TEXT' => ['MATERIAL' => '<p>Alles zur Sitzung.</p>'],
+            ],
         ])->getItemId());
 
         $document = self::getContainer()->get(RoomExportBuilder::class)->build($room)->content;
 
         $this->assertSame(RoomExportBuilder::FORMAT_VERSION, $document['formatVersion']);
+        $this->assertSame(
+            [['rubric' => 'material', 'title' => 'Lesestoff', 'text' => '<p>Alles zur Sitzung.</p>']],
+            $document['room']['usageHints']
+        );
 
         $this->assertSame('Projektraum', $document['room']['title']);
         $this->assertSame('project', $document['room']['type']);

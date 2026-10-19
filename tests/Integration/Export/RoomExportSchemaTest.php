@@ -178,6 +178,20 @@ final class RoomExportSchemaTest extends KernelTestCase
             ['room' => $room, 'creator' => $user, 'type' => 'buzzword', 'name' => 'Klausur']
         )->getItemId();
 
+        $extras = unserialize((string) $this->connection->fetchOne(
+            'SELECT extras FROM room WHERE item_id = :id',
+            ['id' => $room->getItemId()]
+        )) ?: [];
+        $this->connection->executeStatement('UPDATE room SET extras = :extras WHERE item_id = :id', [
+            'extras' => serialize([
+                ...$extras,
+                'HOMECONF' => 'material_show',
+                'USAGE_INFO_TEXT' => ['HOME' => '<p>Willkommen.</p>', 'MATERIAL' => '<p>Alles zur Sitzung.</p>'],
+                'USAGE_INFO_HEADER' => ['MATERIAL' => 'Lesestoff'],
+            ]),
+            'id' => $room->getItemId(),
+        ]);
+
         $license = (new License())->setContextId($room->getItemId())->setTitle('CC BY 4.0')
             ->setContent('<p>Namensnennung</p>')->setPosition(1);
         $manager->persist($license);

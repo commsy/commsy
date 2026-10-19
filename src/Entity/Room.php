@@ -374,6 +374,64 @@ class Room
             : RubricConfiguration::defaultFor(RoomType::tryFrom($this->type));
     }
 
+    /**
+     * The usage hints the room shows on its start page and above its rubrics.
+     *
+     * Legacy keeps titles and texts in `extras`, each a map keyed by the rubric
+     * in capitals. A hint shows only where the room offers the rubric and only
+     * with a text, and this hands on the same ones; a hint left behind by a
+     * rubric the room switched off stays out.
+     *
+     * @return list<array{rubric: string, title: string|null, text: string}>
+     */
+    #[ApiProperty(schema: [
+        'type' => 'array',
+        'description' => 'The usage hints the room shows on its start page and above its rubrics, in the order of '
+            .'its settings. Only rubrics the room offers and hints with a text are included.',
+        'items' => [
+            'type' => 'object',
+            'additionalProperties' => false,
+            'required' => ['rubric', 'title', 'text'],
+            'properties' => [
+                'rubric' => [
+                    'type' => 'string',
+                    'description' => 'home for the start page, otherwise the rubric as the room settings name it, '
+                        .'such as announcement, material, user, group or topic. Groups and topics have hints of '
+                        .'their own although their entries share the label rubric.',
+                ],
+                'title' => [
+                    'type' => ['string', 'null'],
+                    'description' => 'null if the room never set one; CommSy then shows its default heading.',
+                ],
+                'text' => ['type' => 'string', 'description' => 'As HTML, the way CommSy stores it.'],
+            ],
+        ],
+    ])]
+    #[Groups(['export'])]
+    public function getUsageHints(): array
+    {
+        $titles = $this->extras['USAGE_INFO_HEADER'] ?? [];
+        $texts = $this->extras['USAGE_INFO_TEXT'] ?? [];
+
+        $hints = [];
+        foreach (['home', ...$this->getRubricConfiguration()->rubrics()] as $rubric) {
+            $key = mb_strtoupper($rubric);
+            $text = $texts[$key] ?? null;
+            if (!is_string($text) || '' === $text) {
+                continue;
+            }
+
+            $title = $titles[$key] ?? null;
+            $hints[] = [
+                'rubric' => $rubric,
+                'title' => is_string($title) && '' !== $title ? $title : null,
+                'text' => $text,
+            ];
+        }
+
+        return $hints;
+    }
+
     public function setStatus(string $status): Room
     {
         $this->status = $status;
