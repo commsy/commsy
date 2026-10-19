@@ -59,23 +59,6 @@ class cs_project_item extends cs_room_item
         $this->_type = \App\Room\RoomType::Project->value;
 
         $this->environment = $environment;
-        $this->_default_rubrics_array[0] = \App\Rubric\RubricType::Announcement->value;
-        $this->_default_rubrics_array[1] = \App\Rubric\RubricType::Todo->value;
-        $this->_default_rubrics_array[2] = \App\Rubric\RubricType::Date->value;
-        $this->_default_rubrics_array[3] = \App\Rubric\RubricType::Material->value;
-        $this->_default_rubrics_array[4] = \App\Rubric\RubricType::Discussion->value;
-        $this->_default_rubrics_array[5] = \App\Item\ItemType::User->value;
-        $this->_default_rubrics_array[6] = \App\Rubric\Label\LabelType::Group->value;
-        $this->_default_rubrics_array[7] = \App\Rubric\Label\LabelType::Topic->value;
-
-        $this->defaultHomeConf[\App\Rubric\RubricType::Announcement->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Todo->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Date->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Material->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Discussion->value] = 'show';
-        $this->defaultHomeConf[\App\Item\ItemType::User->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\Label\LabelType::Group->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\Label\LabelType::Topic->value] = 'show';
     }
 
     public function isProjectRoom(): bool

@@ -45,22 +45,6 @@ class cs_grouproom_item extends cs_room_item
         parent::__construct($environment);
 
         $this->_type = \App\Room\RoomType::GroupRoom->value;
-
-        $this->_default_rubrics_array[0] = \App\Rubric\RubricType::Announcement->value;
-        $this->_default_rubrics_array[1] = \App\Rubric\RubricType::Todo->value;
-        $this->_default_rubrics_array[2] = \App\Rubric\RubricType::Date->value;
-        $this->_default_rubrics_array[3] = \App\Rubric\RubricType::Material->value;
-        $this->_default_rubrics_array[4] = \App\Rubric\RubricType::Discussion->value;
-        $this->_default_rubrics_array[5] = \App\Item\ItemType::User->value;
-        $this->_default_rubrics_array[6] = \App\Rubric\Label\LabelType::Topic->value;
-
-        $this->defaultHomeConf[\App\Rubric\RubricType::Announcement->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Todo->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Date->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Material->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Discussion->value] = 'show';
-        $this->defaultHomeConf[\App\Item\ItemType::User->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\Label\LabelType::Topic->value] = 'show';
     }
 
     public function isGroupRoom(): bool

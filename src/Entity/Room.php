@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Repository\RoomRepository;
 use App\Room\RoomStatus;
 use App\Room\RoomType;
+use App\Room\RubricConfiguration;
 use App\State\PageSize;
 use App\State\RoomProvider;
 use App\Utils\EntityDatesTrait;
@@ -340,6 +341,11 @@ class Room
     /**
      * Get extras.
      */
+    public function getExtras(): ?array
+    {
+        return $this->extras;
+    }
+
     /**
      * Statuses a room added to the three a task always has.
      *
@@ -355,9 +361,17 @@ class Room
         return $extras['TODOEXTRASTATUSARRAY'] ?? [];
     }
 
-    public function getExtras(): ?array
+    /**
+     * The rubrics the room offers: what its settings list, or the default of
+     * its type if it has no settings of its own.
+     */
+    public function getRubricConfiguration(): RubricConfiguration
     {
-        return $this->extras;
+        $configuration = $this->extras['HOMECONF'] ?? null;
+
+        return is_string($configuration)
+            ? RubricConfiguration::fromString($configuration)
+            : RubricConfiguration::defaultFor(RoomType::tryFrom($this->type));
     }
 
     public function setStatus(string $status): Room

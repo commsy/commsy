@@ -650,7 +650,7 @@ class cs_room_item extends cs_context_item
             }
         } else {
             $retour = [];
-            $array = $this->_default_rubrics_array;
+            $array = $this->getAvailableDefaultRubricArray();
             foreach ($array as $current) {
                 $retour[] = $current.'_no';
             }
@@ -696,7 +696,7 @@ class cs_room_item extends cs_context_item
             }
         } else {
             $retour = [];
-            $array = $this->_default_rubrics_array;
+            $array = $this->getAvailableDefaultRubricArray();
             foreach ($array as $current) {
                 $retour[] = $current.'_no';
             }

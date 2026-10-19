@@ -48,18 +48,6 @@ class cs_userroom_item extends cs_room_item
     {
         cs_context_item::__construct($environment);
         $this->_type = self::ROOM_TYPE_USER;
-
-        $this->_default_rubrics_array[0] = \App\Rubric\RubricType::Announcement->value;
-        $this->_default_rubrics_array[1] = \App\Rubric\RubricType::Todo->value;
-        $this->_default_rubrics_array[3] = \App\Rubric\RubricType::Material->value;
-        $this->_default_rubrics_array[4] = \App\Rubric\RubricType::Discussion->value;
-        $this->_default_rubrics_array[5] = \App\Item\ItemType::User->value;
-
-        $this->defaultHomeConf[\App\Rubric\RubricType::Announcement->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Todo->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Material->value] = 'show';
-        $this->defaultHomeConf[\App\Rubric\RubricType::Discussion->value] = 'show';
-        $this->defaultHomeConf[\App\Item\ItemType::User->value] = 'show';
     }
 
     public function isUserroom(): bool

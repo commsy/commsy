@@ -25,17 +25,6 @@ class cs_context_item extends cs_item
 
     private cs_list $userList;
 
-    public array $_default_rubrics_array = [];
-
-    protected array $defaultHomeConf = [];
-
-    public array $_current_rubrics_array = [];
-
-    public array $_current_home_conf_array = [];
-
-    public array $_rubric_support = [];
-
-
     private array $cachePageImpressions = [];
 
     /** constructor: cs_context_item
@@ -1383,6 +1372,14 @@ class cs_context_item extends cs_item
     }
 
     /**
+     * The rubrics the room offers, read from its configuration.
+     */
+    public function getRubricConfiguration(): \App\Room\RubricConfiguration
+    {
+        return \App\Room\RubricConfiguration::fromString($this->getHomeConf());
+    }
+
+    /**
      * get configuration of the homepage
      * this method configuration of the homepage.
      *
@@ -1390,31 +1387,22 @@ class cs_context_item extends cs_item
      */
     public function getDefaultHomeConf(): string
     {
-        $rubrics = $this->_default_rubrics_array;
-
-        // only consider rubrics that are set in the default home conf array
-        // this should always be the case
-        $rubrics = array_filter($rubrics, fn ($rubric) => isset($this->defaultHomeConf[$rubric]));
-
-        $rubrics = array_map(fn ($rubric) => "{$rubric}_show", $rubrics);
-
-        return implode(',', $rubrics);
+        return $this->getDefaultRubricConfiguration()->toString();
     }
 
+    /**
+     * @throws LogicException if the room type does not offer a rubric, or an entry is neither shown nor hidden
+     */
     public function setHomeConf(string $config): void
     {
-        // validate
-        $rubrics = empty($config) ? [] : explode(',', $config);
-        $filtered = array_filter($rubrics, function ($rubric) {
-            [$rubricType, $rubricConf] = explode('_', $rubric);
-            return isset($this->defaultHomeConf[$rubricType]) && in_array($rubricConf, ['show', 'hide']);
-        });
-
-        if (count($rubrics) != count($filtered)) {
-            throw new LogicException('Invalid rubric configuration');
-        }
+        \App\Room\RubricConfiguration::validated($config, \App\Room\RoomType::tryFrom((string) $this->getItemType()));
 
         $this->_addExtra('HOMECONF', $config);
+    }
+
+    private function getDefaultRubricConfiguration(): \App\Room\RubricConfiguration
+    {
+        return \App\Room\RubricConfiguration::defaultFor(\App\Room\RoomType::tryFrom((string) $this->getItemType()));
     }
 
     // #########################################
@@ -1904,42 +1892,25 @@ class cs_context_item extends cs_item
     /** returns a boolean, if the project HomeConf support rubric = true
      * else false.
      */
-    public function withRubric($rubric_type)
+    public function withRubric($rubric_type): bool
     {
-        if (!isset($this->_rubric_support[$rubric_type])) {
-            $current_room_modules = $this->getHomeConf();
-
-            // rubric is mentioned? if not -> false
-            $this->_rubric_support[$rubric_type] = !empty($rubric_type) && mb_stristr($current_room_modules, (string) $rubric_type);
-        }
-
-        return $this->_rubric_support[$rubric_type];
+        return !empty($rubric_type) && $this->getRubricConfiguration()->offers((string) $rubric_type);
     }
 
+    /**
+     * @return list<string>
+     */
     public function getAvailableRubrics(): array
     {
-        $current_room_modules = $this->getHomeConf();
-        if (!empty($current_room_modules)) {
-            $tokens = explode(',', $current_room_modules);
-            $pointer = 0;
-            foreach ($tokens as $module) {
-                [$rubric, $view] = explode('_', $module);
-                if ('contact' == $rubric) {
-                    $rubric = 'user';
-                }
-                if ($this->withRubric($rubric)) {
-                    $this->_current_rubrics_array[$pointer++] = \App\Legacy\ItemTypeMapper::fromModule($rubric);
-                }
-                $this->_current_home_conf_array[\App\Legacy\ItemTypeMapper::fromModule($rubric)] = $view;
-            }
-        }
-
-        return $this->_current_rubrics_array;
+        return $this->getRubricConfiguration()->rubrics();
     }
 
+    /**
+     * @return list<string>
+     */
     public function getAvailableDefaultRubricArray(): array
     {
-        return $this->_default_rubrics_array;
+        return $this->getDefaultRubricConfiguration()->rubrics();
     }
 
     public function isRSSOn(): bool

@@ -65,7 +65,7 @@ final class RubricConfigurationCharacterizationTest extends KernelTestCase
         $shown = implode(',', array_map(static fn (string $rubric): string => $rubric.'_show', $rubrics));
 
         $this->assertSame($shown, $room->getDefaultHomeConf());
-        $this->assertSame($rubrics, array_values($room->getAvailableDefaultRubricArray()));
+        $this->assertSame($rubrics, $room->getAvailableDefaultRubricArray());
         $this->assertSame($rubrics, $room->getAvailableRubrics());
         $this->assertSame($shown, $room->getHomeConf());
     }
