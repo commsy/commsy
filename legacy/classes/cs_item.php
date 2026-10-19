@@ -59,7 +59,8 @@ class cs_item
 
     private bool $isSetBuzzwordsByIDs = false;
 
-    private array $externalViewerUsers = [];
+    /** null while not set on this instance, so a save leaves the stored viewers alone */
+    private ?array $externalViewerUsers = null;
 
     /** constructor
      * the only available constructor, initial values for internal variables.
@@ -1135,6 +1136,11 @@ class cs_item
 
      private function persistExternalViewer(): void
      {
+         // not named on this instance: the stored viewers stay as they are
+         if (null === $this->externalViewerUsers) {
+             return;
+         }
+
          if (!empty($this->externalViewerUsers)) {
              $item_manager = $this->_environment->getItemManager();
 
