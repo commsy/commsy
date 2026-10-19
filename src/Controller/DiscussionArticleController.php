@@ -14,6 +14,7 @@
 namespace App\Controller;
 
 use App\Action\Delete\DeleteAction;
+use App\Action\Delete\DeleteDiscussionArticle;
 use App\Utils\DiscussionService;
 use cs_discussionarticle_item;
 use cs_room_item;
@@ -49,11 +50,15 @@ class DiscussionArticleController extends BaseController
     public function xhrDelete(
         Request $request,
         DeleteAction $action,
+        DeleteDiscussionArticle $deleteDiscussionArticle,
         int $roomId
     ): Response
     {
         $room = $this->getRoom($roomId);
         $items = $this->getItemsForActionRequest($room, $request);
+
+        // an answer is no rubric, the generic strategy has no deleter for it
+        $action->setDeleteStrategy($deleteDiscussionArticle);
 
         return $action->execute($room, $items);
     }
