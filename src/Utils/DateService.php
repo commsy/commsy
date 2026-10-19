@@ -262,7 +262,8 @@ readonly class DateService
     public function getDateByUid($uid, $calendarId, $roomId): \cs_dates_item|bool
     {
         $this->datesManager->reset();
-        $this->datesManager->setUidArrayLimit(['"'.$uid.'"']);
+        // a bound parameter, so no quotes around the uid
+        $this->datesManager->setUidArrayLimit([(string) $uid]);
         $this->datesManager->setContextLimit($roomId);
         $this->datesManager->setWithoutDateModeLimit();
         $this->datesManager->select();
