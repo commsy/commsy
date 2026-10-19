@@ -143,6 +143,14 @@ class cs_discussionarticle_item extends cs_item
         return $this->_getLinkedItems($this->_environment->getMaterialManager(), \App\Rubric\RubricType::Material->value);
     }
 
+    /**
+     * The answer as cs_discussion_item::copy() takes it over.
+     */
+    public function cloneCopy(): self
+    {
+        return clone $this;
+    }
+
     /** save discussion article
      * this methode saves the discussion article.
      */
