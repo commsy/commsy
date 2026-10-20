@@ -68,10 +68,11 @@ class Room
     public final const ACTIVITY_IDLE_NOTIFIED = 'idle_notified';
     public final const ACTIVITY_ABANDONED = 'abandoned';
 
+    // items.item_id is the id source; the room row reuses it
     #[ApiProperty(description: 'The unique identifier')]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     #[Groups(['api', 'export'])]
     private int $itemId;
 
