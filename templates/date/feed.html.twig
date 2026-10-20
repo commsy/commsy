@@ -51,7 +51,7 @@
                         <a href="{{ path('app_date_detail', {'roomId': roomId, 'itemId': date.itemId}) }}">{{ date.title|decodeHtmlEntity }}</a>
                     {% else %}
                         <span class="uk-text-muted">
-                            {{ macros.deactivatedEntryTitle(commsy.portal, commsy.room, material.title) }}
+                            {{ macros.deactivatedEntryTitle(commsy.portal, commsy.room, date.title) }}
                         </span>
                     {% endif %}
                 </h4>
