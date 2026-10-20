@@ -71,10 +71,11 @@ class Server
 {
     use EntityUsersTrait;
 
+    // items.item_id is the id source; the server row reuses it
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Id]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     #[Groups(['api'])]
     private int $id;
 

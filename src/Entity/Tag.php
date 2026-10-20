@@ -30,9 +30,10 @@ class Tag
     use EntityDatesTrait;
     use EntityUsersTrait;
 
+    // items.item_id is the id source; the tag row reuses it
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemId = null;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]

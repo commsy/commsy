@@ -15,9 +15,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Schema;
 
-use App\Entity\Discussionarticles;
-use App\Entity\Discussions;
-use App\Entity\Room;
+use App\Entity\Items;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -47,12 +45,17 @@ final class ItemIdCounterTest extends KernelTestCase
         self::bootKernel();
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        foreach ([Discussions::class, Discussionarticles::class, Room::class] as $entity) {
-            self::assertSame(
-                ClassMetadata::GENERATOR_TYPE_NONE,
-                $entityManager->getClassMetadata($entity)->generatorType,
-                $entity.' must not let the database generate its id',
-            );
+        $generating = [];
+        foreach ($entityManager->getMetadataFactory()->getAllMetadata() as $metadata) {
+            if (Items::class === $metadata->getName() || ['item_id'] !== $metadata->getIdentifierColumnNames()) {
+                continue;
+            }
+            if (ClassMetadata::GENERATOR_TYPE_NONE !== $metadata->generatorType) {
+                $generating[] = $metadata->getName();
+            }
         }
+
+        // a generated id would also make the next schema diff add a counter to the table
+        self::assertSame([], $generating, 'these entities let the database generate their id');
     }
 }

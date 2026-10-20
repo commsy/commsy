@@ -60,9 +60,10 @@ class Dates implements ExportableEntry
     use EntityDatesTrait;
     use EntityUsersTrait;
 
+    // items.item_id is the id source; the dates row reuses it
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     #[Groups(['export'])]
     #[ApiProperty(description: 'The entry\'s id, unique across all rubrics.')]
     private int $itemId;

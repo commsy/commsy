@@ -33,10 +33,11 @@ class User
     use EntityDatesTrait;
     use EntityUsersTrait;
 
+    // items.item_id is the id source; the user row reuses it
     #[ApiProperty(description: 'The unique identifier.')]
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     public int $itemId;
 
     #[ORM\ManyToOne(targetEntity: Room::class)]

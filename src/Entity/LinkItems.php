@@ -34,9 +34,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['deleter_id'], name: 'deleter_id')]
 class LinkItems
 {
+    // items.item_id is the id source; the link_items row reuses it
     #[ORM\Column(name: 'item_id', type: Types::INTEGER)]
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private ?int $itemId = 0;
 
     #[ORM\Column(name: 'context_id', type: Types::INTEGER, nullable: true)]
