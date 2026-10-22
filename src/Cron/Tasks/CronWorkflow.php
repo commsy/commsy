@@ -108,11 +108,11 @@ class CronWorkflow implements CronTaskInterface
             $material = $materialManager->getItem($validityItemInfo['item_id']);
             $latestMaterialVersionId = $materialManager->getLatestVersionID($validityItemInfo['item_id']);
 
-            if (isset($material) && !$material->isDeleted() && ($validityItemInfo['item_id'] == $latestMaterialVersionId)) {
+            if (isset($material) && !$material->isDeleted() && ($validityItemInfo['version_id'] == $latestMaterialVersionId)) {
                 /** @var Room $room */
                 $room = $this->roomRepository->find($material->getContextId());
 
-                if ($material->getWorkflowValidity() && $material->withWorkflowValidity()) {
+                if ($material->getWorkflowValidity() && $room->withWorkflowValidity()) {
                     $emailReceivers = [];
 
                     if ('creator' == $material->getWorkflowValidityWho()) {
