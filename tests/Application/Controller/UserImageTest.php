@@ -16,16 +16,20 @@ declare(strict_types=1);
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use App\Entity\Room;
 use App\Entity\User;
 use App\Files\FilesDirectory;
+use App\Room\RoomType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Factory\RoomFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * What is served of the pictures of people, and how.
+ * The picture and the initials of a person are only served to someone
+ * signed in, and the picture is taken from the person's own room.
  */
 final class UserImageTest extends AbstractApplicationTestCase
 {
@@ -36,6 +40,63 @@ final class UserImageTest extends AbstractApplicationTestCase
     {
         (new Filesystem())->remove($this->directories);
         parent::tearDown();
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testNothingIsServedWithoutSigningIn(): void
+    {
+        /** @var Room $room */
+        $room = RoomWithMemberStory::get('room');
+        /** @var User $user */
+        $user = RoomWithMemberStory::get('roomUser');
+
+        foreach (['image', 'initials'] as $kind) {
+            $this->client->request('GET', "/room/{$room->getItemId()}/user/{$user->getItemId()}/$kind");
+            self::assertTrue($this->client->getResponse()->isRedirect(), "$kind must send to the login");
+        }
+
+        $this->client->request('GET', '/room/user/guestimage');
+        $this->assertResponseIsSuccessful();
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testThePictureIsTakenFromThePersonsOwnRoom(): void
+    {
+        /** @var Account $account */
+        $account = RoomWithMemberStory::get('account');
+        /** @var Room $room */
+        $room = RoomWithMemberStory::get('room');
+        /** @var User $user */
+        $user = RoomWithMemberStory::get('roomUser');
+        $otherRoom = RoomFactory::createOne([
+            'contextId' => $account->getContextId(),
+            'portal' => $account->getPortal(),
+            'type' => RoomType::Project->value,
+        ]);
+        $this->givePicture($user, (int) $account->getContextId());
+
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+        $inOwnRoom = $this->fetch("/room/{$room->getItemId()}/user/{$user->getItemId()}/image");
+        $viaOtherRoom = $this->fetch("/room/{$otherRoom->getItemId()}/user/{$user->getItemId()}/image");
+        $initials = $this->fetch("/room/{$room->getItemId()}/user/{$user->getItemId()}/initials");
+
+        self::assertNotSame($initials, $inOwnRoom, 'the picture, not the initials');
+        self::assertSame($inOwnRoom, $viaOtherRoom);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testAnIdThatIsNoPersonIsNotFound(): void
+    {
+        /** @var Account $account */
+        $account = RoomWithMemberStory::get('account');
+        /** @var Room $room */
+        $room = RoomWithMemberStory::get('room');
+
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+        foreach (['image', 'initials'] as $kind) {
+            $this->client->request('GET', "/room/{$room->getItemId()}/user/{$room->getItemId()}/$kind");
+            $this->assertResponseStatusCodeSame(404, $kind);
+        }
     }
 
     #[WithStory(RoomWithMemberStory::class)]
@@ -52,6 +113,14 @@ final class UserImageTest extends AbstractApplicationTestCase
         $this->client->request('GET', "/media/cache/resolve/commsy_user_image/$relativePath");
 
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    private function fetch(string $path): string
+    {
+        $this->client->request('GET', $path);
+        $this->assertResponseIsSuccessful();
+
+        return (string) $this->client->getInternalResponse()->getContent();
     }
 
     /**

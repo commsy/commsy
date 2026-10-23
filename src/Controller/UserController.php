@@ -21,6 +21,7 @@ use App\Entity\Portal;
 use App\Entity\User;
 use App\Event\UserLeftRoomEvent;
 use App\Event\UserStatusChangedEvent;
+use App\Files\FilesDirectory;
 use App\Filter\UserFilterType;
 use App\Form\Type\Profile\AccountContactFormType;
 use App\Form\Type\SendType;
@@ -53,7 +54,6 @@ use Exception;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -909,48 +909,54 @@ class UserController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/user/{itemId}/initials')]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function initials(
         AvatarService $avatarService,
         int $itemId
     ): Response {
-        return $this->imageResponse($avatarService->getAvatar($itemId));
+        if (null === $this->userService->getUser($itemId)) {
+            throw $this->createNotFoundException('No user found for id '.$itemId);
+        }
+
+        return $this->imageResponse($avatarService->getAvatar($itemId) ?: $avatarService->getUnknownUserImage());
     }
 
+    /**
+     * The picture lies in the directory of the person's own room: each room
+     * holds its own copy. Without one, the initials stand in.
+     */
     #[Route(path: '/room/{roomId}/user/{itemId}/image')]
+    #[IsGranted('IS_AUTHENTICATED')]
     public function image(
         Request $request,
         AvatarService $avatarService,
         DataManager $dataManager,
         FilterManager $filterManager,
-        int $roomId,
+        FilesDirectory $filesDirectory,
         int $itemId
     ): Response {
-        $content = null;
         $user = $this->userService->getUser($itemId);
+        if (null === $user) {
+            throw $this->createNotFoundException('No user found for id '.$itemId);
+        }
+
+        $content = null;
         $picture = $user->getPicture();
-
-        $foundUserImage = false;
-        if ('' != $picture) {
-            $disc_manager = $this->legacyEnvironment->getDiscManager();
+        if ('' !== $picture && basename($picture) === $picture) {
             $portalId = $this->currentContextResolver->getPortal()?->getId() ?? 0;
-            $filePath = $disc_manager->getAbsoluteFilePath($portalId, $roomId, $picture);
-            $relativePath = Path::makeRelative($filePath, getcwd());
-
-            if (file_exists($relativePath)) {
-                $processedImage = $dataManager->find('commsy_user_image', $relativePath);
-                $content = $filterManager->applyFilter($processedImage,
-                    'commsy_user_image')->getContent();
-
-                if ($content) {
-                    $foundUserImage = true;
-                }
+            $path = $filesDirectory->contextDirectory($portalId, (int) $user->getContextID()).'/'.$picture;
+            if (is_file($path)) {
+                $content = $filterManager->applyFilter(
+                    $dataManager->find('commsy_user_image', (string) $filesDirectory->relativeOf($path)),
+                    'commsy_user_image',
+                )->getContent();
             }
         }
 
-        if (!$foundUserImage) {
-            $content = $avatarService->getAvatar($itemId);
-        }
-        return $this->imageResponse($content, $request->query->has('v'));
+        return $this->imageResponse(
+            $content ?: $avatarService->getAvatar($itemId) ?: $avatarService->getUnknownUserImage(),
+            $request->query->has('v'),
+        );
     }
 
     /**
