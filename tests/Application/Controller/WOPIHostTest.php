@@ -299,7 +299,7 @@ final class WOPIHostTest extends WebTestCase
      */
     private function useOfficeServer(): void
     {
-        // a host of its own per test; the cache key does not allow a path
+        // a server of its own per test, so no cached discovery gets in the way
         $baseUrl = 'http://office-'.uniqid().'.test';
 
         $actions = [];

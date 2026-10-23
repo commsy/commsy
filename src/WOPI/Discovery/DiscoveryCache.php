@@ -55,10 +55,15 @@ final readonly class DiscoveryCache
         }
     }
 
+    /**
+     * Host and path name the server; hashed, since a cache key must not hold
+     * characters like the slash of a path.
+     */
     private function getCacheKey(string $discoveryBaseUrl): string
     {
         $hostPath = parse_url($discoveryBaseUrl, PHP_URL_HOST) .
             parse_url($discoveryBaseUrl, PHP_URL_PATH);
-        return "commsy.wopi.discovery.$hostPath";
+
+        return 'commsy.wopi.discovery.' . hash('xxh128', $hostPath);
     }
 }
