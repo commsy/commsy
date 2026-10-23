@@ -57,6 +57,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -85,10 +86,14 @@ class ItemController extends AbstractController
         Request $request,
         int $roomId,
         int $itemId,
-        bool $draft = false
+        bool $draft = false,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
-        /** @var cs_item $item */
-        $item = $itemService->getTypedItem($itemId);
+        /** @var cs_item|null $item */
+        $item = $itemService->getTypedItem($itemId, $versionId);
+        if (!$item) {
+            throw $this->createNotFoundException('No item found for id '.$itemId);
+        }
 
         $transformer = $transformerManager->getConverter($item->getItemType());
 
@@ -114,14 +119,17 @@ class ItemController extends AbstractController
             'CKEditorFuncNum' => 42,
             'command' => 'QuickUpload',
             'type' => 'Images',
+            'versionId' => $versionId,
         ]);
 
         $formData = $transformer->transform($item);
 
+        // The pad belongs to the newest version; older versions are edited without it.
         $useEtherpad = false;
         if ($parameterBag->get('commsy.etherpad.enabled')) {
             $materialItem = $materialService->getMaterial($itemId);
-            $useEtherpad = $materialItem && $materialItem->getEtherpadEditor();
+            $useEtherpad = $materialItem && $materialItem->getEtherpadEditor()
+                && (null === $versionId || $versionId === (int) $materialItem->getVersionID());
         }
 
         $formOptions = [
@@ -131,6 +139,7 @@ class ItemController extends AbstractController
             'filelistUrl' => $this->generateUrl('app_item_filelist', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
+                'versionId' => $versionId,
             ]),
             'lock_protection' => !$draft && !$useEtherpad,
         ];
@@ -161,7 +170,7 @@ class ItemController extends AbstractController
 
                 if ($item->getItemType() == RubricType::Material->value) {
                     /** @var $item cs_material_item */
-                    if ($item->getEtherpadEditor()) {
+                    if ($useEtherpad) {
                         try {
                             // Derived from the material rather than read from
                             // a stored id: a stored one can go stale and
@@ -188,7 +197,7 @@ class ItemController extends AbstractController
                 $item->save();
                 if ((ItemType::Section->value == $item->getItemType()) || (ItemType::Step->value == $item->getItemType())) {
                     /** @var $item cs_section_item|cs_step_item */
-                    $linkedItem = $itemService->getTypedItem($item->getlinkedItemID());
+                    $linkedItem = $itemService->getTypedItem($item->getlinkedItemID(), $versionId);
                     $linkedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                     $linkedItem->save();
                 }
@@ -209,6 +218,7 @@ class ItemController extends AbstractController
             return $this->redirectToRoute('app_item_savedescription', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
+                'versionId' => $versionId,
             ]);
         }
 
@@ -227,9 +237,10 @@ class ItemController extends AbstractController
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
-        $item = $itemService->getTypedItem($itemId);
+        $item = $itemService->getTypedItem($itemId, $versionId);
         $itemArray = [$item];
 
         $modifierList = [];
@@ -259,7 +270,8 @@ class ItemController extends AbstractController
         LegacyEnvironment $environment,
         Request $request,
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
         $workflowData = [];
         $room = $roomService->getRoomItem($roomId);
@@ -270,7 +282,7 @@ class ItemController extends AbstractController
 
         if ('material' == $item->getItemType()) {
             // get material from MaterialService
-            $tempItem = $materialService->getMaterial($itemId);
+            $tempItem = $materialService->getMaterialInVersion($itemId, $versionId);
             if (!$tempItem) {
                 throw $this->createNotFoundException('No material found for id '.$roomId);
             }
@@ -287,7 +299,7 @@ class ItemController extends AbstractController
                 $tempItem->save();
             }
 
-            return $this->redirectToRoute('app_material_saveworkflow', ['roomId' => $roomId, 'itemId' => $itemId]);
+            return $this->redirectToRoute('app_material_saveworkflow', ['roomId' => $roomId, 'itemId' => $itemId, 'versionId' => $versionId]);
         }
 
         $workflowData['textGreen'] = $room->getWorkflowTrafficLightTextGreen();
@@ -726,10 +738,10 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/filelist')]
-    public function filelist($roomId, $itemId, ItemService $itemService): JsonResponse
+    public function filelist($roomId, $itemId, ItemService $itemService, #[MapQueryParameter] ?int $versionId = null): JsonResponse
     {
         /** @var cs_item $item */
-        $item = $itemService->getItem($itemId);
+        $item = null === $versionId ? $itemService->getItem($itemId) : $itemService->getTypedItem($itemId, $versionId);
 
         /** @var cs_file_item[] $files */
         $files = $item->getFileList()->to_array();
@@ -866,9 +878,10 @@ class ItemController extends AbstractController
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
-        $item = $itemService->getTypedItem($itemId);
+        $item = $itemService->getTypedItem($itemId, $versionId);
 
         $eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::CANCEL);
 
@@ -896,6 +909,7 @@ class ItemController extends AbstractController
         $redirectUrl = $this->generateUrl("app_{$itemType}_" . $viewType, [
             'roomId' => $roomId,
             'itemId' => $itemId,
+            'versionId' => 'detail' === $viewType ? $versionId : null,
         ]);
 
         return $this->json([

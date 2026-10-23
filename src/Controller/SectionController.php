@@ -17,7 +17,7 @@ use App\Action\Delete\DeleteAction;
 use App\Action\Delete\DeleteSection;
 use App\Utils\MaterialService;
 use cs_room_item;
-use cs_step_item;
+use cs_section_item;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,9 +43,12 @@ class SectionController extends BaseController
     }
 
     /**
+     * The version sits in the path: the action script replaces the query of
+     * this URL with the one of the current page.
+     *
      * @throws Exception
      */
-    #[Route(path: '/room/{roomId}/section/xhr/delete', condition: 'request.isXmlHttpRequest()')]
+    #[Route(path: '/room/{roomId}/section/xhr/delete/{versionId}', requirements: ['versionId' => '\d+'], defaults: ['versionId' => null], condition: 'request.isXmlHttpRequest()')]
     public function xhrDelete(
         Request $request,
         int $roomId
@@ -62,7 +65,7 @@ class SectionController extends BaseController
      * @param bool          $selectAll
      * @param int[]         $itemIds
      *
-     * @return cs_step_item[]
+     * @return cs_section_item[]
      */
     protected function getItemsByFilterConditions(
         Request $request,
@@ -71,7 +74,10 @@ class SectionController extends BaseController
         $itemIds = []
     ) {
         if (1 == count($itemIds)) {
-            return [$this->materialService->getSection($itemIds[0])];
+            $versionId = $request->attributes->get('versionId');
+            $section = $this->materialService->getSectionInVersion((int) $itemIds[0], null === $versionId ? null : (int) $versionId);
+
+            return $section ? [$section] : [];
         }
 
         return [];

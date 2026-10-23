@@ -11,8 +11,8 @@
 
         {# description #}
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-            editUrl: '{{ path('app_item_editdescription', { 'roomId': section.contextId, 'itemId': section.itemId }) }}',
-            cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': section.contextId, 'itemId': section.itemId }) }}'
+            editUrl: '{{ path('app_item_editdescription', { 'roomId': section.contextId, 'itemId': section.itemId, 'versionId': section.versionId }) }}',
+            cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': section.contextId, 'itemId': section.itemId, 'versionId': section.versionId }) }}'
         }">
             {{ macrosItem.itemDescription('description', section, true, section.description, section.draft) }}
         </div>
@@ -21,6 +21,7 @@
         <div id="files{{ section.itemId }}">
             {{ component('FileList:FileList', {
                 itemId: section.itemId,
+                versionId: section.versionId,
                 draft: section.draft
             }) }}
         </div>

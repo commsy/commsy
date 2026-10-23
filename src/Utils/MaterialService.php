@@ -158,6 +158,30 @@ class MaterialService
         return $this->sectionManager->getItem($itemId);
     }
 
+    /**
+     * Returns the given version of a material, or the newest one without a version.
+     */
+    public function getMaterialInVersion(int $itemId, ?int $versionId): ?cs_material_item
+    {
+        if (null === $versionId) {
+            return $this->getMaterial($itemId);
+        }
+
+        return $this->materialManager->getItemByVersion($itemId, $versionId);
+    }
+
+    /**
+     * Returns the given version of a section, or the newest one without a version.
+     */
+    public function getSectionInVersion(int $itemId, ?int $versionId): ?cs_section_item
+    {
+        if (null === $versionId) {
+            return $this->getSection($itemId);
+        }
+
+        return $this->sectionManager->getItemByVersion($itemId, $versionId);
+    }
+
     public function getNewMaterial()
     {
         return $this->materialManager->getNewItem();

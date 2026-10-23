@@ -59,6 +59,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -807,14 +808,15 @@ class MaterialController extends BaseController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function saveWorkflow(
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
         $roomItem = $this->getRoom($roomId);
         $item = $this->itemService->getItem($itemId);
         $tempItem = null;
 
         if ('material' == $item->getItemType()) {
-            $tempItem = $this->materialService->getMaterial($itemId);
+            $tempItem = $this->materialService->getMaterialInVersion($itemId, $versionId);
         }
 
         $itemArray = [$tempItem];
@@ -824,7 +826,7 @@ class MaterialController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
 
         return $this->render('material/save_workflow.html.twig', ['roomId' => $roomId, 'item' => $tempItem, 'modifierList' => $modifierList, 'workflowGroupArray' => $infoArray['workflowGroupArray'], 'workflowUserArray' => $infoArray['workflowUserArray'], 'workflowText' => $infoArray['workflowText'], 'workflowValidityDate' => $infoArray['workflowValidityDate'], 'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'], 'workflowTitles' => [
             '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
@@ -842,7 +844,8 @@ class MaterialController extends BaseController
         LabelService $labelService,
         LicenseRepository $licenseRepository,
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
         $form = null;
         // NOTE: this method currently gets used for both, material & section items
@@ -863,7 +866,7 @@ class MaterialController extends BaseController
             $isMaterial = true;
             $isDraft = $item->isDraft();
 
-            $materialItem = $this->materialService->getMaterial($itemId);
+            $materialItem = $this->materialService->getMaterialInVersion($itemId, $versionId);
             if (!$materialItem) {
                 throw $this->createNotFoundException('No material found for id '.$roomId);
             }
@@ -885,6 +888,7 @@ class MaterialController extends BaseController
                 'action' => $this->generateUrl('app_material_edit', [
                     'roomId' => $roomId,
                     'itemId' => $itemId,
+                    'versionId' => $versionId,
                 ]),
                 'placeholderText' => '['.$this->translator->trans('insert title').']',
                 'categoryMappingOptions' => [
@@ -905,7 +909,7 @@ class MaterialController extends BaseController
         } else {
             if ('section' == $item->getItemType()) {
                 // get section from MaterialService
-                $section = $this->materialService->getSection($itemId);
+                $section = $this->materialService->getSectionInVersion($itemId, $versionId);
                 $typedItem = $section;
                 if (!$section) {
                     throw $this->createNotFoundException('No section found for id '.$roomId);
@@ -913,7 +917,7 @@ class MaterialController extends BaseController
                 $formData = $this->materialTransformer->transform($section);
                 $form = $this->createForm(SectionType::class, $formData, ['placeholderText' => '['.$this->translator->trans('insert title').']']);
 
-                $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($section->getlinkedItemID())),
+                $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterialInVersion($section->getlinkedItemID(), $versionId)),
                     CommsyEditEvent::EDIT);
             }
         }
@@ -961,11 +965,11 @@ class MaterialController extends BaseController
                 $typedItem->save();
 
                 if (ItemType::Section->value == $typedItem->getItemType()) {
-                    $linkedMaterialItem = $this->materialService->getMaterial($typedItem->getlinkedItemID());
+                    $linkedMaterialItem = $this->materialService->getMaterialInVersion($typedItem->getlinkedItemID(), $versionId);
                     $linkedMaterialItem->save();
                 }
 
-                return $this->redirectToRoute('app_material_save', ['roomId' => $roomId, 'itemId' => $itemId]);
+                return $this->redirectToRoute('app_material_save', ['roomId' => $roomId, 'itemId' => $itemId, 'versionId' => $versionId]);
             }
         }
 
@@ -984,21 +988,22 @@ class MaterialController extends BaseController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function save(
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
         $roomItem = $this->getRoom($roomId);
         $item = $this->itemService->getItem($itemId);
         $tempItem = null;
 
         if ('material' == $item->getItemType()) {
-            $tempItem = $this->materialService->getMaterial($itemId);
+            $tempItem = $this->materialService->getMaterialInVersion($itemId, $versionId);
 
             $this->eventDispatcher->dispatch(new CommsyEditEvent($tempItem), CommsyEditEvent::SAVE);
         } else {
             if ('section' == $item->getItemType()) {
-                $tempItem = $this->materialService->getSection($itemId);
+                $tempItem = $this->materialService->getSectionInVersion($itemId, $versionId);
 
-                $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterial($tempItem->getLinkedItemID())),
+                $this->eventDispatcher->dispatch(new CommsyEditEvent($this->materialService->getMaterialInVersion($tempItem->getLinkedItemID(), $versionId)),
                     CommsyEditEvent::SAVE);
             }
         }
@@ -1009,7 +1014,7 @@ class MaterialController extends BaseController
             $modifierList[$item->getItemId()] = $this->itemService->getAdditionalEditorsForItem($item);
         }
 
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
 
         return $this->render('material/save.html.twig', [
             'roomId' => $roomId,
@@ -1104,9 +1109,10 @@ class MaterialController extends BaseController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function createSection(
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
-        $material = $this->materialService->getMaterial($itemId);
+        $material = $this->materialService->getMaterialInVersion($itemId, $versionId);
         $sectionList = $material->getSectionList();
         $countSections = $sectionList->getCount();
 
@@ -1220,9 +1226,10 @@ class MaterialController extends BaseController
     public function editSections(
         Request $request,
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
-        $material = $this->materialService->getMaterial($itemId);
+        $material = $this->materialService->getMaterialInVersion($itemId, $versionId);
         $item = $this->itemService->getItem($itemId);
 
         if (!$material) {
@@ -1230,7 +1237,7 @@ class MaterialController extends BaseController
         }
         $formData = $this->materialTransformer->transform($material);
 
-        $formOptions = ['action' => $this->generateUrl('app_material_editsections', ['roomId' => $roomId, 'itemId' => $itemId])];
+        $formOptions = ['action' => $this->generateUrl('app_material_editsections', ['roomId' => $roomId, 'itemId' => $itemId, 'versionId' => $versionId])];
 
         $this->eventDispatcher->dispatch(new CommsyEditEvent($material), CommsyEditEvent::EDIT);
 
@@ -1251,11 +1258,11 @@ class MaterialController extends BaseController
             } else {
                 if ($form->get('cancel')->isClicked()) {
                     return $this->redirectToRoute('app_material_detail',
-                        ['roomId' => $roomId, 'itemId' => $itemId]);
+                        ['roomId' => $roomId, 'itemId' => $itemId, 'versionId' => $versionId]);
                 }
             }
 
-            return $this->redirectToRoute('app_material_savesections', ['roomId' => $roomId, 'itemId' => $itemId]);
+            return $this->redirectToRoute('app_material_savesections', ['roomId' => $roomId, 'itemId' => $itemId, 'versionId' => $versionId]);
         }
 
         return $this->render('material/edit_sections.html.twig', ['material' => $material, 'form' => $form, 'sectionList' => $material->getSectionList()->to_array()]);
@@ -1265,10 +1272,11 @@ class MaterialController extends BaseController
     #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function savesections(
         int $roomId,
-        int $itemId
+        int $itemId,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response {
         $item = $this->itemService->getItem($itemId);
-        $material = $this->materialService->getMaterial($itemId);
+        $material = $this->materialService->getMaterialInVersion($itemId, $versionId);
         $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
 
         return $this->render('material/savesections.html.twig', [

@@ -204,12 +204,16 @@ class MaterialTransformer extends AbstractTransformer
             }
         }
 
-        // sections
+        // sections, only those of the edited version
         if (isset($materialData['sectionOrder'])) {
-            $section_manager = $this->legacyEnvironment->getSectionManager();
+            $sections = [];
+            foreach ($materialObject->getSectionList() as $section) {
+                $sections[$section->getItemID()] = $section;
+            }
+
             $newSectionOrder = explode(',', (string) $materialData['sectionOrder']);
             foreach ($newSectionOrder as $counter => $id) {
-                $section_item = $section_manager->getItem($id);
+                $section_item = $sections[$id] ?? null;
                 if (!empty($section_item)) {
                     $section_item->setNumber($counter + 1);
                     $section_item->save();

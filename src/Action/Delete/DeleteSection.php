@@ -38,7 +38,7 @@ class DeleteSection implements DeleteInterface
         $section = $item;
 
         $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
-        $materialVersionId = (int) $section->getLinkedItem()->getVersionID();
+        $materialVersionId = (int) $section->getVersionID();
 
         $this->materialDeleter->deleteSection(
             (int) $section->getItemId(),
@@ -55,6 +55,7 @@ class DeleteSection implements DeleteInterface
         return $this->router->generate('app_material_detail', [
             'roomId' => $section->getContextID(),
             'itemId' => $section->getLinkedItemID(),
+            'versionId' => $section->getVersionID(),
         ]);
     }
 }

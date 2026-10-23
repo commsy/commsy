@@ -217,7 +217,7 @@
                                     {# new section #}
                                     <li>
                                         {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                            <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                            <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}">
                                                 <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new section'|trans({}) }}
                                             </a>
                                         {% else %}
@@ -307,8 +307,8 @@
 
                 {# description #}
                 <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                        editUrl: '{{ path('app_item_editdescription', { 'roomId': material.contextId, 'itemId': material.itemId, 'draft': draft }) }}',
-                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': material.contextId, 'itemId': material.itemId }) }}'
+                        editUrl: '{{ path('app_item_editdescription', { 'roomId': material.contextId, 'itemId': material.itemId, 'draft': draft, 'versionId': material.versionId }) }}',
+                        cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId }) }}'
                     }">
                     {{ macrosItem.itemDescription('description', material, true, material.description, draft) }}
                 </div>
@@ -324,13 +324,13 @@
 
                 {% if not draft %}
                     {# links #}
-                    <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}) }}' }">
                         {{ macrosItem.linksAssociations(material, draft, showAssociations) }}
                     </div>
 
                     {# workflow #}
                     {% if showWorkflow and (withTrafficLight or withResubmission or withValidity or withReader) %}
-                        <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                        <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('app_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}) }}' }">
                             {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withValidity, withResubmission) }}
                         </div>
                     {% endif %}
@@ -338,7 +338,7 @@
                     {# sections #}
                     <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle"
                         {% if sectionList|length > 0 %}
-                            data-uk-observe data-cs-edit="{editUrl: '{{ path('app_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }"
+                            data-uk-observe data-cs-edit="{editUrl: '{{ path('app_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}) }}', cancelEditUrl: '{{ path('app_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId, 'versionId': material.versionId}) }}' }"
                         {% endif %}
                     >
                         {{ macrosMaterial.sections(material, sectionList) }}
@@ -399,7 +399,7 @@
                                             {# new section #}
                                             <li>
                                                 {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                    <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                    <a class="newSection" href="#" id="newSection" data-section-url="{{ path('app_material_createsection', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}">
                                                         <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify"></i> {{ 'new section'|trans({}) }}
                                                     </a>
                                                 {% else %}
@@ -413,7 +413,7 @@
                                             <li>
                                                 {% if is_granted('ITEM_EDIT', item.itemId) and is_granted('ITEM_FILE_LOCK', item.itemId) %}
                                                     <a  href="#" data-cs-action="{{ {
-                                                        'url': path('app_section_xhrdelete', {'roomId': roomId, 'itemId': section.itemId}),
+                                                        'url': path('app_section_xhrdelete', {'roomId': roomId, 'itemId': section.itemId, 'versionId': section.versionId}),
                                                         'action': 'delete',
                                                         'itemId': section.itemId,
                                                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -447,8 +447,8 @@
 
                         {# description #}
                         <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{
-                                editUrl: '{{ path('app_item_editdescription', { 'roomId': section.contextId, 'itemId': section.itemId }) }}',
-                                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': section.contextId, 'itemId': section.itemId }) }}'
+                                editUrl: '{{ path('app_item_editdescription', { 'roomId': section.contextId, 'itemId': section.itemId, 'versionId': section.versionId }) }}',
+                                cancelEditUrl: '{{ path('app_item_canceledit', { 'roomId': section.contextId, 'itemId': section.itemId, 'versionId': section.versionId }) }}'
                             }">
                             {{ macrosItem.itemDescription('description', section, true, section.description) }}
                         </div>
@@ -456,7 +456,8 @@
                         {# files #}
                         <div id="files{{ section.itemId }}">
                             {{ component('FileList:FileList', {
-                                itemId: section.itemId
+                                itemId: section.itemId,
+                                versionId: section.versionId
                             }) }}
                         </div>
                     </article>

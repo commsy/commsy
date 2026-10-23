@@ -218,6 +218,31 @@ final class EtherpadDescriptionTest extends WebTestCase
         self::assertStringContainsString('uk-alert-danger', (string) $this->client->getResponse()->getContent());
     }
 
+    public function testAnOlderVersionIsEditedWithoutThePad(): void
+    {
+        /** @var Connection $connection */
+        $connection = self::getContainer()->get(Connection::class);
+        $connection->executeStatement(
+            'INSERT INTO materials (item_id, version_id, context_id, creator_id, creation_date, modifier_id, modification_date, title, description, extras)
+                SELECT item_id, 1, context_id, creator_id, creation_date, modifier_id, modification_date, title, ?, extras
+                FROM materials WHERE item_id = ? AND version_id = 0',
+            ['Beschreibung der neuesten Version', $this->materialId]
+        );
+
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$this->room->getItemId()}/item/{$this->materialId}/editdescription?versionId=0"
+        );
+        self::assertResponseIsSuccessful();
+        $form = $crawler->selectButton('itemDescription[save]')->form();
+        $form['itemDescription[description]'] = 'Alte Fassung von Hand';
+        $this->client->submit($form);
+
+        self::assertSame([], array_values(array_intersect(['createGroupPad', 'setHTML', 'getHTML'], $this->calls)));
+        self::assertStringContainsString('Alte Fassung von Hand', $this->storedDescription(0));
+        self::assertSame('Beschreibung der neuesten Version', $this->storedDescription(1));
+    }
+
     // ---- helpers
 
     private function openEditor(): \Symfony\Component\DomCrawler\Crawler
@@ -239,10 +264,17 @@ final class EtherpadDescriptionTest extends WebTestCase
         $this->client->submit($crawler->selectButton('itemDescription[save]')->form());
     }
 
-    private function storedDescription(): string
+    private function storedDescription(?int $versionId = null): string
     {
         /** @var Connection $connection */
         $connection = self::getContainer()->get(Connection::class);
+
+        if (null !== $versionId) {
+            return (string) $connection->fetchOne(
+                'SELECT description FROM materials WHERE item_id = ? AND version_id = ?',
+                [$this->materialId, $versionId]
+            );
+        }
 
         return (string) $connection->fetchOne(
             'SELECT description FROM materials WHERE item_id = ? ORDER BY version_id DESC LIMIT 1',
