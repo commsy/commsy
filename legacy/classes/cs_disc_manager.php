@@ -18,8 +18,6 @@ use Symfony\Component\Filesystem\Path;
 
 class cs_disc_manager
 {
-    final public const RELATIVE_FILES_PATH = 'files/';
-
     private $firstId = null;
     private $secondId = null;
 
@@ -244,13 +242,15 @@ class cs_disc_manager
         }
     }
 
+    /**
+     * The configured files directory, which tests point elsewhere.
+     */
     private function getFilePathBasic(): string
     {
         /** @var ContainerInterface $symfonyContainer */
         global $symfonyContainer;
-        $projectDir = $symfonyContainer->getParameter('kernel.project_dir');
 
-        return $projectDir.'/'.self::RELATIVE_FILES_PATH;
+        return rtrim((string) $symfonyContainer->getParameter('files_directory'), '/').'/';
     }
 
     private function _getSecondFolder(string $second_folder): string
