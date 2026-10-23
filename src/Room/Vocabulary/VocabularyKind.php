@@ -22,8 +22,10 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
  * One kind of what a room's entries point at by id: its categories, hashtags,
  * calendars, licences or task statuses.
  *
- * The room export carries each kind under its field. Kinds come in the order of
- * their tag priority, which is the order the room lists them in.
+ * The room export carries each kind under its field, the interface serves each
+ * as a resource of its own, and both get the same data objects from here. Kinds
+ * come in the order of their tag priority, which is the order the room lists
+ * them in.
  */
 #[AutoconfigureTag('app.room.vocabulary')]
 interface VocabularyKind
@@ -34,7 +36,7 @@ interface VocabularyKind
     public function field(): string;
 
     /**
-     * The data object of one term.
+     * The data object of one term, which is also its resource.
      *
      * @return class-string
      */

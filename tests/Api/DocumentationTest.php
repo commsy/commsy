@@ -63,4 +63,20 @@ class DocumentationTest extends AbstractApiTestCase
         self::assertFalse($announcement['additionalProperties']);
         self::assertSame(['id', 'name', 'email', 'roomStatus'], array_keys($schemas['User-export']['properties']));
     }
+
+    /**
+     * Each kind of a room's vocabulary is a list under the room; a term has no
+     * address of its own to document.
+     */
+    public function testTheVocabularyOfARoomIsDocumented(): void
+    {
+        $paths = static::createClient()->request('GET', '/api/v2/doc', [
+            'headers' => ['Accept' => 'application/vnd.openapi+json'],
+        ])->toArray()['paths'];
+
+        foreach (['categories', 'hashtags', 'calendars', 'licenses', 'todo_statuses'] as $kind) {
+            self::assertArrayHasKey('get', $paths['/api/v2/rooms/{roomId}/'.$kind]);
+            self::assertArrayNotHasKey('/api/v2/room_'.$kind.'/{id}', $paths);
+        }
+    }
 }

@@ -32,7 +32,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  * kind of vocabulary under its field, from the kind itself.
  *
  * None of them is a column on the room. Each stands once here and entries
- * reference it by id.
+ * reference it by id; the interface serves the same data objects, a kind at a
+ * time.
  *
  * Decorates rather than replaces — the room's own fields still come from the
  * object normalizer, which this hands back to once per object.
