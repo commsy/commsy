@@ -90,10 +90,6 @@ class GroupRoomDeleter implements RoomDeleter
     {
         // No extra steps: the mirrored label row is purged by the parent
         // project's hard-delete (it sits in `labels` with context_id = project).
-        $contextId = (int) $this->connection->fetchOne(
-            'SELECT context_id FROM room WHERE item_id = :id',
-            ['id' => $roomId]
-        );
-        $this->roomHardDeletionHelper->purgeRoomData($contextId, $roomId);
+        $this->roomHardDeletionHelper->purgeRoomData($roomId);
     }
 }

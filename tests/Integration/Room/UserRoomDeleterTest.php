@@ -19,12 +19,14 @@ use App\Entity\Account;
 use App\Entity\Announcement;
 use App\Entity\Room;
 use App\Entity\User;
+use App\Files\FilesDirectory;
 use App\Room\RoomDeletionOptions;
 use App\Room\RoomType;
 use App\Room\UserRoomDeleter;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Tests\Factory\AnnouncementFactory;
 use Tests\Factory\RoomFactory;
 use Tests\Factory\RoomUserFactory;
@@ -42,6 +44,9 @@ final class UserRoomDeleterTest extends KernelTestCase
     private UserRoomDeleter $deleter;
     private Account $account;
     private int $deleterId;
+
+    /** @var list<string> directories written by the test */
+    private array $roomDirectories = [];
 
     #[WithStory(AccountStory::class)]
     public function testSoftDeleteSoftDeletesRoomAndItemsRows(): void
@@ -134,10 +139,6 @@ final class UserRoomDeleterTest extends KernelTestCase
         self::assertSame(RoomType::UserRoom, $this->deleter->roomType());
     }
 
-    /**
-     * FS removal via `cs_disc_manager::removeRoomDir()` is not asserted —
-     * it no-ops on a missing dir.
-     */
     #[WithStory(AccountStory::class)]
     public function testHardDeleteRemovesRoomAndContentPhysically(): void
     {
@@ -164,6 +165,30 @@ final class UserRoomDeleterTest extends KernelTestCase
         $this->assertNotSoftDeleted('user', $bystanderMember->getItemId());
     }
 
+    /**
+     * A user room's context is its project room, but its files lie below
+     * the portal like those of every other room.
+     */
+    #[WithStory(AccountStory::class)]
+    public function testHardDeleteRemovesTheFilesDirectoryBelowThePortal(): void
+    {
+        $project = RoomFactory::createOne([
+            'contextId' => $this->account->getPortal()?->getId(),
+            'portal' => $this->account->getPortal(),
+            'type' => RoomType::Project->value,
+        ]);
+        $target = $this->createUserRoom((int) $project->getItemId());
+        $bystander = $this->createUserRoom((int) $project->getItemId());
+        $targetFile = $this->roomFile($target);
+        $bystanderFile = $this->roomFile($bystander);
+
+        $this->deleter->softDeleteRoom($target->getItemId(), $this->deleterId, RoomDeletionOptions::forUserAction());
+        $this->deleter->hardDeleteRoom($target->getItemId());
+
+        self::assertDirectoryDoesNotExist(\dirname($targetFile));
+        self::assertFileExists($bystanderFile);
+    }
+
     // ------------------------------------------------------------------
 
     protected function setUp(): void
@@ -179,13 +204,32 @@ final class UserRoomDeleterTest extends KernelTestCase
         $this->deleterId = $this->account->getId();
     }
 
-    private function createUserRoom(): Room
+    protected function tearDown(): void
+    {
+        (new Filesystem())->remove($this->roomDirectories);
+        parent::tearDown();
+    }
+
+    private function createUserRoom(?int $projectRoomId = null): Room
     {
         return RoomFactory::createOne([
-            'contextId' => $this->account->getPortal()?->getId(),
+            'contextId' => $projectRoomId ?? $this->account->getPortal()?->getId(),
             'portal' => $this->account->getPortal(),
             'type' => RoomType::UserRoom->value,
         ]);
+    }
+
+    /**
+     * Writes a file into the room's files directory.
+     */
+    private function roomFile(Room $room): string
+    {
+        $path = self::getContainer()->get(FilesDirectory::class)
+            ->contextDirectory((int) $this->account->getPortal()?->getId(), (int) $room->getItemId()).'/1.pdf';
+        (new Filesystem())->dumpFile($path, 'content');
+        $this->roomDirectories[] = \dirname($path);
+
+        return $path;
     }
 
     private function createMembership(Room $room): User

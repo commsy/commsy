@@ -17,6 +17,7 @@ use App\Hash\HashManager;
 use App\Services\LegacyEnvironment;
 use App\Utils\ReaderService;
 use cs_environment;
+use Doctrine\DBAL\Connection;
 
 /**
  * Per-room hard-delete cascade: FS wipe, reader/hash purge, and the 20
@@ -31,6 +32,7 @@ readonly class RoomHardDeletionHelper
         LegacyEnvironment $legacyEnvironment,
         private HashManager $hashManager,
         private ReaderService $readerService,
+        private Connection $connection,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -41,13 +43,23 @@ readonly class RoomHardDeletionHelper
      * the `room` row itself. Callers MUST ensure content is already soft-
      * deleted; this helper dispatches no events.
      *
-     * `$contextId` is only used to locate the on-disk files directory.
+     * The files directory lies below the room's portal. That is not always
+     * its context: a user room's context is its project room.
      */
-    public function purgeRoomData(int $contextId, int $roomId): void
+    public function purgeRoomData(int $roomId): void
     {
+        $portalId = (int) $this->connection->createQueryBuilder()
+            ->select('portal_id')
+            ->from('room')
+            ->where('item_id = :roomId')
+            ->setParameter('roomId', $roomId)
+            ->executeQuery()
+            ->fetchOne();
+
         // FS first so a later failure doesn't leave orphaned files.
-        $discManager = $this->legacyEnvironment->getDiscManager();
-        $discManager->removeRoomDir($contextId, $roomId);
+        if (0 !== $portalId) {
+            $this->legacyEnvironment->getDiscManager()->removeRoomDir($portalId, $roomId);
+        }
 
         $this->readerService->deleteAllEntriesInWorkspace($roomId);
 

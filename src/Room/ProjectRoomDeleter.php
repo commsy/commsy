@@ -105,10 +105,6 @@ class ProjectRoomDeleter implements RoomDeleter
     {
         // Sub-rooms carry their own deletion_date and are purged independently
         // by RoomHardDeleter::hardDeleteRoomsOlderThan().
-        $contextId = (int) $this->connection->fetchOne(
-            'SELECT context_id FROM room WHERE item_id = :id',
-            ['id' => $roomId]
-        );
-        $this->roomHardDeletionHelper->purgeRoomData($contextId, $roomId);
+        $this->roomHardDeletionHelper->purgeRoomData($roomId);
     }
 }

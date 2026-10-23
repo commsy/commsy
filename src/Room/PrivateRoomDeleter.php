@@ -67,10 +67,6 @@ class PrivateRoomDeleter implements RoomDeleter
 
     public function hardDeleteRoom(int $roomId): void
     {
-        $contextId = (int) $this->connection->fetchOne(
-            'SELECT context_id FROM room WHERE item_id = :id',
-            ['id' => $roomId]
-        );
-        $this->roomHardDeletionHelper->purgeRoomData($contextId, $roomId);
+        $this->roomHardDeletionHelper->purgeRoomData($roomId);
     }
 }
