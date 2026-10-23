@@ -25,10 +25,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\UX\LiveComponent\Test\InteractsWithLiveComponents;
 use Symfony\UX\LiveComponent\Test\TestLiveComponent;
+use Tests\Factory\AccountFactory;
 use Tests\Factory\FilesFactory;
 use Tests\Factory\MaterialFactory;
+use Tests\Factory\RoomUserFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 use Zenstruck\Foundry\Test\Factories;
@@ -79,6 +82,49 @@ final class FileListRemoveFileTest extends WebTestCase
         self::assertNotNull($this->linkDeletionDate($shared, $materialId, 1));
         self::assertNull($this->linkDeletionDate($shared, $materialId, 0), 'the older version keeps the file');
         self::assertNull($this->connection()->fetchOne('SELECT deletion_date FROM files WHERE files_id = ?', [$shared]));
+    }
+
+    public function testRemovingAFileRequiresTheRightToEditTheEntry(): void
+    {
+        /** @var Room $room */
+        $room = RoomWithMemberStory::get('room');
+        /** @var User $owner */
+        $owner = RoomWithMemberStory::get('roomUser');
+        /** @var Account $ownerAccount */
+        $ownerAccount = RoomWithMemberStory::get('account');
+
+        $materialId = $this->createMaterialWithTwoVersions($room, $owner);
+        $file = FilesFactory::createOne(['contextId' => $room->getItemId()])->getFilesId();
+        $this->linkFile($file, $materialId, 1);
+
+        // An ordinary member may look at the owner's material but not change it.
+        $memberPassword = 'member-secret';
+        $memberAccount = AccountFactory::createOne([
+            'portal' => $ownerAccount->getPortal(),
+            'authSource' => $ownerAccount->getAuthSource(),
+            'plainPassword' => $memberPassword,
+            'activityState' => Account::ACTIVITY_ACTIVE,
+            'locked' => false,
+        ]);
+        RoomUserFactory::createOne(['account' => $memberAccount, 'room' => $room]);
+        $this->logIn($memberAccount, $memberPassword, $room);
+
+        $component = $this->createLiveComponent(
+            name: 'FileList:FileList',
+            data: ['itemId' => $materialId, 'versionId' => 1],
+            client: $this->client,
+        );
+        $this->mount($component);
+
+        try {
+            $component->call('removeFile', ['fileId' => $file]);
+            self::fail('a member who may not edit the material removed one of its files');
+        } catch (AccessDeniedException) {
+            // expected
+        }
+
+        self::assertNull($this->linkDeletionDate($file, $materialId, 1));
+        self::assertNull($this->connection()->fetchOne('SELECT deletion_date FROM files WHERE files_id = ?', [$file]));
     }
 
     /**

@@ -154,7 +154,8 @@ final class FileList extends AbstractController
 
     /**
      * Takes the file off the shown version only; other versions that carry
-     * it keep it, and the file itself ends with its last link.
+     * it keep it, and the file itself ends with its last link. A listener
+     * can be called like any action, so it checks the permissions itself.
      */
     #[LiveListener('FileListItem:fileRemoved')]
     public function removeFile(
@@ -163,6 +164,9 @@ final class FileList extends AbstractController
         #[LiveArg] int $fileId
     ): void
     {
+        $this->denyAccessUnlessGranted('ITEM_EDIT', $this->itemId);
+        $this->denyAccessUnlessGranted('ITEM_FILE_LOCK', $this->itemId);
+
         $this->files = array_filter($this->files, fn(FileDto $file) =>
             $file->fileId != $fileId
         );
