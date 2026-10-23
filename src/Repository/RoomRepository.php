@@ -132,6 +132,16 @@ class RoomRepository extends ServiceEntityRepository
     }
 
     /**
+     * The room with this id, if it is of one of the given types.
+     *
+     * @param list<RoomType> $types
+     */
+    public function findOneOfTypes(int $itemId, array $types): ?Room
+    {
+        return $this->findOneBy(['itemId' => $itemId, 'type' => $types]);
+    }
+
+    /**
      * This will not return user rooms, because they to not exist in the portal context.
      * @return Room[]
      */

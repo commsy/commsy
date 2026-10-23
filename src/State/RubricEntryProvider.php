@@ -62,14 +62,8 @@ readonly class RubricEntryProvider implements ProviderInterface
             return $source->find((int) $uriVariables['itemId']);
         }
 
-        $room = $this->rooms->findOneBy([
-            'itemId' => (int) $uriVariables['roomId'],
-            'type' => RoomProvider::ROOM_TYPES,
-        ]);
-
-        if (null === $room) {
-            throw new NotFoundHttpException('Room not found.');
-        }
+        $room = $this->rooms->findOneOfTypes((int) $uriVariables['roomId'], RoomProvider::ROOM_TYPES)
+            ?? throw new NotFoundHttpException('Room not found.');
 
         $offset = $this->pagination->getOffset($operation, $context);
         $limit = $this->pagination->getLimit($operation, $context);

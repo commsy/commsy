@@ -60,9 +60,6 @@ readonly class RoomProvider implements ProviderInterface
             );
         }
 
-        return $this->roomRepository->findOneBy([
-            'itemId' => $uriVariables['itemId'],
-            'type' => self::ROOM_TYPES,
-        ]);
+        return $this->roomRepository->findOneOfTypes((int) $uriVariables['itemId'], self::ROOM_TYPES);
     }
 }
