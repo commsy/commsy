@@ -96,6 +96,9 @@ containerSecurityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop: ["ALL"]
+    # The frankenphp binary carries the file capability cap_net_bind_service; without it in the bounding set the
+    # kernel refuses to start the binary ("exec: frankenphp: Operation not permitted").
+    add: ["NET_BIND_SERVICE"]
 
 nodeSelector: {}
 tolerations: []
