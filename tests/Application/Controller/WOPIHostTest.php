@@ -149,6 +149,22 @@ final class WOPIHostTest extends WebTestCase
         self::assertStringEqualsFile($this->directory.'/Bericht.docx', 'Inhalt von damals');
     }
 
+    public function testAFormatTheOfficeCanOnlyShowOpensForViewing(): void
+    {
+        $this->logInAsOwner();
+        $materialId = $this->createMaterial(withSecondVersion: true);
+        $fileId = $this->createFile('Folien', 'Vortrag.ppt');
+        $this->linkFile($fileId, $materialId, 0);
+        $this->linkFile($fileId, $materialId, 1);
+
+        $this->client->request('GET', $this->hostUrl($materialId, $fileId, 1));
+
+        self::assertResponseIsSuccessful();
+        self::assertSame($fileId, $this->openedFileId(), 'a file that is only shown is not copied');
+        self::assertSame('view', $this->openedPermission());
+        self::assertSame([$fileId], $this->liveFileIds($materialId, 1));
+    }
+
     public function testTheFileListOpensTheOfficeForTheShownVersion(): void
     {
         $this->logInAsOwner();
@@ -172,7 +188,7 @@ final class WOPIHostTest extends WebTestCase
      */
     private function logInAsOwner(): void
     {
-        $this->useOfficeServerThatEditsDocx();
+        $this->useOfficeServer();
 
         /** @var Account $storyAccount */
         $storyAccount = RoomWithMemberStory::get('account');
@@ -217,6 +233,16 @@ final class WOPIHostTest extends WebTestCase
         return (int) $tokenManager->parse((string) $token)['fid'];
     }
 
+    private function openedPermission(): string
+    {
+        $token = $this->client->getCrawler()->filter('input[name=access_token]')->attr('value');
+
+        /** @var JWTTokenManagerInterface $tokenManager */
+        $tokenManager = self::getContainer()->get(JWTTokenManagerInterface::class);
+
+        return (string) $tokenManager->parse((string) $token)['permission'];
+    }
+
     private function createMaterial(bool $withSecondVersion = false): int
     {
         $materialId = (int) MaterialFactory::createOne(['room' => $this->room, 'creator' => $this->owner])->getItemId();
@@ -233,15 +259,15 @@ final class WOPIHostTest extends WebTestCase
         return $materialId;
     }
 
-    private function createFile(string $content = 'Inhalt'): int
+    private function createFile(string $content = 'Inhalt', string $name = 'Bericht.docx'): int
     {
-        $path = $this->directory.'/Bericht.docx';
+        $path = $this->directory.'/'.$name;
         file_put_contents($path, $content);
 
         return FilesFactory::createOne([
             'contextId' => $this->room->getItemId(),
             'portal' => $this->room->getPortal() ?? RoomWithMemberStory::get('account')->getPortal(),
-            'filename' => 'Bericht.docx',
+            'filename' => $name,
             'filepath' => ltrim(substr($path, \strlen($this->projectDir)), '/'),
             'size' => \strlen($content),
         ])->getFilesId();
@@ -268,9 +294,10 @@ final class WOPIHostTest extends WebTestCase
 
     /**
      * There is no office server in the test environment: a discovery that
-     * offers to view and edit docx is put where the service finds it.
+     * offers to view and edit docx, and to view ppt only, is put where the
+     * service finds it.
      */
-    private function useOfficeServerThatEditsDocx(): void
+    private function useOfficeServer(): void
     {
         // a host of its own per test; the cache key does not allow a path
         $baseUrl = 'http://office-'.uniqid().'.test';
@@ -285,9 +312,18 @@ final class WOPIHostTest extends WebTestCase
                 ->setProgId('')
                 ->setUrlSrc("https://office.test/$name?<ui=UI_LLCC&>");
         }
-        $app = (new App())->setName('Word')->setFavIconUrl('https://office.test/word.ico')->setActions($actions);
+        $word = (new App())->setName('Word')->setFavIconUrl('https://office.test/word.ico')->setActions($actions);
+        $powerPoint = (new App())->setName('PowerPoint')->setFavIconUrl('https://office.test/ppt.ico')->setActions([
+            (new Action())
+                ->setName('view')
+                ->setExt('ppt')
+                ->setDefault(true)
+                ->setRequires('')
+                ->setProgId('')
+                ->setUrlSrc('https://office.test/view?<ui=UI_LLCC&>'),
+        ]);
         $discovery = (new WOPIDiscovery())->setNetZones([
-            (new NetZone())->setName(WOPIZone::EXTERNAL_HTTPS)->setApps([$app]),
+            (new NetZone())->setName(WOPIZone::EXTERNAL_HTTPS)->setApps([$word, $powerPoint]),
         ]);
 
         $cache = new DiscoveryCache();

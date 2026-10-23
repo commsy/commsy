@@ -74,6 +74,8 @@ class WOPIController extends AbstractController
             } else {
                 $action = $discoveryService->findAction($app, $extension, WOPIPermission::EDIT->value);
             }
+        } else {
+            $action = $discoveryService->findAction($app, $extension, WOPIPermission::VIEW->value);
         }
 
         if (!$action) {
