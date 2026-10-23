@@ -23,9 +23,9 @@ Minimal `values.yaml`:
 
 ```yaml
 commsy:
-  baseUri: https://commsy.example.com
+  defaultUri: https://commsy.example.com
   emailFrom: commsy@example.com
-  trustedProxies: 10.0.0.0/8          # proxies in front of the pod
+  trustedProxies: 10.0.0.0/8          # proxies in front of the pod (SYMFONY_TRUSTED_PROXIES)
   elasticsearchUrl: http://elastic:9200/
   existingSecrets:
     - commsy-env
@@ -39,9 +39,11 @@ ingress:
     - host: commsy.example.com
 ```
 
-The first Secret in `commsy.existingSecrets` provides the environment variables `APP_SECRET`, `DATABASE_URL`
+The Secrets in `commsy.existingSecrets` provide the environment variables `APP_SECRET`, `DATABASE_URL`
 (`mysql://user:password@host:3306/commsy?serverVersion=11.8.9-MariaDB&charset=utf8mb4`) and `MAILER_DSN`.
 `JWT_PASSPHRASE` is optional but should be set: it protects the JWT key pair that the first start generates.
+`API_READ_SECRET`, `API_WRITE_SECRET` and `API_METRICS_SECRET` enable the API. Other settings of the application
+(`LOCALE`, `TIMEZONE`, `ONLINE_OFFICE_BASE_URL`, ...) go into `commsy.extraEnv`.
 
 ## Components
 

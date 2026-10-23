@@ -13,20 +13,25 @@ nameOverride: ""
 fullnameOverride: ""
 
 commsy:
-  # Public URL of the installation (BASE_URI).
-  baseUri: https://commsy.example.com
+  # Public URL of the installation (DEFAULT_URI): used for links generated outside a request (workers, mails).
+  defaultUri: https://commsy.example.com
+  # How the containers reach the web service from the inside (INTERNAL_BASE_URL).
+  # Empty: http://<release>-<chart>:<service.port>.
+  internalBaseUrl: ""
   emailFrom: ""
   # Address of the web server inside the container (SERVER_NAME). A port above 1024 needs no extra privileges.
   serverName: ":8080"
-  # Proxies whose X-Forwarded-* headers are trusted (TRUSTED_PROXIES).
+  # Proxies whose X-Forwarded-* headers are trusted (SYMFONY_TRUSTED_PROXIES), e.g. the ingress controller.
+  # Without it the application sees plain HTTP behind a TLS-terminating proxy.
   trustedProxies: ""
   elasticsearchUrl: http://elastic:9200/
   elasticIndex: commsy
   # Messenger transport and lock store (defaults of the application).
   messengerTransportDsn: "doctrine://default?auto_setup=true"
   lockDsn: semaphore
-  # Secrets as environment variables. The first Secret must provide APP_SECRET, DATABASE_URL and MAILER_DSN
-  # (and JWT_PASSPHRASE to override the passphrase of the generated JWT key pair); further Secrets may be listed.
+  # Secrets as environment variables: APP_SECRET, DATABASE_URL and MAILER_DSN are required; JWT_PASSPHRASE
+  # (passphrase of the generated JWT key pair) and API_READ_SECRET, API_WRITE_SECRET, API_METRICS_SECRET are optional.
+  # They may be spread over several Secrets.
   existingSecrets: []
   # Additional plain environment variables.
   extraEnv: []

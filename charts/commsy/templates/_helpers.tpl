@@ -45,14 +45,16 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   value: prod
 - name: SERVER_NAME
   value: {{ .Values.commsy.serverName | quote }}
-- name: BASE_URI
-  value: {{ .Values.commsy.baseUri | quote }}
+- name: DEFAULT_URI
+  value: {{ .Values.commsy.defaultUri | quote }}
+- name: INTERNAL_BASE_URL
+  value: {{ default (printf "http://%s:%v" (include "commsy.fullname" .) .Values.service.port) .Values.commsy.internalBaseUrl | quote }}
 {{- with .Values.commsy.emailFrom }}
 - name: EMAIL_FROM
   value: {{ . | quote }}
 {{- end }}
 {{- with .Values.commsy.trustedProxies }}
-- name: TRUSTED_PROXIES
+- name: SYMFONY_TRUSTED_PROXIES
   value: {{ . | quote }}
 {{- end }}
 - name: ELASTICSEARCH_URL
