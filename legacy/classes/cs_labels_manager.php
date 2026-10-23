@@ -924,35 +924,6 @@ class cs_labels_manager extends cs_manager
              }
          }
 
-         // images of labels
-         $query = '';
-         $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id="'.\App\Legacy\SqlStringEscaper::escape(
-             $new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result)) {
-             trigger_error('Problems getting data "'.$this->_db_table.'".', E_USER_WARNING);
-         } else {
-             foreach ($result as $query_result) {
-                 $extra_array = unserialize($query_result['extras']);
-                 if (isset($extra_array['LABELPICTURE']) and !empty($extra_array['LABELPICTURE'])) {
-                     $disc_manager = $this->_environment->getDiscManager();
-                     $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
-                     if ($disc_manager->copyImageFromRoomToRoom($extra_array['LABELPICTURE'], $new_id)) {
-                         $value_array = explode('_', (string) $extra_array['LABELPICTURE']);
-                         $value_array[0] = 'cid'.$new_id;
-                         $extra_array['LABELPICTURE'] = implode('_', $value_array);
-
-                         $update_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET extras="'.\App\Legacy\SqlStringEscaper::escape(
-                             serialize($extra_array)).'" WHERE item_id="'.$query_result['item_id'].'"';
-                         $update_result = $this->_db_connector->performQuery($update_query);
-                         if (!isset($update_result) or !$update_result) {
-                             trigger_error('Problems updating data "'.$this->_db_table.'".', E_USER_WARNING);
-                         }
-                     }
-                 }
-             }
-         }
-
          return $retour;
      }
 

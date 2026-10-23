@@ -407,33 +407,6 @@ class cs_label_item extends cs_item
     }
 
 
-    /** set picture filename of the label (used for groups)
-     * this method sets the picture filename of the label.
-     *
-     * @param string value picture filename of the label
-     *
-     * @author CommSy Development Group
-     */
-    public function setPicture($name)
-    {
-        $this->_addExtra('LABELPICTURE', $name);
-    }
-
-    /** get picture filename of the label (used for groups)
-     * this method gets the picture filename of the label.
-     *
-     * @return string picture filename of the label
-     */
-    public function getPicture()
-    {
-        $retour = '';
-        if ($this->_issetExtra('LABELPICTURE')) {
-            $retour = $this->_getExtra('LABELPICTURE');
-        }
-
-        return $retour;
-    }
-
     /**
      * Is this item editable by everybody or just the creator.
      * @return bool

@@ -111,9 +111,6 @@ class cs_group_item extends cs_label_item
                     $save2 = true;
                 }
 
-                // picture / logo
-                $logo = $this->getPicture();
-
                 // Zeitpunkte
                 $save_time = $portal->showTime();
 
@@ -163,12 +160,6 @@ class cs_group_item extends cs_label_item
                         $language = 'de';
                     }
                     $grouproom_item->setDescriptionByLanguage($this->getDescription(), $language);
-
-                    // picture / logo
-                    $logo = $this->getPicture();
-                    if (empty($logo)) {
-                        $grouproom_item->setLogoFilename('');
-                    }
                     $save2 = true;
                 }
             }
@@ -187,12 +178,6 @@ class cs_group_item extends cs_label_item
                 $grouproom_item->setTimeList($time_list);
                 $save2 = true;
             }
-        }
-        if (isset($logo) and !empty($logo)) {
-            $disc_manager = $this->_environment->getDiscManager();
-            $disc_manager->copyImageFromRoomToRoom($logo, $grouproom_item->getItemID());
-            $grouproom_item->setLogoFilename($disc_manager->getLastSavedFileName());
-            $save2 = true;
         }
         if (isset($save2) and $save2 and $saveGrouproom) {
             $grouproom_item->setLinkedGroupItemID($this->getItemID());

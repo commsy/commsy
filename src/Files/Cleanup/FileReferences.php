@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace App\Files\Cleanup;
 
 use App\Entity\Files;
-use App\Entity\Labels;
 use App\Entity\Portal;
 use App\Entity\Room;
 use App\Entity\Server;
@@ -36,10 +35,9 @@ use Symfony\Component\DependencyInjection\Attribute\Exclude;
  * count whether deleted or not: until the final deletion they may come back.
  *
  * Generated images are referred to by the settings that are read today:
- * the logo and background of a room, the picture of a user, the picture of
- * a group (only still read to give a new group room its logo), and the logos
+ * the logo and background of a room, the picture of a user, and the logos
  * of portals and the server. Rows count whether deleted or not here as well.
- * Room, user and group images are matched by context and name: where the
+ * Room and user images are matched by context and name: where the
  * context's directory lies under which portal is left to the walk, since the
  * portal of a user room or of some users is not recorded reliably.
  */
@@ -77,7 +75,6 @@ final class FileReferences
         $this->readFileRows();
         $this->readRoomImages();
         $this->readUserPictures();
-        $this->readGroupPictures();
         $this->readLogos();
 
         return $this;
@@ -177,19 +174,6 @@ final class FileReferences
 
         foreach ($this->iterate($users) as $row) {
             $this->referImage((int) $row['contextId'], $row['extras']['USERPICTURE'] ?? null);
-        }
-    }
-
-    private function readGroupPictures(): void
-    {
-        $labels = $this->entityManager->createQueryBuilder()
-            ->select('l.contextId', 'l.extras')
-            ->from(Labels::class, 'l')
-            ->where('l.extras LIKE :picture')
-            ->setParameter('picture', '%LABELPICTURE%');
-
-        foreach ($this->iterate($labels) as $row) {
-            $this->referImage((int) $row['contextId'], $row['extras']['LABELPICTURE'] ?? null);
         }
     }
 

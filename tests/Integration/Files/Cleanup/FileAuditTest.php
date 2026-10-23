@@ -142,6 +142,7 @@ final class FileAuditTest extends KernelTestCase
             'BGIMAGEFILENAME' => "cid{$roomId}_bgimage_Himmel mit Wolken.jpg",
         ]);
         $this->addExtras('user', 'item_id', (int) $user->getItemId(), ['USERPICTURE' => "cid{$roomId}_{$user->getUserId()}.png"]);
+        // the picture of a group is read nowhere any more
         $this->addExtras('labels', 'item_id', $label, ['LABELPICTURE' => "cid{$roomId}_Gruppe.png"]);
         $this->connection->update('portal', ['logo_filename' => 'logo-abc.png'], ['id' => $this->portalId]);
 
@@ -152,7 +153,7 @@ final class FileAuditTest extends KernelTestCase
         $this->file('portal/logos/logo-old.png');
 
         self::assertSame(
-            [$this->roomDirectory()."/cid{$roomId}_logo_alt.png", 'portal/logos/logo-old.png'],
+            [$this->roomDirectory()."/cid{$roomId}_Gruppe.png", $this->roomDirectory()."/cid{$roomId}_logo_alt.png", 'portal/logos/logo-old.png'],
             $this->found($this->audit(), FindingKind::StrayImage),
         );
     }
