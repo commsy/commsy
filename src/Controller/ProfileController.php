@@ -60,7 +60,6 @@ class ProfileController extends AbstractController
         UserService $userService,
         DiscService $discService,
         CropperInterface $cropper,
-        LegacyEnvironment $environment,
         Request $request,
         ProfileHelper $profileHelper,
         #[Autowire('%files_directory%/')]
@@ -103,9 +102,15 @@ class ProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $legacyEnvironment = $environment->getEnvironment();
-            $discManager = $legacyEnvironment->getDiscManager();
             $fs = new Filesystem();
+
+            // each room holds its own copy of the picture
+            $removePicture = function (cs_user_item $roomUser) use ($filesDir, $roomService, $fs): void {
+                $picture = $roomUser->getPicture();
+                if ('' !== $picture && basename($picture) === $picture) {
+                    $fs->remove($filesDir.$roomService->getRoomFileDirectory($roomUser->getContextID()).'/'.$picture);
+                }
+            };
 
             if ($data['useProfileImage']) {
                 if ($imagePath === null) {
@@ -114,12 +119,7 @@ class ProfileController extends AbstractController
                     /** @var Crop $crop */
                     $crop = $data['crop'];
 
-                    if ($currentPicture = $user->getPicture()) {
-                        $currentFilePath = $filesDir . $roomService->getRoomFileDirectory($user->getContextID()) . '/' . $currentPicture;
-                        if ($fs->exists($currentFilePath)) {
-                            $fs->remove($currentFilePath);
-                        }
-                    }
+                    $removePicture($user);
 
                     $image = $crop->getCroppedImage('png');
                     $saveDir = $filesDir . $roomService->getRoomFileDirectory($user->getContextID());
@@ -134,9 +134,7 @@ class ProfileController extends AbstractController
                 }
             } else {
                 // use user initials else
-                if ($discManager->existsFile($user->getPicture())) {
-                    $discManager->unlinkFile($user->getPicture());
-                }
+                $removePicture($user);
                 $user->setPicture('');
                 $user->save();
             }
@@ -156,9 +154,7 @@ class ProfileController extends AbstractController
                         $tempUserItem->setPicture($tempFilename);
                     }
                 } else {
-                    if ($discManager->existsFile($tempUserItem->getPicture())) {
-                        $discManager->unlinkFile($tempUserItem->getPicture());
-                    }
+                    $removePicture($tempUserItem);
                     $tempUserItem->setPicture('');
                 }
                 $tempUserItem->save();
