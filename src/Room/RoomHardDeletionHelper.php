@@ -13,11 +13,13 @@
 
 namespace App\Room;
 
+use App\Files\FilesDirectory;
 use App\Hash\HashManager;
 use App\Services\LegacyEnvironment;
 use App\Utils\ReaderService;
 use cs_environment;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Per-room hard-delete cascade: FS wipe, reader/hash purge, and the 20
@@ -33,6 +35,7 @@ readonly class RoomHardDeletionHelper
         private HashManager $hashManager,
         private ReaderService $readerService,
         private Connection $connection,
+        private FilesDirectory $filesDirectory,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -48,7 +51,7 @@ readonly class RoomHardDeletionHelper
      */
     public function purgeRoomData(int $roomId): void
     {
-        $portalId = (int) $this->connection->createQueryBuilder()
+        $portalId = $this->connection->createQueryBuilder()
             ->select('portal_id')
             ->from('room')
             ->where('item_id = :roomId')
@@ -56,9 +59,10 @@ readonly class RoomHardDeletionHelper
             ->executeQuery()
             ->fetchOne();
 
-        // FS first so a later failure doesn't leave orphaned files.
-        if (0 !== $portalId) {
-            $this->legacyEnvironment->getDiscManager()->removeRoomDir($portalId, $roomId);
+        // FS first so a later failure doesn't leave orphaned files; without
+        // a room row there is no portal to look below.
+        if (false !== $portalId) {
+            new Filesystem()->remove($this->filesDirectory->contextDirectories((int) $portalId, $roomId));
         }
 
         $this->readerService->deleteAllEntriesInWorkspace($roomId);

@@ -230,19 +230,6 @@ class cs_disc_manager
     }
 
     /**
-     * @return void
-     */
-    public function removeRoomDir($first_id, $second_id)
-    {
-        $dir = $this->getFilePath($first_id, $second_id);
-        $fs = new Filesystem();
-
-        if ($fs->exists($dir)) {
-            $fs->remove($dir);
-        }
-    }
-
-    /**
      * The configured files directory, which tests point elsewhere.
      */
     private function getFilePathBasic(): string

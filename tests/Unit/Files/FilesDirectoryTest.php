@@ -52,6 +52,14 @@ final class FilesDirectoryTest extends TestCase
         self::assertSame(['portalId' => 101, 'contextId' => $contextId], $this->filesDirectory->parseContextDirectory("101/$directory"));
     }
 
+    public function testAContextMayAlsoLieInTheUnsplitDirectory(): void
+    {
+        self::assertSame(
+            ['/srv/app/files/101/1234/567_', '/srv/app/files/101/1234567'],
+            $this->filesDirectory->contextDirectories(101, 1234567),
+        );
+    }
+
     #[DataProvider('contextProvider')]
     public function testTheSegmentIsWhatTheDiscManagerAndTheRoomServiceUse(int $contextId, string $directory): void
     {

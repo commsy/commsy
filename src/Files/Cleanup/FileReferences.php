@@ -126,7 +126,7 @@ final class FileReferences
             }
             if ($row['portalId'] && $row['contextId']) {
                 $diskFilename = FilesDirectory::diskFilename($fileId, FilesDirectory::extensionOf((string) $row['filename']));
-                foreach ($this->contextDirectories((int) $row['portalId'], (int) $row['contextId']) as $directory) {
+                foreach ($this->filesDirectory->contextDirectories((int) $row['portalId'], (int) $row['contextId']) as $directory) {
                     $directories[] = $directory;
                     $places[] = "$directory/$diskFilename";
                     $places[] = "$directory/cid{$row['contextId']}_{$fileId}_{$row['filename']}";
@@ -213,19 +213,6 @@ final class FileReferences
         if (\is_string($name) && '' !== $name && !str_contains($name, '/') && 0 !== $contextId) {
             $this->images[$contextId][$name] = true;
         }
-    }
-
-    /**
-     * The split directory and the unsplit one of very old data.
-     *
-     * @return list<string>
-     */
-    private function contextDirectories(int $portalId, int $contextId): array
-    {
-        return [
-            $this->filesDirectory->contextDirectory($portalId, $contextId),
-            $this->filesDirectory->root()."/$portalId/$contextId",
-        ];
     }
 
     /**

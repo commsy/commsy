@@ -82,6 +82,17 @@ readonly class FilesDirectory
     }
 
     /**
+     * Every directory a context's files may lie in: the split one and the
+     * unsplit one of very old data.
+     *
+     * @return list<string>
+     */
+    public function contextDirectories(int $portalId, int $contextId): array
+    {
+        return [$this->contextDirectory($portalId, $contextId), $this->root.'/'.$portalId.'/'.$contextId];
+    }
+
+    /**
      * Portal and context of a directory relative to the root, or null when
      * the directory is not a context directory.
      *
