@@ -10,6 +10,9 @@ The chart does **not** install a database or a search engine. It expects:
 | MariaDB | 11.8 | `DATABASE_URL` points to it |
 | Elasticsearch | 9.x | single node is enough; `commsy.elasticsearchUrl` points to it; the index can be rebuilt from the database |
 
+The image is published to `ghcr.io/commsy/commsy` (tags: `10.6`, `10.6.0`, ...). Earlier releases on Docker Hub
+(`effectivewebwork/commsy`) are no longer maintained.
+
 ## Install
 
 ```bash

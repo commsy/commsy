@@ -18,6 +18,7 @@
 **/Dockerfile
 **/Thumbs.db
 .github/
+charts/
 docs/
 # Uploads; the image only needs the directory, which it creates itself.
 files/

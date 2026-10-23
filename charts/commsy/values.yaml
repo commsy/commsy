@@ -2,7 +2,7 @@
 # Database (MariaDB 11.8) and Elasticsearch are expected to exist; see README.md.
 
 image:
-  repository: docker.io/effectivewebwork/commsy
+  repository: ghcr.io/commsy/commsy
   # Defaults to the chart's appVersion. Pin a digest for reproducible deployments.
   tag: ""
   digest: ""
