@@ -26,6 +26,7 @@ use App\WOPI\Discovery\Response\NetZone;
 use App\WOPI\Discovery\Response\WOPIDiscovery;
 use App\WOPI\Discovery\Response\WOPIZone;
 use Doctrine\DBAL\Connection;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -42,7 +43,8 @@ use Zenstruck\Foundry\Test\Factories;
 
 /**
  * Pins the entry into the online office (`app_wopi_host`): it opens files of
- * the checked entry only.
+ * the checked entry only, and a version about to change a file it shares
+ * with other versions gets a copy of its own first.
  */
 #[WithStory(RoomWithMemberStory::class)]
 final class WOPIHostTest extends WebTestCase
@@ -108,6 +110,61 @@ final class WOPIHostTest extends WebTestCase
         self::assertResponseStatusCodeSame(404);
     }
 
+    public function testEditingAFileNoOtherVersionCarriesChangesItInPlace(): void
+    {
+        $this->logInAsOwner();
+        $materialId = $this->createMaterial(withSecondVersion: true);
+        $fileId = $this->createFile();
+        $this->linkFile($fileId, $materialId, 1);
+
+        $this->client->request('GET', $this->hostUrl($materialId, $fileId, 1));
+
+        self::assertResponseIsSuccessful();
+        self::assertSame($fileId, $this->openedFileId());
+        self::assertSame([$fileId], $this->liveFileIds($materialId, 1));
+    }
+
+    public function testEditingASharedFileGivesTheOpenedVersionItsOwnCopy(): void
+    {
+        $this->logInAsOwner();
+        $materialId = $this->createMaterial(withSecondVersion: true);
+        $fileId = $this->createFile('Inhalt von damals');
+        $this->linkFile($fileId, $materialId, 0);
+        $this->linkFile($fileId, $materialId, 1);
+
+        $this->client->request('GET', $this->hostUrl($materialId, $fileId, 1));
+
+        self::assertResponseIsSuccessful();
+        $copyId = $this->openedFileId();
+        self::assertNotSame($fileId, $copyId, 'the shared file must not be opened for editing');
+
+        self::assertSame([$copyId], $this->liveFileIds($materialId, 1));
+        self::assertSame([$fileId], $this->liveFileIds($materialId, 0), 'the older version keeps the original');
+        self::assertNull($this->connection()->fetchOne('SELECT deletion_date FROM files WHERE files_id = ?', [$fileId]));
+
+        $copy = $this->connection()->fetchAssociative('SELECT filename, filepath, size FROM files WHERE files_id = ?', [$copyId]);
+        self::assertIsArray($copy);
+        self::assertSame('Bericht.docx', $copy['filename']);
+        self::assertStringEqualsFile($this->projectDir.'/'.$copy['filepath'], 'Inhalt von damals');
+        self::assertStringEqualsFile($this->directory.'/Bericht.docx', 'Inhalt von damals');
+    }
+
+    public function testTheFileListOpensTheOfficeForTheShownVersion(): void
+    {
+        $this->logInAsOwner();
+        $materialId = $this->createMaterial(withSecondVersion: true);
+        $fileId = $this->createFile();
+        $this->linkFile($fileId, $materialId, 1);
+
+        $crawler = $this->client->request('GET', "/room/{$this->room->getItemId()}/material/$materialId/1");
+        self::assertResponseIsSuccessful();
+
+        $urls = $crawler->filter('[data-wopi-modal-url-value]')->each(
+            static fn ($node): string => (string) $node->attr('data-wopi-modal-url-value')
+        );
+        self::assertSame([$this->hostUrl($materialId, $fileId, 1)], $urls);
+    }
+
     /**
      * Logs in a member with a known password who then creates the entries,
      * and may therefore edit them. The office stub has to be in place before
@@ -147,6 +204,19 @@ final class WOPIHostTest extends WebTestCase
         return null === $versionId ? $url : "$url?versionId=$versionId";
     }
 
+    /**
+     * The file the editor was handed, read from the access token.
+     */
+    private function openedFileId(): int
+    {
+        $token = $this->client->getCrawler()->filter('input[name=access_token]')->attr('value');
+
+        /** @var JWTTokenManagerInterface $tokenManager */
+        $tokenManager = self::getContainer()->get(JWTTokenManagerInterface::class);
+
+        return (int) $tokenManager->parse((string) $token)['fid'];
+    }
+
     private function createMaterial(bool $withSecondVersion = false): int
     {
         $materialId = (int) MaterialFactory::createOne(['room' => $this->room, 'creator' => $this->owner])->getItemId();
@@ -183,6 +253,17 @@ final class WOPIHostTest extends WebTestCase
             'INSERT INTO item_link_file (file_id, item_iid, item_vid) VALUES (?, ?, ?)',
             [$fileId, $itemId, $versionId]
         );
+    }
+
+    /**
+     * @return int[]
+     */
+    private function liveFileIds(int $itemId, int $versionId): array
+    {
+        return array_map('intval', $this->connection()->fetchFirstColumn(
+            'SELECT file_id FROM item_link_file WHERE item_iid = ? AND item_vid = ? AND deletion_date IS NULL ORDER BY file_id',
+            [$itemId, $versionId]
+        ));
     }
 
     /**

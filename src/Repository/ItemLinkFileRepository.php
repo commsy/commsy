@@ -122,6 +122,25 @@ class ItemLinkFileRepository extends ServiceEntityRepository
     }
 
     /**
+     * Whether a live link other than the given item version points at the
+     * file — another version of the same entry, or another entry.
+     */
+    public function isLinkedElsewhere(int $fileId, int $itemId, int $versionId): bool
+    {
+        $count = $this->createQueryBuilder('ilf')
+            ->select('COUNT(ilf.itemId)')
+            ->andWhere('IDENTITY(ilf.file) = :fileId')
+            ->andWhere('ilf.deletionDate IS NULL')
+            ->andWhere('ilf.itemId <> :itemId OR ilf.versionId <> :versionId')
+            ->setParameter('fileId', $fileId)
+            ->setParameter('itemId', $itemId)
+            ->setParameter('versionId', $versionId)
+            ->getQuery()->getSingleScalarResult();
+
+        return (int) $count > 0;
+    }
+
+    /**
      * Returns the distinct item ids the file is linked to, dropping
      * version duplicates. Active links only (deleter/deletion filter
      * on item_link_file).

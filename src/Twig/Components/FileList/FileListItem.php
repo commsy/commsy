@@ -39,6 +39,10 @@ final class FileListItem
     #[LiveProp]
     public int $itemId;
 
+    /** The version of the entry the file is shown in; null for entries without versions. */
+    #[LiveProp]
+    public ?int $versionId = null;
+
     #[LiveProp]
     public bool $isImage = false;
 

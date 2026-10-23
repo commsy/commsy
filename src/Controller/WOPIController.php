@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\Files;
+use App\Files\SharedFileSplitter;
 use App\Repository\ItemLinkFileRepository;
 use App\WOPI\ActionUrlBuilder;
 use App\WOPI\Auth\AccessTokenGenerator;
@@ -34,6 +35,7 @@ class WOPIController extends AbstractController
         WOPISrc $wopiSrc,
         AccessTokenGenerator $tokenGenerator,
         ItemLinkFileRepository $itemLinkFileRepository,
+        SharedFileSplitter $sharedFileSplitter,
         int $roomId,
         int $itemId,
         #[MapEntity(id: 'fileId')]
@@ -76,6 +78,11 @@ class WOPIController extends AbstractController
 
         if (!$action) {
             throw new Exception('No matching action found.');
+        }
+
+        if ($permission === WOPIPermission::EDIT) {
+            // Versions share their files; the one being edited gets its own.
+            $file = $sharedFileSplitter->fileToChange($file, $itemId, $versionId ?? 0);
         }
 
         $language = match ($localeSwitcher->getLocale()) {

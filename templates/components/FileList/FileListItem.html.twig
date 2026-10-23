@@ -7,7 +7,8 @@
             'url': path('app_wopi_host', {
                 'roomId': fileDto.contextId,
                 'itemId': itemId,
-                'fileId': fileDto.fileId
+                'fileId': fileDto.fileId,
+                'versionId': versionId
             })
         }) }}>
             <div id="modal_wopi_{{ fileDto.fileId }}" class="uk-modal" {{ stimulus_target('wopi_modal', 'modal') }}>
