@@ -15,21 +15,21 @@ namespace App\Files;
 
 use App\Entity\Files;
 use App\Entity\ItemLinkFile;
-use App\Services\LegacyEnvironment;
-use cs_environment;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Filesystem\Path;
 
 class FileDeleter
 {
-    private cs_environment $legacyEnvironment;
-
     public function __construct(
-        LegacyEnvironment $environment,
         private readonly EntityManagerInterface $entityManager,
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir,
+        #[Autowire('%files_directory%')]
+        private readonly string $filesDirectory,
     ) {
-        $this->legacyEnvironment = $environment->getEnvironment();
     }
 
     /**
@@ -170,14 +170,14 @@ class FileDeleter
 
     /**
      * Physically removes every `files` row whose `deletion_date` is older
-     * than `$days`, plus matching `item_link_file` rows and the actual
-     * file on disk (via legacy `cs_disc_manager`).
+     * than `$days`, plus matching `item_link_file` rows and the file on
+     * disk with its thumbnail.
      */
     public function hardDeleteExpiredFiles(int $days): void
     {
-        /** @var list<array{filesId: int, portalId: int|string|null, contextId: int, filename: string}> $expiredFiles */
+        /** @var list<array{filesId: int, filepath: string}> $expiredFiles */
         $expiredFiles = $this->entityManager->createQueryBuilder()
-            ->select('f.filesId, IDENTITY(f.portal) AS portalId, f.contextId, f.filename')
+            ->select('f.filesId, f.filepath')
             ->from(Files::class, 'f')
             ->where('f.deletionDate IS NOT NULL')
             ->andWhere('f.deletionDate < :cutoff')
@@ -204,15 +204,34 @@ class FileDeleter
             ->setParameter('fileIds', $fileIds)
             ->getQuery()->execute();
 
-        // Filesystem cleanup: disc_manager computes the on-disk filename
-        // from portal/context/files_id/filename, so feed one row at a time.
-        $discManager = $this->legacyEnvironment->getDiscManager();
-        foreach ($expiredFiles as $row) {
-            $filename = 'cid' . $row['contextId'] . '_' . $row['filesId'] . '_' . $row['filename'];
-            $discManager->setPortalID((int) $row['portalId']);
-            $discManager->setContextID((int) $row['contextId']);
-            if ($discManager->existsFile($filename)) {
-                $discManager->unlinkFile($filename);
+        // The download reads a file from `filepath`, so that is what goes;
+        // an image's thumbnail lies next to it. A path another row still
+        // names stays.
+        $paths = array_values(array_unique(array_filter(array_map(
+            static fn (array $row): string => (string) $row['filepath'],
+            $expiredFiles,
+        ))));
+        if ($paths === []) {
+            return;
+        }
+
+        $stillNamed = $this->entityManager->createQueryBuilder()
+            ->select('f.filepath')
+            ->from(Files::class, 'f')
+            ->where('f.filepath IN (:paths)')
+            ->setParameter('paths', $paths)
+            ->getQuery()->getSingleColumnResult();
+
+        foreach (array_diff($paths, $stillNamed) as $relativePath) {
+            $path = $this->pathInFilesDirectory($relativePath);
+            if ($path === null) {
+                continue;
+            }
+
+            foreach ([$path, $path . '_thumb'] as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
             }
         }
     }
@@ -251,6 +270,18 @@ class FileDeleter
         }
 
         $qb->getQuery()->execute();
+    }
+
+    /**
+     * The absolute path of a `filepath` value, or null when it does not
+     * point below the files directory. Nothing outside is ever removed.
+     */
+    private function pathInFilesDirectory(string $filepath): ?string
+    {
+        $path = Path::canonicalize(Path::isAbsolute($filepath) ? $filepath : $this->projectDir . '/' . $filepath);
+        $root = Path::canonicalize($this->filesDirectory);
+
+        return $path !== $root && Path::isBasePath($root, $path) ? $path : null;
     }
 
     /**
