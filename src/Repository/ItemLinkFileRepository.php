@@ -100,6 +100,28 @@ class ItemLinkFileRepository extends ServiceEntityRepository
     }
 
     /**
+     * Whether the file is attached to the item — in the given version, or in
+     * any when none is given. Stamped links do not count.
+     */
+    public function isAttached(int $fileId, int $itemId, ?int $versionId = null): bool
+    {
+        $qb = $this->createQueryBuilder('ilf')
+            ->select('COUNT(ilf.itemId)')
+            ->andWhere('IDENTITY(ilf.file) = :fileId')
+            ->andWhere('ilf.itemId = :itemId')
+            ->andWhere('ilf.deletionDate IS NULL')
+            ->setParameter('fileId', $fileId)
+            ->setParameter('itemId', $itemId);
+
+        if (null !== $versionId) {
+            $qb->andWhere('ilf.versionId = :versionId')
+                ->setParameter('versionId', $versionId);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+    }
+
+    /**
      * Returns the distinct item ids the file is linked to, dropping
      * version duplicates. Active links only (deleter/deletion filter
      * on item_link_file).

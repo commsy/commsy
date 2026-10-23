@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Account;
 use App\Entity\Files;
+use App\Repository\ItemLinkFileRepository;
 use App\WOPI\ActionUrlBuilder;
 use App\WOPI\Auth\AccessTokenGenerator;
 use App\WOPI\Discovery\DiscoveryService;
@@ -16,6 +17,7 @@ use Exception;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Translation\LocaleSwitcher;
@@ -31,13 +33,20 @@ class WOPIController extends AbstractController
         LocaleSwitcher $localeSwitcher,
         WOPISrc $wopiSrc,
         AccessTokenGenerator $tokenGenerator,
+        ItemLinkFileRepository $itemLinkFileRepository,
         int $roomId,
         int $itemId,
         #[MapEntity(id: 'fileId')]
-        Files $file
+        Files $file,
+        #[MapQueryParameter] ?int $versionId = null
     ): Response
     {
-        $permission = $permissionResolver->resolve($file);
+        // Only a file of the entry checked above opens here.
+        if (!$itemLinkFileRepository->isAttached($file->getFilesId(), $itemId, $versionId)) {
+            throw $this->createNotFoundException('The file is not attached to this entry.');
+        }
+
+        $permission = $permissionResolver->resolve($itemId);
 
         $discovery = $discoveryService->getWOPIDiscovery();
         $extension = pathinfo($file->getFilepath(), PATHINFO_EXTENSION);
