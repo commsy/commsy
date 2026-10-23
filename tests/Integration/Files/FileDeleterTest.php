@@ -22,6 +22,7 @@ use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tests\Factory\AnnouncementFactory;
 use Tests\Factory\FilesFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -198,6 +199,76 @@ final class FileDeleterTest extends KernelTestCase
         $this->createFile(new DateTime('-2 days'));
 
         self::assertSame(2, $this->fileDeleter->softDeleteUnlinkedFiles());
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testLinksOfGoneEntriesAreLetGoOf(): void
+    {
+        $alive = (int) AnnouncementFactory::createOne(['room' => $this->room, 'creator' => $this->roomUser])->getItemId();
+        $deleted = (int) AnnouncementFactory::createOne(['room' => $this->room, 'creator' => $this->roomUser])->getItemId();
+        $this->connection->executeStatement('UPDATE items SET deletion_date = NOW() - INTERVAL 200 DAY WHERE item_id = ?', [$deleted]);
+        $restorable = (int) AnnouncementFactory::createOne(['room' => $this->room, 'creator' => $this->roomUser])->getItemId();
+        $this->connection->executeStatement('UPDATE items SET deletion_date = NOW() - INTERVAL 10 DAY WHERE item_id = ?', [$restorable]);
+        $vanished = 999_999_001;
+        $portal = (int) $this->room->getPortal()?->getId();
+
+        $onAlive = $this->createFile();
+        $onDeleted = $this->createFile();
+        $onVanished = $this->createFile();
+        $onPortal = $this->createFile();
+        $onRestorable = $this->createFile();
+        $this->createItemLinkFile($onRestorable, itemId: $restorable, versionId: 0);
+        $this->createItemLinkFile($onAlive, itemId: $alive, versionId: 0);
+        $this->createItemLinkFile($onDeleted, itemId: $deleted, versionId: 0);
+        $this->createItemLinkFile($onVanished, itemId: $vanished, versionId: 0);
+        $this->createItemLinkFile($onPortal, itemId: $portal, versionId: 0);
+
+        $fileIds = $this->fileDeleter->detachFromGoneEntries();
+
+        sort($fileIds);
+        self::assertSame([$onDeleted, $onVanished], $fileIds);
+        $this->assertItemLinkFileAlive($onAlive, itemId: $alive, versionId: 0);
+        $this->assertItemLinkFileAlive($onPortal, itemId: $portal, versionId: 0);
+        $this->assertItemLinkFileAlive($onRestorable, itemId: $restorable, versionId: 0);
+        self::assertNotNull($this->connection->fetchOne(
+            'SELECT deletion_date FROM item_link_file WHERE file_id = ? AND item_iid = ?', [$onDeleted, $deleted]
+        ));
+        self::assertNotNull($this->connection->fetchOne(
+            'SELECT deletion_date FROM item_link_file WHERE file_id = ? AND item_iid = ?', [$onVanished, $vanished]
+        ));
+        self::assertNull($this->fileRow($onDeleted)['deletion_date'], 'only the links are let go of here');
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testAFileMissingOnDiskEndsWithAllItsLinks(): void
+    {
+        $missing = $this->createFile();
+        $bystander = $this->createFile();
+        $this->createItemLinkFile($missing, itemId: 1001, versionId: 0);
+        $this->createItemLinkFile($missing, itemId: 1001, versionId: 1);
+        $this->createItemLinkFile($bystander, itemId: 1001, versionId: 1);
+
+        $this->fileDeleter->endFilesMissingOnDisk([$missing]);
+
+        self::assertNotNull($this->fileRow($missing)['deletion_date']);
+        foreach ([0, 1] as $versionId) {
+            self::assertNotNull($this->connection->fetchOne(
+                'SELECT deletion_date FROM item_link_file WHERE file_id = ? AND item_vid = ?', [$missing, $versionId]
+            ));
+        }
+        self::assertNull($this->fileRow($bystander)['deletion_date']);
+        $this->assertItemLinkFileAlive($bystander, itemId: 1001, versionId: 1);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testEndingFilesWithoutLiveLinksTellsHowManyEnded(): void
+    {
+        $ended = $this->createFile();
+        $kept = $this->createFile();
+        $this->createItemLinkFile($kept, itemId: 1001, versionId: 0);
+
+        self::assertSame(1, $this->fileDeleter->softDeleteFilesWithoutLiveLinks([$ended, $kept], null));
+        self::assertNull($this->fileRow($ended)['deleter_id'], 'no person is behind it');
     }
 
     // ------------------------------------------------------------------

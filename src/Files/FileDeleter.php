@@ -15,20 +15,22 @@ namespace App\Files;
 
 use App\Entity\Files;
 use App\Entity\ItemLinkFile;
+use App\Entity\Items;
+use App\Entity\Portal;
+use App\Entity\Server;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Filesystem\Path;
 
 class FileDeleter
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        #[Autowire('%kernel.project_dir%')]
-        private readonly string $projectDir,
-        #[Autowire('%files_directory%')]
-        private readonly string $filesDirectory,
+        private readonly FilesDirectory $filesDirectory,
+        #[Autowire('%commsy.settings.delete_days%')]
+        private readonly int $deleteDays,
     ) {
     }
 
@@ -91,7 +93,7 @@ class FileDeleter
      */
     public function findLinkedFileIds(array $itemIds): array
     {
-        $ids = array_values(array_unique(array_map('intval', $itemIds)));
+        $ids = array_values(array_unique(array_map(intval(...), $itemIds)));
         if ($ids === []) {
             return [];
         }
@@ -117,16 +119,19 @@ class FileDeleter
      * follows the same course as every other soft-deleted row — swept
      * after the configured retention.
      *
-     * @param int[] $fileIds
+     * @param int[]    $fileIds
+     * @param int|null $deleterId null when no person is behind the deletion
+     *
+     * @return int number of files ended
      */
-    public function softDeleteFilesWithoutLiveLinks(array $fileIds, int $deleterId): void
+    public function softDeleteFilesWithoutLiveLinks(array $fileIds, ?int $deleterId): int
     {
-        $ids = array_values(array_unique(array_filter(array_map('intval', $fileIds))));
+        $ids = array_values(array_unique(array_filter(array_map(intval(...), $fileIds))));
         if ($ids === []) {
-            return;
+            return 0;
         }
 
-        $this->entityManager->createQueryBuilder()
+        return (int) $this->entityManager->createQueryBuilder()
             ->update(Files::class, 'f')
             ->set('f.deletionDate', ':now')
             ->set('f.deleterId', ':deleterId')
@@ -157,14 +162,121 @@ class FileDeleter
      */
     public function softDeleteUnlinkedFiles(int $minAgeHours = 24): int
     {
-        return (int) $this->entityManager->createQueryBuilder()
+        return (int) $this->unlinkedFiles(
+            $this->entityManager->createQueryBuilder()
+                ->update(Files::class, 'f')
+                ->set('f.deletionDate', ':now')
+                ->setParameter('now', new DateTime()),
+            $minAgeHours,
+        )->getQuery()->execute();
+    }
+
+    /**
+     * The files {@see softDeleteUnlinkedFiles()} would mark.
+     *
+     * @return list<array{fileId: int, filepath: string, bytes: int}>
+     */
+    public function findUnlinkedFiles(int $minAgeHours = 24): array
+    {
+        return $this->fileSummaries($this->unlinkedFiles($this->entityManager->createQueryBuilder(), $minAgeHours));
+    }
+
+    /**
+     * Files not marked deleted that have links, none of which is live and
+     * leads to an entry still there — what {@see detachFromGoneEntries()}
+     * followed by {@see softDeleteFilesWithoutLiveLinks()} ends.
+     *
+     * @return list<array{fileId: int, filepath: string, bytes: int}>
+     */
+    public function findFilesWithoutLiveEntry(): array
+    {
+        $expr = $this->entityManager->getExpressionBuilder();
+        $anyLink = $this->entityManager->createQueryBuilder()
+            ->select('a.itemId')
+            ->from(ItemLinkFile::class, 'a')
+            ->where('IDENTITY(a.file) = f.filesId');
+        $liveLinkToLiveEntry = $this->entityManager->createQueryBuilder()
+            ->select('l.itemId')
+            ->from(ItemLinkFile::class, 'l')
+            ->where('IDENTITY(l.file) = f.filesId')
+            ->andWhere('l.deletionDate IS NULL')
+            ->andWhere($expr->not($this->entryIsGone('l')));
+
+        return $this->fileSummaries($this->entityManager->createQueryBuilder()
+            ->from(Files::class, 'f')
+            ->where('f.deletionDate IS NULL')
+            ->andWhere($expr->exists($anyLink->getDQL()))
+            ->andWhere($expr->not($expr->exists($liveLinkToLiveEntry->getDQL())))
+            ->setParameter('restorableSince', $this->restorableSince()));
+    }
+
+    /**
+     * Stamps the live links whose entry is gone — its items row missing, or
+     * deleted longer ago than the retention, so it can no longer be restored.
+     * Deleting an entry did not let go of its files before 10.5, so such links
+     * still hold files nothing shows any more. An entry deleted more recently
+     * is left as it is: restoring it brings back its links with it. A link to
+     * a portal or the server counts as alive.
+     *
+     * @return int[] the files whose links were stamped
+     */
+    public function detachFromGoneEntries(): array
+    {
+        $fileIds = $this->entityManager->createQueryBuilder()
+            ->select('DISTINCT IDENTITY(ilf.file) AS fileId')
+            ->from(ItemLinkFile::class, 'ilf')
+            ->where('ilf.deletionDate IS NULL')
+            ->andWhere($this->entryIsGone('ilf'))
+            ->setParameter('restorableSince', $this->restorableSince())
+            ->getQuery()->getScalarResult();
+
+        if ([] === $fileIds) {
+            return [];
+        }
+
+        $this->entityManager->createQueryBuilder()
+            ->update(ItemLinkFile::class, 'ilf')
+            ->set('ilf.deletionDate', ':now')
+            ->where('ilf.deletionDate IS NULL')
+            ->andWhere($this->entryIsGone('ilf'))
+            ->setParameter('restorableSince', $this->restorableSince())
+            ->setParameter('now', new DateTime())
+            ->getQuery()->execute();
+
+        return array_map(static fn (array $row): int => (int) $row['fileId'], $fileIds);
+    }
+
+    /**
+     * Ends files whose content is gone from disk: the row and every link
+     * are marked deleted, so no entry offers a file that cannot be served.
+     * Only for files known to be missing — this lets go of every version.
+     *
+     * @param int[] $fileIds
+     */
+    public function endFilesMissingOnDisk(array $fileIds): void
+    {
+        $ids = array_values(array_unique(array_filter(array_map(intval(...), $fileIds))));
+        if ($ids === []) {
+            return;
+        }
+
+        $now = new DateTime();
+        $this->entityManager->createQueryBuilder()
+            ->update(ItemLinkFile::class, 'ilf')
+            ->set('ilf.deletionDate', ':now')
+            ->where('ilf.file IN (:fileIds)')
+            ->andWhere('ilf.deletionDate IS NULL')
+            ->setParameter('now', $now)
+            ->setParameter('fileIds', $ids)
+            ->getQuery()->execute();
+
+        $this->entityManager->createQueryBuilder()
             ->update(Files::class, 'f')
             ->set('f.deletionDate', ':now')
-            ->where('f.deletionDate IS NULL')
-            ->andWhere('f.creationDate < :cutoff')
-            ->andWhere($this->noLinkExists(aliveOnly: false))
-            ->setParameter('now', new DateTime())
-            ->setParameter('cutoff', new DateTimeImmutable('-' . $minAgeHours . ' hours'))
+            ->where('f.filesId IN (:fileIds)')
+            ->andWhere('f.deletionDate IS NULL')
+            ->setParameter('now', $now)
+            ->setParameter('fileIds', $ids)
             ->getQuery()->execute();
     }
 
@@ -223,8 +335,9 @@ class FileDeleter
             ->getQuery()->getSingleColumnResult();
 
         foreach (array_diff($paths, $stillNamed) as $relativePath) {
-            $path = $this->pathInFilesDirectory($relativePath);
-            if ($path === null) {
+            // nothing outside the files directory is ever removed
+            $path = $this->filesDirectory->absoluteOf($relativePath);
+            if ($this->filesDirectory->relativeOf($path) === null) {
                 continue;
             }
 
@@ -273,15 +386,72 @@ class FileDeleter
     }
 
     /**
-     * The absolute path of a `filepath` value, or null when it does not
-     * point below the files directory. Nothing outside is ever removed.
+     * Whether the entry of a link is gone: no items row that is alive or can
+     * still be restored, and neither a portal nor the server. Needs the
+     * parameter `restorableSince` set on the query.
      */
-    private function pathInFilesDirectory(string $filepath): ?string
+    private function entryIsGone(string $link): string
     {
-        $path = Path::canonicalize(Path::isAbsolute($filepath) ? $filepath : $this->projectDir . '/' . $filepath);
-        $root = Path::canonicalize($this->filesDirectory);
+        $expr = $this->entityManager->getExpressionBuilder();
 
-        return $path !== $root && Path::isBasePath($root, $path) ? $path : null;
+        $liveItem = $this->entityManager->createQueryBuilder()
+            ->select('i.itemId')
+            ->from(Items::class, 'i')
+            ->where("i.itemId = $link.itemId")
+            ->andWhere('i.deletionDate IS NULL OR i.deletionDate >= :restorableSince');
+        $portal = $this->entityManager->createQueryBuilder()
+            ->select('p.id')
+            ->from(Portal::class, 'p')
+            ->where("p.id = $link.itemId");
+        $server = $this->entityManager->createQueryBuilder()
+            ->select('s.id')
+            ->from(Server::class, 's')
+            ->where("s.id = $link.itemId");
+
+        return (string) $expr->andX(
+            $expr->not($expr->exists($liveItem->getDQL())),
+            $expr->not($expr->exists($portal->getDQL())),
+            $expr->not($expr->exists($server->getDQL())),
+        );
+    }
+
+    /**
+     * Entries deleted since then can still be restored.
+     */
+    private function restorableSince(): DateTimeImmutable
+    {
+        return new DateTimeImmutable("-{$this->deleteDays} days");
+    }
+
+    /**
+     * Rows not marked deleted, older than the given hours, without any link
+     * row — the criterion of {@see softDeleteUnlinkedFiles()}.
+     */
+    private function unlinkedFiles(QueryBuilder $qb, int $minAgeHours): QueryBuilder
+    {
+        if ([] === $qb->getDQLPart('from')) {
+            $qb->from(Files::class, 'f');
+        }
+
+        return $qb
+            ->andWhere('f.deletionDate IS NULL')
+            ->andWhere('f.creationDate < :cutoff')
+            ->andWhere($this->noLinkExists(aliveOnly: false))
+            ->setParameter('cutoff', new DateTimeImmutable('-' . $minAgeHours . ' hours'));
+    }
+
+    /**
+     * @return list<array{fileId: int, filepath: string, bytes: int}>
+     */
+    private function fileSummaries(QueryBuilder $qb): array
+    {
+        $rows = $qb->select('f.filesId', 'f.filepath', 'f.size')->getQuery()->getArrayResult();
+
+        return array_map(static fn (array $row): array => [
+            'fileId' => (int) $row['filesId'],
+            'filepath' => (string) $row['filepath'],
+            'bytes' => (int) $row['size'],
+        ], $rows);
     }
 
     /**

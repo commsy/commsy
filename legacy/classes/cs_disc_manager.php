@@ -226,7 +226,7 @@ class cs_disc_manager
 
     public function getCurrentFileName(int $fileId, string $fileExt): string
     {
-        return "$fileId.$fileExt";
+        return \App\Files\FilesDirectory::diskFilename($fileId, $fileExt);
     }
 
     /**
@@ -259,15 +259,6 @@ class cs_disc_manager
             return md5(\App\Utils\MysqlDateTime::now());
         }
 
-        $retour = '';
-        for ($i = 0; $i < strlen($second_folder); ++$i) {
-            if ($i > 0 && 0 == $i % 4) {
-                $retour .= '/';
-            }
-            $retour .= $second_folder[$i];
-        }
-        $retour .= '_';
-
-        return $retour;
+        return \App\Files\FilesDirectory::contextSegment($second_folder);
     }
 }

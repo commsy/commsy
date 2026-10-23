@@ -34,16 +34,14 @@ final class FileLinkDetachContainmentTest extends TestCase
     /**
      * Files allowed to write `item_link_file` (relative to the project root):
      * the deleter itself, the legacy link manager (inserts links or revives
-     * them on re-attach), the legacy file link manager (drops the links of a
-     * room that is erased for good) and the old database checks.
+     * them on re-attach) and the legacy file link manager (drops the links of
+     * a room that is erased for good).
      *
      * @var string[]
      */
     private const ALLOWLIST = [
         'legacy/classes/cs_link_item_file_manager.php',
         'legacy/classes/cs_links_manager.php',
-        'src/Database/FixFilesAndLinks.php',
-        'src/Database/FixPhysicalFileLinks.php',
         'src/Files/FileDeleter.php',
     ];
 

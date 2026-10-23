@@ -129,12 +129,11 @@ class cs_file_item extends cs_item
 
     public function getExtension(): ?string
     {
-        $display_name = $this->getDisplayName();
-        if (!empty($display_name)) {
-            return \App\Utils\StringCase::toLower(mb_substr(strrchr((string) $display_name, '.'), 1));
+        if (empty($this->getDisplayName())) {
+            return null;
         }
 
-        return null;
+        return \App\Files\FilesDirectory::extensionOf((string) $this->_getValue('filename'));
     }
 
     /**

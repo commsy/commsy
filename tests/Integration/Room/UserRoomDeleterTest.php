@@ -136,8 +136,7 @@ final class UserRoomDeleterTest extends KernelTestCase
 
     /**
      * FS removal via `cs_disc_manager::removeRoomDir()` is not asserted —
-     * it no-ops on a missing dir. Dedicated FS coverage lives in
-     * {@see \Tests\Unit\Database\FixPhysicalFilesTest}.
+     * it no-ops on a missing dir.
      */
     #[WithStory(AccountStory::class)]
     public function testHardDeleteRemovesRoomAndContentPhysically(): void

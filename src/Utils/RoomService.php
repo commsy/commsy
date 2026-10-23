@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Files\FilesDirectory;
 use App\Room\Copy\LegacyCopy;
 use App\Room\RoomType;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
@@ -239,9 +240,7 @@ class RoomService
 
     public function getRoomFileDirectory($roomId)
     {
-        $roomDir = implode('/', array_filter(explode("\r\n", chunk_split(strval($roomId), '4')), 'strlen'));
-
-        return ($this->currentContextResolver->getPortal()?->getId() ?? 0).'/'.$roomDir.'_';
+        return ($this->currentContextResolver->getPortal()?->getId() ?? 0).'/'.FilesDirectory::contextSegment($roomId);
     }
 
     public function getRoomsInTimePulse($timeId)
