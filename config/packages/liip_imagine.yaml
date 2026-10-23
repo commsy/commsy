@@ -17,7 +17,9 @@ liip_imagine:
             filters:
                 thumbnail: { size: [ 200, 200 ], mode: outbound }
 
+    # Filters run only in code (the user picture); no route resolves them, so
+    # nothing in the files directory is reachable through the bundle.
     loaders:
         default:
             filesystem:
-                data_root: '%kernel.project_dir%/files'
+                data_root: '%files_directory%'
