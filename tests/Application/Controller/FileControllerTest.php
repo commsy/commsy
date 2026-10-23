@@ -62,7 +62,7 @@ class FileControllerTest extends AbstractApplicationTestCase
         $this->assertResponseStatusCodeSame(404);
     }
 
-    public function testRoomLogoReturns404WhenNoLogoFile(): void
+    public function testRoomLogoFallsBackToThePlaceholderWithoutLogo(): void
     {
         $this->loginAsUser(
             $this->account->getPortal()->getId(),
@@ -73,7 +73,11 @@ class FileControllerTest extends AbstractApplicationTestCase
 
         $this->client->request('GET', "/room/{$roomId}/logo");
 
-        $this->assertResponseStatusCodeSame(404);
+        $this->assertResponseIsSuccessful();
+        self::assertStringEqualsFile(
+            static::getContainer()->getParameter('themes_directory').'/customBgPlaceholder.png',
+            (string) $this->client->getInternalResponse()->getContent(),
+        );
     }
 
     public function testRoomBackgroundThemeServesDefaultImage(): void

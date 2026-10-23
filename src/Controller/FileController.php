@@ -102,16 +102,17 @@ class FileController extends AbstractController
         RoomService $roomService,
         int $roomId
     ): Response {
-        $roomItem = $roomService->getRoomItem($roomId);
+        // Without a logo of its own, or without a room at all (the portal on
+        // the dashboard), the placeholder stands in.
+        $fileName = (string) $roomService->getRoomItem($roomId)?->getLogoFilename();
+        if ('' === $fileName || basename($fileName) !== $fileName) {
+            $fileName = 'customBgPlaceholder.png';
+            $filePath = $this->getParameter('themes_directory').'/'.$fileName;
+        } else {
+            $filePath = $this->getParameter('files_directory').'/'.$roomService->getRoomFileDirectory($roomId).'/'.$fileName;
+        }
 
-        $fileName = $roomItem->getLogoFilename();
-        $filePath = $this->getParameter('files_directory').'/'.$roomService->getRoomFileDirectory($roomId).'/'.$fileName;
-
-        if (file_exists($filePath)) {
-            if (!$fileName) {
-                $fileName = 'customBgPlaceholder.png';
-                $filePath = $this->getParameter('themes_directory').'/'.$fileName;
-            }
+        if (is_file($filePath)) {
             $content = file_get_contents($filePath);
 
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
