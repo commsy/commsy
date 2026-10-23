@@ -27,6 +27,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Tests\Factory\FilesFactory;
 use Tests\Factory\LinkFactory;
 use Tests\Factory\LinkItemFactory;
 use Tests\Factory\MaterialFactory;
@@ -35,9 +36,8 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Pins the three MaterialDeleter entry points: `softDeleteItem()` (whole
- * material incl. all section versions), `deleteCurrentVersion()` (drop only
- * the latest version, items row survives), and `deleteSection()`.
+ * Pins the two MaterialDeleter entry points: `softDeleteItem()` (whole
+ * material incl. all section versions) and `deleteSection()`.
  */
 final class MaterialDeleterTest extends KernelTestCase
 {
@@ -171,39 +171,30 @@ final class MaterialDeleterTest extends KernelTestCase
     }
 
     /**
-     * `deleteCurrentVersion()` drops the version row but leaves `items`
-     * alive so the entity survives for UI rollback.
+     * Within one version a section lets go of its files; a file that no
+     * other version carries ends with it, a shared one stays.
      */
     #[WithStory(RoomWithMemberStory::class)]
-    public function testDeleteCurrentVersionKeepsItemsRowAlive(): void
+    public function testDeleteSectionInOneVersionEndsOnlyTheFilesNoOtherVersionCarries(): void
     {
         $material = $this->createMaterial();
+        $section = $this->createSection($material);
+        $sectionId = $section->getItemId();
 
-        $this->deleter->deleteCurrentVersion($material->getItemId(), $this->deleterId);
+        $onlyHere = FilesFactory::createOne(['contextId' => $this->room->getItemId()])->getFilesId();
+        $shared = FilesFactory::createOne(['contextId' => $this->room->getItemId()])->getFilesId();
+        $this->linkFile($onlyHere, $sectionId, 0);
+        $this->linkFile($shared, $sectionId, 0);
+        $this->linkFile($shared, $sectionId, 1);
 
-        $this->assertSoftDeleted('materials', $material->getItemId());
-        $this->assertNotSoftDeleted('items', $material->getItemId());
-    }
+        $this->deleter->deleteSection($sectionId, $this->deleterId, 0);
 
-    #[WithStory(RoomWithMemberStory::class)]
-    public function testDeleteCurrentVersionDispatchesReindexEvent(): void
-    {
-        $material = $this->createMaterial();
-
-        $dispatcher = self::getContainer()->get(EventDispatcherInterface::class);
-        self::assertInstanceOf(TraceableEventDispatcher::class, $dispatcher);
-        $dispatcher->reset();
-
-        $this->deleter->deleteCurrentVersion($material->getItemId(), $this->deleterId);
-
-        $dispatched = array_filter(
-            $dispatcher->getCalledListeners(),
-            fn(array $call): bool => $call['event'] === ItemReindexEvent::class
-        );
-        self::assertNotEmpty(
-            $dispatched,
-            'deleteCurrentVersion() must dispatch ItemReindexEvent.'
-        );
+        self::assertNotNull($this->fileDeletionDate($onlyHere));
+        self::assertNull($this->fileDeletionDate($shared));
+        self::assertNull($this->connection->fetchOne(
+            'SELECT deletion_date FROM item_link_file WHERE file_id = ? AND item_iid = ? AND item_vid = 1',
+            [$shared, $sectionId]
+        ));
     }
 
     /**
@@ -292,6 +283,21 @@ final class MaterialDeleterTest extends KernelTestCase
             'toItemId' => $toItemId,
             'linkType' => $linkType,
         ]);
+    }
+
+    private function linkFile(int $fileId, int $itemId, int $versionId): void
+    {
+        $this->connection->executeStatement(
+            'INSERT INTO item_link_file (file_id, item_iid, item_vid) VALUES (?, ?, ?)',
+            [$fileId, $itemId, $versionId]
+        );
+    }
+
+    private function fileDeletionDate(int $fileId): ?string
+    {
+        $value = $this->connection->fetchOne('SELECT deletion_date FROM files WHERE files_id = ?', [$fileId]);
+
+        return false === $value ? null : $value;
     }
 
     private function assertSoftDeleted(string $table, int $itemId): void

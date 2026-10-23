@@ -1801,11 +1801,12 @@ class cs_item
             }
             $link_manager = $this->_environment->getLinkManager();
             $file_id_array = $this->getFileIDArray();
+            // Detaching also ends a file that loses its last live link here.
             if (empty($file_id_array)) {
-                $fileDeleter->softDeleteFileLink(
-                    $this->getItemID(),
-                    $this->getVersionID(),
-                    (int) $this->_environment->getCurrentUserID()
+                $fileDeleter->detachFromItem(
+                    (int) $this->getItemID(),
+                    (int) $this->_environment->getCurrentUserID(),
+                    (int) $this->getVersionID()
                 );
             } else {
                 $linkedIds = $itemLinkFileRepository->getLinkedFileIds($this->getItemID(), $this->getVersionID());
@@ -1814,11 +1815,11 @@ class cs_item
                     if (in_array($linkedId, $file_id_array)) {
                         $keep_links[] = $linkedId;
                     } else {
-                        $fileDeleter->softDeleteFileLink(
-                            $this->getItemID(),
-                            $this->getVersionID(),
+                        $fileDeleter->detachFromItem(
+                            (int) $this->getItemID(),
                             (int) $this->_environment->getCurrentUserID(),
-                            $linkedId
+                            (int) $this->getVersionID(),
+                            (int) $linkedId
                         );
                     }
                 }

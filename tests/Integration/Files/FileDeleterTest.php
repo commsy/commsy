@@ -27,9 +27,9 @@ use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
 /**
- * Pins {@see FileDeleter::softDeleteFile()} — the replacement for the legacy
- * `cs_file_item::delete()` cascade used by the FileList live component —
- * and {@see FileDeleter::softDeleteUnlinkedFiles()}, the nightly sweep for
+ * Pins {@see FileDeleter::detachFromItem()} — letting go of an entry's
+ * files per version and ending the ones without a live link left — and
+ * {@see FileDeleter::softDeleteUnlinkedFiles()}, the nightly sweep for
  * uploads that never reached an entry.
  */
 final class FileDeleterTest extends KernelTestCase
@@ -39,56 +39,6 @@ final class FileDeleterTest extends KernelTestCase
     private Room $room;
     private User $roomUser;
     private int $deleterId;
-
-    #[WithStory(RoomWithMemberStory::class)]
-    public function testSoftDeleteFileMarksFilesRowAsDeleted(): void
-    {
-        $fileId = $this->createFile();
-
-        $this->fileDeleter->softDeleteFile($fileId, $this->deleterId);
-
-        $row = $this->connection->fetchAssociative(
-            'SELECT deletion_date, deleter_id FROM files WHERE files_id = :id',
-            ['id' => $fileId]
-        );
-        self::assertIsArray($row);
-        self::assertNotNull($row['deletion_date']);
-        self::assertSame($this->deleterId, (int) $row['deleter_id']);
-    }
-
-    #[WithStory(RoomWithMemberStory::class)]
-    public function testSoftDeleteFileSoftDeletesEveryItemLinkFileRow(): void
-    {
-        $fileId = $this->createFile();
-        $otherFileId = $this->createFile();
-
-        $this->createItemLinkFile($fileId, itemId: 1001, versionId: 1);
-        $this->createItemLinkFile($fileId, itemId: 1001, versionId: 2);
-        $this->createItemLinkFile($otherFileId, itemId: 1001, versionId: 1);
-
-        $this->fileDeleter->softDeleteFile($fileId, $this->deleterId);
-
-        $this->assertItemLinkFileSoftDeleted($fileId, itemId: 1001, versionId: 1);
-        $this->assertItemLinkFileSoftDeleted($fileId, itemId: 1001, versionId: 2);
-        $this->assertItemLinkFileAlive($otherFileId, itemId: 1001, versionId: 1);
-    }
-
-    #[WithStory(RoomWithMemberStory::class)]
-    public function testSoftDeleteFileDoesNotAffectOtherFiles(): void
-    {
-        $target = $this->createFile();
-        $bystander = $this->createFile();
-
-        $this->fileDeleter->softDeleteFile($target, $this->deleterId);
-
-        $row = $this->connection->fetchAssociative(
-            'SELECT deletion_date, deleter_id FROM files WHERE files_id = :id',
-            ['id' => $bystander]
-        );
-        self::assertIsArray($row);
-        self::assertNull($row['deletion_date']);
-        self::assertNull($row['deleter_id']);
-    }
 
     #[WithStory(RoomWithMemberStory::class)]
     public function testDetachEndsAFileWhoseLastCarrierIsGone(): void
@@ -119,17 +69,51 @@ final class FileDeleterTest extends KernelTestCase
     }
 
     #[WithStory(RoomWithMemberStory::class)]
-    public function testSoftDeleteFileLinkCanStampASingleAttachment(): void
+    public function testDetachingOneFileFromOneVersionKeepsItWhereverElseItIsLinked(): void
+    {
+        $shared = $this->createFile();
+        $sibling = $this->createFile();
+        $this->createItemLinkFile($shared, itemId: 1001, versionId: 0);
+        $this->createItemLinkFile($shared, itemId: 1001, versionId: 1);
+        $this->createItemLinkFile($sibling, itemId: 1001, versionId: 1);
+
+        $this->fileDeleter->detachFromItem(1001, $this->deleterId, 1, $shared);
+
+        $this->assertItemLinkFileSoftDeleted($shared, itemId: 1001, versionId: 1);
+        $this->assertItemLinkFileAlive($shared, itemId: 1001, versionId: 0);
+        $this->assertItemLinkFileAlive($sibling, itemId: 1001, versionId: 1);
+        self::assertNull($this->fileRow($shared)['deletion_date'], 'The older version still carries the file');
+        self::assertNull($this->fileRow($sibling)['deletion_date']);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testDetachingTheLastLinkOfOneFileEndsIt(): void
     {
         $target = $this->createFile();
         $sibling = $this->createFile();
         $this->createItemLinkFile($target, itemId: 1001, versionId: 1);
         $this->createItemLinkFile($sibling, itemId: 1001, versionId: 1);
 
-        $this->fileDeleter->softDeleteFileLink(1001, 1, $this->deleterId, $target);
+        $this->fileDeleter->detachFromItem(1001, $this->deleterId, 1, $target);
 
-        $this->assertItemLinkFileSoftDeleted($target, itemId: 1001, versionId: 1);
+        self::assertNotNull($this->fileRow($target)['deletion_date']);
         $this->assertItemLinkFileAlive($sibling, itemId: 1001, versionId: 1);
+        self::assertNull($this->fileRow($sibling)['deletion_date']);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testDetachingAFileTheItemDoesNotCarryChangesNothing(): void
+    {
+        $foreign = $this->createFile();
+        $this->createItemLinkFile($foreign, itemId: 1002, versionId: 0);
+        $orphan = $this->createFile();
+
+        $this->fileDeleter->detachFromItem(1001, $this->deleterId, 0, $foreign);
+        $this->fileDeleter->detachFromItem(1001, $this->deleterId, 0, $orphan);
+
+        $this->assertItemLinkFileAlive($foreign, itemId: 1002, versionId: 0);
+        self::assertNull($this->fileRow($foreign)['deletion_date']);
+        self::assertNull($this->fileRow($orphan)['deletion_date'], 'Only files of the item are ended here');
     }
 
     #[WithStory(RoomWithMemberStory::class)]

@@ -152,6 +152,10 @@ final class FileList extends AbstractController
         $this->updateIndex();
     }
 
+    /**
+     * Takes the file off the shown version only; other versions that carry
+     * it keep it, and the file itself ends with its last link.
+     */
     #[LiveListener('FileListItem:fileRemoved')]
     public function removeFile(
         FileDeleter $fileDeleter,
@@ -164,7 +168,7 @@ final class FileList extends AbstractController
         );
 
         $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
-        $fileDeleter->softDeleteFile($fileId, $deleterId);
+        $fileDeleter->detachFromItem($this->itemId, $deleterId, $this->versionId, $fileId);
         $this->updateIndex();
     }
 
@@ -226,8 +230,8 @@ final class FileList extends AbstractController
             $entityManager->persist($file);
             $entityManager->flush();
 
-            // link new file to item
-            $item = $this->itemService->getTypedItem($this->itemId);
+            // link new file to the shown version of the item
+            $item = $this->itemService->getTypedItem($this->itemId, $this->versionId);
             $item->setFileIDArray(array_merge($item->getFileIDArray(), [$fileId]));
             $item->setModificatorItem($environment->getCurrentUserItem());
             $item->save();

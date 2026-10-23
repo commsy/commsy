@@ -173,55 +173,6 @@ class cs_link_item_file_manager extends cs_link_father_manager
         }
     }
 
-     /** delete link , but it is just an update
-      * this method deletes all links from an item, but only as an update to restore it later and for evaluation.
-      *
-      * @param int item_id       id of the item
-      * @param int version_id    version id of the item
-      */
-     public function deleteByItem($item_id, $version_id = null)
-     {
-         $deleterId = $this->_current_user->getItemID() ?: 0;
-         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-             'deletion_date="'.\App\Utils\MysqlDateTime::now().'",'.
-             'deleter_id="'.\App\Legacy\SqlStringEscaper::escape($deleterId).'"'.
-             ' WHERE item_iid="'.\App\Legacy\SqlStringEscaper::escape($item_id).'"';
-         if ($version_id) {
-             $query .= ' AND item_vid="'.\App\Legacy\SqlStringEscaper::escape($version_id).'"';
-         }
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result) or !$result) {
-             trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'"', E_USER_WARNING);
-         }
-     }
-
-    /** delete link , but it is just an update
-     * this method deletes all links from an item, but only as an update to restore it later and for evaluation.
-     *
-     * @param int $file_id id of the file item
-     */
-    public function deleteByFileID($file_id)
-    {
-        $query = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET ' .
-            'deletion_date="' . \App\Utils\MysqlDateTime::now() . '",' .
-            'deleter_id="' . \App\Legacy\SqlStringEscaper::escape($this->_current_user->getItemID()) . '"' .
-            ' WHERE file_id="' . \App\Legacy\SqlStringEscaper::escape($file_id) . '";';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or !$result) {
-            trigger_error('Problems deleting (updating) links of an item from query: "' . $query . '". - ' . __FILE__ . ' - ' . __LINE__, E_USER_WARNING);
-        }
-    }
-
-    public function deleteByFileReally($file_id)
-    {
-        $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).
-                 ' WHERE file_id="'.\App\Legacy\SqlStringEscaper::escape($file_id).'"';
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-            trigger_error('Problems deleting links of a file item from query: "'.$query.'"', E_USER_WARNING);
-        }
-    }
-
     /** build an item out of an (database) array - internal method, do not use
      * this method returns a item out of a row form the database.
      *

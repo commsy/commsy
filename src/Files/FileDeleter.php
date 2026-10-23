@@ -33,72 +33,9 @@ class FileDeleter
     }
 
     /**
-     * @param int      $deleterId Audit stamp, supplied by the caller. A
-     *                            deletion running in a background worker
-     *                            has no current user to fall back on.
-     * @param int|null $fileId    Restricts the stamp to one attachment;
-     *                            null covers every file on the item.
-     */
-    public function softDeleteFileLink(
-        int $itemId,
-        int $versionId,
-        int $deleterId,
-        ?int $fileId = null,
-    ): void {
-        $qb = $this->entityManager->createQueryBuilder()
-            ->update(ItemLinkFile::class, 'ilf')
-            ->set('ilf.deletionDate', ':now')
-            ->set('ilf.deleterId', ':deleterId')
-            ->where('ilf.itemId = :itemId')
-            ->andWhere('ilf.versionId = :versionId')
-            ->setParameter('now', new DateTime())
-            ->setParameter('deleterId', $deleterId)
-            ->setParameter('itemId', $itemId)
-            ->setParameter('versionId', $versionId);
-
-        if ($fileId !== null) {
-            $qb->andWhere('ilf.file = :fileId')
-                ->setParameter('fileId', $fileId);
-        }
-
-        $qb->getQuery()->execute();
-    }
-
-    /**
-     * Soft-deletes a file entry: marks the `files` row as deleted and
-     * soft-deletes every `item_link_file` row that references it.
-     *
-     * Files have no `items`-twin row. Physical file removal happens in
-     * {@see hardDeleteExpiredFiles()}.
-     */
-    public function softDeleteFile(int $fileId, int $deleterId): void
-    {
-        $now = new DateTime();
-
-        $this->entityManager->createQueryBuilder()
-            ->update(Files::class, 'f')
-            ->set('f.deletionDate', ':now')
-            ->set('f.deleterId', ':deleterId')
-            ->where('f.filesId = :fileId')
-            ->setParameter('now', $now)
-            ->setParameter('deleterId', $deleterId)
-            ->setParameter('fileId', $fileId)
-            ->getQuery()->execute();
-
-        $this->entityManager->createQueryBuilder()
-            ->update(ItemLinkFile::class, 'ilf')
-            ->set('ilf.deletionDate', ':now')
-            ->set('ilf.deleterId', ':deleterId')
-            ->where('ilf.file = :fileId')
-            ->setParameter('now', $now)
-            ->setParameter('deleterId', $deleterId)
-            ->setParameter('fileId', $fileId)
-            ->getQuery()->execute();
-    }
-
-    /**
-     * Detaches every file on the item and ends the life of the ones that
-     * lost their last carrying entry.
+     * Detaches every file on the item — or just $fileId — from one version
+     * and ends the life of the ones that lost their last carrying entry.
+     * Other versions and entries keep their links, and with them the file.
      *
      * One method rather than two calls, so a caller cannot stamp the link
      * and forget the file — which is the state that stranded 75k files:
@@ -107,12 +44,17 @@ class FileDeleter
      *
      * @param int|null $versionId The single version to detach; null means
      *                            the unversioned rubrics' only version.
+     * @param int|null $fileId    Restricts the detach to one attachment; a
+     *                            file not linked to the item is left alone.
      */
-    public function detachFromItem(int $itemId, int $deleterId, ?int $versionId = null): void
+    public function detachFromItem(int $itemId, int $deleterId, ?int $versionId = null, ?int $fileId = null): void
     {
         $fileIds = $this->findLinkedFileIds([$itemId]);
+        if ($fileId !== null) {
+            $fileIds = in_array($fileId, $fileIds, true) ? [$fileId] : [];
+        }
 
-        $this->softDeleteFileLink($itemId, $versionId ?? 0, $deleterId);
+        $this->softDeleteFileLink($itemId, $versionId ?? 0, $deleterId, $fileId);
 
         $this->softDeleteFilesWithoutLiveLinks($fileIds, $deleterId);
     }
@@ -273,6 +215,42 @@ class FileDeleter
                 $discManager->unlinkFile($filename);
             }
         }
+    }
+
+    /**
+     * Stamps the links of one version. Private on purpose: a link is only
+     * let go through {@see detachFromItem()}, which also ends the file when
+     * that was its last live link.
+     *
+     * @param int      $deleterId Audit stamp, supplied by the caller. A
+     *                            deletion running in a background worker
+     *                            has no current user to fall back on.
+     * @param int|null $fileId    Restricts the stamp to one attachment;
+     *                            null covers every file on the item.
+     */
+    private function softDeleteFileLink(
+        int $itemId,
+        int $versionId,
+        int $deleterId,
+        ?int $fileId = null,
+    ): void {
+        $qb = $this->entityManager->createQueryBuilder()
+            ->update(ItemLinkFile::class, 'ilf')
+            ->set('ilf.deletionDate', ':now')
+            ->set('ilf.deleterId', ':deleterId')
+            ->where('ilf.itemId = :itemId')
+            ->andWhere('ilf.versionId = :versionId')
+            ->setParameter('now', new DateTime())
+            ->setParameter('deleterId', $deleterId)
+            ->setParameter('itemId', $itemId)
+            ->setParameter('versionId', $versionId);
+
+        if ($fileId !== null) {
+            $qb->andWhere('ilf.file = :fileId')
+                ->setParameter('fileId', $fileId);
+        }
+
+        $qb->getQuery()->execute();
     }
 
     /**

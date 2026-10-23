@@ -27,10 +27,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  * Deletes Material items. Replaces the legacy `cs_material_item::delete()`
  * / `cs_section_item::delete()` cascade.
  *
- * Materials (and their sections + file attachments) are versioned. Three
+ * Materials (and their sections + file attachments) are versioned. Two
  * entry points: {@see softDeleteItem()} wipes every version,
- * {@see deleteCurrentVersion()} drops only the latest, {@see deleteSection()}
- * drops a single section within one version.
+ * {@see deleteSection()} drops a single section within one version.
  */
 class MaterialDeleter implements RubricDeleter
 {
@@ -130,56 +129,6 @@ class MaterialDeleter implements RubricDeleter
     }
 
     /**
-     * Drops only the current (latest) version of the material. The previous
-     * version becomes the new current one; the `items` row stays alive.
-     * Links / link_items / annotations are version-agnostic and not touched.
-     */
-    public function deleteCurrentVersion(int $itemId, int $deleterId): void
-    {
-        $row = $this->connection->fetchOne(
-            'SELECT MAX(version_id) FROM materials
-                WHERE item_id = :itemId
-                  AND deleter_id IS NULL
-                  AND deletion_date IS NULL',
-            ['itemId' => $itemId]
-        );
-        if ($row === false || $row === null) {
-            return; // nothing alive to drop
-        }
-        $currentVersionId = (int) $row;
-
-        // Resolve typed item before soft-delete: once the only alive version
-        // is gone the legacy manager returns null.
-        $typedItem = $this->itemService->getTypedItem($itemId);
-
-        $this->connection->executeStatement(
-            'UPDATE materials
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE item_id = :itemId AND version_id = :versionId',
-            ['deleterId' => $deleterId, 'itemId' => $itemId, 'versionId' => $currentVersionId]
-        );
-
-        $this->connection->executeStatement(
-            'UPDATE section
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE material_item_id = :materialId AND version_id = :versionId',
-            ['deleterId' => $deleterId, 'materialId' => $itemId, 'versionId' => $currentVersionId]
-        );
-
-        $this->connection->executeStatement(
-            'UPDATE item_link_file
-                SET deletion_date = NOW(), deleter_id = :deleterId
-                WHERE item_iid = :itemId AND item_vid = :versionId',
-            ['deleterId' => $deleterId, 'itemId' => $itemId, 'versionId' => $currentVersionId]
-        );
-
-        // Reindex so the new current version surfaces in ES.
-        if ($typedItem !== null) {
-            $this->eventDispatcher->dispatch(new ItemReindexEvent($typedItem), ItemReindexEvent::class);
-        }
-    }
-
-    /**
      * Drops a single section row (per material version) and reindexes the
      * parent material. If `$materialVersionId` is null, every version of
      * the section is soft-deleted.
@@ -207,12 +156,7 @@ class MaterialDeleter implements RubricDeleter
                 ['deleterId' => $deleterId, 'id' => $sectionId, 'versionId' => $materialVersionId]
             );
 
-            $this->connection->executeStatement(
-                'UPDATE item_link_file
-                    SET deletion_date = NOW(), deleter_id = :deleterId
-                    WHERE item_iid = :id AND item_vid = :versionId',
-                ['deleterId' => $deleterId, 'id' => $sectionId, 'versionId' => $materialVersionId]
-            );
+            $this->fileDeleter->detachFromItem($sectionId, $deleterId, $materialVersionId);
         } else {
             $this->connection->executeStatement(
                 'UPDATE section
