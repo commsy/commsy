@@ -1,0 +1,10 @@
+apiVersion: v2
+name: commsy
+description: CommSy (FrankenPHP web container and Symfony Messenger workers)
+type: application
+version: 1.0.0
+appVersion: "10.6"
+kubeVersion: ">=1.27.0-0"
+home: https://github.com/commsy/commsy
+sources:
+  - https://github.com/commsy/commsy

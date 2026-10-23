@@ -1,0 +1,6 @@
+CommSy {{ .Chart.AppVersion }} is deployed as {{ include "commsy.fullname" . }}-web{{ if .Values.worker.enabled }} and {{ include "commsy.fullname" . }}-worker{{ end }}.
+{{- if not .Values.commsy.existingSecrets }}
+
+WARNING: commsy.existingSecrets is empty. The application needs APP_SECRET, DATABASE_URL and MAILER_DSN.
+{{- end }}
+The first start of the web container runs "commsy:update" (schema update); watch its log.

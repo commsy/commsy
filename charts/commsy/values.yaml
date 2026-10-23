@@ -1,0 +1,96 @@
+# CommSy 10.6 Helm chart. The chart deploys the application (web) and the Messenger workers.
+# Database (MariaDB 11.8) and Elasticsearch are expected to exist; see README.md.
+
+image:
+  repository: docker.io/effectivewebwork/commsy
+  # Defaults to the chart's appVersion. Pin a digest for reproducible deployments.
+  tag: ""
+  digest: ""
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+commsy:
+  # Public URL of the installation (BASE_URI).
+  baseUri: https://commsy.example.com
+  emailFrom: ""
+  # Address of the web server inside the container (SERVER_NAME). A port above 1024 needs no extra privileges.
+  serverName: ":8080"
+  # Proxies whose X-Forwarded-* headers are trusted (TRUSTED_PROXIES).
+  trustedProxies: ""
+  elasticsearchUrl: http://elastic:9200/
+  elasticIndex: commsy
+  # Messenger transport and lock store (defaults of the application).
+  messengerTransportDsn: "doctrine://default?auto_setup=true"
+  lockDsn: semaphore
+  # Secrets as environment variables. The first Secret must provide APP_SECRET, DATABASE_URL and MAILER_DSN
+  # (and JWT_PASSPHRASE to override the passphrase of the generated JWT key pair); further Secrets may be listed.
+  existingSecrets: []
+  # Additional plain environment variables.
+  extraEnv: []
+
+web:
+  replicaCount: 1
+  resources:
+    requests: { cpu: 200m, memory: 512Mi }
+    limits: { memory: 2Gi }
+  podAnnotations: {}
+  # The first start runs the schema update (commsy:update), which can take minutes after a version change.
+  startupProbe:
+    failureThreshold: 90
+    periodSeconds: 10
+
+worker:
+  enabled: true
+  replicaCount: 1
+  # Seconds after which a worker exits and is restarted (--time-limit).
+  timeLimit: 3600
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { memory: 1Gi }
+  podAnnotations: {}
+
+persistence:
+  files:
+    enabled: true
+    # Use an existing claim; otherwise a claim is created from the settings below.
+    existingClaim: ""
+    storageClassName: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    annotations: {}
+  # Keep the generated JWT key pair across restarts (subPath "jwt" of the files volume, mounted at /app/config/jwt).
+  jwtOnFilesVolume: true
+
+# With a ReadWriteOnce volume all pods must run on the same node.
+podAffinityForSharedVolume: true
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  # - host: commsy.example.com
+  tls: []
+
+# Pod security (the image runs as www-data, uid 33).
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 33
+  runAsGroup: 33
+  fsGroup: 33
+  seccompProfile:
+    type: RuntimeDefault
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+
+nodeSelector: {}
+tolerations: []

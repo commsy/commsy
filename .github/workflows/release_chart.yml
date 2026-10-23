@@ -1,0 +1,40 @@
+name: Release Helm chart
+
+# Chart releases are tagged chart-vX.Y.Z (independent of the CommSy tags v*)
+on:
+    push:
+        tags:
+            - 'chart-v*'
+
+jobs:
+    release-chart:
+        name: Publish chart to GHCR
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            -   name: actions/checkout
+                uses: actions/checkout@v4
+
+            -   name: Setup Helm
+                uses: azure/setup-helm@v4
+
+            -   name: Check that the tag matches the chart version
+                run: |
+                    chart_version="$(grep '^version:' charts/commsy/Chart.yaml | awk '{print $2}')"
+                    if [ "chart-v${chart_version}" != "${GITHUB_REF_NAME}" ]; then
+                        echo "Tag ${GITHUB_REF_NAME} does not match chart version ${chart_version}" >&2
+                        exit 1
+                    fi
+
+            -   name: Lint and package
+                run: |
+                    helm lint charts/commsy
+                    helm package charts/commsy --destination dist
+
+            -   name: Log in to GHCR
+                run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+            -   name: Push chart
+                run: helm push dist/commsy-*.tgz "oci://ghcr.io/${{ github.repository_owner }}/charts"

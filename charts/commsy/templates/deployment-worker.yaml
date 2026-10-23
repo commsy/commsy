@@ -1,0 +1,82 @@
+{{- if .Values.worker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "commsy.fullname" . }}-worker
+  labels:
+    {{- include "commsy.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  replicas: {{ .Values.worker.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "commsy.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        {{- include "commsy.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: worker
+      {{- with .Values.worker.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      automountServiceAccountToken: false
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- include "commsy.affinity" . | nindent 6 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      # The web container owns the schema update; workers wait until its service has an endpoint.
+      initContainers:
+        - name: wait-for-web
+          image: {{ include "commsy.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - sh
+            - -ec
+            - |
+              until php -r 'exit(@fsockopen("{{ include "commsy.fullname" . }}", {{ .Values.service.port }}, $e, $s, 2) ? 0 : 1);'; do
+                echo "waiting for {{ include "commsy.fullname" . }}:{{ .Values.service.port }}"
+                sleep 3
+              done
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+      containers:
+        - name: worker
+          image: {{ include "commsy.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - php
+            - bin/console
+            - messenger:consume
+            - --all
+            - --time-limit={{ .Values.worker.timeLimit }}
+          env:
+            {{- include "commsy.env" . | nindent 12 }}
+            - name: COMMSY_SKIP_INIT
+              value: "1"
+          envFrom:
+            {{- include "commsy.envFrom" . | nindent 12 }}
+          resources:
+            {{- toYaml .Values.worker.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          volumeMounts:
+            {{- include "commsy.volumeMounts" . | nindent 12 }}
+      volumes:
+        {{- include "commsy.volumes" . | nindent 8 }}
+{{- end }}

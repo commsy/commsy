@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "commsy.fullname" . }}-web
+  labels:
+    {{- include "commsy.labels" . | nindent 4 }}
+    app.kubernetes.io/component: web
+spec:
+  replicas: {{ .Values.web.replicaCount }}
+  # A ReadWriteOnce volume cannot be shared between old and new pod.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "commsy.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: web
+  template:
+    metadata:
+      labels:
+        {{- include "commsy.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: web
+      {{- with .Values.web.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      automountServiceAccountToken: false
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- include "commsy.affinity" . | nindent 6 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: commsy
+          image: {{ include "commsy.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- include "commsy.env" . | nindent 12 }}
+          envFrom:
+            {{- include "commsy.envFrom" . | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ trimPrefix ":" .Values.commsy.serverName | int }}
+          # The entrypoint runs commsy:update before the web server starts; the port opens afterwards.
+          startupProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: {{ .Values.web.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.web.startupProbe.failureThreshold }}
+          readinessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 5
+          resources:
+            {{- toYaml .Values.web.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          volumeMounts:
+            {{- include "commsy.volumeMounts" . | nindent 12 }}
+      volumes:
+        {{- include "commsy.volumes" . | nindent 8 }}
