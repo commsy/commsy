@@ -45,18 +45,14 @@ class LabelDeleter implements RubricDeleter
         return RubricType::Label;
     }
 
+    /**
+     * None: labels are the shared vocabulary and structure of the room, not
+     * one person's entries, so deleting a person's entries keeps them;
+     * {@see LabelRedactor} redacts what the person wrote in them.
+     */
     public function findItemIdsCreatedBy(int $userId, int $contextId): array
     {
-        $itemIds = $this->connection->fetchFirstColumn(
-            'SELECT item_id FROM labels
-                WHERE creator_id = :userId
-                  AND context_id = :contextId
-                  AND deleter_id IS NULL
-                  AND deletion_date IS NULL',
-            ['userId' => $userId, 'contextId' => $contextId]
-        );
-
-        return array_map('intval', $itemIds);
+        return [];
     }
 
     public function findItemIdsInContext(int $contextId): array
@@ -93,19 +89,12 @@ class LabelDeleter implements RubricDeleter
         $this->rubricDeletionHelper->softDeleteItemsRow($itemId, $deleterId);
     }
 
+    /**
+     * Left to {@see LabelRedactor}, which redacts the person's labels first
+     * and needs their authorship for it.
+     */
     public function nullifyReferencesInContext(int $userId, int $contextId): void
     {
-        $this->connection->executeStatement(
-            'UPDATE labels SET creator_id = NULL
-                WHERE creator_id = :userId AND context_id = :contextId',
-            ['userId' => $userId, 'contextId' => $contextId]
-        );
-
-        $this->connection->executeStatement(
-            'UPDATE labels SET modifier_id = NULL
-                WHERE modifier_id = :userId AND context_id = :contextId',
-            ['userId' => $userId, 'contextId' => $contextId]
-        );
     }
 
     public function hardDeleteOlderThan(int $days): int

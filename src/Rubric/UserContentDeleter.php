@@ -89,6 +89,14 @@ class UserContentDeleter
             ['userId' => $userId, 'contextId' => $contextId]
         );
 
+        // Categories are the room's vocabulary: they stay, without the person.
+        foreach (['creator_id', 'modifier_id'] as $column) {
+            $this->connection->executeStatement(
+                "UPDATE tag SET $column = NULL WHERE $column = :userId AND context_id = :contextId",
+                ['userId' => $userId, 'contextId' => $contextId]
+            );
+        }
+
         $this->connection->executeStatement(
             'DELETE FROM link_modifier_item WHERE modifier_id = :userId AND item_id IN (SELECT item_id FROM items WHERE context_id = :contextId)',
             ['userId' => $userId, 'contextId' => $contextId]
