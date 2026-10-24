@@ -66,6 +66,10 @@
                 <source>To leave the group, please assign further moderators, or delete the group.</source>
                 <target>To leave the group, please assign further moderators, or delete the group.</target>
             </trans-unit>
+            <trans-unit id="leave_group_deletes_group_workspace">
+                <source>You are the last moderator of this group workspace. If you leave the group, the group workspace and the group will be deleted.</source>
+                <target>You are the last moderator of this group workspace. If you leave the group, the group workspace and the group will be deleted.</target>
+            </trans-unit>
             <trans-unit id="delete_group_workspace">
                 <source>Delete group workspace</source>
                 <target>Delete group workspace</target>

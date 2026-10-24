@@ -26,11 +26,13 @@ use App\Facade\MembershipManager;
 use App\Filter\GroupFilterType;
 use App\Form\DataTransformer\GroupTransformer;
 use App\Form\Type\AnnotationType;
+use App\Form\Type\GroupRoomExitType;
 use App\Form\Type\GroupSendType;
 use App\Form\Type\GroupType;
 use App\Http\JsonDataResponse;
 use App\Mail\Helper\ContactFormHelper;
 use App\Mail\Mailer;
+use App\Room\LastModeratorGroupExit;
 use App\Rubric\Label\LabelType;
 use App\Rubric\RubricType;
 use App\Security\Authorization\Voter\CategoryVoter;
@@ -710,18 +712,17 @@ class GroupController extends BaseController
     public function leave(
         int $roomId,
         int $itemId,
-        MembershipManager $membershipManager
+        MembershipManager $membershipManager,
+        LastModeratorGroupExit $lastModeratorGroupExit
     ): JsonDataResponse|RedirectResponse {
         $roomManager = $this->legacyEnvironment->getRoomManager();
 
         $room = $roomManager->getItem($roomId);
-        $group = $this->groupService->getGroup($itemId);
-        $groupRoom = $group->getGroupRoomItem();
-
         if (!$room) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
+        $group = $this->groupService->getGroup($itemId);
         if (!$group) {
             throw $this->createNotFoundException('The requested group does not exists');
         }
@@ -732,25 +733,61 @@ class GroupController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        // leave group
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        if ($membershipManager->isLastModerator($groupRoom, $currentUser)) {
-            // Redirect delete group
-            return $this->redirectToRoute('app_profile_deleteroomprofile', [
-                'roomId' => $groupRoom->getItemID(),
-                'itemId' => $currentUser->getItemID(),
-                'groupId' => $itemId,
-                'roomEndId' => $roomId,
+        // the last moderator of the group room closes it along with the group
+        if ($lastModeratorGroupExit->applies($roomId, $itemId, $account)) {
+            return $this->redirectToRoute('app_group_leaveanddelete', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
             ]);
         }
 
         // leave group
+        $groupRoom = $group->getGroupRoomItem();
         $membershipManager->leaveGroup($group, $account);
-        $membershipManager->leaveWorkspace($groupRoom, $account);
+        if ($groupRoom) {
+            $membershipManager->leaveWorkspace($groupRoom, $account);
+        }
 
         return $this->redirectToRoute('app_group_detail', [
             'roomId' => $roomId,
             'itemId' => $itemId,
+        ]);
+    }
+
+    #[Route(path: '/room/{roomId}/group/{itemId}/leaveanddelete', requirements: ['itemId' => '\d+'])]
+    public function leaveAndDelete(
+        Request $request,
+        LastModeratorGroupExit $lastModeratorGroupExit,
+        int $roomId,
+        int $itemId
+    ): Response {
+        $account = $this->getUser();
+        if (!$account instanceof Account) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$lastModeratorGroupExit->applies($roomId, $itemId, $account)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form = $this->createForm(GroupRoomExitType::class, [
+            'confirm_string' => $this->translator->trans('delete', [], 'profile'),
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$lastModeratorGroupExit->execute($roomId, $itemId, $account)) {
+                throw $this->createAccessDeniedException();
+            }
+
+            return $this->redirectToRoute('app_group_list', [
+                'roomId' => $roomId,
+            ]);
+        }
+
+        return $this->render('group/leave_and_delete.html.twig', [
+            'roomId' => $roomId,
+            'form' => $form,
         ]);
     }
 

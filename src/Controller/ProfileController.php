@@ -23,13 +23,9 @@ use App\Form\Type\Profile\RoomProfileAddressType;
 use App\Form\Type\Profile\RoomProfileContactType;
 use App\Form\Type\Profile\RoomProfileGeneralType;
 use App\Form\Type\Profile\RoomProfileNotificationsType;
-use App\Room\RoomDeleterRegistry;
-use App\Room\RoomDeletionOptions;
-use App\Rubric\Label\LabelDeleter;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
 use App\Utils\DiscService;
-use App\Utils\GroupService;
 use App\Utils\RoomService;
 use App\Utils\UserService;
 use cs_user_item;
@@ -372,10 +368,7 @@ class ProfileController extends AbstractController
         ParameterBagInterface $parameterBag,
         TranslatorInterface $translator,
         MembershipManager $membershipManager,
-        GroupService $groupService,
         FormFactoryInterface $formFactory,
-        LabelDeleter $labelDeleter,
-        RoomDeleterRegistry $roomDeleterRegistry,
         int $roomId
     ): Response {
         /** @var Account $account */
@@ -421,32 +414,6 @@ class ProfileController extends AbstractController
                 $membershipManager->leaveWorkspace($roomItem, $account);
 
                 return $this->redirect($portalUrl);
-            }
-            if ($request->query->has('groupId')) {
-                $groupId = $request->query->get('groupId');
-                $roomEndId = $request->query->get('roomEndId');
-                $group = $groupService->getGroup($groupId);
-                $membershipManager->leaveGroup($group, $account);
-                $membershipManager->leaveWorkspace($roomItem, $account);
-                $group = $groupService->getGroup($groupId);
-                // TODO(#5082): The whole `?groupId=<id>` branch is scheduled
-                //   for removal in a separate security ticket — the caller
-                //   is not authorization-checked against the room type or
-                //   moderator status. We route $roomItem through the
-                //   registry here only to eliminate the last legacy
-                //   `->delete()` call; the block itself is expected to
-                //   disappear in that follow-up.
-                $deleterId = (int) ($currentUser?->getItemID() ?: 0);
-                $roomDeleterRegistry->softDeleteLegacyRoom(
-                    $roomItem,
-                    $deleterId,
-                    RoomDeletionOptions::forUserAction()
-                );
-                $labelDeleter->softDeleteItem((int) $group->getItemID(), $deleterId);
-
-                return $this->redirectToRoute('app_group_list', [
-                    'roomId' => $roomEndId,
-                ]);
             }
         }
 

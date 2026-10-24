@@ -1,0 +1,37 @@
+{% extends 'base/room.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-1-1">
+            <main id="main-content" aria-label="{{ 'Delete group workspace'|trans({}, 'group') }}">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+
+                <div class="uk-panel-teaser cs-panel-teaser-danger">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <h2 class="uk-panel-title uk-text-uppercase">{{ 'Delete group workspace'|trans({}, 'group') }}</h2>
+                    </div>
+                </div>
+                <div class="uk-alert uk-alert-danger">
+                    {{ form_start(form) }}
+                        <span>{{ 'You are the last moderator of this group workspace. If you leave the group, the group workspace and the group will be deleted.'|trans({}, 'group') }}</span>
+
+                        <div class="uk-margin">
+                            {{ 'Delete explanation start'|trans({}, 'settings') }}
+                            <span class="uk-text-uppercase uk-text-bold">{{ 'delete'|trans({}, 'profile') }}</span>
+                            {{ 'Delete explanation end'|trans({}, 'settings') }}
+                        </div>
+
+                        <div class="uk-form-row">
+                            {{ form_errors(form.confirm_field) }}
+                            {{ form_widget(form.confirm_field) }}
+                            {{ form_widget(form.confirm_button) }}
+                            <span class="uk-margin-left uk-text-uppercase uk-text-bold">{{ 'warning'|trans({}, 'menu') }}</span> {{ 'irreversibleMessage'|trans({}, 'menu') }}
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            </main>
+        </div>
+    </div>
+{% endblock content %}

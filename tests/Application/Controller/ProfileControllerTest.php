@@ -13,7 +13,14 @@
 
 namespace Tests\Application\Controller;
 
+use App\Entity\Account;
+use App\Entity\Room;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Factory\AccountFactory;
+use Tests\Factory\RoomUserFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
@@ -204,5 +211,96 @@ class ProfileControllerTest extends AbstractApplicationTestCase
 
         // Symfony >=6.2 surfaces invalid form submits as 422.
         $this->assertResponseStatusCodeSame(422);
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testDeleteRoomProfileLeavesTheRoomAndKeepsIt(): void
+    {
+        $account = RoomWithMemberStory::get('account');
+        $room = RoomWithMemberStory::get('room');
+        $roomUser = RoomWithMemberStory::get('roomUser');
+        $this->addModerator($room);
+
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$room->getItemId()}/user/{$roomUser->getItemId()}/deleteroomprofile"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('delete_form[confirm_button]')->form();
+        $form['delete_form[confirm_field]'] = $this->confirmString('delete');
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects("/portal/{$account->getContextId()}/enter");
+        $this->assertNotNull($this->deletionDate('user', $roomUser->getItemId()), 'room profile is deleted');
+        $this->assertNull($this->deletionDate('room', $room->getItemId()), 'room is kept');
+    }
+
+    #[WithStory(RoomWithMemberStory::class)]
+    public function testLockRoomProfileRejectsTheUserAndKeepsTheRoom(): void
+    {
+        $account = RoomWithMemberStory::get('account');
+        $room = RoomWithMemberStory::get('room');
+        $roomUser = RoomWithMemberStory::get('roomUser');
+        $this->addModerator($room);
+
+        $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
+
+        $crawler = $this->client->request(
+            'GET',
+            "/room/{$room->getItemId()}/user/{$roomUser->getItemId()}/deleteroomprofile"
+        );
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('lock_form[confirm_button]')->form();
+        $form['lock_form[confirm_field]'] = $this->confirmString('lock');
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects("/portal/{$account->getContextId()}/enter");
+        $row = $this->connection()->fetchAssociative(
+            'SELECT status, deletion_date FROM user WHERE item_id = :id',
+            ['id' => $roomUser->getItemId()]
+        );
+        $this->assertSame(0, (int) $row['status'], 'room profile is locked');
+        $this->assertNull($row['deletion_date'], 'room profile is kept');
+        $this->assertNull($this->deletionDate('room', $room->getItemId()), 'room is kept');
+    }
+
+    /** The story room has no moderator; the profile of its member may only go while it keeps one. */
+    private function addModerator(Room $room): void
+    {
+        RoomUserFactory::new()->asModerator()->create([
+            'account' => AccountFactory::createOne([
+                'activityState' => Account::ACTIVITY_ACTIVE,
+                'locked' => false,
+            ]),
+            'room' => $room,
+        ]);
+    }
+
+    /** The word to type, in the language of the page last requested. */
+    private function confirmString(string $key): string
+    {
+        return mb_strtoupper(static::getContainer()->get(TranslatorInterface::class)->trans(
+            $key,
+            [],
+            'profile',
+            $this->client->getRequest()->getLocale()
+        ));
+    }
+
+    private function connection(): Connection
+    {
+        return static::getContainer()->get(EntityManagerInterface::class)->getConnection();
+    }
+
+    private function deletionDate(string $table, int $itemId): mixed
+    {
+        return $this->connection()->fetchOne(
+            "SELECT deletion_date FROM $table WHERE item_id = :id",
+            ['id' => $itemId]
+        );
     }
 }
