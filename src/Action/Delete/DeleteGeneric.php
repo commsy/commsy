@@ -14,6 +14,7 @@
 namespace App\Action\Delete;
 
 use App\Item\ItemType;
+use App\Rubric\Label\LabelType;
 use App\Rubric\RubricDeleter;
 use App\Rubric\RubricType;
 use App\Services\CurrentUserResolver;
@@ -52,7 +53,7 @@ class DeleteGeneric implements DeleteInterface
 
     public function delete(cs_item $item): void
     {
-        $rubricType = RubricType::tryFromLegacyString($item->getItemType());
+        $rubricType = $this->rubricTypeOf($item);
 
         if ($rubricType !== null && ($deleter = $this->findDeleter($rubricType)) !== null) {
             $deleterId = (int) ($this->currentUserResolver->getUser()?->getItemId() ?? 0);
@@ -76,6 +77,18 @@ class DeleteGeneric implements DeleteInterface
     public function getRedirectRoute(cs_item $item): ?string
     {
         return null;
+    }
+
+    /**
+     * Labels carry their subtype as item type (group, topic, ...); they are
+     * deleted by the deleter of the label rubric.
+     */
+    private function rubricTypeOf(cs_item $item): ?RubricType
+    {
+        $type = (string) $item->getItemType();
+
+        return RubricType::tryFromLegacyString($type)
+            ?? (null !== LabelType::tryFromLegacyString($type) ? RubricType::Label : null);
     }
 
     private function findDeleter(RubricType $type): ?RubricDeleter
