@@ -220,6 +220,7 @@ class ProfileControllerTest extends AbstractApplicationTestCase
         $room = RoomWithMemberStory::get('room');
         $roomUser = RoomWithMemberStory::get('roomUser');
         $this->addModerator($room);
+        $this->pinGerman($account);
 
         $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
 
@@ -245,6 +246,7 @@ class ProfileControllerTest extends AbstractApplicationTestCase
         $room = RoomWithMemberStory::get('room');
         $roomUser = RoomWithMemberStory::get('roomUser');
         $this->addModerator($room);
+        $this->pinGerman($account);
 
         $this->loginAsUser($account->getContextId(), $account->getUsername(), $account->getPlainPassword());
 
@@ -289,6 +291,15 @@ class ProfileControllerTest extends AbstractApplicationTestCase
             'profile',
             $this->client->getRequest()->getLocale()
         ));
+    }
+
+    /**
+     * A random account language can render the page in one language and
+     * check the confirmation in another.
+     */
+    private function pinGerman(Account $account): void
+    {
+        $this->connection()->update('accounts', ['language' => 'de'], ['id' => $account->getId()]);
     }
 
     private function connection(): Connection
