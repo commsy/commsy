@@ -47,11 +47,13 @@ class CronCleanTemporary implements CronTaskInterface
 
             // Files and directories alike, deepest first. Sorting reads everything
             // before the first removal, so a directory is judged by its age before
-            // its last file goes — removing that file sets its time to now.
+            // its last file goes — removing that file sets its time to now. The
+            // limit is a timestamp: "now - 24 hours" counts hours on the local
+            // clock, which has one more or one less on the days it changes.
             $old = (new Finder())
                 ->in($dir)
                 ->ignoreUnreadableDirs()
-                ->date('< now - '.self::MAX_AGE_HOURS.' hours')
+                ->date('< @'.(time() - self::MAX_AGE_HOURS * 3600))
                 ->sort(static fn (SplFileInfo $a, SplFileInfo $b): int => strcmp($b->getPathname(), $a->getPathname()));
 
             foreach ($old as $entry) {
