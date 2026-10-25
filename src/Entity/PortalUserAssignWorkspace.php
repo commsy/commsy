@@ -18,15 +18,15 @@ namespace App\Entity;
  */
 class PortalUserAssignWorkspace
 {
-    private ?string $name;
+    private ?string $name = null;
 
-    private ?string $userID;
+    private ?string $userID = null;
 
-    private ?string $searchForWorkspace;
+    private ?string $searchForWorkspace = null;
 
-    private ?string $descriptionOfParticipation;
+    private ?string $descriptionOfParticipation = null;
 
-    private ?string $workspaceSelection;
+    private ?string $workspaceSelection = null;
 
     public function getWorkspaceSelection(): ?string
     {

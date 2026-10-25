@@ -22,6 +22,7 @@ use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\AccountFactory;
 use Tests\Factory\PortalFactory;
+use Tests\Factory\RoomFactory;
 use Tests\Story\AccountStory;
 use Tests\Story\PortalStory;
 use Tests\Story\RoomWithMemberStory;
@@ -389,6 +390,34 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringNotContainsString('/takeOver', $crawler->html());
         $this->assertAnySelectorTextContains('li.uk-text-muted', $account->getFirstname());
+    }
+
+    /**
+     * The description of the participation may stay empty.
+     */
+    public function testAssigningAWorkspaceWorksWithoutADescription(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portal = $account->getPortal();
+        $room = RoomFactory::new()->project()->create(['contextId' => $portal->getId(), 'portal' => $portal]);
+
+        $this->loginAsRoot();
+        $crawler = $this->client->request(
+            'GET',
+            "/portal/{$portal->getId()}/settings/accountIndex/detail/{$this->portalUserItemIdOf($account)}/assignWorkspace"
+        );
+        $form = $crawler->selectButton('account_index_detail_assign_workspace[save]')->form();
+        // the choices are filled by a search in the browser
+        $form->disableValidation();
+        $form['account_index_detail_assign_workspace[workspaceSelection]'] = (string) $room->getItemId();
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        $this->assertSame(2, (int) static::getContainer()->get(EntityManagerInterface::class)->getConnection()->fetchOne(
+            'SELECT status FROM user WHERE account_id = ? AND context_id = ? AND deletion_date IS NULL',
+            [$account->getId(), $room->getItemId()]
+        ));
     }
 
     private function portalUserItemIdOf(Account $account): int
