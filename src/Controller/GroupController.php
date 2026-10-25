@@ -1026,26 +1026,6 @@ class GroupController extends BaseController
         return $action->execute($room, $items);
     }
 
-    #[Route(path: '/room/{roomId}/group/{itemId}/unlockgrouproom')]
-    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
-    public function unlockGrouproom($roomId, $itemId, GroupService $groupService): Response
-    {
-        $group = $groupService->getGroup($itemId);
-        if ($group) {
-            /** @var cs_grouproom_item $grouproomItem */
-            $groupRoom = $group->getGroupRoomItem();
-            if ($groupRoom) {
-                $groupRoom->unlock();
-                $groupRoom->save();
-            }
-        }
-
-        return $this->redirectToRoute('app_group_detail', [
-            'roomId' => $roomId,
-            'itemId' => $itemId,
-        ]);
-    }
-
     // ##################################################################################################
     // # XHR Action requests
     // ##################################################################################################

@@ -173,7 +173,7 @@
                                         {# lock group room #}
                                         <li>
                                             {% if group.groupRoomItem.isLocked %}
-                                                <a href="{{ path('app_group_unlockgrouproom', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                                <a href="{{ path('app_cancellablelockanddelete_unlock', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}">
                                                     <i class="uk-icon-small uk-icon-unlock-alt uk-icon-justify"></i> {{ 'Unlock group workspace'|trans({}, 'group') }}
                                                 </a>
                                             {% else %}

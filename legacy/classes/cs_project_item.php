@@ -375,33 +375,46 @@ class cs_project_item extends cs_room_item
     }
 
     /**
-     * Locks the project room as well as any group rooms belonging to groups of this room.
+     * Locks the project room as well as its group and user rooms, with the same
+     * status. A sub room locked already keeps its own lock; the others are marked
+     * as locked with the project room.
      */
     public function lock($status = RoomStatus::LOCKED): void
     {
         parent::lock($status);
 
-        // lock related group rooms
-        foreach ($this->getGroupRoomList() as $groupRoom) {
-            /* @var \cs_grouproom_item $groupRoom */
-            $groupRoom->lock();
-            $groupRoom->save();
+        foreach ($this->getSubRooms() as $subRoom) {
+            if (!$subRoom->isLocked()) {
+                $subRoom->lock($status);
+                $subRoom->_setExtra(self::LOCKED_WITH_PROJECT_ROOM, 1);
+                $subRoom->save();
+            }
         }
     }
 
     /**
-     * Unlocks the project room as well as any group rooms belonging to groups of this room.
+     * Unlocks the project room as well as the sub rooms locked with it.
      */
     public function unlock(): void
     {
         parent::unlock();
 
-        // unlock related group rooms
-        foreach ($this->getGroupRoomList() as $groupRoom) {
-            /* @var \cs_grouproom_item $groupRoom */
-            $groupRoom->unlock();
-            $groupRoom->save();
+        foreach ($this->getSubRooms() as $subRoom) {
+            if ($subRoom->_issetExtra(self::LOCKED_WITH_PROJECT_ROOM)) {
+                $subRoom->unlock();
+                $subRoom->save();
+            }
         }
+    }
+
+    /**
+     * The group and user rooms of this room.
+     *
+     * @return cs_room_item[]
+     */
+    private function getSubRooms(): array
+    {
+        return [...$this->getGroupRoomList()->to_array(), ...$this->getUserRoomList()->to_array()];
     }
 
     public function undelete()

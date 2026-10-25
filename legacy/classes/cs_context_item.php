@@ -19,6 +19,11 @@ use App\Room\RoomStatus;
  */
 class cs_context_item extends cs_item
 {
+    /**
+     * Extra key marking a sub room locked together with its project room.
+     */
+    protected const string LOCKED_WITH_PROJECT_ROOM = 'LOCKED_WITH_PROJECT_ROOM';
+
     public array $_default_colors = [];
 
     private cs_list $moderator_list;
@@ -2079,6 +2084,7 @@ class cs_context_item extends cs_item
 
         $this->setLastStatus($this->getStatus());
         $this->_data['status'] = $status->value;
+        $this->_unsetExtra(self::LOCKED_WITH_PROJECT_ROOM);
     }
 
     /** lock a room
@@ -2092,6 +2098,7 @@ class cs_context_item extends cs_item
         $newStatus = $newStatus === RoomStatus::LOCKED->value ? RoomStatus::OPEN->value : $newStatus;
         $newStatus = $newStatus === RoomStatus::LOCKED_PORTAL_MOD->value ? RoomStatus::OPEN->value : $newStatus;
         $this->_data['status'] = $newStatus;
+        $this->_unsetExtra(self::LOCKED_WITH_PROJECT_ROOM);
     }
 
     /** is room a normal open ?
