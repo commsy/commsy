@@ -77,7 +77,6 @@ class ProjectRoomDeleter implements RoomDeleter
 
         $this->rubricDeletionHelper->softDeleteAnnotations($roomId, $deleterId);
         $this->rubricDeletionHelper->softDeleteLinks($roomId, $deleterId);
-        $this->rubricDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
 
         // Remove this project from every community's PROJECT_ID_ARRAY extras —
         // the only step that mutates rows outside the project's context.
@@ -99,6 +98,10 @@ class ProjectRoomDeleter implements RoomDeleter
         if (!$opts->silent && $typedItem instanceof \cs_room_item) {
             $this->eventDispatcher->dispatch(new WorkspaceDeletedEvent($typedItem));
         }
+
+        // The cleanup of the community rooms and the moderation mails find
+        // them through these links, so the links end last.
+        $this->rubricDeletionHelper->softDeleteLinkItems($roomId, $deleterId);
     }
 
     public function hardDeleteRoom(int $roomId): void
