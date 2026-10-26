@@ -441,7 +441,7 @@ class cs_community_item extends cs_room_item
            $recipients = iterator_to_array(RecipientFactory::createFromAccounts(...$filteredModeratorAccounts));
        } else {
            $recipients = RecipientFactory::createModerationRecipients($room_item, fn (cs_user_item $user) =>
-               $user->getOpenRoomWantMail()
+               'yes' === $user->getOpenRoomWantMail()
            );
        }
 
