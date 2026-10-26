@@ -149,7 +149,7 @@ class MailAssistant
         }
 
         // form option: send_to_assigned
-        $isSendToAssigned = (Send::class == $formData::class ? (is_null($formData->getSendToAttendees()) ? false : $formData->getSendToAttendees()) : $form->has('send_to_assigned') && $formData['send_to_assigned']);
+        $isSendToAssigned = (Send::class == $formData::class ? (is_null($formData->getSendToAssigned()) ? false : $formData->getSendToAssigned()) : $form->has('send_to_assigned') && $formData['send_to_assigned']);
 
         if ($isSendToAssigned) {
             if ($item instanceof cs_todo_item) {

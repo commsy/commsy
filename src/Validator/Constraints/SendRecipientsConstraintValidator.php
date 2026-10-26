@@ -59,7 +59,10 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
             if ($values->getCopyToSender()) {
                 $foundRecipient = true;
             }
-            if (!is_null($values->getSendToAttendees())) {
+            if ($values->getSendToAttendees()) {
+                $foundRecipient = true;
+            }
+            if ($values->getSendToAssigned()) {
                 $foundRecipient = true;
             }
         } else {
