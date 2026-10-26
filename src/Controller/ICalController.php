@@ -226,12 +226,12 @@ class ICalController extends AbstractController
             // create new calendar event
             $event = new Event(new UniqueIdentifier($item->getItemID()));
 
-            // setup organizer
+            // setup organizer; an address hidden in the room stays out, as for the attendees
             $creatorItem = $item->getCreator();
             $fullName = $creatorItem->getFullName();
             $email = $creatorItem->getEmail();
 
-            if (!empty($fullName) && !empty($email)) {
+            if (!empty($fullName) && !empty($email) && $creatorItem->isEmailVisible()) {
                 $event->setOrganizer(new Organizer(new EmailAddress($email), $fullName));
             }
 
@@ -242,7 +242,7 @@ class ICalController extends AbstractController
                     if ($userItem->getItemID() == $userId) {
                         $email = $userItem->getEmail();
 
-                        if (!empty($email)) {
+                        if (!empty($email) && $userItem->isEmailVisible()) {
                             $event->addAttendee(new Attendee(new EmailAddress($email)));
                         }
                     }

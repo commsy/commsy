@@ -17,8 +17,10 @@ use App\Hash\HashManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Factory\AccountFactory;
 use Tests\Factory\CalendarsFactory;
 use Tests\Factory\DatesFactory;
+use Tests\Factory\RoomUserFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
@@ -128,6 +130,31 @@ class ICalControllerTest extends AbstractApplicationTestCase
         $this->assertStringContainsString('SUMMARY:Vorjahr', $this->feed('&export=1'));
     }
 
+    /**
+     * An address hidden in the room stays out of the feed, as the organizer's
+     * and as an attendee's; a visible one is listed in both roles.
+     */
+    public function testAnAddressHiddenInTheRoomStaysOutOfTheFeed(): void
+    {
+        $this->seedDefaultCalendar();
+        $soon = date('Y-m-d H:i:s', strtotime('+1 day'));
+        $account = AccountFactory::createOne(['portal' => $this->account->getPortal(), 'authSource' => $this->account->getAuthSource()]);
+        $visible = RoomUserFactory::createOne(['account' => $account, 'room' => $this->room]);
+        $byHidden = $this->createDate('Planung', $soon);
+        $byVisible = (int) DatesFactory::createOne(['title' => 'Sitzung', 'room' => $this->room, 'creator' => $visible])->getItemId();
+        $this->connection()->update('dates', ['datetime_start' => $soon, 'datetime_end' => $soon], ['item_id' => $byVisible]);
+        $this->linkParticipant($byHidden, (int) $visible->getItemId());
+        $this->linkParticipant($byVisible);
+        $this->connection()->update('user', ['extras' => serialize(['EMAIL_VISIBILITY' => '-1'])], ['item_id' => $this->roomUser->getItemId()]);
+
+        $feed = str_replace("\r\n ", '', $this->feed(''));
+
+        $this->assertStringContainsString('SUMMARY:Planung', $feed);
+        $this->assertStringContainsString('SUMMARY:Sitzung', $feed);
+        $this->assertSame(2, substr_count($feed, 'mailto:'.$visible->getEmail()), 'organizer of one, attendee of the other');
+        $this->assertStringNotContainsString((string) $this->roomUser->getEmail(), $feed);
+    }
+
     private function feed(string $query): string
     {
         $hash = self::getContainer()->get(HashManager::class)->getUserHashes($this->roomUser->getItemId());
@@ -148,14 +175,14 @@ class ICalControllerTest extends AbstractApplicationTestCase
         return $itemId;
     }
 
-    private function linkParticipant(int $dateId): void
+    private function linkParticipant(int $dateId, ?int $userId = null): void
     {
         $now = date('Y-m-d H:i:s');
         $this->connection()->insert('items', ['context_id' => $this->room->getItemId(), 'modification_date' => $now, 'type' => 'link_item']);
         $this->connection()->insert('link_items', [
             'item_id' => (int) $this->connection()->lastInsertId(),
             'first_item_id' => $dateId, 'first_item_type' => 'date',
-            'second_item_id' => $this->roomUser->getItemId(), 'second_item_type' => 'user',
+            'second_item_id' => $userId ?? $this->roomUser->getItemId(), 'second_item_type' => 'user',
             'context_id' => $this->room->getItemId(), 'modification_date' => $now,
         ]);
     }
