@@ -13,6 +13,7 @@
 
 namespace App\Database;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -25,7 +26,7 @@ class FixContext extends GeneralCheck
         $tablesWithContext = ['annotations', 'announcement', 'assessments', 'calendars', 'dates',
             'discussionarticles', 'discussions', 'invitations', 'labels', 'licenses', 'link_items',
             'links', 'materials', 'room', 'section', 'step', 'tag', 'tag2tag', 'tasks',
-            'terms', 'todos', 'translation',  'user'];
+            'terms', 'todos', 'translation'];
 
         foreach ($tablesWithContext as $tableWithContext) {
             $sql = "
@@ -38,6 +39,8 @@ class FixContext extends GeneralCheck
             ";
             $this->executeSQL($sql, $io);
         }
+
+        $this->deleteProfilesInVanishedContexts($io);
 
         // file links (foreign key)
         $sql = '
@@ -69,30 +72,52 @@ class FixContext extends GeneralCheck
             LEFT JOIN portal AS c3 ON t.context_id = c3.id
             LEFT JOIN server AS c4 ON t.context_id = c4.item_id
             WHERE t.context_id IS NOT NULL AND t.type != 'server'
-            AND c1.item_id IS NULL AND c2.item_id IS NULL AND c3.id IS NULL AND c4.item_id IS NULL;
+            AND c1.item_id IS NULL AND c3.id IS NULL AND c4.item_id IS NULL;
         ";
         $this->executeSQL($sql, $io);
 
-        // Account
-        $sql = '
-            DELETE t FROM accounts AS t
-            LEFT JOIN portal AS c1 ON t.context_id = c1.id
-            LEFT JOIN server AS c2 ON t.context_id = c2.item_id
-            WHERE t.context_id IS NOT NULL
-            AND c1.id IS NULL AND c2.item_id IS NULL;
-        ';
-        $this->executeSQL($sql, $io);
-
-        // Auth Sources
-        $sql = '
-            DELETE t FROM auth_source AS t
-            LEFT JOIN portal AS c1 ON t.portal_id = c1.id
-            LEFT JOIN server AS c2 ON t.portal_id = c2.item_id
-            WHERE t.portal_id IS NOT NULL
-            AND c1.id IS NULL AND c2.item_id IS NULL;
-        ';
-        $this->executeSQL($sql, $io);
+        // Accounts and sign-in sources need no check: their foreign keys to
+        // the portal refuse to leave them behind.
 
         return true;
+    }
+
+    /**
+     * Profiles may still be named as creator or modifier of rooms and
+     * profiles, whose foreign keys refuse the deletion; those references are
+     * cleared first.
+     */
+    private function deleteProfilesInVanishedContexts(SymfonyStyle $io): void
+    {
+        $connection = $this->entityManager->getConnection();
+        $itemIds = array_map('intval', $connection->fetchFirstColumn('
+            SELECT t.item_id FROM user AS t
+            LEFT JOIN room AS c1 ON t.context_id = c1.item_id
+            LEFT JOIN portal AS c4 ON t.context_id = c4.id
+            LEFT JOIN server AS c5 ON t.context_id = c5.item_id
+            WHERE t.context_id IS NOT NULL
+            AND c1.item_id IS NULL AND c4.id IS NULL AND c5.item_id IS NULL
+        '));
+
+        foreach (array_chunk($itemIds, 1000) as $chunk) {
+            foreach (['room', 'user'] as $table) {
+                foreach (['creator_id', 'modifier_id'] as $column) {
+                    $connection->executeStatement(
+                        "UPDATE $table SET $column = NULL WHERE $column IN (:itemIds)",
+                        ['itemIds' => $chunk],
+                        ['itemIds' => ArrayParameterType::INTEGER],
+                    );
+                }
+            }
+            $connection->executeStatement(
+                'DELETE FROM user WHERE item_id IN (:itemIds)',
+                ['itemIds' => $chunk],
+                ['itemIds' => ArrayParameterType::INTEGER],
+            );
+        }
+
+        if ($io->isVerbose()) {
+            $io->note(sprintf('Deleted %d profiles in vanished contexts', count($itemIds)));
+        }
     }
 }
