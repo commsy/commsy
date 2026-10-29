@@ -21,11 +21,10 @@ use App\Account\AccountSettingsManager;
 use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
+use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
 use App\Room\PrivateRoomDeleter;
 use App\Room\RoomDeletionOptions;
-use App\Services\LegacyEnvironment;
-use App\User\UserListBuilder;
 use App\User\UserMembershipDeleter;
 use App\Utils\UserService;
 use Doctrine\DBAL\Connection;
@@ -114,7 +113,6 @@ final class AccountDeletionAtomicityTest extends KernelTestCase
         $container = self::getContainer();
 
         return new AccountDeleter(
-            $container->get(UserListBuilder::class),
             $container->get(UserService::class),
             $container->get(UserRepository::class),
             $container->get(EntityManagerInterface::class),
@@ -122,7 +120,7 @@ final class AccountDeletionAtomicityTest extends KernelTestCase
             $container->get(LoggerInterface::class),
             $container->get(UserMembershipDeleter::class),
             new ThrowingPrivateRoomDeleter(),
-            $container->get(LegacyEnvironment::class),
+            $container->get(RoomRepository::class),
         );
     }
 

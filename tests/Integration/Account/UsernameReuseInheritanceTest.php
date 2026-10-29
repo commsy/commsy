@@ -59,10 +59,8 @@ final class UsernameReuseInheritanceTest extends KernelTestCase
      * may exist for the deleted account's `(username, auth_source)` in the
      * portal, regardless of whether the row had a valid `account_id` FK.
      *
-     * Today this fails because `AccountDeleter` collects user rows via
-     * `UserListBuilder->fromAccount(...)`, which derives its context list from
-     * the official portal-user membership graph. Orphan rows with
-     * `account_id IS NULL` outside that graph are missed.
+     * Orphan rows with `account_id IS NULL` belong to no account, so only
+     * the sweep by username reaches them.
      */
     #[WithStory(RoomWithMemberStory::class)]
     public function testAccountDeleteSweepsOrphanRow(): void

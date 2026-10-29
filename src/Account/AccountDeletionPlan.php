@@ -28,16 +28,18 @@ use Symfony\Component\DependencyInjection\Attribute\Exclude;
 final readonly class AccountDeletionPlan
 {
     /**
-     * @param int[] $membershipItemIds room memberships to end, from the
-     *                                 official graph plus the orphan sweep
-     * @param int   $countFromGraph    reported in the deletion log
+     * @param int[]     $membershipItemIds room memberships to end: every
+     *                                     profile of the account plus the
+     *                                     orphan sweep
+     * @param list<int> $privateRoomIds    every private room the account owns
+     * @param int       $countOfAccount    reported in the deletion log
      */
     public function __construct(
         public int $deleterId,
         public array $membershipItemIds,
         public ?int $portalUserItemId,
-        public ?int $privateRoomId,
-        public int $countFromGraph,
+        public array $privateRoomIds,
+        public int $countOfAccount,
         public int $countFromSweep,
     ) {}
 }

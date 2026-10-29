@@ -166,6 +166,27 @@ class RoomRepository extends ServiceEntityRepository
     }
 
     /**
+     * Ids of every live private room the account has a live profile in.
+     * Normally one; historical data holds accounts with several.
+     *
+     * @return list<int>
+     */
+    public function findLivePrivateRoomIdsOf(Account $account): array
+    {
+        return array_map('intval', $this->createQueryBuilder('r')
+            ->select('r.itemId')
+            ->innerJoin(User::class, 'u', Join::WITH, 'u.room = r AND u.deleter IS NULL AND u.deletionDate IS NULL AND IDENTITY(u.account) = :accountId')
+            ->where('r.type = :type')
+            ->andWhere('r.deleter IS NULL')
+            ->andWhere('r.deletionDate IS NULL')
+            ->orderBy('r.itemId')
+            ->setParameter('accountId', $account->getId())
+            ->setParameter('type', RoomType::PrivateRoom->value)
+            ->getQuery()
+            ->getSingleColumnResult());
+    }
+
+    /**
      * Returns the private room (type = 'privateroom') for a given portal and account, if any.
      */
     public function findOnePrivateByPortalIdAndAccount(int $portalId, Account $account): ?Room

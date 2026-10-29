@@ -181,6 +181,24 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
+     * Item ids of every live profile of the account, in every context.
+     *
+     * @return list<int>
+     */
+    public function findLiveProfileIdsOf(Account $account): array
+    {
+        return array_map('intval', $this->createQueryBuilder('u')
+            ->select('u.itemId')
+            ->where('IDENTITY(u.account) = :accountId')
+            ->andWhere('u.deletionDate IS NULL')
+            ->andWhere('u.deleter IS NULL')
+            ->orderBy('u.itemId')
+            ->setParameter('accountId', $account->getId())
+            ->getQuery()
+            ->getSingleColumnResult());
+    }
+
+    /**
      * Finds non-soft-deleted **orphan** user rows for a given username inside
      * a portal — rows whose `account_id` is NULL, i.e. that no specific
      * account claims any more.
