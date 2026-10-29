@@ -31,7 +31,6 @@ use App\Entity\Portal;
 use App\Entity\PortalUserAssignWorkspace;
 use App\Entity\PortalUserChangeStatus;
 use App\Entity\PortalUserEdit;
-use App\Entity\Room;
 use App\Entity\RoomCategories;
 use App\Entity\Server;
 use App\Entity\Terms;
@@ -85,6 +84,7 @@ use App\Mail\Helper\ContactFormHelper;
 use App\Model\TimePulseTemplate;
 use App\Repository\AccountsRepository;
 use App\Repository\LicenseRepository;
+use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
 use App\Room\RoomManager;
 use App\Room\RoomType;
@@ -2143,7 +2143,7 @@ class PortalSettingsController extends AbstractController
         UserService $userService,
         LegacyEnvironment $legacyEnvironment,
         AccountManager $accountManager,
-        ManagerRegistry $managerRegistry,
+        RoomRepository $roomRepository,
         int $userId
     ): Response {
         $user = $userService->getUser($userId);
@@ -2156,9 +2156,13 @@ class PortalSettingsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->get('save')->isClicked()) {
+            $choiceWorkspaceId = $form->get('workspaceSelection')->getViewData();
+            $chosenRoom = is_string($choiceWorkspaceId) && ctype_digit($choiceWorkspaceId)
+                ? $roomRepository->findLiveProjectRoomOfPortal($portal->getId(), (int) $choiceWorkspaceId)
+                : null;
+            if ($form->get('save')->isClicked() && null !== $chosenRoom) {
                 $assignFlag = true;
-                $choiceWorkspaceId = $form->get('workspaceSelection')->getViewData();
+                $choiceWorkspaceId = $chosenRoom->getItemId();
                 $user = $userService->getUser($userId);
                 $relatedUsers = $user->getRelatedUserList();
                 foreach ($relatedUsers as $relatedUser) {
@@ -2207,14 +2211,11 @@ class PortalSettingsController extends AbstractController
 
                 $form = $this->createForm(AccountIndexDetailAssignWorkspaceType::class, $userAssignWorkspace);
 
-                $projectRoomManager = $legacyEnvironment->getEnvironment()->getProjectManager();
-                $projectRooms = $projectRoomManager->getRoomsByTitle($formData->getSearchForWorkspace(),
-                    $portal->getId());
-
-                if ($projectRooms->getCount() < 1) {
-                    $repository = $managerRegistry->getRepository(Room::class);
-                    $projectRooms = $repository->findAll();
-                }
+                $projectRooms = $roomRepository->findLiveProjectRoomsOfPortalMatching(
+                    $portal->getId(),
+                    (string) $formData->getSearchForWorkspace(),
+                    20,
+                );
 
                 $choiceArray = [];
 

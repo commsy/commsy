@@ -166,6 +166,55 @@ class RoomRepository extends ServiceEntityRepository
     }
 
     /**
+     * Live project rooms of the portal whose title contains the term or whose
+     * id is the term, by title.
+     *
+     * @return list<Room>
+     */
+    public function findLiveProjectRoomsOfPortalMatching(int $portalId, string $term, int $limit): array
+    {
+        $term = trim($term);
+        if ('' === $term) {
+            return [];
+        }
+
+        $qb = $this->liveProjectRoomsOfPortal($portalId);
+        $matches = $qb->expr()->orX('r.title LIKE :title');
+        $qb->setParameter('title', '%'.addcslashes($term, '%_\\').'%');
+        if (ctype_digit($term)) {
+            $matches->add('r.itemId = :itemId');
+            $qb->setParameter('itemId', (int) $term);
+        }
+
+        return $qb
+            ->andWhere($matches)
+            ->orderBy('r.title')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findLiveProjectRoomOfPortal(int $portalId, int $itemId): ?Room
+    {
+        return $this->liveProjectRoomsOfPortal($portalId)
+            ->andWhere('r.itemId = :itemId')
+            ->setParameter('itemId', $itemId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function liveProjectRoomsOfPortal(int $portalId): QueryBuilder
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.contextId = :portalId')
+            ->andWhere('r.type = :type')
+            ->andWhere('r.deleter IS NULL')
+            ->andWhere('r.deletionDate IS NULL')
+            ->setParameter('portalId', $portalId)
+            ->setParameter('type', RoomType::Project->value);
+    }
+
+    /**
      * Ids of every live private room the account has a live profile in.
      * Normally one; historical data holds accounts with several.
      *

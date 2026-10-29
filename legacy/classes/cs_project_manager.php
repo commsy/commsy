@@ -477,32 +477,4 @@ class cs_project_manager extends cs_room2_manager
             }
         }
     }
-
-   public function getRoomsByTitle($string, $portalid)
-   {
-       $list = null;
-       if (empty($string)) {
-           return new cs_list();
-       } else {
-           $query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL AND
-   				 '.$this->addDatabasePrefix($this->_db_table).'.context_id = '.$portalid.' AND
-   				 		 ('.$this->addDatabasePrefix($this->_db_table).'.title LIKE "%'.$string.'%" OR
-   				 		 		 '.$this->addDatabasePrefix($this->_db_table).'.item_id LIKE "%'.$string.'%") LIMIT 20';
-//    		$query .= " ORDER BY ".\App\Legacy\SqlStringEscaper::escape($sortBy);
-           $result = $this->_db_connector->performQuery($query);
-           if (!isset($result)) {
-               trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"', E_USER_WARNING);
-           } else {
-               $list = new cs_list();
-               // filter items with highest version_id, doing this in MySQL would be too expensive
-               if (!empty($result)) {
-                   foreach ($result as $rs) {
-                       $list->add($this->_buildItem($rs));
-                   }
-               }
-           }
-
-           return $list;
-       }
-   }
 }
