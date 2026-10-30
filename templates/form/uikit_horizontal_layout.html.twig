@@ -26,12 +26,13 @@
                     }) }}">
                         {{- 'Edit'|trans({}, 'form') -}}
                     </a>
-                    <a class="uk-button uk-button-mini uk-button-danger uk-float-right" href="{{ path('app_category_delete', {
+                    {# inside the edit form: the button posts to the delete route and carries its own token #}
+                    <button type="submit" class="uk-button uk-button-mini uk-button-danger uk-float-right" formnovalidate formmethod="post" formaction="{{ path('app_category_delete', {
                         roomId: app.request.attributes.get('roomId'),
                         categoryId: child.data
-                    }) }}">
+                    }) }}" name="_token" value="{{ csrf_token('category_delete' ~ child.data) }}">
                         {{- 'Delete'|trans({}, 'form') -}}
-                    </a>
+                    </button>
                 </div>
         {% endif %}
     {% endfor %}

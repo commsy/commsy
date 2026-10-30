@@ -80,10 +80,17 @@ class CategoryController extends AbstractController
         return $this->redirectToRoute('app_room_home', ['roomId' => $roomId]);
     }
 
-    #[Route(path: '/room/{roomId}/category/delete/{categoryId}')]
+    #[Route(path: '/room/{roomId}/category/delete/{categoryId}', methods: ['POST'])]
     #[IsGranted('CATEGORY_EDIT')]
-    public function delete($roomId, $categoryId, CategoryService $categoryService): RedirectResponse
+    public function delete(Request $request, int $roomId, int $categoryId, CategoryService $categoryService): RedirectResponse
     {
+        if (!$this->isCsrfTokenValid('category_delete'.$categoryId, (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+        if (!$categoryService->isTagOfRoom($categoryId, $roomId)) {
+            throw $this->createNotFoundException();
+        }
+
         $categoryService->removeTag($categoryId, $roomId);
 
         return $this->redirectToRoute('app_category_edit', [
@@ -112,6 +119,9 @@ class CategoryController extends AbstractController
         // create new form
         $category = new Tag();
         if ($categoryId) {
+            if (!$categoryService->isTagOfRoom($categoryId, $roomId)) {
+                throw $this->createNotFoundException();
+            }
             $category = $repository->findOneByItemId($categoryId);
             $category->setTitle(html_entity_decode((string) $category->getTitle()));
         }

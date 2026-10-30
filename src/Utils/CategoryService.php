@@ -36,6 +36,16 @@ class CategoryService
         return $tagManager->getItem($tagId);
     }
 
+    /**
+     * Whether the id names a live category of the room.
+     */
+    public function isTagOfRoom(int $tagId, int $roomId): bool
+    {
+        $tag = $tagId > 0 ? $this->getTag($tagId) : null;
+
+        return null !== $tag && (int) $tag->getContextID() === $roomId && !$tag->isDeleted();
+    }
+
     public function updateTag($tagId, $newTitle): void
     {
         $tagItem = $this->getTag($tagId);
@@ -184,19 +194,24 @@ class CategoryService
         $tagManager = $environment->getTagManager();
         $rootTagItem = $tagManager->getRootTagItemFor($roomId);
 
-        $this->updateTree($structure, $rootTagItem, $tagManager);
+        $this->updateTree($structure, $rootTagItem, $tagManager, (int) $roomId);
     }
 
-    private function updateTree($structure, $rootItem, $tagManager): void
+    private function updateTree($structure, $rootItem, $tagManager, int $roomId): void
     {
         foreach ($structure as $position => $tagInformation) {
+            // the structure comes from the request: only categories of the room move
+            if (!$this->isTagOfRoom((int) ($tagInformation['itemId'] ?? 0), $roomId)) {
+                continue;
+            }
+
             // persist new position
             $tagItem = $tagManager->getItem($tagInformation['itemId']);
             $tagItem->setPosition($rootItem->getItemId(), $position + 1);
             $tagItem->save();
 
             if (!empty($tagInformation['children'])) {
-                $this->updateTree($tagInformation['children'], $tagItem, $tagManager);
+                $this->updateTree($tagInformation['children'], $tagItem, $tagManager, $roomId);
             }
         }
     }

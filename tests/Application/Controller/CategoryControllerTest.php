@@ -117,10 +117,7 @@ class CategoryControllerTest extends AbstractApplicationTestCase
         $this->enableTags();
         $categoryId = $this->createCategoryViaHttp('Zu-Löschen');
 
-        $this->client->request(
-            'GET',
-            "/room/{$this->roomId}/category/delete/{$categoryId}"
-        );
+        $this->deleteViaButton($categoryId);
 
         $this->assertResponseRedirects("/room/{$this->roomId}/category/edit");
     }
@@ -186,8 +183,8 @@ class CategoryControllerTest extends AbstractApplicationTestCase
         $this->assertStringContainsString('verschwindet', $htmlBefore);
         $this->assertStringContainsString('bleibt', $htmlBefore);
 
-        // hit the delete route
-        $this->client->request('GET', "/room/{$this->roomId}/category/delete/{$doomed}");
+        // press its delete button
+        $this->deleteViaButton($doomed);
         $this->assertResponseRedirects();
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
@@ -223,5 +220,18 @@ class CategoryControllerTest extends AbstractApplicationTestCase
         $payload = json_decode($this->client->getResponse()->getContent(), true);
 
         return (int) $payload['categoryId'];
+    }
+
+    /**
+     * Posts the delete button of the category on the edit page, with its token.
+     */
+    private function deleteViaButton(int $categoryId): void
+    {
+        $path = "/room/{$this->roomId}/category/delete/{$categoryId}";
+        $crawler = $this->client->request('GET', "/room/{$this->roomId}/category/edit");
+        $button = $crawler->filter(sprintf('button[formaction="%s"]', $path));
+        $this->assertCount(1, $button);
+
+        $this->client->request('POST', $path, ['_token' => $button->attr('value')]);
     }
 }

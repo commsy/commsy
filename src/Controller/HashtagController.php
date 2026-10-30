@@ -145,6 +145,10 @@ class HashtagController extends AbstractController
 
         if ($labelId) {
             $hashtag = $labelRepository->findOneByItemId($labelId);
+            // only a hashtag of this room, never a group or a topic
+            if (null === $hashtag || (int) $hashtag->getContextId() !== $roomId || 'buzzword' !== $hashtag->getType()) {
+                throw $this->createNotFoundException();
+            }
             $hashtag->setName(html_entity_decode((string) $hashtag->getName()));
         } else {
             $hashtag = new Labels();
