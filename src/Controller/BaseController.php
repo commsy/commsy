@@ -193,15 +193,20 @@ abstract class BaseController extends AbstractController
 
         $positiveItemIds = [];
         $negativeItemIds = [];
+        $toItemId = static fn (mixed $id): int => is_scalar($id) ? max(0, (int) $id) : 0;
         if (!$selectAll) {
             if (!$request->request->has('positiveItemIds')) {
                 throw new Exception('select all is not set, but no "positiveItemIds" were provided');
             }
 
-            $positiveItemIds = $request->request->all('positiveItemIds');
+            // item ids are positive integers; anything else is dropped here
+            $positiveItemIds = array_values(array_filter(array_map($toItemId, $request->request->all('positiveItemIds'))));
+            if ([] === $positiveItemIds) {
+                return [];
+            }
         } else {
             if ($request->request->has('negativeItemIds')) {
-                $negativeItemIds = $request->request->all('negativeItemIds');
+                $negativeItemIds = array_values(array_filter(array_map($toItemId, $request->request->all('negativeItemIds'))));
             }
         }
 

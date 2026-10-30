@@ -438,7 +438,7 @@ class cs_user_manager extends cs_manager
                 and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
                 and !empty($this->_context_array_limit[0])
             ) {
-                $id_string = implode(',', $this->_context_array_limit);
+                $id_string = \App\Legacy\SqlIdList::join($this->_context_array_limit, ',');
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id IN (' . $id_string . ')';
             } elseif (isset($this->_room_limit) and 0 != $this->_room_limit) {
                 $query .= ' AND ' . $this->addDatabasePrefix('user') . '.context_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . '"';
@@ -496,7 +496,7 @@ class cs_user_manager extends cs_manager
         }
 
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.item_id IN (' . implode(', ', $this->_id_array_limit) . ')';
+            $query .= ' AND ' . $this->addDatabasePrefix('user') . '.item_id IN (' . \App\Legacy\SqlIdList::join($this->_id_array_limit) . ')';
         }
 
         if (isset($this->_topic_limit)) {
@@ -530,7 +530,7 @@ class cs_user_manager extends cs_manager
             array_walk($this->_group_array_limit, function (&$v, $k) {
                 $v = \App\Legacy\SqlStringEscaper::escape($v);
             });
-            $mergedGroupIDs = implode(',', $this->_group_array_limit);
+            $mergedGroupIDs = \App\Legacy\SqlIdList::join($this->_group_array_limit, ',');
             $query .= ' AND ((l31.first_item_id IN (' . $mergedGroupIDs . ') OR l31.second_item_id IN (' . $mergedGroupIDs . '))';
             $query .= ' OR (l32.first_item_id IN (' . $mergedGroupIDs . ') OR l32.second_item_id IN (' . $mergedGroupIDs . ')))';
         }
@@ -544,7 +544,7 @@ class cs_user_manager extends cs_manager
         }
 
         if ($this->excludedIdsLimit) {
-            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(', ', \App\Legacy\SqlStringEscaper::escape($this->excludedIdsLimit)) . ')';
+            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . \App\Legacy\SqlIdList::join($this->excludedIdsLimit) . ')';
         }
 
         if ((isset($this->_search_limit)
@@ -702,7 +702,7 @@ class cs_user_manager extends cs_manager
         $user_array = [];
         if (!empty($room_id_array)) {
             $query = 'SELECT * FROM ' . $this->addDatabasePrefix('user')
-                . ' WHERE ' . $this->addDatabasePrefix('user') . '.context_id IN (' . implode(',', $room_id_array) . ')'
+                . ' WHERE ' . $this->addDatabasePrefix('user') . '.context_id IN (' . \App\Legacy\SqlIdList::join($room_id_array, ',') . ')'
                 . ' AND ' . $this->addDatabasePrefix('user') . '.account_id = "' . $accountId . '"'
                 . ' AND ' . $this->addDatabasePrefix('user') . '.status >= "2"'
                 . ' AND ' . $this->addDatabasePrefix('user') . '.deleter_id IS NULL'
@@ -1105,7 +1105,7 @@ class cs_user_manager extends cs_manager
         if (!empty($this->_context_array_limit)
             and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
         ) {
-            $query .= ' context_id IN (' . implode(',', \App\Legacy\SqlStringEscaper::escape($this->_context_array_limit)) . ')';
+            $query .= ' context_id IN (' . \App\Legacy\SqlIdList::join($this->_context_array_limit, ',') . ')';
         } elseif (!empty($this->_room_limit)) {
             $query .= " context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "'";
         }
@@ -1131,7 +1131,7 @@ class cs_user_manager extends cs_manager
         if (!empty($this->_context_array_limit)
             and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
         ) {
-            $query .= ' context_id IN (' . implode(',', \App\Legacy\SqlStringEscaper::escape($this->_context_array_limit)) . ')';
+            $query .= ' context_id IN (' . \App\Legacy\SqlIdList::join($this->_context_array_limit, ',') . ')';
         } elseif (!empty($this->_room_limit)) {
             $query .= " context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "'";
         }
@@ -1157,7 +1157,7 @@ class cs_user_manager extends cs_manager
         if (!empty($this->_context_array_limit)
             and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
         ) {
-            $query .= ' context_id IN (' . implode(',', \App\Legacy\SqlStringEscaper::escape($this->_context_array_limit)) . ')';
+            $query .= ' context_id IN (' . \App\Legacy\SqlIdList::join($this->_context_array_limit, ',') . ')';
         } elseif (!empty($this->_room_limit)) {
             $query .= " context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "'";
         }
@@ -1182,7 +1182,7 @@ class cs_user_manager extends cs_manager
         if (!empty($this->_context_array_limit)
             and (is_countable($this->_context_array_limit) ? count($this->_context_array_limit) : 0) > 0
         ) {
-            $query .= ' context_id IN (' . implode(',', \App\Legacy\SqlStringEscaper::escape($this->_context_array_limit)) . ')';
+            $query .= ' context_id IN (' . \App\Legacy\SqlIdList::join($this->_context_array_limit, ',') . ')';
         } elseif (!empty($this->_room_limit)) {
             $query .= " context_id = '" . \App\Legacy\SqlStringEscaper::escape($this->_room_limit) . "'";
         }

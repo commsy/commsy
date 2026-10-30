@@ -258,7 +258,7 @@ class cs_tag_manager extends cs_manager
 
         // insert limits into the select statement
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.\App\Legacy\SqlIdList::join($this->_id_array_limit).')';
         }
         if (isset($this->_room_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';

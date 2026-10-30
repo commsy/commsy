@@ -369,7 +369,7 @@ class cs_link_manager extends cs_manager
              $query .= ' AND ((';
          }
          if (isset($this->_id_array_limit) and !empty($this->_id_array_limit)) { // id-Array
-             $query .= ' first_item_id IN ('.implode(',', $this->_id_array_limit).')';
+             $query .= ' first_item_id IN ('.\App\Legacy\SqlIdList::join($this->_id_array_limit, ',').')';
          }
          if (isset($this->_second_linked_item)) {
              $query .= ' AND second_item_id ="'.\App\Legacy\SqlStringEscaper::escape($this->_second_linked_item->getItemID()).'"';
@@ -400,7 +400,7 @@ class cs_link_manager extends cs_manager
              $query .= ' OR (';
          }
          if (isset($this->_id_array_limit) and !empty($this->_id_array_limit)) { // id-Array
-             $query .= ' second_item_id IN ('.implode(',', $this->_id_array_limit).')'; // id-Array
+             $query .= ' second_item_id IN ('.\App\Legacy\SqlIdList::join($this->_id_array_limit, ',').')'; // id-Array
          }
          if (isset($this->_second_linked_item)) {
              $query .= ' AND first_item_id ="'.\App\Legacy\SqlStringEscaper::escape($this->_second_linked_item->getItemID()).'"';
@@ -1079,7 +1079,7 @@ class cs_link_manager extends cs_manager
      {
          if (!empty($idArray)
          ) {
-             $inString = "'".implode("', '", $idArray)."'";
+             $inString = \App\Legacy\SqlIdList::join($idArray);
 
              $query = '
    			SELECT

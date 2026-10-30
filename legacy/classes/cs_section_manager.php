@@ -168,7 +168,7 @@ class cs_section_manager extends cs_manager
             $query .= ' AND '.$this->addDatabasePrefix('section').'.deleter_id IS NULL';
         }
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('section').'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix('section').'.item_id IN ('.\App\Legacy\SqlIdList::join($this->_id_array_limit).')';
         }
         if (isset($this->_existence_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix('section').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_existence_limit).' day)';

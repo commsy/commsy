@@ -151,7 +151,7 @@ class cs_step_manager extends cs_manager
             $query .= ' AND '.$this->addDatabasePrefix('step').'.deleter_id IS NULL';
         }
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix('step').'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix('step').'.item_id IN ('.\App\Legacy\SqlIdList::join($this->_id_array_limit).')';
         }
         if (isset($this->_existence_limit)) {
             $query .= ' AND '.$this->addDatabasePrefix('step').'.creation_date >= DATE_SUB(CURRENT_DATE,interval '.\App\Legacy\SqlStringEscaper::escape($this->_existence_limit).' day)';

@@ -130,7 +130,7 @@ class cs_link_modifier_item_manager extends cs_link_father_manager
          }
 
          if (!empty($id_array)) {
-             $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.modifier_id IN ('.implode(',', $id_array).')';
+             $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.modifier_id IN ('.\App\Legacy\SqlIdList::join($id_array, ',').')';
              $this->_db_connector->performQuery($query);
          }
      }

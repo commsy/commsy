@@ -511,7 +511,7 @@ class cs_context_manager extends cs_manager
    {
        $retour = [];
        $query = 'SELECT extras, item_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE ';
-       $query .= $this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', $id_array).')';
+       $query .= $this->addDatabasePrefix($this->_db_table).'.item_id IN ('.\App\Legacy\SqlIdList::join($id_array).')';
        $result = $this->_db_connector->performQuery($query);
        unset($query);
        if (!isset($result)) {

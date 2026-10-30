@@ -286,7 +286,7 @@ class cs_links_manager extends cs_manager
                  'to_item_id="'.\App\Legacy\SqlStringEscaper::escape($buzz1).'"'.
                  ' WHERE '.$this->addDatabasePrefix('links').'.to_item_id="'.\App\Legacy\SqlStringEscaper::escape($buzz2).'"';
         if (!empty($from_id_array)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.from_item_id NOT IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($from_id_array)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.from_item_id NOT IN ('.\App\Legacy\SqlIdList::join($from_id_array, ',').')';
         }
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result)) {
@@ -851,7 +851,7 @@ class cs_links_manager extends cs_manager
          if (!empty($id_array)) {
              $link_type = '';
              if ('buzzword' == $label_type) {
-                 $query = 'SELECT to_item_id, count(from_item_id) AS num FROM `'.$this->addDatabasePrefix('links').'` WHERE to_item_id IN ('.implode(',', $id_array).') GROUP BY to_item_id;';
+                 $query = 'SELECT to_item_id, count(from_item_id) AS num FROM `'.$this->addDatabasePrefix('links').'` WHERE to_item_id IN ('.\App\Legacy\SqlIdList::join($id_array, ',').') GROUP BY to_item_id;';
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result)) {
                      trigger_error('Problem counting links from query: "'.$query.'"', E_USER_ERROR);
@@ -861,7 +861,7 @@ class cs_links_manager extends cs_manager
                      }
                  }
              } elseif ('mylist' == $label_type) {
-                 $query = 'SELECT to_item_id, count(from_item_id) AS num FROM `'.$this->addDatabasePrefix('links').'` WHERE to_item_id IN ('.implode(',', $id_array).') GROUP BY to_item_id;';
+                 $query = 'SELECT to_item_id, count(from_item_id) AS num FROM `'.$this->addDatabasePrefix('links').'` WHERE to_item_id IN ('.\App\Legacy\SqlIdList::join($id_array, ',').') GROUP BY to_item_id;';
                  $result = $this->_db_connector->performQuery($query);
                  if (!isset($result)) {
                      trigger_error('Problem counting links from query: "'.$query.'"', E_USER_ERROR);

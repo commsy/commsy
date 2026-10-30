@@ -384,7 +384,7 @@ class cs_labels_manager extends cs_manager
 
       // insert limits into the select statement
       if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id IN ('.implode(', ', $this->_room_array_limit).')';
+          $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id IN ('.\App\Legacy\SqlIdList::join($this->_room_array_limit).')';
       } elseif (isset($this->_room_limit)) {
           $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id = "'.\App\Legacy\SqlStringEscaper::escape($this->_room_limit).'"';
       }
@@ -450,7 +450,7 @@ class cs_labels_manager extends cs_manager
 
       if (isset($this->_tag_limit)) {
           $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-          $id_string = implode(', ', $tag_id_array);
+          $id_string = \App\Legacy\SqlIdList::join($tag_id_array);
           if (isset($tag_id_array[0]) && -1 == $tag_id_array[0]) {
               $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
               $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
@@ -469,7 +469,7 @@ class cs_labels_manager extends cs_manager
       }
 
       if (!empty($this->_id_array_limit)) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.\App\Legacy\SqlIdList::join($this->_id_array_limit).')';
       }
 
       if ($this->modificationNewerThenLimit) {
@@ -477,7 +477,7 @@ class cs_labels_manager extends cs_manager
       }
 
       if ($this->excludedIdsLimit) {
-          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->excludedIdsLimit)).')';
+          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id NOT IN ('.\App\Legacy\SqlIdList::join($this->excludedIdsLimit).')';
       }
 
       if ($this->excludeNameLimit) {

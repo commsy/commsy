@@ -234,7 +234,7 @@ class cs_room_manager extends cs_context_manager
         $query .= ' WHERE 1';
 
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(',', $this->_id_array_limit).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.\App\Legacy\SqlIdList::join($this->_id_array_limit, ',').')';
         }
 
         if (!empty($this->_room_type)) {

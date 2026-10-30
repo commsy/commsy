@@ -65,7 +65,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
         if (!empty($file_id_array)) {
             $query = '';
             $query .= 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE deleter_id IS NULL AND deletion_date IS NULL';
-            $query .= ' AND file_id IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($file_id_array)).')';
+            $query .= ' AND file_id IN ('.\App\Legacy\SqlIdList::join($file_id_array, ',').')';
             $result = $this->_db_connector->performQuery($query);
             if (!isset($result)) {
                 trigger_error('Problems getting data "'.$this->_db_table.'" from query: "'.$query.'"', E_USER_WARNING);
@@ -73,7 +73,7 @@ class cs_link_item_file_manager extends cs_link_father_manager
                 $current_data_array = [];
 
                 $sql = 'SELECT item_iid,file_id FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE 1';
-                $sql .= ' AND file_id IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($file_id_array2)).')';
+                $sql .= ' AND file_id IN ('.\App\Legacy\SqlIdList::join($file_id_array2, ',').')';
                 $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
                 $sql_result = $this->_db_connector->performQuery($sql);
                 if (!isset($sql_result)) {

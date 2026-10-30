@@ -121,7 +121,7 @@ class cs_item_manager extends cs_manager
 
         if (isset($this->_tag_limit)) {
             $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-            $id_string = implode(', ', $tag_id_array);
+            $id_string = \App\Legacy\SqlIdList::join($tag_id_array);
             if (isset($tag_id_array[0]) and -1 == $tag_id_array[0]) {
                 $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
                 $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
@@ -162,7 +162,7 @@ class cs_item_manager extends cs_manager
             $query .= ' AND ' . $this->addDatabasePrefix('items') . '.context_id = "' . \App\Legacy\SqlStringEscaper::escape($this->_environment->getCurrentContextID()) . '"';
         }
         if (isset($this->_id_array_limit) and !empty($this->_id_array_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.item_id IN (' . implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)) . ')';
+            $query .= ' AND ' . $this->addDatabasePrefix('items') . '.item_id IN (' . \App\Legacy\SqlIdList::join($this->_id_array_limit) . ')';
         }
         if (isset($this->_type_limit) or isset($this->_label_limit)) {
             $query .= ' AND (';
@@ -203,7 +203,7 @@ class cs_item_manager extends cs_manager
 
         // context array limit
         if (!empty($this->_room_array_limit)) {
-            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id IN (' . implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_room_array_limit)) . ')';
+            $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.context_id IN (' . \App\Legacy\SqlIdList::join($this->_room_array_limit) . ')';
         }
 
         if ($this->modificationNewerThenLimit) {

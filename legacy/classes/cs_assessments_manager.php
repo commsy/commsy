@@ -129,7 +129,7 @@ class cs_assessments_manager extends cs_manager
                      $this->_item_id_array[] = $id;
                  }
              }
-             $query = 'SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment, item_link_id FROM assessments WHERE item_link_id IN ('.implode(',', \App\Legacy\SqlStringEscaper::escape($id_array)).') AND deletion_date IS NULL GROUP BY item_link_id';
+             $query = 'SELECT AVG(assessment) AS average_assessment, COUNT(item_id) AS count_assessment, item_link_id FROM assessments WHERE item_link_id IN ('.\App\Legacy\SqlIdList::join($id_array, ',').') AND deletion_date IS NULL GROUP BY item_link_id';
              $result = $this->_db_connector->performQuery($query);
              if (!isset($result)) {
                  trigger_error('Problems selecting noticed from query: "'.$query.'"');

@@ -140,7 +140,7 @@ class cs_community_manager extends cs_room2_manager
 
         // id_array_limit
         if (!empty($this->_id_array_limit)) {
-            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(', ', \App\Legacy\SqlStringEscaper::escape($this->_id_array_limit)).')';
+            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.\App\Legacy\SqlIdList::join($this->_id_array_limit).')';
         }
 
         // archive
