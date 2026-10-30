@@ -261,6 +261,11 @@ class UserService
      */
     public function getUsersById($roomId, $ids): array
     {
+        // without ids the query would select every profile of the room
+        if (empty($ids)) {
+            return [];
+        }
+
         $this->resetLimits();
         $this->userManager->setContextLimit($roomId);
         $this->userManager->setIDArrayLimit($ids);
@@ -268,7 +273,37 @@ class UserService
         $this->userManager->select();
         $userList = $this->userManager->get();
 
-        return $userList->to_array();
+        // the id limit lifts the context limit, so profiles elsewhere are dropped here
+        return array_values(array_filter(
+            $userList->to_array(),
+            static fn (cs_user_item $user): bool => (int) $user->getContextID() === (int) $roomId,
+        ));
+    }
+
+    /**
+     * The live profiles of the room among the given ids, in the order given.
+     * Ids of profiles elsewhere, of deleted profiles and anything that is no
+     * id are dropped.
+     *
+     * @param iterable<mixed> $ids
+     *
+     * @return list<cs_user_item>
+     */
+    public function getUsersInRoom(int $roomId, iterable $ids): array
+    {
+        $users = [];
+        foreach ($ids as $id) {
+            if (!is_scalar($id) || (int) $id <= 0 || isset($users[(int) $id])) {
+                continue;
+            }
+
+            $user = $this->userManager->getItem((int) $id);
+            if (null !== $user && (int) $user->getContextID() === $roomId && !$user->isDeleted()) {
+                $users[(int) $id] = $user;
+            }
+        }
+
+        return array_values($users);
     }
 
     /**

@@ -311,11 +311,7 @@ class UserController extends BaseController
         Request $request,
         int $roomId
     ): Response {
-        $userItems = [];
-        $userIds = $request->query->all('userIds');
-        foreach ($userIds as $userId) {
-            $userItems[] = $this->userService->getUser($userId);
-        }
+        $userItems = $this->userService->getUsersInRoom($roomId, $request->query->all('userIds'));
         $formData = [
             'additional_recipients' => [],
             'send_to_groups' => [],
@@ -416,6 +412,7 @@ class UserController extends BaseController
             if (!$request->request->has('user_status')) {
                 $formData['status'] = $request->request->get('status');
 
+                $userIds = [];
                 $users = $this->getItemsForActionRequest($room, $request);
                 foreach ($users as $user) {
                     $userIds[] = $user->getItemId();
@@ -425,26 +422,21 @@ class UserController extends BaseController
             } else {
                 $postData = $request->request->all('user_status');
                 $formData['status'] = $postData['status'];
-                $formData['userIds'] = $postData['userIds'];
+                $formData['userIds'] = $postData['userIds'] ?? [];
             }
         }
+
+        // only profiles of this room are affected
+        $users = $this->userService->getUsersInRoom($roomId, $formData['userIds'] ?? []);
+        $formData['userIds'] = array_map(static fn (cs_user_item $user): int => (int) $user->getItemID(), $users);
 
         $form = $this->createForm(UserStatusChangeType::class, $formData);
         $form->handleRequest($request);
-
-        // get all affected user
-        $users = [];
-        if (isset($formData['userIds'])) {
-            foreach ($formData['userIds'] as $userId) {
-                $user = $this->userService->getUser($userId);
-                if ($user) {
-                    $users[] = $user;
-                }
-            }
-        }
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
+                // the posted ids again come down to the profiles of this room
+                $formData['userIds'] = array_map(static fn (cs_user_item $user): int => (int) $user->getItemID(), $users);
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
@@ -1230,8 +1222,12 @@ class UserController extends BaseController
             }
         } else {
             $postData = $request->request->all('user_send');
-            $userIds = $postData['users'];
+            $userIds = $postData['users'] ?? [];
         }
+
+        // only profiles of this room are addressed
+        $users = $this->userService->getUsersInRoom($roomId, $userIds);
+        $userIds = array_map(static fn (cs_user_item $user): int => (int) $user->getItemID(), $users);
 
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
@@ -1241,7 +1237,7 @@ class UserController extends BaseController
         if ($userCount) {
             $defaultBodyMessage .= '<br/><br/>--<br/>';
             if (1 == $userCount) {
-                $user = $this->userService->getUser(reset($userIds));
+                $user = $users[0];
                 if ($user) {
                     $defaultBodyMessage .= $translator->trans(
                         'This email has been sent by sender ... from room ... to recipient ...',
@@ -1278,17 +1274,6 @@ class UserController extends BaseController
             ]),
         ]);
         $form->handleRequest($request);
-
-        // get all affected users
-        $users = [];
-        if (isset($formData['users'])) {
-            foreach ($formData['users'] as $userId) {
-                $user = $this->userService->getUser($userId);
-                if ($user) {
-                    $users[] = $user;
-                }
-            }
-        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
