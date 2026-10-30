@@ -15,10 +15,12 @@ namespace Tests\Application\Controller;
 
 use App\Entity\Account;
 use App\Entity\Portal;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Factory\PortalFactory;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
 
@@ -68,6 +70,25 @@ class SettingsControllerTest extends AbstractApplicationTestCase
         $this->client->request('GET', "/room/{$this->roomId}/settings/additional");
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form');
+    }
+
+    /**
+     * Picking a terms template loads its text only from the own portal.
+     */
+    public function testATermsTemplateOfAnotherPortalIsNotLoaded(): void
+    {
+        $connection = self::getContainer()->get(Connection::class);
+        $foreignPortal = PortalFactory::createOne();
+        $connection->insert('terms', ['context_id' => $this->portalId, 'title' => 'Eigene', 'content_de' => 'EIGENER-TEXT-5525', 'content_en' => 'own']);
+        $own = (int) $connection->lastInsertId();
+        $connection->insert('terms', ['context_id' => $foreignPortal->getId(), 'title' => 'Fremde', 'content_de' => 'FREMDER-TEXT-5525', 'content_en' => 'foreign']);
+        $foreign = (int) $connection->lastInsertId();
+
+        $this->client->request('POST', "/room/{$this->roomId}/settings/additional", ['terms' => $foreign]);
+        $this->assertStringNotContainsString('FREMDER-TEXT-5525', (string) $this->client->getResponse()->getContent());
+
+        $this->client->request('POST', "/room/{$this->roomId}/settings/additional", ['terms' => $own]);
+        $this->assertStringContainsString('EIGENER-TEXT-5525', (string) $this->client->getResponse()->getContent());
     }
 
     public function testAppearancePageRenders(): void

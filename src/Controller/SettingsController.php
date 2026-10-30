@@ -206,10 +206,13 @@ class SettingsController extends AbstractController
         $roomData = $transformer->transform($roomItem);
 
         if ($selectedTerms = $request->request->get('terms')) {
-            $currentTerms = $termsRepository->findOneById($selectedTerms);
+            // only a template of this portal
+            $currentTerms = $termsRepository->findOneBy(['id' => (int) $selectedTerms, 'contextId' => $portalId]);
 
-            $roomData['terms']['agb_text_de'] = $currentTerms->getContentDe();
-            $roomData['terms']['agb_text_en'] = $currentTerms->getContentEn();
+            if (null !== $currentTerms) {
+                $roomData['terms']['agb_text_de'] = $currentTerms->getContentDe();
+                $roomData['terms']['agb_text_en'] = $currentTerms->getContentEn();
+            }
         }
 
         $form = $this->createForm(AdditionalSettingsType::class, $roomData, [
