@@ -85,6 +85,33 @@ class CheckFileInfoTest extends AbstractApiTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * A file nobody is recorded to have uploaded still answers, with an empty
+     * owner.
+     */
+    public function testCheckFileInfoAnswersForAFileWithoutCreator(): void
+    {
+        file_put_contents($this->filesFolder . '/orphan.txt', 'sample content');
+        $file = FilesFactory::createOne([
+            'filepath' => $this->filesFolderRelative . '/orphan.txt',
+            'size' => 14,
+            'creatorId' => null,
+        ]);
+        $token = $this->tokenGenerator->generateToken($this->account, $file, WOPIPermission::VIEW);
+
+        $client = static::createClient();
+        $response = $client->request('GET', "/api/v2/wopi/files/{$file->getFilesId()}", [
+            'auth_bearer' => $token,
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        self::assertSame('', $response->toArray()['OwnerId'] ?? null);
+    }
+
     public function testCheckFileInfoReturns404ForMissingFile(): void
     {
         // generate a token against an existing file, but then request a

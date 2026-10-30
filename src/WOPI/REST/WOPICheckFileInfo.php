@@ -39,7 +39,7 @@ final readonly class WOPICheckFileInfo
         return (new CheckFileInfoResponse())
             ->setBaseFileName($file->getFilename())
             ->setSize($file->getSize())
-            ->setOwnerId($file->getCreatorId())
+            ->setOwnerId((string) $file->getCreatorId())
             ->setSize($file->getSize())
             ->setUserId($token['aid'])
             ->setVersion($sha1)
