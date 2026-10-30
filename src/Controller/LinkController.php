@@ -27,6 +27,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class LinkController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/link/{itemId}/{rubric}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function show(
         GroupService $groupService,
         ItemService $itemService,
@@ -83,6 +84,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function showDetail(
         GroupService $groupService,
         ItemService $itemService,
@@ -139,6 +141,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function showDetailPrint(
         GroupService $groupService,
         ItemService $itemService,
@@ -195,6 +198,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function showDetailShort(
         ItemService $itemService,
         RoomService $roomService,
@@ -241,6 +245,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function showDetailLong(
         ItemService $itemService,
         RoomService $roomService,
@@ -287,6 +292,7 @@ class LinkController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/material/link/{itemId}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function showDetailLongToggle(
         ItemService $itemService,
         RoomService $roomService,

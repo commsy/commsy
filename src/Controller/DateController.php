@@ -826,6 +826,7 @@ class DateController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/date/{itemId}/calendaredit')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function calendaredit(
         Request $request,
         int $roomId,
@@ -1350,6 +1351,7 @@ class DateController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/date/{itemId}/print')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function print(
         CategoryService $categoryService,
         PrintService $printService,

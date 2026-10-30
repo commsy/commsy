@@ -517,6 +517,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/{itemId}/send')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function send(
         Request $request,
         ItemService $itemService,
@@ -738,6 +739,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/filelist')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function filelist($roomId, $itemId, ItemService $itemService, #[MapQueryParameter] ?int $versionId = null): JsonResponse
     {
         /** @var cs_item $item */
@@ -874,6 +876,7 @@ class ItemController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/item/{itemId}/canceledit')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function cancelEdit(
         ItemService $itemService,
         EventDispatcherInterface $eventDispatcher,

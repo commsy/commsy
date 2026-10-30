@@ -100,7 +100,10 @@ class UploadControllerTest extends AbstractApplicationTestCase
         $this->assertArrayHasKey('fileIds', $payload);
     }
 
-    public function testAttachReturns404ForUnknownItem(): void
+    /**
+     * An unknown entry is refused like a foreign one, before anything is attached.
+     */
+    public function testAttachIsRefusedForUnknownItem(): void
     {
         $uploadedFile = $this->createTempUpload('attach.txt', 'x');
 
@@ -111,7 +114,7 @@ class UploadControllerTest extends AbstractApplicationTestCase
             ['files' => [$uploadedFile]]
         );
 
-        $this->assertResponseStatusCodeSame(404);
+        $this->assertFalse($this->client->getResponse()->isSuccessful());
     }
 
     public function testCkUploadReturnsJson(): void

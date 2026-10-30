@@ -34,6 +34,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class AnnotationController extends AbstractController
 {
     #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}')]
+    #[IsGranted('ITEM_SEE', subject: 'linkedItemId')]
     public function feed(
         AnnotationService $annotationService,
         ItemService $itemService,
@@ -64,6 +65,7 @@ class AnnotationController extends AbstractController
 
 
     #[Route(path: '/room/{roomId}/annotation/feed/{linkedItemId}/{start}')]
+    #[IsGranted('ITEM_SEE', subject: 'linkedItemId')]
     public function feedPrint(
         AnnotationService $annotationService,
         ReaderService $readerService,

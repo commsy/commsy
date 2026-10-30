@@ -70,6 +70,7 @@ class StepController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/step/xhr/changestatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function xhrChangeStatus($roomId, $itemId, Request $request, TodoService $todoService): Response
     {
         $items = null;

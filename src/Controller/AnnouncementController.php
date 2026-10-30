@@ -408,6 +408,7 @@ class AnnouncementController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/print')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function print(
         PrintService $printService,
         $roomId,
@@ -592,6 +593,7 @@ class AnnouncementController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/announcement/{itemId}/rating/{vote}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function rating(
         int $roomId,
         int $itemId,

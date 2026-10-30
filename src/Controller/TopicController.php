@@ -475,6 +475,7 @@ class TopicController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/topic/{itemId}/print')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function print(
         CategoryService $categoryService,
         PrintService $printService,

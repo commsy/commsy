@@ -577,6 +577,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/rating/{vote}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function rating(
         AssessmentService $assessmentService,
         int $roomId,
@@ -597,6 +598,7 @@ class TodoController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/todo/{itemId}/print')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function print(
         AssessmentService $assessmentService,
         CategoryService $categoryService,
@@ -910,6 +912,7 @@ class TodoController extends BaseController
      * @throws Exception
      */
     #[Route(path: '/room/{roomId}/todo/xhr/changestatus/{itemId}', condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function xhrStatusFromDetail($roomId, $itemId, Request $request, TodoStatusAction $action): Response
     {
         $room = $this->roomService->getRoomItem($roomId);

@@ -516,6 +516,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/print')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function print(
         PrintService $printService,
         LegacyMarkup $legacyMarkup,
@@ -857,6 +858,7 @@ class DiscussionController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/discussion/{itemId}/rating/{vote}')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function rating(
         AssessmentService $assessmentService,
         int $roomId,

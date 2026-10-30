@@ -380,6 +380,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/print')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function print(
         CategoryService $categoryService,
         PrintService $printService,
@@ -931,6 +932,7 @@ class GroupController extends BaseController
     }
 
     #[Route(path: '/room/{roomId}/group/{itemId}/send')]
+    #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function send(
         Request $request,
         ContactFormHelper $contactFormHelper,

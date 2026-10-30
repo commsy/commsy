@@ -131,6 +131,7 @@ class UploadController extends AbstractController
     }
 
     #[Route(path: '/room/{roomId}/attach/{itemId}/{versionId?}')]
+    #[IsGranted('ITEM_EDIT', subject: 'itemId')]
     public function attach(
         int $roomId,
         int $itemId,
