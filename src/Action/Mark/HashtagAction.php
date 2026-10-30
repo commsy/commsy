@@ -14,6 +14,7 @@
 namespace App\Action\Mark;
 
 use App\Action\ActionInterface;
+use App\Action\PermittedItems;
 use App\Http\JsonDataResponse;
 use App\Utils\LabelService;
 use cs_item;
@@ -29,7 +30,7 @@ class HashtagAction implements ActionInterface
      */
     private ?array $hashtagIds = null;
 
-    public function __construct(private readonly TranslatorInterface $translator, private readonly LabelService $labelService)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly LabelService $labelService, private readonly PermittedItems $permittedItems)
     {
     }
 
@@ -47,6 +48,9 @@ class HashtagAction implements ActionInterface
         if (empty($items)) {
             throw new Exception('no items given');
         }
+
+        // the items come from the request: act only on those one may change
+        $items = $this->permittedItems->editable($items);
 
         $itemIds = array_map(fn (cs_item $item) => $item->getItemID(), $items);
 

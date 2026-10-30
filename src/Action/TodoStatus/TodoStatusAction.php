@@ -14,6 +14,7 @@
 namespace App\Action\TodoStatus;
 
 use App\Action\ActionInterface;
+use App\Action\PermittedItems;
 use App\Http\JsonDataResponse;
 use App\Rubric\Todo\TodoStatus;
 use App\Utils\TodoService;
@@ -27,7 +28,7 @@ class TodoStatusAction implements ActionInterface
 {
     private ?string $newStatus = null;
 
-    public function __construct(private readonly TranslatorInterface $translator, private readonly TodoService $todoService)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly TodoService $todoService, private readonly PermittedItems $permittedItems)
     {
     }
 
@@ -43,6 +44,9 @@ class TodoStatusAction implements ActionInterface
      */
     public function execute(cs_room_item $roomItem, array $items): Response
     {
+        // the items come from the request: act only on those one may change
+        $items = $this->permittedItems->editable($items);
+
         if (!$this->newStatus) {
             throw new Exception('no status set for update');
         }

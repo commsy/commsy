@@ -14,6 +14,7 @@
 namespace App\Action\Pin;
 
 use App\Action\ActionInterface;
+use App\Action\PermittedItems;
 use App\Http\JsonDataResponse;
 use cs_item;
 use cs_room_item;
@@ -23,7 +24,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UnpinAction implements ActionInterface
 {
-    public function __construct(private readonly TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly PermittedItems $permittedItems)
     {
     }
 
@@ -35,6 +36,9 @@ class UnpinAction implements ActionInterface
         if (empty($items)) {
             throw new Exception('no items given');
         }
+
+        // the items come from the request: act only on those one may change
+        $items = $this->permittedItems->pinnable($items);
 
         foreach ($items as $item) {
             $item->setPinned(false);

@@ -14,6 +14,7 @@
 namespace App\Action\Activate;
 
 use App\Action\ActionInterface;
+use App\Action\PermittedItems;
 use App\Http\JsonDataResponse;
 use cs_item;
 use cs_room_item;
@@ -22,7 +23,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DeactivateAction implements ActionInterface
 {
-    public function __construct(private readonly TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator, private readonly PermittedItems $permittedItems)
     {
     }
 
@@ -31,6 +32,9 @@ class DeactivateAction implements ActionInterface
      */
     public function execute(cs_room_item $roomItem, array $items): Response
     {
+        // the items come from the request: act only on those one may change
+        $items = $this->permittedItems->editable($items);
+
         foreach ($items as $item) {
             $item->setActivationDate('9999-00-00 00:00:00');
             $item->save();

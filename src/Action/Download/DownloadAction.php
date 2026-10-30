@@ -19,6 +19,7 @@ use cs_room_item;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class DownloadAction implements ActionInterface
 {
@@ -28,6 +29,11 @@ class DownloadAction implements ActionInterface
 
     public function execute(cs_room_item $roomItem, array $items): Response
     {
+        // nothing left that one may see
+        if ([] === $items) {
+            throw new AccessDeniedException();
+        }
+
         $ids = [];
         foreach ($items as $item) {
             $ids[] = $item->getItemID();

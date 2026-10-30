@@ -15,6 +15,7 @@ namespace App\Controller;
 
 use App\Action\Mark\CategorizeAction;
 use App\Action\Mark\HashtagAction;
+use App\Action\PermittedItems;
 use App\Form\Type\XhrActionOptionsType;
 use App\Form\Type\XhrCategorizeActionOptionsType;
 use App\Http\JsonHTMLResponse;
@@ -42,6 +43,7 @@ abstract class BaseController extends AbstractController
     protected LabelService $labelService;
     protected TranslatorInterface $translator;
     protected EventDispatcherInterface $eventDispatcher;
+    protected PermittedItems $permittedItems;
 
     #[Required]
     public function setItemService(ItemService $itemService): void
@@ -77,6 +79,12 @@ abstract class BaseController extends AbstractController
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    #[Required]
+    public function setPermittedItems(PermittedItems $permittedItems): void
+    {
+        $this->permittedItems = $permittedItems;
     }
 
     #[Required]
@@ -228,7 +236,8 @@ abstract class BaseController extends AbstractController
             $items = array_filter($items, fn (cs_item $item) => !in_array($item->getItemId(), $negativeItemIds));
         }
 
-        return $items;
+        // the ids come from the request: an action only gets the items one may see
+        return $this->permittedItems->visible($items);
     }
 
     protected function getRoom(int $roomId): cs_room_item
