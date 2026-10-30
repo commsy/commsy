@@ -14,7 +14,6 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -99,54 +98,10 @@ class ProjectControllerTest extends AbstractApplicationTestCase
         $this->assertStringContainsString('Mein-Detail-Projekt', $this->client->getResponse()->getContent());
     }
 
-    public function testDeleteFormRenders(): void
-    {
-        $itemId = $this->createProjectViaForm('Zum-Löschen');
-
-        $this->client->request('GET', "/room/{$this->communityId}/project/{$itemId}/delete");
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('form');
-    }
-
-    public function testDeleteSubmitWithCorrectConfirmRedirectsToList(): void
-    {
-        $itemId = $this->createProjectViaForm('Wird-Gelöscht');
-
-        $crawler = $this->client->request('GET', "/room/{$this->communityId}/project/{$itemId}/delete");
-        $this->assertResponseIsSuccessful();
-
-        $form = $crawler->selectButton('delete_room[delete]')->form();
-        // The IdenticalTo constraint expects the uppercased translated 'delete'
-        // string from the 'profile' domain in the request locale.
-        $locale = $this->client->getResponse()->headers->get('Content-Language') ?? 'en';
-        /** @var TranslatorInterface $translator */
-        $translator = self::getContainer()->get(TranslatorInterface::class);
-        $form['delete_room[confirm]'] = mb_strtoupper($translator->trans('delete', [], 'profile', $locale));
-
-        $this->client->submit($form);
-
-        $this->assertResponseRedirects("/room/{$this->communityId}/project");
-    }
-
-    public function testDeleteSubmitWithBlankConfirmShowsError(): void
-    {
-        $itemId = $this->createProjectViaForm('Bleibt-Stehen');
-
-        $crawler = $this->client->request('GET', "/room/{$this->communityId}/project/{$itemId}/delete");
-        $this->assertResponseIsSuccessful();
-
-        $form = $crawler->selectButton('delete_room[delete]')->form();
-        $form['delete_room[confirm]'] = '';
-        $this->client->submit($form);
-
-        // 422 = invalid form (blank fails NotBlank + IdenticalTo)
-        $this->assertResponseStatusCodeSame(422);
-    }
-
     /**
      * Creates a Project room via the actual /project/create form submit and
      * returns its new itemId. We need a real legacy project room (not a
-     * RoomFactory shell) for detail/delete to behave correctly — those code
+     * RoomFactory shell) for the detail to behave correctly — those code
      * paths read room state via the legacy environment.
      */
     private function createProjectViaForm(string $title): int

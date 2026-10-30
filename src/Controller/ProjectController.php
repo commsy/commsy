@@ -17,15 +17,11 @@ use App\Entity\Room;
 use App\Event\UserJoinedRoomEvent;
 use App\Filter\ProjectFilterType;
 use App\Form\Type\ProjectType;
-use App\Form\Type\Room\DeleteType;
 use App\Room\Copy\LegacyCopy;
-use App\Room\ProjectRoomDeleter;
-use App\Room\RoomDeletionOptions;
 use App\Security\Authorization\Voter\ContextCreateVoter;
 use App\Security\Permission\Legacy\LegacyPermissionBridge;
 use App\Services\CalendarsService;
 use App\Services\CurrentContextResolver;
-use App\Services\CurrentUserResolver;
 use App\Services\LegacyEnvironment;
 use App\Services\LegacyMarkup;
 use App\Services\RoomCategoriesService;
@@ -43,7 +39,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ProjectController.
@@ -316,43 +311,6 @@ class ProjectController extends AbstractController
     {
     }
 
-    #[Route(path: '/room/{roomId}/project/{itemId}/delete', requirements: ['itemId' => '\d+'])]
-    public function delete(
-        Request $request,
-        RoomService $roomService,
-        TranslatorInterface $translator,
-        LegacyEnvironment $legacyEnvironment,
-        ProjectRoomDeleter $projectRoomDeleter,
-        CurrentUserResolver $currentUserResolver,
-        int $roomId,
-        int $itemId
-    ): Response {
-        $roomItem = $roomService->getRoomItem($itemId);
-        if (!$roomItem) {
-            throw $this->createNotFoundException('No room found for id '.$itemId);
-        }
-
-        $form = $this->createForm(DeleteType::class, [], [
-            'room' => $roomItem,
-            'confirm_string' => $translator->trans('delete', [], 'profile'),
-        ]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $deleterId = (int) ($currentUserResolver->getUser()?->getItemId() ?? 0);
-            $projectRoomDeleter->softDeleteRoom(
-                (int) $roomItem->getItemID(),
-                $deleterId,
-                RoomDeletionOptions::forUserAction()
-            );
-
-            return $this->redirectToRoute('app_project_list', ['roomId' => $roomId]);
-        }
-
-        return $this->render('project/delete.html.twig', [
-            'form' => $form,
-        ]);
-    }
 
     private function getDetailInfo(
         int $roomId,

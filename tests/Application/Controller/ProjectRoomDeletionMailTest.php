@@ -59,7 +59,7 @@ final class ProjectRoomDeletionMailTest extends AbstractApplicationTestCase
 
     public function testDeletingItFromTheCommunityRoomTellsItsModeration(): void
     {
-        $this->submitDeletion("/room/{$this->communityId}/project/{$this->projectId}/delete", 'delete_room');
+        $this->submitDeletion("/room/{$this->communityId}/settings/cancellabledelete/{$this->projectId}", 'cancellable_delete');
 
         self::assertNotSame([], $this->communityModerationMails());
     }
