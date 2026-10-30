@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Files\SafeFileName;
 use App\Form\Type\AnnotationType;
 use App\Services\CurrentContextResolver;
 use App\Services\LegacyEnvironment;
@@ -71,10 +72,12 @@ class DownloadService
 
             $item = $detailArray['item'];
 
-            $tempDirectory = $directory.'/'.$item->getTitle();
+            // titles become a single path segment, so nothing is written outside the export folder
+            $name = SafeFileName::of((string) $item->getTitle());
+            $tempDirectory = $directory.'/'.$name;
             $index = 1;
             while (file_exists($tempDirectory)) {
-                $tempDirectory = $directory.'/'.$item->getTitle().'_'.$index;
+                $tempDirectory = $directory.'/'.$name.'_'.$index;
                 ++$index;
             }
             $fileSystem->mkdir($tempDirectory, 0777);
@@ -82,7 +85,7 @@ class DownloadService
             // create PDF-file
             $htmlView = $item->getItemType().'/detail_print.html.twig';
             $htmlOutput = $this->environment->render($htmlView, $detailArray);
-            file_put_contents($tempDirectory.'/'.$item->getTitle().'.pdf', $this->printService->getPdfContent($htmlOutput));
+            file_put_contents($tempDirectory.'/'.$name.'.pdf', $this->printService->getPdfContent($htmlOutput));
 
             // add files
             $this->copyItemFilesToFolder($item, $tempDirectory.'/files/');
@@ -169,12 +172,13 @@ class DownloadService
             foreach ($files as $file) {
                 $sourceFilePath = $file->getDiskFileName();
                 if ($fileSystem->exists($sourceFilePath)) {
-                    $targetFilePath = $targetFolder.'/'.$file->getFilename();
+                    $targetFilePath = $targetFolder.'/'.SafeFileName::of((string) $file->getFilename(), 'file');
 
                     if (!$fileSystem->exists($targetFilePath)) {
                         $fileSystem->copy($sourceFilePath, $targetFilePath);
                     } else {
-                        $fileNameWithoutExtension = mb_substr((string) $file->getFilename(), 0, strlen((string) $file->getFilename()) - (strlen((string) $file->getExtension()) + 1));
+                        $safeFilename = SafeFileName::of((string) $file->getFilename(), 'file');
+                        $fileNameWithoutExtension = mb_substr($safeFilename, 0, strlen($safeFilename) - (strlen((string) $file->getExtension()) + 1));
 
                         $counter = 1;
                         if (isset($filesCounter[$fileNameWithoutExtension])) {
@@ -184,7 +188,7 @@ class DownloadService
                             $filesCounter[$fileNameWithoutExtension] = $counter;
                         }
 
-                        $newFilename = $fileNameWithoutExtension.' ('.$counter.').'.$file->getExtension();
+                        $newFilename = SafeFileName::of($fileNameWithoutExtension.' ('.$counter.').'.$file->getExtension(), 'file');
                         $fileSystem->copy($sourceFilePath, $targetFolder.'/'.$newFilename);
                     }
                 }
