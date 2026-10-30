@@ -29,6 +29,7 @@ use App\Form\Type\UserSendType;
 use App\Form\Type\UserStatusChangeType;
 use App\Item\ItemType;
 use App\Mail\Helper\ContactFormHelper;
+use App\Mail\Helper\ContactFormRecipients;
 use App\Mail\Mailer;
 use App\Repository\UserRepository;
 use App\Room\RoomMembershipStatus;
@@ -120,6 +121,7 @@ class UserController extends BaseController
     public function sendMailViaContactForm(
         Request $request,
         ContactFormHelper $contactFormHelper,
+        ContactFormRecipients $contactFormRecipients,
         TranslatorInterface $translator,
         CurrentUserResolver $currentUserResolver,
         $roomId,
@@ -135,7 +137,10 @@ class UserController extends BaseController
             ? 'This email has been sent by ... from room ...'
             : 'This email has been sent by ... from portal ...';
 
-        $item = $this->userService->getUser(intval($itemId));
+        $item = $contactFormRecipients->mayWriteTo((int) $roomId, (int) $itemId);
+        if (null === $item) {
+            throw $this->createAccessDeniedException();
+        }
 
         $recipients = [$item];
         $recipientNames[$item->getFullName()] = $item->getFullName();
@@ -145,9 +150,11 @@ class UserController extends BaseController
         if (!empty($moderatorIds)) {
             $moderatorIds = explode(',', (string) $moderatorIds);
             foreach ($moderatorIds as $moderatorId) {
-                $moderator = $this->userService->getUser(intval($moderatorId));
-                $recipients[] = $moderator;
-                $recipientNames[$moderator->getFullName()] = $moderator->getFullName();
+                $moderator = $contactFormRecipients->mayWriteTo((int) $roomId, (int) $moderatorId);
+                if (null !== $moderator) {
+                    $recipients[] = $moderator;
+                    $recipientNames[$moderator->getFullName()] = $moderator->getFullName();
+                }
             }
         }
 
@@ -193,7 +200,7 @@ class UserController extends BaseController
                 $this->legacyEnvironment->getCurrentUserItem(),
                 $formData['files'],
                 $recipients,
-                $formData['additional_recipient'] ?: '',
+                '',
                 $formData['copy_to_sender']
             );
 

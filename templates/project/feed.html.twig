@@ -36,10 +36,13 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {% if project.contactPersonString is not empty %}
-                        <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': project.creatorId, 'originPath': 'app_project_list'}) }}">{{ project.contactPersonString }}</a>
+                    {# the contact form writes to the contact persons of a room, not to its creator #}
+                    {% set contact = project.contactModeratorList.first %}
+                    {% set contactNames = project.contactPersonString is not empty ? project.contactPersonString : project.getContactModeratorListString %}
+                    {% if contact %}
+                        <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': contact.itemId, 'originPath': 'app_project_list'}) }}">{{ contactNames }}</a>
                     {% else %}
-                        <a href="{{ path('app_user_sendmailviacontactform', {'roomId': roomId, 'itemId': project.creatorId, 'originPath': 'app_project_list'}) }}">{{ project.getContactModeratorListString }}</a>
+                        {{ contactNames }}
                     {% endif %}
                 </div>
 

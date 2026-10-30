@@ -55,11 +55,6 @@ class AccountContactFormType extends AbstractType
                 'required' => true,
                 'config_name' => 'cs_mail_config',
             ])
-            ->add('additional_recipient', TextType::class, [
-                'label' => 'Additional recipient',
-                'translation_domain' => 'mail',
-                'required' => false,
-            ])
             ->add('copy_to_sender', ChoiceType::class, [
                 'label' => 'Copy to sender',
                 'choices' => [
