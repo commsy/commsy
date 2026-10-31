@@ -18,9 +18,11 @@ use App\Entity\Room;
 use App\Entity\User;
 use App\Enum\EntryAction;
 use App\Message\NotifyNewEntryMessage;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Messenger\Transport\InMemoryTransport;
 use Tests\Factory\AnnouncementFactory;
+use Tests\Factory\LabelFactory;
 use Tests\Factory\MaterialFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -109,6 +111,40 @@ class NotificationSeamTest extends AbstractApplicationTestCase
         $signal = $this->signalFor($announcement->getItemId());
         self::assertNotNull($signal, 'an annotation must be announced on its parent');
         self::assertSame(EntryAction::Annotated, $signal->action);
+    }
+
+    public function testSavingTheSectionsOfAMaterialAnnouncesAnEditOfIt(): void
+    {
+        $material = MaterialFactory::createOne(['room' => $this->room, 'creator' => $this->roomUser, 'title' => 'Mit Abschnitten']);
+        $this->releaseWithoutAnnouncing($material->getItemId());
+
+        $this->client->request('GET', "/room/{$this->roomId}/material/{$material->getItemId()}/savesections?versionId=0");
+        $this->assertResponseIsSuccessful();
+
+        $signal = $this->signalFor($material->getItemId());
+        self::assertNotNull($signal, 'saving the sections changes the material and must be announced');
+        self::assertSame(EntryAction::Edited, $signal->action);
+        self::assertSame('Mit Abschnitten', $signal->title);
+        self::assertSame($this->roomUser->getItemId(), $signal->creatorUserItemId);
+    }
+
+    public function testSavingThePathOfATopicAnnouncesAnEditOfIt(): void
+    {
+        $topic = LabelFactory::createOne(['room' => $this->room, 'creator' => $this->roomUser, 'type' => 'topic', 'name' => 'Mit Pfad']);
+        $this->releaseWithoutAnnouncing($topic->getItemId());
+
+        $this->client->request('GET', "/room/{$this->roomId}/topic/{$topic->getItemId()}/savepath");
+        $this->assertResponseIsSuccessful();
+
+        $signal = $this->signalFor($topic->getItemId());
+        self::assertNotNull($signal, 'saving the path changes the topic and must be announced');
+        self::assertSame(EntryAction::Edited, $signal->action);
+        self::assertSame('Mit Pfad', $signal->title);
+    }
+
+    private function releaseWithoutAnnouncing(int $itemId): void
+    {
+        self::getContainer()->get(Connection::class)->update('items', ['draft' => 0], ['item_id' => $itemId]);
     }
 
     private function signalFor(int $sourceItemId): ?NotifyNewEntryMessage

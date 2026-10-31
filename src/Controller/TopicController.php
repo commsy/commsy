@@ -691,15 +691,18 @@ class TopicController extends BaseController
         int $roomId,
         int $itemId
     ): Response {
-        $item = $this->itemService->getItem($itemId);
-        $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
+        $topic = $this->itemService->getTypedItem($itemId);
+        if (null === $topic) {
+            throw $this->createNotFoundException('No topic found for id '.$itemId);
+        }
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($topic), CommsyEditEvent::SAVE);
         $isLinkedToItems = false;
-        if (!empty($item->getAllLinkedItemIDArray())) {
+        if (!empty($topic->getAllLinkedItemIDArray())) {
             $isLinkedToItems = true;
         }
 
         return $this->render('topic/save_path.html.twig', [
-            'topic' => $this->itemService->getTypedItem($itemId),
+            'topic' => $topic,
             'isLinkedToItems' => $isLinkedToItems,
         ]);
     }

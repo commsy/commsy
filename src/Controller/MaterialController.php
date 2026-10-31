@@ -1277,9 +1277,11 @@ class MaterialController extends BaseController
         int $itemId,
         #[MapQueryParameter] ?int $versionId = null
     ): Response {
-        $item = $this->itemService->getItem($itemId);
         $material = $this->materialService->getMaterialInVersion($itemId, $versionId);
-        $this->eventDispatcher->dispatch(new CommsyEditEvent($item), CommsyEditEvent::SAVE);
+        if (!$material) {
+            throw $this->createNotFoundException('No material found for id '.$itemId);
+        }
+        $this->eventDispatcher->dispatch(new CommsyEditEvent($material), CommsyEditEvent::SAVE);
 
         return $this->render('material/savesections.html.twig', [
             'roomId' => $roomId,
