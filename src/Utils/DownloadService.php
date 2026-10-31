@@ -405,7 +405,8 @@ class DownloadService
         $infoArray['readSinceModificationCount'] = $readCountDescription->getReadSinceModification();
         $infoArray['userCount'] = $readCountDescription->getUserTotal();
         $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
-        $infoArray['user'] = $this->legacyEnvironment->getCurrentUserItem();
+        // the person user/detail_print shows; no other print view reads it
+        $infoArray['user'] = $item;
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
