@@ -140,6 +140,24 @@ class MaterialVersionEditTest extends AbstractApplicationTestCase
         );
     }
 
+    /**
+     * Without a version the editor edits the newest one, so its file list
+     * offers the files of that version.
+     */
+    public function testTheFileListOfTheEditorOffersTheFilesOfTheEditedVersion(): void
+    {
+        [$itemId] = $this->createMaterialWithTwoVersions();
+        $this->uploadInTheEditor($itemId, 0, 'alt.png');
+        $this->uploadInTheEditor($itemId, 1, 'neu.png');
+
+        $this->client->request('GET', "/room/$this->roomId/item/$itemId/filelist");
+        $this->assertResponseIsSuccessful();
+        $this->assertSame(['neu.png'], array_column(json_decode((string) $this->client->getResponse()->getContent(), true)['files'], 'name'));
+
+        $this->client->request('GET', "/room/$this->roomId/item/$itemId/filelist?versionId=0");
+        $this->assertSame(['alt.png'], array_column(json_decode((string) $this->client->getResponse()->getContent(), true)['files'], 'name'));
+    }
+
     public function testTheWorkflowIsSavedInTheOpenedVersion(): void
     {
         [$itemId] = $this->createMaterialWithTwoVersions();
@@ -307,6 +325,19 @@ class MaterialVersionEditTest extends AbstractApplicationTestCase
         $this->assertSame('Erstes Kapitel', $this->sectionColumn($sectionIds[0], 1, 'title'));
 
         return [$itemId, ...$sectionIds];
+    }
+
+    private function uploadInTheEditor(int $itemId, int $versionId, string $name): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'ck');
+        file_put_contents($path, $name);
+        $this->client->request(
+            'POST',
+            "/room/$this->roomId/ckupload/$itemId/?versionId=$versionId",
+            [],
+            ['upload' => new UploadedFile($path, $name, 'image/png', null, true)],
+        );
+        $this->assertResponseIsSuccessful();
     }
 
     private function undraft(int $itemId): void

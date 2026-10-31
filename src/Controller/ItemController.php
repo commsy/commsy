@@ -742,8 +742,10 @@ class ItemController extends AbstractController
     #[IsGranted('ITEM_SEE', subject: 'itemId')]
     public function filelist($roomId, $itemId, ItemService $itemService, #[MapQueryParameter] ?int $versionId = null): JsonResponse
     {
-        /** @var cs_item $item */
-        $item = null === $versionId ? $itemService->getItem($itemId) : $itemService->getTypedItem($itemId, $versionId);
+        $item = $itemService->getTypedItem($itemId, $versionId);
+        if (null === $item) {
+            throw $this->createNotFoundException('No item found for id '.$itemId);
+        }
 
         /** @var cs_file_item[] $files */
         $files = $item->getFileList()->to_array();
