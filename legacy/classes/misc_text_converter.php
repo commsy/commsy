@@ -667,11 +667,16 @@ class misc_text_converter
             $target = '';
         }
 
+        if (!empty($array[1]) && !in_array(mb_strtolower((string)$array[1]), ['http:', 'https:', 'ftp:', 'mailto:'], true)) {
+            return $text;
+        }
+
         if (empty($array[1])) {
             $source = 'http://' . $array[2];
         } else {
             $source = $array[1] . $array[2];
         }
+        $source = htmlspecialchars($source, double_encode: false);
 
         if (!empty($source)) {
             if (empty($word)) {
