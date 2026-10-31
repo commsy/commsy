@@ -253,128 +253,6 @@ class misc_text_converter
         return $html;
     }
 
-    private function _parseText2Id($text)
-    {
-        $matches_stand_alone = [];
-        $matches_with_text = [];
-
-        // ids with text: <text>[<number>] becomes a link under <text> to the commsy-object with id <number>
-        preg_match_all('~([\w.' . \App\Legacy\Chars::SPECIAL_CHARS . '&;-]+)\[(\d+)\]~iu', (string)$text, $matches_with_text);
-        if ((is_countable($matches_with_text[0]) ? count($matches_with_text[0]) : 0) > 0) {
-            $result = $text;
-            $word_part = $matches_with_text[1];
-            $reference_part = $matches_with_text[2];
-            for ($i = 0; $i < (is_countable($word_part) ? count($word_part) : 0); ++$i) {
-                $word = $word_part[$i];
-                $reference = $reference_part[$i];
-                if ($reference <= 100) {
-                    if ('discussion' == $this->_environment->getCurrentModule()) {
-                        $params = [];
-                        $params['iid'] = $this->_environment->getValueOfParameter('iid');
-                        $result = preg_replace('~' . $word . '\[' . $reference . '\]~iu', \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor' . $reference), (string)$result);
-                        unset($params);
-                    }
-                } else {
-                    $params = [];
-                    $params['iid'] = $reference;
-                    $result = preg_replace('~' . $word . '\[' . $reference . '\]~iu', \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), (string)$result);
-                    unset($params);
-                }
-            }
-            $text = $result;
-        }
-
-        // urls with text: <text>[<url>] becomes a link under <text> to the url <url>
-        preg_match_all('^([.\w' . \App\Legacy\Chars::SPECIAL_CHARS . '-]+)\[(https?:\/\/[' . \App\Legacy\Chars::RFC1738_CHARS . ']*)\]^iu', (string)$text, $matches_with_urls); // preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
-        if ((is_countable($matches_with_urls[0]) ? count($matches_with_urls[0]) : 0) > 0) {
-            $result = $text;
-            $word_part = $matches_with_urls[1];
-            $http_part = $matches_with_urls[2];
-            for ($i = 0; $i < (is_countable($word_part) ? count($word_part) : 0); ++$i) {
-                $word = $word_part[$i];
-                $http = $http_part[$i];
-                if (!empty($word)) {
-                    if (!mb_stristr((string)$word, '|')) {
-                        $result = preg_replace('~' . $word . '\[' . $http . '\]~u', '<a href="' . $http . '" target="_blank">' . $word . '</a>', (string)$result);
-                    }
-                } else {
-                    $result = preg_replace('~' . $word . '\[' . $http . '\]~u', '<a href="' . $http . '" target="_blank">' . $http_part[$i] . '</a>', (string)$result);
-                }
-            }
-            $text = $result;
-        }
-
-        // long urls: [<url>|<sentence with spaces>|<flag>] becomes a link to <url> under <sentence with spaces>
-        // <flag> cann be "internal" or "_blank". Internal opens <url> in this browser window, _blank uses another
-        preg_match_all('^\[(http?://[' . \App\Legacy\Chars::RFC1738_CHARS . ']*)\|([\w' . \App\Legacy\Chars::SPECIAL_CHARS . ' \)?!&;-]+)\|(\w+)\]^u', (string)$text, $matches_with_long_urls);
-        if ((is_countable($matches_with_long_urls[0]) ? count($matches_with_long_urls[0]) : 0) > 0) {
-            $result = $text;
-            $http_part = $matches_with_long_urls[1];
-            $word_part = $matches_with_long_urls[2];
-            $flag_part = $matches_with_long_urls[3];
-            for ($i = 0; $i < (is_countable($http_part) ? count($http_part) : 0); ++$i) {
-                $http = $http_part[$i];
-                $word = $word_part[$i];
-                $flag = $flag_part[$i];
-                if (!empty($word) and !empty($http) and !empty($flag)) {
-                    $search = '[' . $http . '|' . $word . '|' . $flag . ']';
-                    $replace = '<a href="' . $http . '" target="_blank">' . $word . '</a>';
-                    if ('internal' == $flag) {
-                        $replace = '<a href="' . $http . '">' . $word . '</a>';
-                    }
-                    $result = str_replace($search, $replace, (string)$result);
-                }
-            }
-            $text = $result;
-        }
-
-        // long urls: [ITEM_ID|<sentence with spaces>] becomes a link to <url> under <sentence with spaces>
-        preg_match_all('^\[([0-9]*)\|([\w' . \App\Legacy\Chars::SPECIAL_CHARS . ' \)?!&;-]+)\]^u', (string)$text, $matches_with_long_urls);
-        // preg_match_all('§\[([0-9]*)\|([\w'.\App\Legacy\Chars::SPECIAL_CHARS.' -]+)\]§', $text, $matches_with_long_urls);
-        if ((is_countable($matches_with_long_urls[0]) ? count($matches_with_long_urls[0]) : 0) > 0) {
-            $result = $text;
-            $http_part = $matches_with_long_urls[1];
-            $word_part = $matches_with_long_urls[2];
-            for ($i = 0; $i < (is_countable($http_part) ? count($http_part) : 0); ++$i) {
-                $http = $http_part[$i];
-                $word = $word_part[$i];
-                if (!empty($word) and !empty($http)) {
-                    $search = '[' . $http . '|' . $word . ']';
-                    $params = [];
-                    $params['iid'] = $http;
-                    $replace = \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word);
-                    $result = str_replace($search, $replace, (string)$result);
-                }
-            }
-            $text = $result;
-        }
-
-        // ids without text: [<number>] becomes a link under [<number>] to the commsy-object with id <number>
-        preg_match_all('~\[(\d+)\]~u', (string)$text, $matches_stand_alone); // (^| |\n|>|\t)\[(\d+)\][.:,;-?!]*(<| |$)
-        $matches_stand_alone = array_unique($matches_stand_alone[1]);
-        if (!empty($matches_stand_alone)) {
-            $result = $text;
-            foreach ($matches_stand_alone as $item) {
-                if ($item <= 100) {
-                    if ('discussion' == $this->_environment->getCurrentModule()) {
-                        $params = [];
-                        $params['iid'] = $this->_environment->getValueOfParameter('iid');
-                        $result = preg_replace('~\[' . $item . '\]~iu', \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, '[' . $item . ']', '[' . $item . ']', '', 'anchor' . $item), (string)$result);
-                        unset($params);
-                    }
-                } else {
-                    $params = [];
-                    $params['iid'] = $item;
-                    $result = preg_replace('~\[' . $item . '\]~iu', \App\Legacy\CommsyUrl::ahref($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '[' . $item . ']', '', '', ''), (string)$result);
-                    unset($params);
-                }
-            }
-            $text = $result;
-        }
-
-        return $text;
-    }
-
     public function _getArgs($data, $reg_exp)
     {
         $variable_array = [];
@@ -1128,9 +1006,6 @@ class misc_text_converter
 
         // Formatierungsfunktionen auf Text anwenden
         $text = $this->_newFormating($text);
-
-        // format reference to link
-        $text = $this->_parseText2ID($text);
 
         // activate url which is not added by the
         $text = $this->_activate_urls($text);
