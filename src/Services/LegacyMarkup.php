@@ -18,6 +18,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LegacyMarkup
 {
+    private const array LINK_SCHEMES = ['http:', 'https:', 'ftp:', 'mailto:'];
+    private const array LINK_TARGETS = ['_blank', '_self', '_parent', '_top'];
+
     private array $files = [];
 
     public function __construct(private readonly RouterInterface $router, private readonly TranslatorInterface $translator)
@@ -323,6 +326,29 @@ class LegacyMarkup
         return $z;
     }
 
+    /**
+     * Values taken from the text are expanded after it was sanitized; entities
+     * already in the stored HTML are kept as they are.
+     */
+    private function escape(mixed $value): string
+    {
+        return htmlspecialchars((string) $value, double_encode: false);
+    }
+
+    /**
+     * The scheme as matched by the markup, including the colon; none means a
+     * relative or scheme-less address.
+     */
+    private function isAllowedScheme(mixed $scheme): bool
+    {
+        return empty($scheme) || in_array(mb_strtolower((string) $scheme), self::LINK_SCHEMES, true);
+    }
+
+    private function allowedTarget(mixed $target): string
+    {
+        return in_array($target, self::LINK_TARGETS, true) ? $target : '';
+    }
+
     private function formatImage($text, $array)
     {
         if (!isset($this->files)) {
@@ -334,7 +360,11 @@ class LegacyMarkup
             $args = $this->parseArgs($array[3]);
         }
 
-        $src = $array[1].$array[2];
+        if (!$this->isAllowedScheme($array[1])) {
+            return $text;
+        }
+
+        $src = $this->escape($array[1].$array[2]);
         if (empty($array[1])) {
             if (!empty($array[2])) {
                 $lookupFileName = htmlentities((string) $array[2], ENT_NOQUOTES, 'UTF-8');
@@ -372,7 +402,7 @@ class LegacyMarkup
         }
 
         if (isset($args['alt'])) {
-            $imageHTML .= ' alt="'.$args['alt'].'"';
+            $imageHTML .= ' alt="'.$this->escape($args['alt']).'"';
         }
 
         if (isset($args['lfloat'])) {
@@ -401,7 +431,7 @@ class LegacyMarkup
         }
 
         if (!empty($args['target'])) {
-            $target = $args['target'];
+            $target = $this->allowedTarget($args['target']);
         } elseif (!empty($args['newwin'])) {
             $target = '_blank';
         } else {
@@ -419,7 +449,7 @@ class LegacyMarkup
                 'itemId' => $itemId,
             ]);
 
-            $text = '<a href="'.$url.'" target="'.$target.'">'.$word.'</a>';
+            $text = '<a href="'.$url.'" target="'.$target.'">'.$this->escape($word).'</a>';
         }
 
         return $text;
@@ -440,12 +470,16 @@ class LegacyMarkup
             $word = '';
         }
 
-        if (!empty($args['target'])) {
+        if ('' !== $this->allowedTarget($args['target'] ?? '')) {
             $target = ' target="'.$args['target'].'"';
         } elseif (!empty($args['newwin'])) {
             $target = ' target=_blank;';
         } else {
             $target = '';
+        }
+
+        if (!$this->isAllowedScheme($array[1])) {
+            return $text;
         }
 
         if (empty($array[1])) {
@@ -458,7 +492,7 @@ class LegacyMarkup
             if (empty($word)) {
                 $word = $source;
             }
-            $image_text = '<a href="'.$source.'"'.$target.'>'.$word.'</a>';
+            $image_text = '<a href="'.$this->escape($source).'"'.$target.'>'.$this->escape($word).'</a>';
         }
         if (!empty($image_text)) {
             $text = str_replace($array[0], $image_text, (string) $text);
@@ -500,7 +534,7 @@ class LegacyMarkup
                 'fileId' => $file->getFileId(),
             ]);
 
-            $fileText = '<a href="'.$src.'">'.$name.'</a>';
+            $fileText = '<a href="'.$src.'">'.$this->escape($name).'</a>';
 
             return str_replace($array[0], $fileText, (string) $text);
         }
@@ -514,7 +548,7 @@ class LegacyMarkup
 
         $return .= '<div class="uk-alert" data-uk-alert><a href="" class="uk-alert-close uk-close"></a><p>';
         $return .= $this->translator->trans('deprecated markup', [
-            '%markup%' => $array[0],
+            '%markup%' => $this->escape($array[0]),
         ], 'error');
         $return .= '</p></div>';
 
@@ -527,7 +561,7 @@ class LegacyMarkup
             return $text;
         }
 
-        $src = 'https://www.youtube.com/embed/'.$array[1];
+        $src = 'https://www.youtube.com/embed/'.$this->escape($array[1]);
 
         $args = [];
         if (!empty($array[2])) {
@@ -555,7 +589,7 @@ class LegacyMarkup
             return $text;
         }
 
-        $src = 'https://lecture2go.uni-hamburg.de/lecture2go-portlet/player/iframe/?v='.$array[1];
+        $src = 'https://lecture2go.uni-hamburg.de/lecture2go-portlet/player/iframe/?v='.$this->escape($array[1]);
 
         $args = [];
         $heightSet = false;
