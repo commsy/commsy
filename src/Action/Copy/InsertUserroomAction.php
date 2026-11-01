@@ -79,6 +79,10 @@ class InsertUserroomAction
 
             foreach ($imports as $import) {
                 /** @var cs_item $import */
+                // only announcements, dates, discussions, materials and tasks can be copied
+                if (!method_exists($import, 'copy')) {
+                    continue;
+                }
 
                 // copy item
                 $oldContextId = $this->currentContextResolver->getContextId() ?? 0;
@@ -117,7 +121,7 @@ class InsertUserroomAction
 
         return new JsonDataResponse([
             'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-paste\'></i> '.$this->translator->trans('inserted %count% entries into %usercount% personal workspaces', [
-                    '%count%' => count($imports),
+                    '%count%' => count(array_filter($imports, static fn ($import): bool => method_exists($import, 'copy'))),
                     '%usercount%' => count($users),
                 ]),
         ]);

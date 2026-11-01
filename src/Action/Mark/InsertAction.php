@@ -57,6 +57,7 @@ class InsertAction
             return new JsonErrorResponse('<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i>'.$this->translator->trans('copy items as read only user is not allowed'));
         }
 
+        $inserted = 0;
         if ('userroom' == $roomItem->getType()) {
             $imports = $this->markService->getListEntries(0);
 
@@ -64,6 +65,9 @@ class InsertAction
                 foreach ($imports as $import) {
                     /** @var cs_item $import */
                     $import = $this->itemService->getTypedItem($import->getItemId());
+                    if (!self::canBeCopied($import)) {
+                        continue;
+                    }
 
                     $oldContextId = $this->currentContextResolver->getContextId() ?? 0;
                     $this->legacyEnvironment->setCurrentContextID($roomItem->getItemID());
@@ -71,6 +75,7 @@ class InsertAction
                     $this->legacyEnvironment->setCurrentContextID($oldContextId);
 
                     if (empty($copy->getErrorArray())) {
+                        ++$inserted;
                         $this->readerService->markItemWithVersionAsRead($copy, $copy->getVersionID());
                     }
                 }
@@ -78,10 +83,15 @@ class InsertAction
         } else {
             foreach ($items as $item) {
                 $importItem = $this->itemService->getTypedItem($item->getItemId());
+                if (!self::canBeCopied($importItem)) {
+                    continue;
+                }
+
                 $importItem->setExternalViewerAccounts([]);
                 $copy = $importItem->copy();
 
                 if (empty($copy->getErrorArray())) {
+                    ++$inserted;
                     $this->readerService->markItemWithVersionAsRead($copy, $copy->getVersionID());
                 }
             }
@@ -89,8 +99,18 @@ class InsertAction
 
         return new JsonDataResponse([
             'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-paste\'></i> '.$this->translator->trans('inserted %count% entries in this room', [
-                '%count%' => count($items),
+                '%count%' => $inserted,
             ]),
         ]);
+    }
+
+    /**
+     * Only announcements, dates, discussions, materials and tasks can be
+     * copied; any other marked entry (a group, topic, person or room from
+     * the search) is skipped.
+     */
+    private static function canBeCopied(?cs_item $item): bool
+    {
+        return null !== $item && method_exists($item, 'copy');
     }
 }
