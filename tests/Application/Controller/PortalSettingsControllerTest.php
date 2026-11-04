@@ -15,6 +15,8 @@ namespace Tests\Application\Controller;
 
 use App\Entity\Account;
 use App\Entity\Portal;
+use App\Entity\User;
+use App\Security\Authorization\Voter\ContextCreateVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\DomCrawler\Crawler;
@@ -418,6 +420,74 @@ class PortalSettingsControllerTest extends AbstractApplicationTestCase
             'SELECT status FROM user WHERE account_id = ? AND context_id = ? AND deletion_date IS NULL',
             [$account->getId(), $room->getItemId()]
         ));
+    }
+
+    /**
+     * The choice whether an account may create rooms is stored as chosen and
+     * shown again: "standard" defers to the auth source, "1" allows, "-1"
+     * denies.
+     */
+    #[DataProvider('roomCreationChoices')]
+    public function testAccountIndexDetailEditStoresWhetherTheAccountMayCreateRooms(string $choice, bool $mayCreate): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $portalId = $account->getPortal()->getId();
+        $userId = $this->portalUserItemIdOf($account);
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $account->getAuthSource()->setCreateRoom(false);
+        $entityManager->flush();
+
+        $this->loginAsRoot();
+        $editUrl = "/portal/{$portalId}/settings/accountindex/detail/{$userId}/edit";
+        $this->client->request('GET', $editUrl);
+        $this->client->submitForm('account_index_detail_edit_save', [
+            'account_index_detail_edit[mayCreateContext]' => $choice,
+        ]);
+        $this->assertResponseIsSuccessful();
+
+        $entityManager->clear();
+        $user = $entityManager->getRepository(User::class)->find($userId);
+        $this->assertSame($choice, $user->getExtras()['IS_ALLOWED_TO_CREATE_CONTEXT'] ?? null);
+        $decision = static::getContainer()->get(ContextCreateVoter::class)
+            ->decide($user, $entityManager->getRepository(Account::class)->find($account->getId()), true);
+        $this->assertSame($mayCreate, $decision);
+
+        $crawler = $this->client->request('GET', $editUrl);
+        $this->assertSame(
+            $choice,
+            $crawler->filter('input[name="account_index_detail_edit[mayCreateContext]"][checked]')->attr('value')
+        );
+    }
+
+    /**
+     * A choice stored as a bool before allows, and is shown as "1".
+     */
+    public function testAccountIndexDetailEditShowsAChoiceStoredAsABoolAsYes(): void
+    {
+        /** @var Account $account */
+        $account = AccountStory::get('account');
+        $userId = $this->portalUserItemIdOf($account);
+        static::getContainer()->get(EntityManagerInterface::class)->getConnection()->update(
+            'user',
+            ['extras' => serialize(['IS_ALLOWED_TO_CREATE_CONTEXT' => true])],
+            ['item_id' => $userId]
+        );
+
+        $this->loginAsRoot();
+        $crawler = $this->client->request('GET', "/portal/{$account->getPortal()->getId()}/settings/accountindex/detail/{$userId}/edit");
+
+        $this->assertSame(
+            '1',
+            $crawler->filter('input[name="account_index_detail_edit[mayCreateContext]"][checked]')->attr('value')
+        );
+    }
+
+    public static function roomCreationChoices(): iterable
+    {
+        yield 'as the auth source says' => ['standard', false];
+        yield 'yes' => ['1', true];
+        yield 'no' => ['-1', false];
     }
 
     private function portalUserItemIdOf(Account $account): int

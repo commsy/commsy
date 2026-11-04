@@ -1816,7 +1816,9 @@ class PortalSettingsController extends AbstractController
         $userEdit->setYahoo($user->getYahoo());
         $userEdit->setHomepage($user->getHomepage());
         $userEdit->setDescription($user->getDescription());
-        $userEdit->setMayCreateContext($user->getIsAllowedToCreateContext());
+        // anything other than 'standard' or '-1' allows, as a value stored as a bool did
+        $mayCreateContext = $user->getIsAllowedToCreateContext();
+        $userEdit->setMayCreateContext(in_array($mayCreateContext, ['standard', '-1'], true) ? $mayCreateContext : '1');
 
         $form = $this->createForm(AccountIndexDetailEditType::class, $userEdit);
         $form->handleRequest($request);
@@ -1860,14 +1862,11 @@ class PortalSettingsController extends AbstractController
             $user->setHomepage($editAccountIndex->getHomepage());
             $user->setDescription($editAccountIndex->getDescription());
 
-            if ('standard' == $editAccountIndex->getMayCreateContext()) {
-                $user->setIsAllowedToCreateContext(true); // TODO how do we get the pre-set portal value?
-            } elseif ('1' == $editAccountIndex->getMayCreateContext()) {
-                $user->setIsAllowedToCreateContext(true);
-                $user->getRelatedPortalUserItem()->setIsAllowedToCreateContext(true);
-            } else {
-                $user->setIsAllowedToCreateContext(false);
-                $user->getRelatedPortalUserItem()->setIsAllowedToCreateContext(false);
+            // 'standard' defers to the auth source, '1' allows, '-1' denies
+            $mayCreateContext = $editAccountIndex->getMayCreateContext() ?? 'standard';
+            $user->setIsAllowedToCreateContext($mayCreateContext);
+            if ('standard' !== $mayCreateContext) {
+                $user->getRelatedPortalUserItem()->setIsAllowedToCreateContext($mayCreateContext);
             }
 
             $returnUrl = $this->generateUrl('app_portalsettings_accountindexdetail', [

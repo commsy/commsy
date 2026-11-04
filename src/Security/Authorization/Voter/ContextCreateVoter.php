@@ -36,12 +36,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  *        'standard' (default / unset)         -> Account->AuthSource->getCreateRoom()
  *
  * The per-user setting is persisted in user.extras. PortalSettings
- * Controller writes it as a PHP bool; legacy cs_user_item (no
- * declare(strict_types)) coerces it through a ": string" return:
- * true -> "1", false -> "". Doctrine maps `extras` as Types::ARRAY and
- * preserves the RAW bool, so we replicate that coercion here before the
- * loose comparisons — otherwise stored false would wrongly deny (legacy
- * allows it).
+ * Controller writes 'standard', '1' or '-1'; up to 10.6 it wrote a PHP bool,
+ * which legacy cs_user_item (no declare(strict_types)) coerces through a
+ * ": string" return: true -> "1", false -> "". Doctrine maps `extras` as
+ * Types::ARRAY and preserves the RAW bool, so we replicate that coercion
+ * here before the loose comparisons — stored false allows, as in legacy.
  */
 class ContextCreateVoter extends Voter
 {
