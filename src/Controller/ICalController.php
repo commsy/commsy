@@ -320,27 +320,6 @@ class ICalController extends AbstractController
         if (!$this->legacyEnvironment->inPrivateRoom()) {
             $datesManager->setContextLimit($currentContextItem->getItemID());
         } else {
-            $dateSelStatus = $currentContextItem->getRubrikSelection('date', 'status');
-            if (!empty($dateSelStatus)) {
-                $datesManager->setDateModeLimit($dateSelStatus);
-            }
-
-            $dateSelAssignment = $currentContextItem->getRubrikSelection('date', 'assignment');
-            if (!empty($dateSelAssignment) && '2' != $dateSelAssignment) {
-                $currentUserItem = $this->legacyEnvironment->getCurrentUserItem();
-                $userList = $currentUserItem->getRelatedUserList();
-
-                $userIdArray = [];
-                $userItem = $userList->getFirst();
-                while ($userItem) {
-                    $userIdArray[] = $userItem->getItemID();
-
-                    $userItem = $userList->getNext();
-                }
-
-                $datesManager->setAssignmentLimit($userIdArray);
-            }
-
             $myEntries = $currentContextItem->getMyCalendarDisplayConfig();
             $myRooms = [];
             foreach ($myEntries as $entry) {

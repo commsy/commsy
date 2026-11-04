@@ -20,6 +20,7 @@ use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\AccountFactory;
 use Tests\Factory\CalendarsFactory;
 use Tests\Factory\DatesFactory;
+use Tests\Factory\RoomFactory;
 use Tests\Factory\RoomUserFactory;
 use Tests\Story\RoomWithMemberStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -153,6 +154,27 @@ class ICalControllerTest extends AbstractApplicationTestCase
         $this->assertStringContainsString('SUMMARY:Sitzung', $feed);
         $this->assertSame(2, substr_count($feed, 'mailto:'.$visible->getEmail()), 'organizer of one, attendee of the other');
         $this->assertStringNotContainsString((string) $this->roomUser->getEmail(), $feed);
+    }
+
+    /**
+     * A private room serves the dates of its calendar too, together with
+     * those of the rooms its owner shows in "my calendar".
+     */
+    public function testAPrivateRoomServesItsCalendar(): void
+    {
+        $portal = $this->account->getPortal();
+        $privateRoom = RoomFactory::new()->privateRoom()->create(['contextId' => $portal?->getId(), 'portal' => $portal]);
+        $owner = RoomUserFactory::createOne(['account' => $this->account, 'room' => $privateRoom, 'status' => 3]);
+        CalendarsFactory::createOne(['room' => $privateRoom, 'creator' => $owner, 'defaultCalendar' => true, 'title' => 'Standard']);
+        $soon = date('Y-m-d H:i:s', strtotime('+1 day'));
+        $own = (int) DatesFactory::createOne(['title' => 'Eigener', 'room' => $privateRoom, 'creator' => $owner])->getItemId();
+        $this->connection()->update('dates', ['datetime_start' => $soon, 'datetime_end' => $soon], ['item_id' => $own]);
+
+        $hash = self::getContainer()->get(HashManager::class)->getUserHashes((int) $owner->getItemId());
+        $this->client->request('GET', "/ical/{$privateRoom->getItemId()}?hid={$hash->getIcal()}");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('SUMMARY:Eigener', (string) $this->client->getResponse()->getContent());
     }
 
     private function feed(string $query): string
