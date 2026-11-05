@@ -17,6 +17,7 @@ use FOS\ElasticaBundle\Elastica\Index;
 use FOS\ElasticaBundle\Index\IndexManager;
 use FOS\ElasticaBundle\Persister\ObjectPersisterInterface;
 use FOS\ElasticaBundle\Persister\PersisterRegistry;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Elastica\Bulk\Response as BulkResponse;
@@ -33,6 +34,9 @@ class ItemIndexerTest extends TestCase
     private MockObject $logger;
     private MockObject $index;
 
+    /** @var list<string> */
+    private array $persistersAsked = [];
+
     public function testWritesTheItemWithoutDeletingItFirst(): void
     {
         // A delete before the insert is what used to make a rejected document remove
@@ -41,6 +45,27 @@ class ItemIndexerTest extends TestCase
         $this->persister->expects(self::once())->method('insertOne');
 
         $this->indexer()->reindex(42, self::MATERIAL);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function roomTypes(): iterable
+    {
+        yield 'project room' => ['project'];
+        yield 'community room' => ['community'];
+        yield 'group room' => ['grouproom'];
+        yield 'user room' => ['userroom'];
+    }
+
+    #[DataProvider('roomTypes')]
+    public function testWritesARoomToTheRoomIndex(string $roomType): void
+    {
+        $this->persister->expects(self::once())->method('insertOne');
+
+        $this->indexer()->reindex(42, $roomType);
+
+        self::assertSame(['commsy_room'], $this->persistersAsked);
     }
 
     public function testSkipsWhenNoSearchServerIsConfigured(): void
@@ -214,7 +239,11 @@ class ItemIndexerTest extends TestCase
         $resolver->method('find')->willReturn($material);
 
         $registry = $this->createMock(PersisterRegistry::class);
-        $registry->method('getPersister')->willReturn($this->persister);
+        $registry->method('getPersister')->willReturnCallback(function (string $name): MockObject {
+            $this->persistersAsked[] = $name;
+
+            return $this->persister;
+        });
 
         $indexManager = $this->createMock(IndexManager::class);
         $indexManager->method('getIndex')->willReturn($this->index);

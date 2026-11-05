@@ -47,24 +47,27 @@ readonly class ItemIndexer
 {
     /**
      * Item type → index name for writing. Tasks and labels are intentionally absent:
-     * they were never reindexed via the legacy `updateElastic()` path either.
+     * they were never reindexed via the legacy `updateElastic()` path either. The
+     * room types share the `commsy_room` index; private rooms stay out of both tables.
      *
      * @var array<string, string>
      */
     private const REINDEX_INDEX_BY_TYPE = [
         RubricType::Announcement->value => 'commsy_announcement',
+        RoomType::Community->value => 'commsy_room',
         RubricType::Date->value => 'commsy_date',
         RubricType::Discussion->value => 'commsy_discussion',
+        RoomType::GroupRoom->value => 'commsy_room',
         RubricType::Material->value => 'commsy_material',
+        RoomType::Project->value => 'commsy_room',
         RubricType::Todo->value => 'commsy_todo',
         ItemType::User->value => 'commsy_user',
+        RoomType::UserRoom->value => 'commsy_room',
     ];
 
     /**
-     * Item type → index name for removal. Deliberately wider than the write table:
-     * room types share a single `commsy_room` index and are cleaned up on delete even
-     * though rooms are not written through this service. Private rooms and user rooms
-     * stay absent — legacy never removed them either, and that parity is preserved.
+     * Item type → index name for removal: everything that is written, plus labels,
+     * which reach the index only through a full populate.
      *
      * @var array<string, string>
      */
@@ -79,6 +82,7 @@ readonly class ItemIndexer
         RoomType::Project->value => 'commsy_room',
         RubricType::Todo->value => 'commsy_todo',
         ItemType::User->value => 'commsy_user',
+        RoomType::UserRoom->value => 'commsy_room',
     ];
 
     public function __construct(

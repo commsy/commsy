@@ -11,6 +11,7 @@ use App\Legacy\LegacyIndexDispatcher;
 use App\Message\ReindexItem;
 use App\Message\RemoveItemFromIndex;
 use cs_item;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
 
@@ -62,18 +63,44 @@ class IndexDispatchTest extends KernelTestCase
     }
 
     /**
-     * Rooms are cleaned up on delete but never written through the indexer, so the two
-     * operations cover different item types on purpose.
+     * @return iterable<string, array{string}>
      */
-    public function testItemTypesThatAreNotWrittenAreStillRemovable(): void
+    public static function roomTypes(): iterable
+    {
+        yield 'project room' => ['project'];
+        yield 'community room' => ['community'];
+        yield 'group room' => ['grouproom'];
+        yield 'user room' => ['userroom'];
+    }
+
+    /**
+     * A room is written to the index when it is saved, not only removed from it.
+     */
+    #[DataProvider('roomTypes')]
+    public function testRoomsAreWrittenAndRemoved(string $roomType): void
     {
         $dispatcher = self::getContainer()->get(LegacyIndexDispatcher::class);
 
-        $dispatcher->reindex(4711, 'project');
-        self::assertCount(0, $this->transport->getSent(), 'rooms are not written through the indexer');
+        $dispatcher->reindex(4711, $roomType);
+        $dispatcher->remove(4711, $roomType);
 
-        $dispatcher->remove(4711, 'project');
-        self::assertCount(1, $this->transport->getSent(), 'but they are removed from it');
+        $messages = array_map(static fn ($envelope): object => $envelope->getMessage(), $this->transport->getSent());
+        self::assertCount(2, $messages);
+        self::assertInstanceOf(ReindexItem::class, $messages[0]);
+        self::assertInstanceOf(RemoveItemFromIndex::class, $messages[1]);
+    }
+
+    /**
+     * Private rooms are neither written to the index nor removed from it.
+     */
+    public function testPrivateRoomsAreLeftAlone(): void
+    {
+        $dispatcher = self::getContainer()->get(LegacyIndexDispatcher::class);
+
+        $dispatcher->reindex(4711, 'privateroom');
+        $dispatcher->remove(4711, 'privateroom');
+
+        self::assertCount(0, $this->transport->getSent());
     }
 
     protected function setUp(): void
