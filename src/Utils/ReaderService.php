@@ -27,14 +27,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Cache\Adapter\FilesystemTagAwareAdapter;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 final readonly class ReaderService
 {
-    private FilesystemTagAwareAdapter $readStatusCache;
-
     public function __construct(
         private LegacyEnvironment        $legacyEnvironment,
         private Security                 $security,
@@ -43,8 +42,9 @@ final readonly class ReaderService
         private ReaderRepository         $readerRepository,
         private EventDispatcherInterface $eventDispatcher,
         private EntityManagerInterface   $entityManager,
+        #[Autowire(service: 'read_status.cache')]
+        private TagAwareCacheInterface   $readStatusCache,
     ) {
-        $this->readStatusCache = new FilesystemTagAwareAdapter();
     }
 
     public function getLatestReader(int $itemId): ?Reader

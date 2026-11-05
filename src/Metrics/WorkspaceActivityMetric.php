@@ -22,16 +22,25 @@ use DateInterval;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final class WorkspaceActivityMetric extends AbstractMetric implements MetricInterface, EventSubscriberInterface
 {
+    private const string CACHE_KEY = 'commsy_metrics_workspace_activity';
+
+    /**
+     * How long an activity counts as recent; older ones are of no use and
+     * dropped.
+     */
+    private const string RECENT = 'PT5M';
+
     public function __construct(
         private readonly PortalRepository $portalRepository,
-        private readonly RequestContext $requestContext
+        private readonly RequestContext $requestContext,
+        private readonly CacheItemPoolInterface $cache,
     ) {
     }
 
@@ -69,21 +78,20 @@ final class WorkspaceActivityMetric extends AbstractMetric implements MetricInte
 
         $cachedActivity = $this->getCachedActivity();
 
-        // Check if there is already an entry for this workspace and renew it
+        // Renew the entry of this workspace, or add one
         $matchWorkspace = $cachedActivity->findFirst(fn ($key, WorkspaceActivity $el) => $el->getWorkspaceId() === $room->getItemId());
         if ($matchWorkspace) {
             $matchWorkspace->renew();
+        } else {
+            $cachedActivity->add(new WorkspaceActivity(
+                $room->getItemId(),
+                $room->getType(),
+                $portal->getTitle()
+            ));
         }
 
-        // Add the current workspace
-        $cachedActivity->add(new WorkspaceActivity(
-            $room->getItemId(),
-            $room->getType(),
-            $portal->getTitle()
-        ));
-
-        // Update cache
-        $this->saveCachedActivity($cachedActivity);
+        // Update cache, without the activities no longer recent
+        $this->saveCachedActivity($cachedActivity->filter($this->isRecent(...)));
     }
 
     public function update(): void
@@ -91,9 +99,7 @@ final class WorkspaceActivityMetric extends AbstractMetric implements MetricInte
         $cachedActivity = $this->getCachedActivity();
 
         // Filter all workspaces that have been expired
-        $nonExpiredActivities = $cachedActivity->filter(fn (WorkspaceActivity $el) =>
-            $el->getCached() >= (new DateTimeImmutable())->sub(new DateInterval('PT5M'))
-        );
+        $nonExpiredActivities = $cachedActivity->filter($this->isRecent(...));
 
         $this->getAdapter()->wipeData('counter', 'workspace_activity_current');
 
@@ -114,20 +120,23 @@ final class WorkspaceActivityMetric extends AbstractMetric implements MetricInte
         }
     }
 
+    private function isRecent(WorkspaceActivity $activity): bool
+    {
+        return $activity->getCached() >= (new DateTimeImmutable())->sub(new DateInterval(self::RECENT));
+    }
+
     private function getCachedActivity(): Collection
     {
-        $cache = new FilesystemAdapter();
-        $cacheItem = $cache->getItem('commsy_metrics_workspace_activity');
+        $cacheItem = $this->cache->getItem(self::CACHE_KEY);
 
         return $cacheItem->isHit() ? $cacheItem->get() : new ArrayCollection();
     }
 
     private function saveCachedActivity(Collection $activity): void
     {
-        $cache = new FilesystemAdapter();
-        $cacheItem = $cache->getItem('commsy_metrics_workspace_activity');
+        $cacheItem = $this->cache->getItem(self::CACHE_KEY);
 
         $cacheItem->set($activity);
-        $cache->save($cacheItem);
+        $this->cache->save($cacheItem);
     }
 }

@@ -21,3 +21,8 @@ framework:
             # cs_context_item::_cache_may_enter).
             permission.access_cache:
                 adapter: cache.adapter.array
+            # Read status of entries shown in lists, invalidated by item tags;
+            # pruned daily by App\Cron\Tasks\CronPruneCaches.
+            read_status.cache:
+                adapter: cache.adapter.filesystem
+                tags: true

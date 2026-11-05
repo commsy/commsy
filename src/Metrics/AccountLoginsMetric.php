@@ -18,12 +18,24 @@ use App\Metrics\Data\CachedLogin;
 use App\Metrics\Data\CachedLogins;
 use DateInterval;
 use DateTimeImmutable;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class AccountLoginsMetric extends AbstractMetric implements MetricInterface, EventSubscriberInterface
 {
+    private const string CACHE_KEY = 'commsy_metrics_account_logins';
+
+    /**
+     * How long a login counts as recent; older ones are of no use and dropped.
+     */
+    private const string RECENT = 'PT5M';
+
+    public function __construct(
+        private readonly CacheItemPoolInterface $cache,
+    ) {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -54,8 +66,8 @@ class AccountLoginsMetric extends AbstractMetric implements MetricInterface, Eve
             $account->getAuthSource()->getPortal()->getTitle()
         ));
 
-        // Update cache
-        $this->saveCachedLogins((new CachedLogins())->setLogins($cachedLogins));
+        // Update cache, without the logins no longer recent
+        $this->saveCachedLogins((new CachedLogins())->setLogins($cachedLogins->filter($this->isRecent(...))));
     }
 
     public function update(): void
@@ -63,9 +75,7 @@ class AccountLoginsMetric extends AbstractMetric implements MetricInterface, Eve
         $cachedLogins = $this->getCachedLogins();
 
         // Filter all logins that have been expired
-        $nonExpiredLogins = $cachedLogins->getLogins()->filter(fn (CachedLogin $el) =>
-            $el->getCached() >= (new DateTimeImmutable())->sub(new DateInterval('PT5M'))
-        );
+        $nonExpiredLogins = $cachedLogins->getLogins()->filter($this->isRecent(...));
 
         $this->getAdapter()->wipeData('counter', 'account_logins_current');
 
@@ -85,20 +95,23 @@ class AccountLoginsMetric extends AbstractMetric implements MetricInterface, Eve
         }
     }
 
+    private function isRecent(CachedLogin $login): bool
+    {
+        return $login->getCached() >= (new DateTimeImmutable())->sub(new DateInterval(self::RECENT));
+    }
+
     private function getCachedLogins(): CachedLogins
     {
-        $cache = new FilesystemAdapter();
-        $cacheItem = $cache->getItem('commsy_metrics_account_logins');
+        $cacheItem = $this->cache->getItem(self::CACHE_KEY);
 
         return $cacheItem->isHit() ? $cacheItem->get() : new CachedLogins();
     }
 
     private function saveCachedLogins(CachedLogins $cachedLogins): void
     {
-        $cache = new FilesystemAdapter();
-        $cacheItem = $cache->getItem('commsy_metrics_account_logins');
+        $cacheItem = $this->cache->getItem(self::CACHE_KEY);
 
         $cacheItem->set($cachedLogins);
-        $cache->save($cacheItem);
+        $this->cache->save($cacheItem);
     }
 }
