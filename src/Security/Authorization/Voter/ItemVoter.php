@@ -264,28 +264,51 @@ class ItemVoter extends Voter
         return $this->permissionResolver->canEdit($item, $currentUser, $this->legacyBridge->currentRoom());
     }
 
-    private function canAnnotate(cs_item $item, cs_user_item $currentUser)
+    /**
+     * The person's status in the room of the item decides, and an archived
+     * room of the item takes no annotation; the room of the request does not.
+     */
+    private function canAnnotate(cs_item $item, cs_user_item $currentUser): bool
     {
-        $userStatus = $currentUser->getStatus();
+        $userStatus = $this->profileInContextOf($item, $currentUser)?->getStatus();
         if (2 == $userStatus || 3 == $userStatus) { // user & moderator
-            $currentRoom = $this->currentContextResolver->getContextItem();
-
-            return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
+            return !$this->isInArchivedRoom($item);
         }
 
         return false;
     }
 
-    private function canParticipate(cs_item $item, cs_user_item $currentUser)
+    /**
+     * As {@see canAnnotate()}, read-only users included.
+     */
+    private function canParticipate(cs_item $item, cs_user_item $currentUser): bool
     {
-        $userStatus = $currentUser->getStatus();
+        $userStatus = $this->profileInContextOf($item, $currentUser)?->getStatus();
         if (2 == $userStatus || 3 == $userStatus || 4 == $userStatus) { // user, moderator & read-only user
-            $currentRoom = $this->currentContextResolver->getContextItem();
-
-            return !(method_exists($currentRoom, 'getArchived') && $currentRoom->getArchived());
+            return !$this->isInArchivedRoom($item);
         }
 
         return false;
+    }
+
+    /**
+     * The profile of the person in the context of the item; null without one.
+     */
+    private function profileInContextOf(cs_item $item, cs_user_item $currentUser): ?cs_user_item
+    {
+        $contextId = (int) $item->getContextID();
+        if ((int) $currentUser->getContextID() === $contextId) {
+            return $currentUser;
+        }
+
+        return $currentUser->getRelatedUserItemInContext($contextId);
+    }
+
+    private function isInArchivedRoom(cs_item $item): bool
+    {
+        $room = $item->getContextItem();
+
+        return null !== $room && method_exists($room, 'getArchived') && $room->getArchived();
     }
 
     private function isOwner(cs_item $item, cs_user_item $currentUser)
