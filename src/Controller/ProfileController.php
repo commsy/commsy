@@ -63,6 +63,8 @@ class ProfileController extends AbstractController
         int $roomId,
         int $itemId
     ): Response {
+        $this->denyUnlessOwnProfile($userService, $itemId);
+
         /** @var cs_user_item $user */
         $user = $userService->getUser($itemId);
 
@@ -181,6 +183,8 @@ class ProfileController extends AbstractController
         int $roomId,
         int $itemId
     ): Response {
+        $this->denyUnlessOwnProfile($userService, $itemId);
+
         /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
@@ -242,6 +246,8 @@ class ProfileController extends AbstractController
         int $roomId,
         int $itemId
     ): Response {
+        $this->denyUnlessOwnProfile($userService, $itemId);
+
         /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
@@ -312,6 +318,8 @@ class ProfileController extends AbstractController
         int $roomId,
         int $itemId
     ): Response {
+        $this->denyUnlessOwnProfile($userService, $itemId);
+
         /** @var cs_user_item $userItem */
         $userItem = $userService->getUser($itemId);
         $userData = [];
@@ -421,5 +429,16 @@ class ProfileController extends AbstractController
             'form_lock' => $lockForm,
             'form_delete' => $deleteForm,
         ]);
+    }
+
+    /**
+     * The profile pages are a person's own: the menu offers no other, and
+     * saving them writes the account of whoever is signed in.
+     */
+    private function denyUnlessOwnProfile(UserService $userService, int $itemId): void
+    {
+        if ($itemId !== (int) $userService->getCurrentUserItem()->getItemID()) {
+            throw $this->createAccessDeniedException('Only the own room profile is edited here.');
+        }
     }
 }
