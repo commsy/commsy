@@ -53,7 +53,8 @@ class cs_annotation_item extends cs_item
      */
     public function setDescription(string $value)
     {
-        $this->_setValue('description', $value);
+        // an annotation is shown as HTML, so it is cleaned like any other description
+        $this->_setValue('description', $this->_environment->getTextConverter()->sanitizeFullHTML($value));
     }
 
     /** get linked item id of an annotation
