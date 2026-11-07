@@ -1707,7 +1707,8 @@ class DateController extends BaseController
         if ($request->request->has('payload')) {
             $payload = $request->request->all('payload');
 
-            $recurring = isset($payload['recurring']) ?? false;
+            // the link for a single date sends the flag too, empty
+            $recurring = filter_var($payload['recurring'] ?? false, FILTER_VALIDATE_BOOLEAN);
         }
 
         $deleteDate->setRecurring($recurring);
