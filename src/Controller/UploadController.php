@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -199,6 +200,16 @@ class UploadController extends AbstractController
         CurrentContextResolver $currentContextResolver,
         #[MapQueryParameter] ?int $versionId = null
     ): Response {
+        // The upload dialog names the function to call back by number; only
+        // that number goes into the script answered.
+        $callbackNumber = null;
+        if (null != $request->query->get('CKEditor')) {
+            $callbackNumber = filter_var($request->query->get('CKEditorFuncNum'), FILTER_VALIDATE_INT);
+            if (false === $callbackNumber) {
+                throw new BadRequestHttpException('The editor callback is no number.');
+            }
+        }
+
         $legacyEnvironment = $environment->getEnvironment();
         $item = $itemService->getTypedItem($itemId, $versionId);
         $fileIds = $item->getFileIDArray();
@@ -251,17 +262,17 @@ class UploadController extends AbstractController
                     'fileId' => $fileItem->getFileID(),
                 ]);
 
-                if (null != $request->query->get('CKEditor')) {
+                if (null !== $callbackNumber) {
                     // This is for uploading through dialog / File Browser Plugin???
                     // @see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_dialog_add_file_browser.html
                     // @see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browser_api.html#example-4
                     // This can also be used to show an error message, the third parameter was previously used
                     // to inject a JS function call
-                    $callback_function = '<script type="text/javascript">';
-                    $callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "'.$fileUrl.'");';
-                    $callback_function .= '</script>';
-
-                    return new Response($callback_function);
+                    return new Response(sprintf(
+                        '<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction(%d, %s);</script>',
+                        $callbackNumber,
+                        json_encode($fileUrl, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES),
+                    ));
                 } else {
                     // This is for uploading pasted and draggted images introduced in CKE 4.5???
                     // @see https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html#server-side-configuration

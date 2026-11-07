@@ -16,6 +16,7 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Entity\Portal;
 use App\Entity\Server;
+use App\Files\InlineFilePolicy;
 use App\Files\ProfileHelper;
 use App\Repository\FilesRepository;
 use App\Utils\FileService;
@@ -26,6 +27,7 @@ use Sylius\Bundle\ThemeBundle\Context\SettableThemeContext;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,6 +60,7 @@ class FileController extends AbstractController
         }
 
         $response = new BinaryFileResponse($absolutePath);
+        $mimeType = (string) $response->getFile()->getMimeType();
 
         $fileName = $file->getFileName();
 
@@ -68,7 +71,7 @@ class FileController extends AbstractController
         $fallbackFileName = mb_convert_encoding($fallbackFileName, 'US-ASCII', 'UTF-8');
 
         $contentDisposition = $response->headers->makeDisposition(
-            ('inline' === $disposition) ?
+            ('inline' === $disposition && InlineFilePolicy::allowsInline($mimeType)) ?
                 ResponseHeaderBag::DISPOSITION_INLINE :
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $fileName,
@@ -76,6 +79,7 @@ class FileController extends AbstractController
         );
 
         $response->headers->set('Content-Disposition', $contentDisposition);
+        InlineFilePolicy::protect($response, $mimeType);
         $response->prepare($request);
 
         return $response;
@@ -103,29 +107,17 @@ class FileController extends AbstractController
         int $roomId
     ): Response {
         // Without a logo of its own, or without a room at all (the portal on
-        // the dashboard), the placeholder stands in.
+        // the dashboard), the placeholder stands in; so it does for a file
+        // that is no image.
         $fileName = (string) $roomService->getRoomItem($roomId)?->getLogoFilename();
-        if ('' === $fileName || basename($fileName) !== $fileName) {
-            $fileName = 'customBgPlaceholder.png';
-            $filePath = $this->getParameter('themes_directory').'/'.$fileName;
-        } else {
-            $filePath = $this->getParameter('files_directory').'/'.$roomService->getRoomFileDirectory($roomId).'/'.$fileName;
+        $response = null;
+        if ('' !== $fileName && basename($fileName) === $fileName) {
+            $response = $this->imageResponse($this->getParameter('files_directory').'/'.$roomService->getRoomFileDirectory($roomId).'/'.$fileName);
         }
 
-        if (is_file($filePath)) {
-            $content = file_get_contents($filePath);
-
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $filePath);
-
-            $response = new Response($content, Response::HTTP_OK, ['content-type' => $mimeType]);
-            $response->headers->set('Content-Disposition',
-                $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName));
-        } else {
-            $response = new Response('Logo image not found!', Response::HTTP_NOT_FOUND);
-        }
-
-        return $response;
+        return $response
+            ?? $this->imageResponse($this->getParameter('themes_directory').'/customBgPlaceholder.png')
+            ?? new Response('Logo image not found!', Response::HTTP_NOT_FOUND);
     }
 
     #[Route(path: '/room/{roomId}/{imageType}/background/', name: 'getBackground', defaults: ['imageType' => 'theme'], requirements: ['imageType' => 'custom|theme'])]
@@ -149,28 +141,19 @@ class FileController extends AbstractController
                 $completePath = $themesDir.'/'.mb_strtolower((string) $roomItem->getColorArray()['schema']).'/bg.jpg';
             }
         } elseif ('custom' == $imageType) {
-            if ('' != $filename) {
-                $filepath = $this->getParameter('files_directory').'/'.$roomService->getRoomFileDirectory($roomId);
-                $completePath = $filepath.'/'.$filename;
-            } else {
-                $completePath = $themesDir.'/customBgPlaceholder.png';
+            // without an image of its own, or with a file that is no image,
+            // the placeholder stands in
+            $completePath = $themesDir.'/customBgPlaceholder.png';
+            if ('' != $filename && basename((string) $filename) === $filename) {
+                $ownImage = $this->imageResponse($this->getParameter('files_directory').'/'.$roomService->getRoomFileDirectory($roomId).'/'.$filename);
+                if (null !== $ownImage) {
+                    return $ownImage;
+                }
             }
         }
 
-        if (file_exists($completePath)) {
-            $content = file_get_contents($completePath);
-
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $completePath);
-
-            $response = new Response($content, Response::HTTP_OK, ['content-type' => $mimeType]);
-            $response->headers->set('Content-Disposition',
-                $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $filename));
-        } else {
-            $response = new Response('Background image not found!', Response::HTTP_NOT_FOUND);
-        }
-
-        return $response;
+        return $this->imageResponse((string) $completePath)
+            ?? new Response('Background image not found!', Response::HTTP_NOT_FOUND);
     }
 
     #[Route(path: '/theme/{theme}/background', name: 'getThemeBackground')]
@@ -222,5 +205,28 @@ class FileController extends AbstractController
         }
 
         return $downloadHandler->downloadObject($portal, 'logoFile', null, null, false);
+    }
+
+    /**
+     * A raster image shown in place; null for a missing file or one that is
+     * no such image, which must not be served as a page of the site.
+     */
+    private function imageResponse(string $path): ?Response
+    {
+        if (!is_file($path)) {
+            return null;
+        }
+
+        $mimeType = (string) (new File($path))->getMimeType();
+        if (!InlineFilePolicy::isImage($mimeType)) {
+            return null;
+        }
+
+        // no Content-Disposition: an image shows in place anyway, and a
+        // non-ASCII file name would need a fallback
+        return InlineFilePolicy::protect(
+            new Response((string) file_get_contents($path), Response::HTTP_OK, ['content-type' => $mimeType]),
+            $mimeType,
+        );
     }
 }

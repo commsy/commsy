@@ -63,12 +63,13 @@ final class RoomLogoTest extends AbstractApplicationTestCase
 
         $name = "cid{$room->getItemId()}_logo_Wappen.png";
         $directory = static::getContainer()->get(FilesDirectory::class)->contextDirectory((int) $account->getContextId(), (int) $room->getItemId());
-        (new Filesystem())->dumpFile("$directory/$name", 'the logo');
+        $logo = (string) base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
+        (new Filesystem())->dumpFile("$directory/$name", $logo);
         $this->directories[] = $directory;
         static::getContainer()->get(EntityManagerInterface::class)->getConnection()
             ->update('room', ['extras' => serialize(['LOGOFILENAME' => $name])], ['item_id' => $room->getItemId()]);
 
-        self::assertSame('the logo', $this->fetch("/room/{$room->getItemId()}/logo"));
+        self::assertSame($logo, $this->fetch("/room/{$room->getItemId()}/logo"));
     }
 
     private function fetch(string $path): string
