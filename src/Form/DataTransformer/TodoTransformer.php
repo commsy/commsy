@@ -156,8 +156,10 @@ class TodoTransformer extends AbstractTransformer
                 $newStepOrder = explode(',', (string) $todoData['stepOrder']);
             }
 
+            // a day without a time is due at midnight
             if (isset($todoData['due_date']['date'])) {
-                $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
+                $dueTime = $todoData['due_date']['time'] ?? null;
+                $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.($dueTime?->format('H:i:s') ?? '00:00:00'));
             }
         } else {
             $hours = is_numeric($todoData['time_spend']['hour']) ? $todoData['time_spend']['hour'] : 0;

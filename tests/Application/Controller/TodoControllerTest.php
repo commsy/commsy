@@ -14,6 +14,8 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use Doctrine\DBAL\Connection;
+use Symfony\Component\DomCrawler\Crawler;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -119,6 +121,35 @@ class TodoControllerTest extends AbstractApplicationTestCase
     {
         $this->client->request('GET', "/room/$this->roomId/todo");
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testADueDateWithoutTimeIsDueAtMidnight(): void
+    {
+        [$itemId, $crawler] = $this->createTodoAndOpenEdit();
+
+        $form = $crawler->selectButton('todo[save]')->form();
+        $form['todo[title]'] = 'mit-frist';
+        $form['todo[due_date][date]'] = $this->formatted(new \DateTimeImmutable('2030-03-04'), $crawler);
+        $form['todo[due_date][time]'] = '';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        self::assertSame('2030-03-04 00:00:00', $this->dueDateOf($itemId));
+    }
+
+    private function dueDateOf(int $itemId): ?string
+    {
+        $date = self::getContainer()->get(Connection::class)->fetchOne('SELECT date FROM todos WHERE item_id = ?', [$itemId]);
+
+        return false === $date ? null : $date;
+    }
+
+    /** The date picker of the form uses the format of the page language. */
+    private function formatted(\DateTimeImmutable $date, Crawler $crawler): string
+    {
+        $picker = (string) $crawler->filter('#todo_due_date_date')->attr('data-uk-datepicker');
+
+        return $date->format(str_contains($picker, 'MM/DD/YYYY') ? 'm/d/Y' : 'd.m.Y');
     }
 
     /**
