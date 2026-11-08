@@ -13,6 +13,7 @@
 
 namespace App\Security\Oidc\Flow;
 
+use Symfony\Component\Clock\NativeClock;
 use App\Entity\AuthSourceOIDC;
 use App\Security\Oidc\Discovery\ProviderMetadata;
 use App\Security\Oidc\Request\ResponseType;
@@ -21,7 +22,6 @@ use DateInterval;
 use Exception;
 use JsonPath\InvalidJsonException;
 use JsonPath\JsonObject;
-use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Validation\Constraint\HasClaimWithValue;
@@ -172,7 +172,7 @@ abstract class BaseFlow implements ProtocolFlow
 //                InMemory::base64Encoded()
 //            ));
 
-            $validator->assert($token, new LooseValidAt(SystemClock::fromUTC(), new DateInterval('PT5M')));
+            $validator->assert($token, new LooseValidAt(new NativeClock('UTC'), new DateInterval('PT5M')));
             $validator->assert($token, new IssuedBy($metadata->getIssuer()));
             $validator->assert($token, new HasClaimWithValue('nonce', $expectedNonce));
         } catch (RequiredConstraintsViolated) {
