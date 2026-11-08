@@ -90,7 +90,7 @@
             'cancelEditUrl': path('app_item_canceledit', { 'roomId': article.contextId, 'itemId': article.itemId} ),
             'toggleSelect': '#edit_toggle_' ~ article.itemId
         }|json_encode|e('html_attr') }}">
-            {{ article.description|decodeHtmlEntity|raw }}
+            {{ article.description|commsyMarkup(article)|raw }}
         </div>
 
         {# files — a redacted article has its file links stamped, so this
