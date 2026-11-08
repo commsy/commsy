@@ -167,10 +167,20 @@ function editEvent(calendarEl: HTMLElement, event: EventApi, revert: () => void)
   });
 }
 
+// The values of an event are text; the info box is built as HTML.
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderEvent(calendarEl: HTMLElement, event: EventApi): string {
   let titleDisplay: string = '';
   if (event.extendedProps.contextTitle != '') {
-    titleDisplay = ' / ' + event.extendedProps.contextTitle;
+    titleDisplay = ' / ' + escapeHtml(event.extendedProps.contextTitle);
   }
 
   const translations = JSON.parse(calendarEl.dataset.translations);
@@ -178,32 +188,32 @@ function renderEvent(calendarEl: HTMLElement, event: EventApi): string {
   let recurringDescription: string = '';
   if (event.extendedProps.recurringDescription != '') {
     recurringDescription = '<tr>'
-      + '<td>' + translations.recurringDate + ':</td>'
-      + '<td>' + event.extendedProps.recurringDescription + '</td>'
+      + '<td>' + escapeHtml(translations.recurringDate) + ':</td>'
+      + '<td>' + escapeHtml(event.extendedProps.recurringDescription) + '</td>'
       + '</tr>';
   }
 
   return '<div class="uk-grid">'
     + '<table>'
     + '<tr>'
-    + '<td colspan="2"><b>' + event.title + '</b></td>'
+    + '<td colspan="2"><b>' + escapeHtml(event.title) + '</b></td>'
     + '</tr>'
     + '<tr>'
-    + '<td>' + translations.date + ':</td>'
-    + '<td>' + event.extendedProps.description + '</td>'
+    + '<td>' + escapeHtml(translations.date) + ':</td>'
+    + '<td>' + escapeHtml(event.extendedProps.description) + '</td>'
     + '</tr>'
     + recurringDescription
     + '<tr>'
-    + '<td>' + translations.place + ':</td>'
-    + '<td>' + event.extendedProps.place + '</td>'
+    + '<td>' + escapeHtml(translations.place) + ':</td>'
+    + '<td>' + escapeHtml(event.extendedProps.place) + '</td>'
     + '</tr>'
     + '<tr>'
-    + '<td>' + translations.participants + ':</td>'
-    + '<td>' + event.extendedProps.participants + '</td>'
+    + '<td>' + escapeHtml(translations.participants) + ':</td>'
+    + '<td>' + escapeHtml(event.extendedProps.participants) + '</td>'
     + '</tr>'
     + '<tr>'
-    + '<td>' + translations.calendar + ':</td>'
-    + '<td>' + event.extendedProps.calendar + titleDisplay + '</td>'
+    + '<td>' + escapeHtml(translations.calendar) + ':</td>'
+    + '<td>' + escapeHtml(event.extendedProps.calendar) + titleDisplay + '</td>'
     + '</tr>'
     + '</table>'
     + '</div>';

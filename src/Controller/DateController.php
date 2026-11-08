@@ -743,7 +743,7 @@ class DateController extends BaseController
                 'allDay' => $date->isWholeDay(),
                 'start' => $start,
                 'end' => $end,
-                'title' => $date->getTitle(),
+                'title' => html_entity_decode($date->getTitle()),
                 'color' => $color,
                 'calendar' => $date->getCalendar()->getTitle(),
                 'editable' => $date->isPublic(),
