@@ -47,13 +47,15 @@ class DateTransformer extends AbstractTransformer
             $dateData['permission'] = !$dateItem->isPublic();
             $dateData['place'] = $dateItem->getPlace();
 
+            // an empty stored time stays empty in the form
             $datetimeStart = new DateTime($dateItem->getDateTime_start());
             $dateData['start']['date'] = $datetimeStart;
-            $dateData['start']['time'] = $datetimeStart;
+            $dateData['start']['time'] = '' !== (string) $dateItem->getStartingTime() ? $datetimeStart : null;
 
             $datetimeEnd = new DateTime($dateItem->getDateTime_end());
             $dateData['end']['date'] = $datetimeEnd;
-            $dateData['end']['time'] = $datetimeEnd;
+            // a new date has no end yet; its end is offered at the start
+            $dateData['end']['time'] = '' !== (string) $dateItem->getEndingTime() || '' === (string) $dateItem->getEndingDay() ? $datetimeEnd : null;
 
             $dateData['whole_day'] = $dateItem->isWholeDay();
 
@@ -114,16 +116,19 @@ class DateTransformer extends AbstractTransformer
             $dateData['end']['time'] = (new DateTime())->setTime(23, 59, 59);
         }
 
+        // a day without a time is stored with an empty time, starting at midnight
         if (!empty($dateData['start']['date'])) {
+            $startTime = $dateData['start']['time'] ?? null;
             $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
-            $dateObject->setStartingTime($dateData['start']['time']->format('H:i'));
-            $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('H:i:s'));
+            $dateObject->setStartingTime($startTime?->format('H:i') ?? '');
+            $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . ($startTime?->format('H:i:s') ?? '00:00:00'));
         }
 
         if (!empty($dateData['end']['date'])) {
+            $endTime = $dateData['end']['time'] ?? null;
             $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
-            $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
-            $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('H:i:s'));
+            $dateObject->setEndingTime($endTime?->format('H:i') ?? '');
+            $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . ($endTime?->format('H:i:s') ?? '00:00:00'));
         }
 
         $dateObject->setCalendarId($dateData['calendar']);

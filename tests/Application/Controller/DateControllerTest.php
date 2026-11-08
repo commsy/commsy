@@ -14,6 +14,7 @@
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use Doctrine\DBAL\Connection;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -110,6 +111,37 @@ class DateControllerTest extends AbstractApplicationTestCase
 
         $this->assertResponseStatusCodeSame(422);
         $this->assertGreaterThan(0, $itemId);
+    }
+
+    /**
+     * A date may name its days without times: it is saved with empty times
+     * and its form shows them empty again.
+     */
+    public function testADateWithoutTimesIsSavedAndShownWithoutTimes(): void
+    {
+        [$itemId, $crawler] = $this->createDateAndOpenEdit();
+
+        $form = $crawler->selectButton('date[save]')->form();
+        $form['date[title]'] = 'ohne-uhrzeit';
+        $startDay = $form->get('date[start][date]')->getValue();
+        self::assertIsString($startDay);
+        $form['date[end][date]'] = $startDay;
+        $form['date[start][time]'] = '';
+        $form['date[end][time]'] = '';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        $row = self::getContainer()->get(Connection::class)
+            ->fetchAssociative('SELECT start_time, end_time, start_day, end_day, datetime_start, datetime_end FROM dates WHERE item_id = ?', [$itemId]);
+        self::assertSame('', (string) $row['start_time']);
+        self::assertSame('', (string) $row['end_time']);
+        self::assertSame($row['start_day'].' 00:00:00', $row['datetime_start']);
+        self::assertSame($row['end_day'].' 00:00:00', $row['datetime_end']);
+
+        $crawler = $this->client->request('GET', "/room/$this->roomId/date/$itemId/edit");
+        $form = $crawler->selectButton('date[save]')->form();
+        self::assertSame('', $form['date[start][time]']->getValue());
+        self::assertSame('', $form['date[end][time]']->getValue());
     }
 
     /**
