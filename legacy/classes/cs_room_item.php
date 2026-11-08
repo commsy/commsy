@@ -900,7 +900,8 @@ class cs_room_item extends cs_context_item
 
     public function setDescription($value)
     {
-        $this->_setValue('room_description', $value);
+        // shown as HTML, so cleaned like the description of any entry
+        $this->_setValue('room_description', $this->_environment->getTextConverter()->sanitizeFullHTML((string) $value));
     }
 
     /** set description array.
