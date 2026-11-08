@@ -688,6 +688,11 @@ class GroupController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
+        // the group of all members follows the room membership, no one joins or leaves it by hand
+        if ($group->isSystemLabel()) {
+            throw $this->createAccessDeniedException('The group of all members follows the room membership.');
+        }
+
         // join group
         $membershipManager->joinGroup($group, $account);
 
@@ -732,6 +737,11 @@ class GroupController extends BaseController
         $account = $this->getUser();
         if (!$account) {
             throw $this->createAccessDeniedException();
+        }
+
+        // the group of all members follows the room membership, no one joins or leaves it by hand
+        if ($group->isSystemLabel()) {
+            throw $this->createAccessDeniedException('The group of all members follows the room membership.');
         }
 
         // the last moderator of the group room closes it along with the group
