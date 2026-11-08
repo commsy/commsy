@@ -62,7 +62,7 @@
 
             <div class="uk-width-3-10">
                 <div class="uk-comment-meta">
-                    {{ 'due date'|trans({}, 'todo') }}: {{ todo.getDate|format_date }}
+                    {% if todo.getDate %}{{ 'due date'|trans({}, 'todo') }}: {{ todo.getDate|format_date }}{% endif %}
                 </div>
             </div>
 

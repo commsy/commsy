@@ -395,11 +395,10 @@ class cs_todos_manager extends cs_manager
              ->setParameter('description', $item->getDescription())
              ->setParameter('itemId', $item->getItemID());
 
-         if ($item->getDate()) {
-             $queryBuilder
-                 ->set('date', ':date')
-                 ->setParameter('date', $item->getDate());
-         }
+         // an emptied due date is removed
+         $queryBuilder
+             ->set('date', ':date')
+             ->setParameter('date', $item->getDate() ?: null);
 
          try {
              $this->_db_connector->performQuery($queryBuilder->getSQL(), $queryBuilder->getParameters());

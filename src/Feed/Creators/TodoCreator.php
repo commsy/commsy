@@ -24,6 +24,10 @@ class TodoCreator extends Creator
 
     public function getTitle($item)
     {
+        if (empty($item->getDate())) {
+            return $this->translator->trans('Task: %title%', ['%title%' => $item->getTitle()], 'rss');
+        }
+
         return $this->translator->trans('Task: %title% (due date %due_date%)', [
             '%title%' => $item->getTitle(),
             '%due_date%' => date('d.m.Y', strtotime((string) $item->getDate())),

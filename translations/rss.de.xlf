@@ -54,6 +54,10 @@
                 <source>Task: %title% (due date %due_date%)</source>
                 <target>Aufgabe: %title% (fällig am %due_date%)</target>
             </trans-unit>
+            <trans-unit id="rssTitleTodoWithoutDueDate">
+                <source>Task: %title%</source>
+                <target>Aufgabe: %title%</target>
+            </trans-unit>
             <trans-unit id="rssTitleStep">
                 <source>Step %title% of: %linked_title%</source>
                 <target>Arbeitsschritt %title% von: %linked_title%</target>

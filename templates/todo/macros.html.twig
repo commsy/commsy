@@ -204,7 +204,7 @@
                                         <strong>{{ "due date"|trans({},'todo') }}:</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        {{ item.date|format_date }} {{ item.date|format_time }}
+                                        {% if item.date %}{{ item.date|format_date }} {{ item.date|format_time }}{% endif %}
                                     </td>
                                 </tr>
                                 <tr>
@@ -408,7 +408,7 @@
                                             <strong>{{ "due date"|trans({},'todo') }}:</strong>
                                         </td>
                                         <td class="uk-text-top">
-                                            {{ item.date|format_date }} {{ item.date|format_time }}
+                                            {% if item.date %}{{ item.date|format_date }} {{ item.date|format_time }}{% endif %}
                                         </td>
                                     </tr>
                                     <tr>

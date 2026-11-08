@@ -58,10 +58,10 @@ class TodoTransformer extends AbstractTransformer
             }
 
             if ('cs_step_item' != $todoItem::class) {
+                // a task without a due date keeps it empty
+                $datetimeDueDate = null;
                 if ($todoItem->getDate() && '9999-00-00 00:00:00' != $todoItem->getDate()) {
                     $datetimeDueDate = new DateTime($todoItem->getDate());
-                } else {
-                    $datetimeDueDate = new DateTime();
                 }
                 $todoData['due_date']['date'] = $datetimeDueDate;
                 $todoData['due_date']['time'] = $datetimeDueDate;
@@ -156,10 +156,12 @@ class TodoTransformer extends AbstractTransformer
                 $newStepOrder = explode(',', (string) $todoData['stepOrder']);
             }
 
-            // a day without a time is due at midnight
+            // a day without a time is due at midnight; an emptied date removes the due date
             if (isset($todoData['due_date']['date'])) {
                 $dueTime = $todoData['due_date']['time'] ?? null;
                 $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.($dueTime?->format('H:i:s') ?? '00:00:00'));
+            } elseif (array_key_exists('due_date', $todoData)) {
+                $todoObject->setDate(null);
             }
         } else {
             $hours = is_numeric($todoData['time_spend']['hour']) ? $todoData['time_spend']['hour'] : 0;

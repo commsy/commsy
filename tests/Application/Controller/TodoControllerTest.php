@@ -16,6 +16,7 @@ namespace Tests\Application\Controller;
 use App\Entity\Account;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Story\AccountStory;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -123,6 +124,24 @@ class TodoControllerTest extends AbstractApplicationTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * A new task has no due date: its form offers none and saving it
+     * unchanged keeps it without one.
+     */
+    public function testANewTaskStaysWithoutDueDate(): void
+    {
+        [$itemId, $crawler] = $this->createTodoAndOpenEdit();
+
+        $form = $crawler->selectButton('todo[save]')->form();
+        self::assertSame('', $form['todo[due_date][date]']->getValue());
+        self::assertSame('', $form['todo[due_date][time]']->getValue());
+        $form['todo[title]'] = 'ohne-frist';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        self::assertNull($this->dueDateOf($itemId));
+    }
+
     public function testADueDateWithoutTimeIsDueAtMidnight(): void
     {
         [$itemId, $crawler] = $this->createTodoAndOpenEdit();
@@ -135,6 +154,49 @@ class TodoControllerTest extends AbstractApplicationTestCase
 
         $this->assertResponseRedirects();
         self::assertSame('2030-03-04 00:00:00', $this->dueDateOf($itemId));
+    }
+
+    public function testAnEmptiedDueDateIsRemoved(): void
+    {
+        [$itemId, $crawler] = $this->createTodoAndOpenEdit();
+        $form = $crawler->selectButton('todo[save]')->form();
+        $form['todo[title]'] = 'mit-frist';
+        $form['todo[due_date][date]'] = $this->formatted(new \DateTimeImmutable('2030-03-04'), $crawler);
+        $form['todo[due_date][time]'] = '10:30';
+        $this->client->submit($form);
+        self::assertSame('2030-03-04 10:30:00', $this->dueDateOf($itemId));
+
+        $crawler = $this->client->request('GET', "/room/$this->roomId/todo/$itemId/edit");
+        $form = $crawler->selectButton('todo[save]')->form();
+        $form['todo[title]'] = 'frist-weg';
+        $form['todo[due_date][date]'] = '';
+        $form['todo[due_date][time]'] = '';
+        $this->client->submit($form);
+
+        $this->assertResponseRedirects();
+        self::assertNull($this->dueDateOf($itemId));
+    }
+
+    public function testATaskWithoutDueDateShowsNone(): void
+    {
+        [$itemId, $crawler] = $this->createTodoAndOpenEdit();
+        $form = $crawler->selectButton('todo[save]')->form();
+        $form['todo[title]'] = 'ohne-frist';
+        $this->client->submit($form);
+        self::assertNull($this->dueDateOf($itemId));
+
+        $crawler = $this->client->request('GET', "/room/$this->roomId/todo/$itemId");
+
+        $this->assertResponseIsSuccessful();
+        // the page speaks the language of the account, whichever that is
+        $translator = self::getContainer()->get(TranslatorInterface::class);
+        $labels = array_map(
+            static fn (string $locale): string => sprintf('contains(normalize-space(.), "%s")', $translator->trans('due date', [], 'todo', $locale)),
+            ['de', 'en'],
+        );
+        $value = $crawler->filterXPath(sprintf('//td[strong[%s]]/following-sibling::td[1]', implode(' or ', $labels)));
+        self::assertGreaterThan(0, $value->count());
+        self::assertSame('', trim($value->first()->text('')));
     }
 
     private function dueDateOf(int $itemId): ?string
