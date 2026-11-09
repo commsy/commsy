@@ -127,7 +127,7 @@ class UserCreatorFacade
         $account->setLanguage(AccountLanguage::GERMAN);
         $account->setAuthSource($authSource);
 
-        $account->setPassword($this->passwordEncoder->encodePassword($account, $password));
+        $account->setPassword($this->passwordEncoder->hashPassword($account, $password));
 
         return $this->accountFacade->persistNewAccount($account);
     }
