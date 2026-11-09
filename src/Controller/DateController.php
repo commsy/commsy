@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Rubric\Dates\ICalImportUploads;
 use App\Action\Activate\ActivateAction;
 use App\Action\Activate\DeactivateAction;
 use App\Action\Delete\DeleteAction;
@@ -1433,6 +1434,7 @@ class DateController extends BaseController
         CalendarsService $calendarsService,
         CalendarsRepository $calendarsRepository,
         ManagerRegistry $doctrine,
+        ICalImportUploads $iCalImportUploads,
         int $roomId
     ): Response {
         $calendar = null;
@@ -1505,10 +1507,11 @@ class DateController extends BaseController
                     $em->flush();
                 }
 
-                $projectDir = $this->getParameter('kernel.project_dir');
                 $fileData = [];
                 foreach ($files as $file) {
-                    $fileHandle = fopen($projectDir.'/var/temp/'.$file->getFileId(), 'r');
+                    // the name comes back from the form: only an upload for this room is read
+                    $path = $iCalImportUploads->uploadAt($roomId, (string) $file->getFileId());
+                    $fileHandle = null !== $path ? fopen($path, 'r') : false;
                     if ($fileHandle) {
                         $fileData[] = $fileHandle;
                     }
@@ -1531,21 +1534,17 @@ class DateController extends BaseController
     #[Route(path: '/room/{roomId}/date/importupload')]
     public function importUpload(
         Request $request,
+        ICalImportUploads $iCalImportUploads,
         int $roomId
     ): Response {
         $response = new JsonResponse();
-
-        $projectDir = $this->getParameter('kernel.project_dir');
 
         $files = $request->files->all();
 
         $responseData = [];
         foreach ($files['files'] as $file) {
             if (stristr((string) $file->getMimeType(), 'text/calendar')) {
-                $filename = $roomId.'_'.date('Ymdhis').'_'.$file->getClientOriginalName();
-                if ($file->move($projectDir.'/var/temp/', $filename)) {
-                    $responseData[$filename] = $file->getClientOriginalName();
-                }
+                $responseData[$iCalImportUploads->keep($file, $roomId)] = $file->getClientOriginalName();
             }
         }
 
