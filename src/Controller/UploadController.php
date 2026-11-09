@@ -13,6 +13,7 @@
 
 namespace App\Controller;
 
+use App\Mail\MailAttachmentUploads;
 use App\Dto\TempUserFileDto;
 use App\Entity\Account;
 use App\Event\CommsyEditEvent;
@@ -52,6 +53,7 @@ class UploadController extends AbstractController
         private readonly int $maxFileSize,
         #[Autowire('%commsy.upload.max_email_attachment_size%')]
         private readonly int $maxEmailAttachmentSize,
+        private readonly MailAttachmentUploads $mailAttachmentUploads,
     ) {
     }
 
@@ -311,13 +313,9 @@ class UploadController extends AbstractController
                 return $response->setData(['attachmentInfo' => [], 'error' => $error]);
             }
 
-            $tempUploadDir = $this->getParameter('files_directory').'/temp/';
-            $fileId = md5(uniqid());
-            $fileName = $fileId.'.'.$file->guessExtension();
-            $filePath = $tempUploadDir.$fileName;
             $fileDisplayName = $file->getClientOriginalName();
-
-            $file->move($tempUploadDir, $fileName);
+            $filePath = $this->mailAttachmentUploads->keep($file);
+            $fileId = pathinfo($filePath, PATHINFO_FILENAME);
 
             $fileInfo = [
                 'fileId' => $fileId,

@@ -13,6 +13,7 @@
 
 namespace App\Utils;
 
+use App\Mail\MailAttachmentUploads;
 use App\Form\Model\File;
 use App\Form\Model\Send;
 use App\Mail\Mailer;
@@ -37,7 +38,8 @@ class MailAssistant
         LegacyEnvironment $legacyEnvironment,
         private readonly Mailer $mailer,
         private readonly Environment $twig,
-        private readonly CurrentContextResolver $currentContextResolver
+        private readonly CurrentContextResolver $currentContextResolver,
+        private readonly MailAttachmentUploads $mailAttachmentUploads,
     ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -203,9 +205,9 @@ class MailAssistant
         }
 
         foreach ($files as $file) {
-            $filePath = $file->getFilePath();
-            $attachFile = $file->getChecked();
-            if (!$attachFile || empty($filePath)) {
+            // the path comes back from the form: only an upload for a mail is attached
+            $filePath = $this->mailAttachmentUploads->uploadAt((string) $file->getFilePath());
+            if (!$file->getChecked() || null === $filePath) {
                 continue;
             }
 
