@@ -14,15 +14,21 @@
 namespace App\Command;
 
 use App\Services\CalendarsService;
+use App\Services\ExternalCalendarFeed;
+use InvalidArgumentException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientException;
 
 #[AsCommand('commsy:cron:externalcalendars', 'commsy external calendars cron')]
 class ExternalCalendarsCommand extends Command
 {
-    public function __construct(private readonly CalendarsService $calendarsService)
+    public function __construct(
+        private readonly CalendarsService $calendarsService,
+        private readonly ExternalCalendarFeed $externalCalendarFeed,
+    )
     {
         parent::__construct();
     }
@@ -41,14 +47,20 @@ class ExternalCalendarsCommand extends Command
             // get external calendars
             $output->write('<info>'.$calendar->getTitle().'</info>');
 
-            if (filter_var($calendar->getExternalUrl(), FILTER_VALIDATE_URL)) {
-                // fetch and parse data from external calendars
-                $result = $this->calendarsService->importEvents(fopen(str_ireplace('webcal://', 'http://', (string) $calendar->getExternalUrl()), 'r'), $calendar, true);
-                if (true !== $result) {
-                    $output->write('<info>... Error: '.$result.'</info>');
-                }
-            } else {
-                $output->write('<info> ... Error: no valid url</info>');
+            try {
+                $feed = $this->externalCalendarFeed->fetch((string) $calendar->getExternalUrl());
+            } catch (InvalidArgumentException) {
+                $output->writeln('<info> ... Error: no valid url</info>');
+                continue;
+            } catch (HttpClientException $exception) {
+                $output->writeln('<info> ... Error: '.$exception->getMessage().'</info>');
+                continue;
+            }
+
+            // parse the data of the external calendar
+            $result = $this->calendarsService->importEvents($feed, $calendar, true);
+            if (true !== $result) {
+                $output->write('<info>... Error: '.$result.'</info>');
             }
             $output->writeln('');
         }
