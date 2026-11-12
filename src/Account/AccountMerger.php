@@ -82,12 +82,16 @@ class AccountMerger
 
         // non duplicates
         foreach ($nonDuplicated as $uniqueRoom) {
-            $this->rewriteRoomUser($from, $into, $uniqueRoom, $intoPortalUser);
+            if ($this->isStillMember($from, $uniqueRoom)) {
+                $this->rewriteRoomUser($from, $into, $uniqueRoom, $intoPortalUser);
+            }
         }
 
         // duplicates
         foreach ($duplicated as $nonUniqueRoom) {
-            $this->rewriteContextUserAndContent($from, $into, $nonUniqueRoom->getItemId());
+            if ($this->isStillMember($from, $nonUniqueRoom)) {
+                $this->rewriteContextUserAndContent($from, $into, $nonUniqueRoom->getItemId());
+            }
         }
     }
 
@@ -99,11 +103,16 @@ class AccountMerger
         $duplicatedRooms = [];
         $nonDuplicatedRooms = [];
 
+        // User rooms hang off their project room, not the portal, so the
+        // project list does not cover them. They come last, as ending a
+        // project membership deletes the user room linked to it.
         $intoUserRooms = $intoPortalUser->getRelatedProjectListAllUserStatus();
         $intoUserRooms->addList($intoPortalUser->getRelatedCommunityListAllUserStatus());
+        $intoUserRooms->addList($intoPortalUser->getRelatedUserroomsList(false));
 
         $fromUserRooms = $fromPortalUser->getRelatedProjectListAllUserStatus();
         $fromUserRooms->addList($fromPortalUser->getRelatedCommunityListAllUserStatus());
+        $fromUserRooms->addList($fromPortalUser->getRelatedUserroomsList(false));
 
         foreach ($fromUserRooms as $userFromRoom) {
             if ($intoUserRooms->inList($userFromRoom)) {
@@ -117,6 +126,15 @@ class AccountMerger
             'duplicated' => $duplicatedRooms,
             'nonDuplicated' => $nonDuplicatedRooms,
         ];
+    }
+
+    /**
+     * Whether the account still has a membership in the room — merging an
+     * earlier room may have deleted it.
+     */
+    private function isStillMember(Account $account, cs_room_item $room): bool
+    {
+        return null !== $this->getUserInContext($account, $room->getItemID());
     }
 
     private function getUserInContext(Account $account, int $contextId): ?cs_user_item

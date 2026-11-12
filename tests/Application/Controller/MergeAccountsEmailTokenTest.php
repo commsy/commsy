@@ -16,6 +16,7 @@ namespace Tests\Application\Controller;
 use App\Entity\Account;
 use App\Entity\AccountMergeToken;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\AccountFactory;
@@ -185,6 +186,90 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
         $this->assertSame($newAccount->getUsername(), $row['user_id']);
     }
 
+    /**
+     * Group rooms and user rooms carry memberships of their own, next to the
+     * one in their project room. They are merged like any other room.
+     */
+    #[DataProvider('subRoomTypes')]
+    public function testConfirmedMergeRewritesASubRoomMembershipHeldOnlyByTheOldAccount(string $type): void
+    {
+        ['portal' => $portal, 'new' => $newAccount, 'old' => $oldAccount, 'shib' => $shibSource] =
+            $this->createScenario();
+
+        $room = RoomFactory::new()->with(['type' => $type])->create([
+            'contextId' => $portal->getId(),
+            'portal' => $portal,
+        ]);
+        $oldMembershipId = RoomUserFactory::createOne(['account' => $oldAccount, 'room' => $room])->getItemId();
+
+        $this->mergeOldIntoNew($portal->getId(), $newAccount, $shibSource->getId());
+
+        $row = $this->membership($oldMembershipId);
+        $this->assertNotFalse($row, 'the rewritten membership must still exist');
+        $this->assertSame($newAccount->getId(), (int) $row['account_id']);
+        $this->assertSame($newAccount->getUsername(), $row['user_id']);
+        $this->assertNull($row['deletion_date']);
+    }
+
+    #[DataProvider('subRoomTypes')]
+    public function testConfirmedMergeCollapsesASubRoomMembershipHeldByBothAccounts(string $type): void
+    {
+        ['portal' => $portal, 'new' => $newAccount, 'old' => $oldAccount, 'shib' => $shibSource] =
+            $this->createScenario();
+
+        $room = RoomFactory::new()->with(['type' => $type])->create([
+            'contextId' => $portal->getId(),
+            'portal' => $portal,
+        ]);
+        $oldMembershipId = RoomUserFactory::new()->asModerator()
+            ->create(['account' => $oldAccount, 'room' => $room])->getItemId();
+        $newMembershipId = RoomUserFactory::createOne(['account' => $newAccount, 'room' => $room])->getItemId();
+
+        $this->mergeOldIntoNew($portal->getId(), $newAccount, $shibSource->getId());
+
+        $this->assertNotNull($this->membership($oldMembershipId)['deletion_date'], 'the old membership is removed');
+        $kept = $this->membership($newMembershipId);
+        $this->assertNull($kept['deletion_date']);
+        $this->assertSame(3, (int) $kept['status'], 'the higher status of both is kept');
+    }
+
+    /**
+     * When both accounts share a project room, ending the old membership
+     * there deletes the old account's user room with it. If the new account
+     * is a member of that user room too (as a moderator of the project room
+     * is), the merge must not stumble over the deleted room afterwards.
+     */
+    public function testConfirmedMergeSkipsAUserRoomDeletedWithItsProjectMembership(): void
+    {
+        ['portal' => $portal, 'new' => $newAccount, 'old' => $oldAccount, 'shib' => $shibSource] =
+            $this->createScenario();
+
+        $project = RoomFactory::new()->project()->create(['contextId' => $portal->getId(), 'portal' => $portal]);
+        $userRoom = RoomFactory::new()->userRoom()->create(['contextId' => $project->getItemId(), 'portal' => $portal]);
+
+        $oldProjectMembershipId = RoomUserFactory::createOne(['account' => $oldAccount, 'room' => $project])->getItemId();
+        RoomUserFactory::createOne(['account' => $newAccount, 'room' => $project]);
+        $oldUserRoomMembershipId = RoomUserFactory::createOne(['account' => $oldAccount, 'room' => $userRoom])->getItemId();
+        RoomUserFactory::new()->asModerator()->create(['account' => $newAccount, 'room' => $userRoom]);
+
+        static::getContainer()->get(EntityManagerInterface::class)->getConnection()->update(
+            'user',
+            ['extras' => serialize(['USERROOM_ITEM_ID' => $userRoom->getItemId()])],
+            ['item_id' => $oldProjectMembershipId]
+        );
+
+        $this->mergeOldIntoNew($portal->getId(), $newAccount, $shibSource->getId());
+
+        $this->assertNotNull($this->membership($oldProjectMembershipId)['deletion_date']);
+        $this->assertNotNull($this->membership($oldUserRoomMembershipId)['deletion_date']);
+    }
+
+    public static function subRoomTypes(): iterable
+    {
+        yield 'group room' => ['grouproom'];
+        yield 'user room' => ['userroom'];
+    }
+
     public function testLocalSourceAlsoSendsConfirmationMailAndDoesNotMergeDirectly(): void
     {
         $localSource = AuthSourceLocalFactory::createOne(['enabled' => true, 'default' => true]);
@@ -329,6 +414,30 @@ class MergeAccountsEmailTokenTest extends AbstractApplicationTestCase
             'shib' => $shibSource,
             'local' => $localSource,
         ];
+    }
+
+    private function mergeOldIntoNew(int $portalId, Account $newAccount, int $oldAuthSourceId): void
+    {
+        $this->loginAsUser($portalId, $newAccount->getUsername(), $newAccount->getPlainPassword());
+
+        $crawler = $this->client->request('GET', "/portal/{$portalId}/account/merge");
+        $form = $crawler->selectButton('profile_mergeaccounts[save]')->form();
+        $form['profile_mergeaccounts[combineUserId]'] = 'old.bkennung';
+        $form['profile_mergeaccounts[auth_source]'] = (string) $oldAuthSourceId;
+        $this->client->submit($form);
+
+        $rawToken = $this->extractTokenFromLastMail();
+        $confirmCrawler = $this->client->request('GET', "/portal/{$portalId}/account/merge/confirm/{$rawToken}");
+        $this->client->submit($confirmCrawler->filter('form')->form());
+        $this->assertResponseRedirects("/portal/{$portalId}/enter");
+    }
+
+    private function membership(int $itemId): array|false
+    {
+        return static::getContainer()->get(EntityManagerInterface::class)->getConnection()->fetchAssociative(
+            'SELECT account_id, user_id, status, deletion_date FROM user WHERE item_id = ?',
+            [$itemId]
+        );
     }
 
     private function singleMergeToken(): ?AccountMergeToken
