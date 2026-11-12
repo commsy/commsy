@@ -18,9 +18,6 @@ fos_ck_editor:
         bidi:
             path:     "/ckeditor/bidi/"
             filename: "plugin.js"
-        commsyhelp:
-            path:     "/ckeditor/commsyhelp/"
-            filename: "plugin.js"
         commsyimage:
             path:     "/ckeditor/commsyimage/"
             filename: "plugin.js"
@@ -78,12 +75,12 @@ fos_ck_editor:
             style: [ "TextColor", "BGColor", "RemoveFormat" ]
             content: [ "Link", "Unlink", "Table", "HorizontalRule" ]
             language: [ "Language", "BidiLtr", "BidiRtl" ]
-            commsy: [ "Mathjax", "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument", "Commsyhelp" ]
+            commsy: [ "Mathjax", "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument" ]
 
     configs:
         cs_item_config:
             toolbar: "fullToolbar"
-            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp,mathjax"
+            extraPlugins: "sourcedialog,lineutils,widgetselection,maximize,autogrow,stickytoolbar,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,mathjax"
             language_list: ['de:German', 'en:English']
             removePlugins: 'floatingspace,sharedspace,resize,elementspath,exportpdf'
             # CKEditor 4.22 added a banner telling end users their editor is
