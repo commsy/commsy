@@ -56,3 +56,8 @@ framework:
                 forsake:
                     from: idle_notified
                     to: abandoned
+                # A room that is already locked skips the lock notice and
+                # goes straight to the locked stage.
+                adopt_lock:
+                    from: [active, active_notified]
+                    to: idle

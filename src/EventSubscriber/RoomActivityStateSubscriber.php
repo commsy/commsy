@@ -98,12 +98,24 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
         /** @var Room $room */
         $room = $event->getSubject();
 
-        /** @var Portal $portal */
-        $portal = $room->getPortal();
+        // A locked room is not warned about a lock, see guardAdoptLock().
+        if ($room->isLocked() || !$this->inactiveLongEnoughForLock($room)) {
+            $event->setBlocked(true);
+        }
+    }
 
-        if (!$room->getLastLogin() ||
-            !$this->datePassedDays($room->getLastLogin(), $portal->getClearInactiveRoomsNotifyLockDays())
-        ) {
+    /**
+     * Decides if an already locked room can skip the lock notice and go
+     * straight to the idle state. Same inactivity period as for the notice.
+     *
+     * @throws Exception
+     */
+    public function guardAdoptLock(GuardEvent $event): void
+    {
+        /** @var Room $room */
+        $room = $event->getSubject();
+
+        if (!$room->isLocked() || !$this->inactiveLongEnoughForLock($room)) {
             $event->setBlocked(true);
         }
     }
@@ -204,8 +216,10 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
         /** @var Room $room */
         $room = $event->getSubject();
 
+        // An existing lock is kept as it is — relocking would turn a lock by
+        // the portal moderation into one by the room moderation.
         $legacyRoom = $this->itemService->getTypedItem($room->getItemId());
-        if ($legacyRoom) {
+        if ($legacyRoom instanceof cs_room_item && !$legacyRoom->isLocked()) {
             $legacyRoom->lock();
             $legacyRoom->save();
         }
@@ -258,6 +272,18 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
     /**
      * @throws Exception
      */
+    private function inactiveLongEnoughForLock(Room $room): bool
+    {
+        /** @var Portal $portal */
+        $portal = $room->getPortal();
+
+        return $room->getLastLogin()
+            && $this->datePassedDays($room->getLastLogin(), $portal->getClearInactiveRoomsNotifyLockDays());
+    }
+
+    /**
+     * @throws Exception
+     */
     private function datePassedDays(DateTime $compare, int $numDays): bool
     {
         $threshold = new DateTime();
@@ -272,6 +298,7 @@ readonly class RoomActivityStateSubscriber implements EventSubscriberInterface
             'workflow.room_activity.guard' => ['guard'],
             'workflow.room_activity.guard.notify_lock' => ['guardNotifyLock'],
             'workflow.room_activity.guard.lock' => ['guardLock'],
+            'workflow.room_activity.guard.adopt_lock' => ['guardAdoptLock'],
             'workflow.room_activity.guard.notify_forsake' => ['guardNotifyForsake'],
             'workflow.room_activity.guard.forsake' => ['guardForsake'],
             'workflow.room_activity.entered' => ['entered'],

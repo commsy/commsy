@@ -25,6 +25,7 @@ class RoomActivityStateSubscriberTest extends TestCase
         $this->assertArrayHasKey('workflow.room_activity.guard', $subscribedEvents);
         $this->assertArrayHasKey('workflow.room_activity.guard.notify_lock', $subscribedEvents);
         $this->assertArrayHasKey('workflow.room_activity.guard.lock', $subscribedEvents);
+        $this->assertArrayHasKey('workflow.room_activity.guard.adopt_lock', $subscribedEvents);
         $this->assertArrayHasKey('workflow.room_activity.guard.notify_forsake', $subscribedEvents);
         $this->assertArrayHasKey('workflow.room_activity.guard.forsake', $subscribedEvents);
         $this->assertArrayHasKey('workflow.room_activity.entered', $subscribedEvents);
@@ -36,6 +37,7 @@ class RoomActivityStateSubscriberTest extends TestCase
         $this->assertContains('guard', $subscribedEvents['workflow.room_activity.guard']);
         $this->assertContains('guardNotifyLock', $subscribedEvents['workflow.room_activity.guard.notify_lock']);
         $this->assertContains('guardLock', $subscribedEvents['workflow.room_activity.guard.lock']);
+        $this->assertContains('guardAdoptLock', $subscribedEvents['workflow.room_activity.guard.adopt_lock']);
         $this->assertContains('guardNotifyForsake', $subscribedEvents['workflow.room_activity.guard.notify_forsake']);
         $this->assertContains('guardForsake', $subscribedEvents['workflow.room_activity.guard.forsake']);
         $this->assertContains('entered', $subscribedEvents['workflow.room_activity.entered']);

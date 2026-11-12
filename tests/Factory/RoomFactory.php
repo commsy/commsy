@@ -157,7 +157,7 @@ final class RoomFactory extends PersistentObjectFactory
                     'room_description' => $room->getRoomDescription(),
                     'deleter_id' => $deleterId,
                     'deletion_date' => $deletionDate,
-                    'lastlogin' => null,
+                    'lastlogin' => $room->getLastLogin()?->format('Y-m-d H:i:s'),
                     'activity_state' => $room->getActivityState(),
                     'activity_state_updated' => $room->getActivityStateUpdated()?->format('Y-m-d H:i:s'),
                     'creation_date' => $now,

@@ -36,6 +36,15 @@ class WorkspaceActivityStateTransitionsHandler
         Room::ACTIVITY_IDLE_NOTIFIED,
     ];
 
+    /**
+     * States in which a room is meant to be locked. Unlocking it takes the
+     * room off the way to deletion.
+     */
+    private const array LOCKED_STATES = [
+        Room::ACTIVITY_IDLE,
+        Room::ACTIVITY_IDLE_NOTIFIED,
+    ];
+
     public function __construct(
         private readonly RoomRepository $roomRepository,
         private readonly EntityManagerInterface $entityManager,
@@ -62,6 +71,16 @@ class WorkspaceActivityStateTransitionsHandler
                 if (in_array($roomActivityObject->getActivityState(), self::ROLLED_BACK_STATES, true)) {
                     $this->roomManager->resetInactivity($roomActivityObject, false, true, false);
                 }
+
+                continue;
+            }
+
+            // Unlocking a room by hand does not touch its activity state, and
+            // the deletion would go ahead in an open room.
+            if (!$roomActivityObject->isLocked()
+                && in_array($roomActivityObject->getActivityState(), self::LOCKED_STATES, true)
+            ) {
+                $this->roomManager->resetInactivity($roomActivityObject, false, true, false);
 
                 continue;
             }
