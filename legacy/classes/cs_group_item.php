@@ -81,7 +81,9 @@ class cs_group_item extends cs_label_item
         $portal = $parentRoom->getPortal();
 
         if ($saveGrouproom) {
-            if (!$this->_issetGroupRoomItemID() && $this->isGroupRoomActivated()) {
+            // A draft is saved by its hashtag and category components before the
+            // form that carries its title; its room is opened once it has a name.
+            if (!$this->_issetGroupRoomItemID() && $this->isGroupRoomActivated() && '' !== trim($this->getTitle())) {
                 $new_group_room = true;
 
                 // initiate group room
