@@ -539,7 +539,7 @@
         {% if contextIsArchived is same as(true) %}
             {{ 'Archived room'|trans({}, 'room') }} |
         {% endif %}
-        {{ 'room.status.description'|trans({'room_status': enum('App\\Room\\RoomStatus').from(context.status).name}, 'room') }}
+        {{ 'room.status.description'|trans({'room_status': context.statusDescriptionKey}, 'room') }}
     {% elseif 'enter' in contextMemberStatus %}
         {% if contextIsArchived is same as(true) %}
             {{ 'Archived room'|trans({}, 'room') }} | <a href="{{ path('app_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>

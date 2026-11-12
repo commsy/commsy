@@ -72,6 +72,9 @@
                                             {% else %}
                                                 {{ 'This workspace can be unlocked by moderation.'|trans({}, 'room') }}
                                             {% endif %}
+                                            {% if project.isLockedForInactivity() %}
+                                                {{ 'room.locked_for_inactivity.info'|trans({}, 'room') }}
+                                            {% endif %}
                                             </p>
                                         {% endif %}
                                     </div>

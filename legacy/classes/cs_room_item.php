@@ -15,6 +15,7 @@
  */
 
 use App\Entity\Room;
+use App\Room\RoomStatus;
 use Doctrine\ORM\EntityManagerInterface;
 
 /** father class for a rooms (project or community)
@@ -1023,6 +1024,31 @@ class cs_room_item extends cs_context_item
     protected function deleteFromElastic(): void
     {
         $this->deleteElasticItem();
+    }
+
+    /**
+     * Whether the deprovisioning holds this room locked and is about to delete it.
+     */
+    public function isLockedForInactivity(): bool
+    {
+        return $this->isLocked() && in_array(
+            $this->_getValue('activity_state'),
+            [Room::ACTIVITY_IDLE, Room::ACTIVITY_IDLE_NOTIFIED],
+            true
+        );
+    }
+
+    /**
+     * Select key of room.status.description. A lock of the deprovisioning
+     * gets a key of its own; a lock by the portal moderation stays one.
+     */
+    public function getStatusDescriptionKey(): string
+    {
+        if ($this->isLockedForInactivity() && !$this->isLockedByModerator()) {
+            return 'LOCKED_INACTIVE';
+        }
+
+        return RoomStatus::from((int) $this->getStatus())->name;
     }
 
     public function saveLastlogin()

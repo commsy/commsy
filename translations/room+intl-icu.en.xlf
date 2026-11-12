@@ -226,11 +226,16 @@
                 <source>room.status.description</source>
                 <target>{room_status, select,
                     LOCKED_PORTAL_MOD {Locked by portal moderation}
-                    LOCKED            {Locked by room moderation}
+                    LOCKED            {Locked}
+                    LOCKED_INACTIVE   {Locked due to inactivity}
                     CLOSED            {Workspace closed}
                     NO_ROOM           {No workspace available}
                     other             {Enter workspace}
                 }</target>
+            </trans-unit>
+            <trans-unit id="room_locked_for_inactivity_info">
+                <source>room.locked_for_inactivity.info</source>
+                <target>Unless it is unlocked, it will be deleted due to inactivity.</target>
             </trans-unit>
             <trans-unit id="room_locked_unlock_info">
                 <source>This workspace can be unlocked using the "Unlock project workspace" action.</source>
