@@ -41,6 +41,8 @@ final class RoomLockNoticeTest extends AbstractApplicationTestCase
         $account = AccountStory::get('account');
         $this->portalId = $account->getContextId();
         $this->db = self::getContainer()->get(Connection::class);
+        // the account language is random; the assertions read the English page
+        $this->db->update('accounts', ['language' => 'en'], ['id' => $account->getId()]);
         $this->loginAsUser($this->portalId, $account->getUsername(), $account->getPlainPassword());
         $this->roomId = $this->createRoom($this->portalId, 'Testraum');
     }
