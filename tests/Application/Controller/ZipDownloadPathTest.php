@@ -18,6 +18,7 @@ namespace Tests\Application\Controller;
 use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
+use Knp\Snappy\Pdf;
 use Symfony\Component\Filesystem\Filesystem;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\MaterialFactory;
@@ -64,6 +65,11 @@ final class ZipDownloadPathTest extends AbstractApplicationTestCase
         $material = MaterialFactory::createOne(['room' => $room, 'creator' => $roomUser, 'title' => self::TITLE]);
 
         $this->loginAsUser((int) $account->getPortal()?->getId(), $account->getUsername(), $account->getPlainPassword());
+        // each entry goes into the archive as a PDF; the renderer binary is not part of the test environment
+        $pdf = $this->createStub(Pdf::class);
+        $pdf->method('getOutputFromHtml')->willReturn('%PDF-1.4 stub');
+        static::getContainer()->set('knp_snappy.pdf', $pdf);
+
         $this->client->request('POST', "/room/{$room->getItemId()}/material/download", [
             'action' => 'download',
             'positiveItemIds' => [$material->getItemId()],

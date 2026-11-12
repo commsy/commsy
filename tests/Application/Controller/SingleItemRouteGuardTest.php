@@ -19,6 +19,7 @@ use App\Entity\Account;
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\DBAL\Connection;
+use Knp\Snappy\Pdf;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\AccountFactory;
@@ -100,6 +101,11 @@ final class SingleItemRouteGuardTest extends AbstractApplicationTestCase
 
     public function testAnOwnEntryIsStillShown(): void
     {
+        // the print view renders a PDF; the renderer binary is not part of the test environment
+        $pdf = $this->createStub(Pdf::class);
+        $pdf->method('getOutputFromHtml')->willReturn('%PDF-1.4 stub');
+        static::getContainer()->set('knp_snappy.pdf', $pdf);
+
         $this->client->request('GET', $this->path('/material/%d/print', $this->own['material']));
 
         self::assertResponseIsSuccessful();
