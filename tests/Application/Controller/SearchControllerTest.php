@@ -16,10 +16,13 @@ declare(strict_types=1);
 namespace Tests\Application\Controller;
 
 use App\Entity\Account;
+use App\Entity\Room;
 use App\Entity\SavedSearch;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Tests\Application\AbstractApplicationTestCase;
+use Tests\Factory\MaterialFactory;
 use Tests\Story\AccountStory;
 use Tests\Support\Search\FakeSearchServer;
 use Zenstruck\Foundry\Attribute\WithStory;
@@ -80,6 +83,20 @@ final class SearchControllerTest extends AbstractApplicationTestCase
 
         $entityManager->clear();
         self::assertNotNull($this->savedSearches()->find($viewId));
+    }
+
+    public function testAHitWithoutItsEntryIsLeftOut(): void
+    {
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $room = $entityManager->getRepository(Room::class)->find($this->roomId);
+        $creator = $entityManager->getRepository(User::class)->findOneBy(['room' => $room]);
+        $material = (int) MaterialFactory::createOne(['room' => $room, 'creator' => $creator, 'title' => 'Fundstück'])->getItemId();
+        $this->server->answerWith([['material', 999_999_991], ['material', $material]]);
+
+        $crawler = $this->results(['phrase' => 'Fund']);
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Fundstück', $crawler->filter('#search-feed')->text());
     }
 
     /**
