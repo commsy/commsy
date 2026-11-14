@@ -94,6 +94,14 @@ when@test:
         Tests\Factory\:
             resource: '../tests/Factory'
 
+        # Tests never talk to a search server: searches are answered by a
+        # stand-in that is told its hits.
+        Tests\Support\Search\FakeSearchServer:
+            public: true
+            arguments:
+                $indexPrefix: '%commsy.elastic.prefix%'
+        Elastica\SearchableInterface: '@Tests\Support\Search\FakeSearchServer'
+
 when@dev:
     parameters:
         commsy.online_office.proofkey_validation: false

@@ -529,8 +529,9 @@ class SearchController extends BaseController
 
         // get all of the user's saved searches
         $portalUser = $currentUser->getRelatedPortalUserItem();
-        if ($portalUser) {
-            $savedSearches = $savedSearchRepository->findByAccountId($portalUser->getItemId());
+        $portalUserId = $portalUser?->getItemId();
+        if (null !== $portalUserId) {
+            $savedSearches = $savedSearchRepository->findByAccountId($portalUserId);
             $searchData->setSavedSearches($savedSearches);
         }
 
@@ -541,10 +542,10 @@ class SearchController extends BaseController
         $searchParams = $requestParams['search_filter'] ?? $requestParams['search'] ?? null;
 
         // selected saved search parameters
-        $savedSearchId = !empty($searchParams['selectedSavedSearch']) ? $searchParams['selectedSavedSearch'] : 0;
-        if (!empty($savedSearchId)) {
-            $savedSearch = $savedSearchRepository->findOneById($savedSearchId);
-            $searchData->setSelectedSavedSearch($savedSearch);
+        // only a search saved by the person themself
+        $savedSearchId = (int) ($searchParams['selectedSavedSearch'] ?? 0);
+        if ($savedSearchId > 0 && null !== $portalUserId) {
+            $searchData->setSelectedSavedSearch($savedSearchRepository->findOneBy(['id' => $savedSearchId, 'accountId' => $portalUserId]));
         }
 
         $savedSearchTitle = $searchParams['selectedSavedSearchTitle'] ?? '';
