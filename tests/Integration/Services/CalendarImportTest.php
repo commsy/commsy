@@ -114,6 +114,48 @@ final class CalendarImportTest extends KernelTestCase
         self::assertSame(['future@example.org' => 1, 'past@example.org' => 1], $this->liveDatesByUid());
     }
 
+    public function testEveryAttendeeIsListedWithTheirOwnAddress(): void
+    {
+        $this->calendarsService->importEvents(<<<'ICS'
+            BEGIN:VCALENDAR
+            VERSION:2.0
+            PRODID:-//CommSy Test//EN
+            BEGIN:VEVENT
+            UID:meeting@example.org
+            DTSTAMP:20260101T080000Z
+            DTSTART:20300303T100000Z
+            DTEND:20300303T113000Z
+            SUMMARY:Treffen
+            ORGANIZER;CN=Olga:mailto:olga@example.org
+            ATTENDEE;CN=Anna:mailto:anna@example.org
+            ATTENDEE;CN=Ben:mailto:ben@example.org
+            END:VEVENT
+            BEGIN:VEVENT
+            UID:open@example.org
+            DTSTAMP:20260101T080000Z
+            DTSTART:20300304T100000Z
+            DTEND:20300304T113000Z
+            SUMMARY:Ohne Leitung
+            ATTENDEE;CN=Anna:mailto:anna@example.org
+            END:VEVENT
+            END:VCALENDAR
+            ICS, $this->calendar, true);
+
+        $meeting = $this->descriptionOf('meeting@example.org');
+        self::assertStringContainsString('Olga (<a href="mailto:olga@example.org">olga@example.org</a>)', $meeting);
+        self::assertStringContainsString('Anna (<a href="mailto:anna@example.org">anna@example.org</a>)', $meeting);
+        self::assertStringContainsString('Ben (<a href="mailto:ben@example.org">ben@example.org</a>)', $meeting);
+        self::assertStringContainsString('Anna (<a href="mailto:anna@example.org">anna@example.org</a>)', $this->descriptionOf('open@example.org'));
+    }
+
+    private function descriptionOf(string $uid): string
+    {
+        return (string) $this->connection->fetchOne(
+            'SELECT description FROM dates WHERE uid = ? AND context_id = ? AND deletion_date IS NULL',
+            [$uid, $this->room->getItemId()],
+        );
+    }
+
     /**
      * @return array<string, int>
      */

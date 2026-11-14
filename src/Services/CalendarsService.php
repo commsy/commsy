@@ -269,7 +269,7 @@ readonly class CalendarsService
                             }
                             $attendeeMailto = str_ireplace('MAILTO:', 'mailto:', (string) $tempAttendee->getValue());
                             $attendeeEmail = str_ireplace('MAILTO:', '', (string) $tempAttendee->getValue());
-                            $attendeeArray[] = $tempAttendeeString.' (<a href="'.$organizerMailto.'">'.$organizerEmail.'</a>)';
+                            $attendeeArray[] = $tempAttendeeString.' (<a href="'.$attendeeMailto.'">'.$attendeeEmail.'</a>)';
                         }
                     }
                     if (!empty($attendeeArray)) {
