@@ -3,10 +3,10 @@
 namespace App\Security;
 
 use App\WOPI\Verification\ProofKeyValidator;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\InvalidTokenException;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Authenticator\JWTAuthenticator;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\QueryParameterTokenExtractor;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\TokenExtractorInterface;
-use LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -33,12 +33,12 @@ final class WOPIJWTAuthenticator extends JWTAuthenticator
         return $chainExtractor;
     }
 
-    public function doAuthenticate(Request $request): Passport
+    public function authenticate(Request $request): Passport
     {
         if (!$this->proofKeyValidator->isRequestValid($request)) {
-            throw new LogicException('proof key validation failed!');
+            throw new InvalidTokenException('Invalid WOPI proof key');
         }
 
-        return parent::doAuthenticate($request);
+        return parent::authenticate($request);
     }
 }
