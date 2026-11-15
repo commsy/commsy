@@ -71,6 +71,8 @@
 
             {# title and meta #}
             <div class="uk-width-8-10">
+                {# a room lies in the portal, which is no room to name or link #}
+                {% if result.type is not same as('room') %}
                 <div class="uk-comment-meta">
                     {% set privateRoom = user.ownRoom %}
                     {% if privateRoom.itemID is defined and privateRoom.itemID == entity.contextId -%}
@@ -79,6 +81,7 @@
                         <a href="{{ path('app_room_home', {'roomId': entity.contextId}) }}">{{ entity.contextId|roomTitle|decodeHtmlEntity }}</a>
                     {%- endif %}
                 </div>
+                {% endif %}
 
                 <h4 class="uk-comment-title">
                 {% if is_granted('ITEM_SEE', entity.itemId) -%}

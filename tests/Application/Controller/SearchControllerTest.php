@@ -99,6 +99,18 @@ final class SearchControllerTest extends AbstractApplicationTestCase
         self::assertStringContainsString('Fundstück', $crawler->filter('#search-feed')->text());
     }
 
+    public function testARoomFoundIsListedWithoutTheContextAboveIt(): void
+    {
+        $this->server->answerWith([['room', $this->roomId]]);
+
+        $crawler = $this->results(['phrase' => 'Such']);
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Suchraum', $crawler->filter('#search-feed')->text());
+        $portalId = AccountStory::get('account')->getContextId();
+        self::assertCount(0, $crawler->filter("#search-feed a[href$=\"/room/{$portalId}\"]"));
+    }
+
     /**
      * @param array<string, string> $filter
      */
