@@ -33,7 +33,9 @@ use App\Security\Permission\Subject\ItemViewSubjectFactory;
  *   - Project room                    — `cs_project_item::maySee`
  *   - Group room (`grouproom`)        — `cs_grouproom_item::maySee`
  *   - User room (`userroom`)          — `cs_userroom_item::maySee`
- *   - Community / Private / unknown   — fall through to
+ *   - Community room                  — `cs_item::maySee` with the portal
+ *                                       as context, see canSeeCommunityRoom()
+ *   - Private / unknown               — fall through to
  *                                       {@see ItemViewChecker}
  */
 final readonly class RoomViewChecker
@@ -61,8 +63,8 @@ final readonly class RoomViewChecker
             RoomType::Project   => $this->canSeeProjectRoom($actor, $currentContext),
             RoomType::GroupRoom => $this->canSeeGroupRoom($actor, $target, $currentContext),
             RoomType::UserRoom  => $this->canSeeUserRoom($actor, $target),
-            // Community + PrivateRoom: no legacy override → defer to
-            // the generic item checker.
+            RoomType::Community => $this->canSeeCommunityRoom($actor, $target, $currentContext),
+            // PrivateRoom: no legacy override → defer to the generic item checker.
             default => $this->canSeeViaItemChecker($actor, $target, $currentContext),
         };
     }
@@ -154,6 +156,29 @@ final readonly class RoomViewChecker
 
         $linkedUserId = $this->extractIntExtra($target, 'USER_ITEM_ID');
         return $linkedUserId !== null && $linkedUserId === $actor->getItemId();
+    }
+
+    /**
+     * Community rooms — legacy `cs_item::maySee` with the portal as the
+     * room's context: a member of the portal sees it. ItemViewChecker
+     * resolves a context only as a room and refuses a portal, so the
+     * portal membership is checked here first.
+     */
+    private function canSeeCommunityRoom(User $actor, Room $target, ?Room $currentContext): bool
+    {
+        if ($actor->isRoot()) {
+            return true;
+        }
+
+        $portalId = (int) $target->getContextId();
+        $membership = $actor->getContextId() === $portalId
+            ? $actor
+            : ($actor->getAccount() !== null ? $this->userRepository->findInContext($actor->getAccount(), $portalId) : null);
+        if ($membership !== null && $membership->isUser()) {
+            return true;
+        }
+
+        return $this->canSeeViaItemChecker($actor, $target, $currentContext);
     }
 
     private function canSeeViaItemChecker(User $actor, Room $target, ?Room $currentContext): bool

@@ -238,6 +238,35 @@ final class RoomViewCheckerTest extends TestCase
         self::assertTrue($this->checker->canSee($actor, $target, $current));
     }
 
+    public function testCommunityRoomGrantsAMemberOfItsPortal(): void
+    {
+        $target = $this->room(80, 'community')->setContextId(1);
+        $actor = $this->user(itemId: 5, status: 2, contextId: 1);
+
+        $this->itemViewChecker->expects(self::never())->method('canSee');
+
+        self::assertTrue($this->checker->canSee($actor, $target));
+    }
+
+    public function testCommunityRoomGrantsAPortalModerator(): void
+    {
+        $target = $this->room(80, 'community')->setContextId(1);
+        $actor = $this->user(itemId: 5, status: 3, contextId: 1);
+
+        self::assertTrue($this->checker->canSee($actor, $target));
+    }
+
+    public function testCommunityRoomLeavesARequestedPortalMembershipToItemViewChecker(): void
+    {
+        $target = $this->room(80, 'community')->setContextId(1);
+        $actor = $this->user(itemId: 5, status: 1, contextId: 1);
+
+        $this->subjectFactory->method('fromItem')->willReturn($this->subject());
+        $this->itemViewChecker->expects(self::once())->method('canSee')->willReturn(false);
+
+        self::assertFalse($this->checker->canSee($actor, $target));
+    }
+
     public function testPrivateRoomDefersToItemViewChecker(): void
     {
         $target = $this->room(90, 'privateroom');
