@@ -21,6 +21,7 @@ use App\Entity\Account;
 use App\Entity\AuditLogEntry;
 use App\Entity\Portal;
 use App\Repository\AuditLogEntryRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Tests\Application\AbstractApplicationTestCase;
 use Tests\Factory\AccountFactory;
@@ -136,6 +137,37 @@ final class AuditLogViewTest extends AbstractApplicationTestCase
         $content = (string) $this->client->getResponse()->getContent();
         self::assertStringContainsString('takeover.target', $content);
         self::assertStringNotContainsString('password.target', $content);
+    }
+
+    /**
+     * The period is picked with the browser's date picker, not typed in a
+     * format nobody is told.
+     */
+    public function testThePeriodIsPickedAsDates(): void
+    {
+        ['portal' => $portal, 'moderator' => $moderator] = $this->createScenario();
+
+        $this->loginAsUser($portal->getId(), $moderator->getUsername(), $moderator->getPlainPassword());
+        $crawler = $this->client->request('GET', "/portal/{$portal->getId()}/settings/auditLog");
+
+        foreach (['left_date', 'right_date'] as $field) {
+            self::assertSame('date', $crawler->filter("input[name='audit_log_filter[occurredAt][{$field}]']")->attr('type'));
+        }
+    }
+
+    public function testThePeriodFilterNarrowsTheList(): void
+    {
+        ['portal' => $portal, 'moderator' => $moderator] = $this->createScenario();
+        $this->recordEntry($portal, AuditEvent::AccountTakeOver, 'takeover.target', 'Tarek Target');
+
+        $this->loginAsUser($portal->getId(), $moderator->getUsername(), $moderator->getPlainPassword());
+        $url = "/portal/{$portal->getId()}/settings/auditLog?audit_log_filter[occurredAt][left_date]=";
+
+        $this->client->request('GET', $url . (new DateTimeImmutable('-1 day'))->format('Y-m-d'));
+        self::assertStringContainsString('takeover.target', (string) $this->client->getResponse()->getContent());
+
+        $this->client->request('GET', $url . (new DateTimeImmutable('+1 day'))->format('Y-m-d'));
+        self::assertStringNotContainsString('takeover.target', (string) $this->client->getResponse()->getContent());
     }
 
     /**

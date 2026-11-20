@@ -46,19 +46,15 @@ class AuditLogFilterType extends AbstractType
                 'label' => 'portal.audit.filter.period',
                 'translation_domain' => 'portal',
                 'required' => false,
-                // The range widget renders the two inputs without their labels,
-                // so the placeholder is what tells them apart.
+                // Date inputs with the browser's date picker; audit_log.html.twig
+                // renders them side by side, each with its label.
                 'left_date_options' => [
                     'label' => 'portal.audit.filter.period_from',
                     'widget' => 'single_text',
-                    'html5' => false,
-                    'attr' => ['placeholder' => 'portal.audit.filter.period_from'],
                 ],
                 'right_date_options' => [
                     'label' => 'portal.audit.filter.period_until',
                     'widget' => 'single_text',
-                    'html5' => false,
-                    'attr' => ['placeholder' => 'portal.audit.filter.period_until'],
                 ],
             ])
             ->add('search', TextFilterType::class, [

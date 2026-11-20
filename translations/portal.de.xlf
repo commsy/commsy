@@ -1756,7 +1756,7 @@
             </trans-unit>
             <trans-unit id="portal_audit_filter_search_help">
                 <source>portal.audit.filter.search_help</source>
-                <target>Sucht in den Namen und Kennungen beider Seiten.</target>
+                <target>Sucht in Namen und Kennungen aller Beteiligten.</target>
             </trans-unit>
             <trans-unit id="portal_audit_event_account_take_over_grant_changed">
                 <source>portal.audit.event.account_take_over_grant_changed</source>

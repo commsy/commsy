@@ -1,6 +1,17 @@
 {% extends 'layout.html.twig' %}
 
-{% form_theme filterForm 'form/uikit3/uikit_horizontal_layout.html.twig' %}
+{% form_theme filterForm 'form/uikit3/uikit_horizontal_layout.html.twig' _self %}
+
+{% block _audit_log_filter_occurredAt_widget %}
+    <div class="uk-grid-small uk-child-width-1-2@s" uk-grid>
+        {% for date in [form.left_date, form.right_date] %}
+            <div>
+                <label class="uk-text-small" for="{{ date.vars.id }}">{{ date.vars.label|trans({}, 'portal') }}</label>
+                {{ form_widget(date) }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
 
 {% block sidebar_left %}
     {% include 'components/context_navigation.html.twig' with {'menu_name': 'portal_settings'} only %}
