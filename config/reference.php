@@ -1266,7 +1266,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     twig?: array{
  *         template?: scalar|Param|null, // Default: "@KnpMenu/menu.html.twig"
  *     },
- *     templating?: bool|Param, // Default: false
+ *     route_voter?: bool|Param, // Default: true
  *     default_renderer?: scalar|Param|null, // Default: "twig"
  * }
  * @psalm-type KnpSnappyConfig = array{
@@ -1293,6 +1293,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     condition_pattern?: scalar|Param|null, // Default condition pattern for TextFilterType // Default: "text.starts"
  *     force_case_insensitivity?: bool|Param, // Whether to do case insensitive LIKE comparisons. // Default: false
  *     encoding?: scalar|Param|null, // Encoding for case insensitive LIKE comparisons. // Default: null
+ *     persistence?: array{
+ *         reset_parameter?: scalar|Param|null, // Query parameter that clears the stored state of the forms using the "filter_persistence" option. // Default: "_reset"
+ *     },
  * }
  * @psalm-type LiipImagineConfig = array{
  *     resolvers?: array<string, array{ // Default: []
@@ -1318,6 +1321,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             cache_prefix?: scalar|Param|null, // Default: ""
  *             root_url?: scalar|Param|null,
  *             visibility?: "public"|"private"|"noPredefinedVisibility"|Param, // Default: "public"
+ *         },
+ *         format_extension?: array{
+ *             resolver?: scalar|Param|null, // Name of the configured resolver to decorate, for example "default".
  *         },
  *     }>,
  *     loaders?: array<string, array{ // Default: []
@@ -1365,7 +1371,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         filter_action?: scalar|Param|null, // Default: "Liip\\ImagineBundle\\Controller\\ImagineController::filterAction"
  *         filter_runtime_action?: scalar|Param|null, // Default: "Liip\\ImagineBundle\\Controller\\ImagineController::filterRuntimeAction"
  *         redirect_response_code?: int|Param, // Default: 302
+ *         debug?: bool|Param|null, // Whether to report images that can not be generated as an error. Defaults to the kernel debug mode. When disabled, the default image is served instead, if one is configured. // Default: null
  *     },
+ *     normalize_filter_set_names?: bool|Param|null, // Whether to replace "-" by "_" in filter set names, as Symfony does for configuration keys. Not setting this option to false is deprecated: the normalization will be removed in 3.0. // Default: null
  *     filter_sets?: array<string, array{ // Default: []
  *         quality?: scalar|Param|null,
  *         jpeg_quality?: scalar|Param|null,
@@ -2007,6 +2015,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         filter_value_name?: scalar|Param|null, // Default: "filterValue"
  *         page_name?: scalar|Param|null, // Default: "page"
  *         distinct?: bool|Param, // Default: true
+ *         wrap_queries?: bool|Param, // Default: false
  *         page_out_of_range?: scalar|Param|null, // Default: "ignore"
  *         default_limit?: scalar|Param|null, // Default: 10
  *     },
@@ -2372,6 +2381,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         policy?: mixed,
  *         middleware?: mixed,
  *         parameters?: array<string, array{ // Default: []
+ *             class?: scalar|Param|null, // The parameter class for a named global parameter entry.
  *             key?: mixed,
  *             schema?: mixed,
  *             open_api?: mixed,
@@ -2478,7 +2488,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         reset?: array{
  *             connections?: list<scalar|Param|null>,
  *             entity_managers?: list<scalar|Param|null>,
- *             mode?: \Zenstruck\Foundry\ORM\ResetDatabase\ResetDatabaseMode::SCHEMA|\Zenstruck\Foundry\ORM\ResetDatabase\ResetDatabaseMode::MIGRATE|Param, // Reset mode to use with ResetDatabase trait // Default: "schema"
+ *             mode?: null|\Zenstruck\Foundry\ORM\ResetDatabase\ResetDatabaseMode::SCHEMA|\Zenstruck\Foundry\ORM\ResetDatabase\ResetDatabaseMode::MIGRATE|\Zenstruck\Foundry\ORM\ResetDatabase\ResetDatabaseMode::AUTO|"schema"|"migrate"|"auto"|Param, // Reset mode to use with ResetDatabase trait ("auto" migrates if the app has migrations, otherwise resets the schema) // Default: null
  *             migrations?: array{
  *                 configurations?: list<scalar|Param|null>,
  *             },
