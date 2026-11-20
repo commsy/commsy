@@ -61,7 +61,7 @@ fos_ck_editor:
     toolbars:
         configs:
             nonHtml: [ "@clipboard" ]
-            simpleToolbar: [ "@clipboard", "@basicstyles" ]
+            simpleToolbar: [ "@clipboard", "@basicstyles", "@links" ]
             regularToolbar: [ [ "html5audio" ], "@clipboard", "@basicstyles" , "@paragraph", "@justify", "@misc", "/", "@format", "@style", "@content", "@language" ]
             reducedToolbar: [ "@clipboard", "@basicstyles", "@paragraph", "@justify", "/", "@format", "@style", "@content" ]
             fullToolbar: [ [ "html5audio" ], "@clipboard", "@basicstyles" , "@paragraph", "@justify", "@misc", "/", "@format", "@style", "@content", "@language", "@commsy" ]
@@ -74,6 +74,7 @@ fos_ck_editor:
             format: [ "Format", "Font", "FontSize" ]
             style: [ "TextColor", "BGColor", "RemoveFormat" ]
             content: [ "Link", "Unlink", "Table", "HorizontalRule" ]
+            links: [ "Link", "Unlink" ]
             language: [ "Language", "BidiLtr", "BidiRtl" ]
             commsy: [ "Mathjax", "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument" ]
 
