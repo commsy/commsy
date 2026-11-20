@@ -16,3 +16,18 @@
 // Variables
 // ========================================================================
 @close-alt-background:                          @base-body-color;
+
+
+// Hooks
+// ========================================================================
+
+// The alternative close button sits on a grey disc in the body colour, so
+// its cross must not inherit that colour (lightbox).
+.hook-close-alt() { color: #fff; }
+
+.hook-close-misc() {
+    .uk-close-alt:after { opacity: 0.8; }
+
+    .uk-close-alt:hover:after,
+    .uk-close-alt:focus:after { opacity: 1; }
+}
