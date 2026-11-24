@@ -23,6 +23,7 @@ use App\Room\RoomMembershipDecider;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
+use Symfony\UX\LiveComponent\Attribute\LiveListener;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -122,6 +123,16 @@ final class NotificationBell
 
         $this->notificationRepository->markAllReadForAccount($this->account, now(), null, $readable);
         $this->forgetCounts();
+    }
+
+    /**
+     * The activity panel marked its list read: render again so the badge follows
+     * at once instead of at the next poll. Nothing is marked here — the panel's
+     * action stays limited to its own list, on a room page to that room.
+     */
+    #[LiveListener(NotificationPanel::MARKED_ALL_READ)]
+    public function recount(): void
+    {
     }
 
     /**

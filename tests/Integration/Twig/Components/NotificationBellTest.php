@@ -21,6 +21,7 @@ use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Notification\NotificationPayload;
 use App\Repository\NotificationRepository;
+use App\Twig\Components\NotificationPanel;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -122,6 +123,25 @@ final class NotificationBellTest extends WebTestCase
 
         $this->persist($account, NotificationType::Entry, 'Elsewhere', sourceItemId: 4, action: EntryAction::Edited, contextId: 205);
         self::assertSame(4, $this->badge(), 'entries of every room count');
+    }
+
+    public function testCountsAgainWhenTheRoomPanelWasMarkedRead(): void
+    {
+        $account = $this->account;
+        $this->persist($account, NotificationType::Entry, 'Here', sourceItemId: 1);
+        $this->persist($account, NotificationType::Entry, 'Elsewhere', sourceItemId: 2, contextId: 205);
+        $this->persist($account, NotificationType::RoomJoinDecision, 'Projektraum', sourceItemId: 43,
+            payload: new NotificationPayload(decision: 'accepted'));
+        self::assertSame(3, $this->badge());
+
+        $this->createLiveComponent('NotificationPanel', ['account' => $account, 'contextId' => 105], $this->client)
+            ->call('markAllRead');
+
+        $bell = $this->createLiveComponent('NotificationBell', ['account' => $account], $this->client)
+            ->emit(NotificationPanel::MARKED_ALL_READ);
+
+        self::assertSame('2', trim($bell->render()->crawler()->filter('#cs-nav-notification-indicator')->text()));
+        self::assertSame(2, $this->repository()->count(['readAt' => null]), 'the other room and the message stay unread');
     }
 
     public function testRoomLineDisappearsOnceTheActivityIsRead(): void

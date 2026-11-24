@@ -20,6 +20,7 @@ use App\Entity\Notification;
 use App\Enum\EntryAction;
 use App\Enum\NotificationType;
 use App\Repository\NotificationRepository;
+use App\Twig\Components\NotificationPanel;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -119,6 +120,21 @@ final class NotificationPanelTest extends WebTestCase
 
         self::assertSame(2, $this->repository()->count([]), 'the entries stay listed');
         self::assertSame(0, $this->repository()->count(['readAt' => null]));
+    }
+
+    public function testMarkAllReadTellsTheBellToCountAgain(): void
+    {
+        $this->persist($this->account, sourceItemId: 1, title: 'One');
+
+        $component = $this->createLiveComponent('NotificationPanel', ['account' => $this->account], $this->client);
+        $component->call('markAllRead');
+
+        $emitted = json_decode(
+            (string) $component->render()->crawler()->filter('[data-live-events-to-emit-value]')->attr('data-live-events-to-emit-value'),
+            true,
+            flags: \JSON_THROW_ON_ERROR,
+        );
+        self::assertSame([NotificationPanel::MARKED_ALL_READ], array_column($emitted, 'event'));
     }
 
     public function testMarkAllReadLeavesAnUndecidedTaskAlone(): void

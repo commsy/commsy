@@ -23,6 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\ComponentToolsTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
 use function Symfony\Component\Clock\now;
@@ -41,7 +42,11 @@ use function Symfony\Component\Clock\now;
 #[AsLiveComponent]
 final class NotificationPanel
 {
+    use ComponentToolsTrait;
     use DefaultActionTrait;
+
+    /** Tells the bell to count again; it marks nothing itself. */
+    public const MARKED_ALL_READ = 'NotificationPanel:markedAllRead';
 
     #[LiveProp]
     public ?Account $account = null;
@@ -80,6 +85,8 @@ final class NotificationPanel
                 $this->contextId,
                 NotificationType::contentTypes(),
             );
+
+            $this->emit(self::MARKED_ALL_READ);
         }
     }
 
