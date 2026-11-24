@@ -98,8 +98,30 @@ final class NotificationBellTest extends WebTestCase
         self::assertStringContainsString('Ada Lovelace', $html);
         self::assertStringNotContainsString('Some material', $html, 'single entries stay in the panels');
 
-        // The badge counts the task plus one room line, not the four events.
-        self::assertSame(2, $bell->getUnreadCount());
+        // The badge counts the task plus the two entries, not the four events.
+        self::assertSame(3, $bell->getUnreadCount());
+    }
+
+    public function testBadgeCountsEveryEntryOnceAcrossRooms(): void
+    {
+        $account = $this->account;
+        $this->persist($account, NotificationType::Entry, 'First', sourceItemId: 1, action: EntryAction::Created);
+        $this->persist($account, NotificationType::Entry, 'Second', sourceItemId: 2, action: EntryAction::Created);
+        self::assertSame(2, $this->badge(), 'two new entries in one room are two, not one room');
+
+        // An annotation on an entry that was already read brings it back.
+        $read = $this->persist($account, NotificationType::Entry, 'Third', sourceItemId: 3, action: EntryAction::Created);
+        $read->markRead(new \DateTimeImmutable());
+        $this->repository()->save($read);
+        $this->persist($account, NotificationType::Entry, 'Third', sourceItemId: 3, action: EntryAction::Annotated);
+        self::assertSame(3, $this->badge());
+
+        // Further events on an unread entry do not count it twice.
+        $this->persist($account, NotificationType::Entry, 'First', sourceItemId: 1, action: EntryAction::Edited);
+        self::assertSame(3, $this->badge());
+
+        $this->persist($account, NotificationType::Entry, 'Elsewhere', sourceItemId: 4, action: EntryAction::Edited, contextId: 205);
+        self::assertSame(4, $this->badge(), 'entries of every room count');
     }
 
     public function testRoomLineDisappearsOnceTheActivityIsRead(): void
@@ -163,6 +185,16 @@ final class NotificationBellTest extends WebTestCase
         return self::getContainer()->get(NotificationRepository::class);
     }
 
+    /**
+     * @phpstan-impure reads the database afresh on every call
+     */
+    private function badge(): int
+    {
+        return $this->createLiveComponent('NotificationBell', ['account' => $this->account], $this->client)
+            ->component()
+            ->getUnreadCount();
+    }
+
     public function testAReadDecisionLeavesTheDropdown(): void
     {
         $account = $this->account;
@@ -185,11 +217,13 @@ final class NotificationBellTest extends WebTestCase
         int $sourceItemId,
         ?NotificationPayload $payload = null,
         \App\Enum\EntryAction $action = \App\Enum\EntryAction::Created,
-    ): void {
-        $this->repository()->save(new Notification(
-            $account,
+        int $contextId = 105,
+    ): Notification {
+        // A request in between clears the entity manager, so look the account up again.
+        $notification = new Notification(
+            self::getContainer()->get(EntityManagerInterface::class)->find(Account::class, $account->getId()),
             $type,
-            105,
+            $contextId,
             $title,
             'Projektraum',
             new \DateTimeImmutable(),
@@ -198,6 +232,9 @@ final class NotificationBellTest extends WebTestCase
             $title,
             $type === NotificationType::Entry ? $action : null,
             $payload ?? new NotificationPayload(actorId: $sourceItemId),
-        ));
+        );
+        $this->repository()->save($notification);
+
+        return $notification;
     }
 }

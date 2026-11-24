@@ -163,9 +163,9 @@ final class NotificationBell
     }
 
     /**
-     * What the badge shows: the number of unread things visible in the dropdown.
-     * A room counts once, however much happened inside it — the sum of changed
-     * entries would be a confusing number to put on a bell.
+     * What the badge shows: open tasks and unread messages one by one, plus every
+     * entry with unread activity. An entry counts once, however often it changed,
+     * even though the dropdown condenses entries into one line per room.
      */
     public function getUnreadCount(): int
     {
@@ -183,7 +183,7 @@ final class NotificationBell
         ));
 
         return $this->unreadCount = $this->notificationRepository->countUnreadForAccount($this->account, null, $withoutActivity)
-            + count($this->getRoomActivity());
+            + $this->notificationRepository->countUnreadEntries($this->account);
     }
 
     /**

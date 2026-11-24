@@ -34,14 +34,14 @@ use Tests\Factory\PortalFactory;
  */
 class NotificationBellNavbarTest extends AbstractApplicationTestCase
 {
-    public function testBadgeCountsOneLinePerRoomAndIgnoresOtherAccounts(): void
+    public function testBadgeCountsEveryEntryAndIgnoresOtherAccounts(): void
     {
         [$portal, $account] = $this->member();
         $portalId = $portal->getId();
         $password = $account->getPlainPassword();
         $stranger = $this->extraAccount($portal);
 
-        // Two entries changed in the same room: one line, not two.
+        // Two entries changed in the same room: two, not one room.
         $this->repository()->save($this->notification($account, 'A new material', 1));
         $this->repository()->save($this->notification($account, 'And another one', 2));
         $this->repository()->save($this->notification($stranger, 'Not for me', 3));
@@ -52,7 +52,7 @@ class NotificationBellNavbarTest extends AbstractApplicationTestCase
 
         $indicator = $crawler->filter('#cs-nav-notification-indicator');
         self::assertGreaterThan(0, $indicator->count(), 'bell badge must be present');
-        self::assertSame('1', trim($indicator->text()), 'one room line, whatever happened inside it');
+        self::assertSame('2', trim($indicator->text()), 'every entry counts, not every room');
         self::assertStringNotContainsString('Not for me', $this->client->getResponse()->getContent());
     }
 

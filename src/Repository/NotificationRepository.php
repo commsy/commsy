@@ -61,6 +61,18 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
     /**
+     * Entries with unread activity, for the bell's badge: an entry counts once,
+     * however many of its events (created, edited, annotated) are unread.
+     */
+    public function countUnreadEntries(Account $account): int
+    {
+        return (int) $this->accountQuery($account, true, null, [NotificationType::Entry])
+            ->select('COUNT(DISTINCT n.sourceItemId)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * Notifications for the activity panel, newest first, optionally scoped to
      * one room. Read and unread rows alike are listed by default; rows only ever
      * leave the panel through the retention cron (or when their item is
