@@ -55,6 +55,14 @@ final class NotificationComponentAuthorizationTest extends WebTestCase
         $component->call('markAllRead');
     }
 
+    public function testTheBellRefusesToOpenAMessageForAnonymousCallers(): void
+    {
+        $component = $this->componentFor('NotificationBell');
+
+        $this->expectException(AccessDeniedException::class);
+        $component->call('open', ['id' => 1]);
+    }
+
     public function testThePanelRefusesToMarkReadForAnonymousCallers(): void
     {
         $component = $this->componentFor('NotificationPanel');

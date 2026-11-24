@@ -200,6 +200,46 @@ final class NotificationBellTest extends WebTestCase
         self::assertSame(1, $this->repository()->count(['readAt' => null]), 'the task stays unread, the decision is read');
     }
 
+    public function testOpeningAMessageMarksItReadAndFollowsItsLink(): void
+    {
+        $decision = $this->persist($this->account, NotificationType::RoomJoinDecision, 'Projektraum', sourceItemId: 43,
+            payload: new NotificationPayload(decision: 'accepted'));
+        $other = $this->persist($this->account, NotificationType::RoomJoinDecision, 'Anderer Raum', sourceItemId: 44,
+            payload: new NotificationPayload(decision: 'rejected'));
+
+        $component = $this->createLiveComponent('NotificationBell', ['account' => $this->account], $this->client)
+            ->call('open', ['id' => $decision->getId()]);
+
+        $roomHome = self::getContainer()->get('router')->generate('app_room_home', ['roomId' => 105]);
+        self::assertTrue($component->response()->isRedirect($roomHome), 'a decision leads to its room');
+        self::assertNotNull($this->repository()->find($decision->getId())->getReadAt());
+        self::assertNull($this->repository()->find($other->getId())->getReadAt(), 'only the opened message is read');
+    }
+
+    public function testOpeningLeavesTasksAndOtherAccountsAlone(): void
+    {
+        $task = $this->persist($this->account, NotificationType::RoomJoinRequest, 'Ada', sourceItemId: 42);
+        $stranger = AccountFactory::createOne([
+            'activityState' => Account::ACTIVITY_ACTIVE,
+            'locked' => false,
+        ]);
+        $foreign = $this->persist(
+            $stranger,
+            NotificationType::RoomJoinDecision,
+            'Projektraum',
+            sourceItemId: 43,
+            payload: new NotificationPayload(decision: 'accepted'),
+        );
+
+        foreach ([$task, $foreign] as $notification) {
+            $component = $this->createLiveComponent('NotificationBell', ['account' => $this->account], $this->client)
+                ->call('open', ['id' => $notification->getId()]);
+
+            self::assertFalse($component->response()->isRedirection());
+            self::assertNull($this->repository()->find($notification->getId())->getReadAt());
+        }
+    }
+
     private function repository(): NotificationRepository
     {
         return self::getContainer()->get(NotificationRepository::class);

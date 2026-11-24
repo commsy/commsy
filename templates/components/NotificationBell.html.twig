@@ -68,8 +68,10 @@
         {% set p = notification.payload %}
         {% set expiring = notification.type.value == 'announcement_expiring' %}
         <li>
-            {# An expiry warning names one entry, so it leads there; the rest lead to the room. #}
-            <a href="{{ this.linkFor(notification)|default(path('app_room_home', {'roomId': notification.contextId})) }}"
+            {# An expiry warning names one entry, so it leads there; the rest lead to the room.
+               Following the link marks the message read. #}
+            <a href="{{ this.linkFor(notification) }}"
+               data-action="live#action:prevent" data-live-action-param="open" data-live-id-param="{{ notification.id }}"
                style="display: block; {{ rowPadding }}{% if not loop.first %} {{ rowBorder }}{% endif %}">
                 <span style="display: block; line-height: 1.4;{% if notification.unread %} font-weight: 600;{% endif %}">
                     {%- if expiring -%}

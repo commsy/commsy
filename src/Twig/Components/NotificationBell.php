@@ -20,6 +20,8 @@ use App\Notification\NotificationLinkResolver;
 use App\Notification\RoomActivitySummary;
 use App\Repository\NotificationRepository;
 use App\Room\RoomMembershipDecider;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
@@ -76,6 +78,7 @@ final class NotificationBell
         private readonly NotificationRepository $notificationRepository,
         private readonly RoomMembershipDecider $membershipDecider,
         private readonly NotificationLinkResolver $linkResolver,
+        private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -83,9 +86,33 @@ final class NotificationBell
      * Where a row leads. Rows that name an entry link straight to it; the rest
      * fall back to the room they happened in.
      */
-    public function linkFor(Notification $notification): ?string
+    public function linkFor(Notification $notification): string
     {
-        return $this->linkResolver->resolve($notification);
+        return $this->linkResolver->resolve($notification)
+            ?? $this->urlGenerator->generate('app_room_home', ['roomId' => $notification->getContextId()]);
+    }
+
+    /**
+     * Opening a message is how you take note of it: mark it read, then follow
+     * its link. Tasks are left alone — only the decision settles them.
+     */
+    #[LiveAction]
+    #[IsGranted('IS_AUTHENTICATED')]
+    public function open(#[LiveArg] int $id): ?RedirectResponse
+    {
+        if ($this->account === null) {
+            return null;
+        }
+
+        $notification = $this->notificationRepository->findOneBy(['id' => $id, 'recipient' => $this->account]);
+        if ($notification === null || $notification->getType()->awaitsDecision()) {
+            return null;
+        }
+
+        $notification->markRead(now());
+        $this->notificationRepository->save($notification);
+
+        return new RedirectResponse($this->linkFor($notification));
     }
 
     // A live action is its own HTTP endpoint, and the firewall lets
